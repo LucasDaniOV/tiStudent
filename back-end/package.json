@@ -9,6 +9,7 @@
         "schema": "domain/data-access/prisma/schema.prisma"
     },
     "scripts": {
+        "test": "jest",
         "start": "nodemon -L app.ts --delay 3"
     },
     "nodemonConfig": {
