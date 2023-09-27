@@ -1,13 +1,13 @@
 export class User {
-    readonly username: string;
+    readonly email: string;
     readonly password: string;
 
-    constructor(user: { username: string; password: string }) {
-        this.username = user.username;
+    constructor(user: { email: string; password: string }) {
+        this.email = user.email;
         this.password = user.password;
     }
 
-    equals(otherUser: { username: string; password: string }): boolean {
-        return this.username === otherUser.username && this.password === otherUser.password;
+    equals(otherUser: { email: string; password: string }): boolean {
+        return this.email === otherUser.email && this.password === otherUser.password;
     }
 }
