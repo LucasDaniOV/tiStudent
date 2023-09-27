@@ -46,4 +46,10 @@ export class Resource {
             this.files === otherResource.files
         );
     }
+
+    getUpdatedAt = (): Date => this.updatedAt;
+    getTitle = (): string => this.title;
+    getDescription = (): string => this.description;
+    getThumbnail = (): File | undefined => this.thumbnail;
+    getFiles = (): FileList | undefined => this.files;
 }
