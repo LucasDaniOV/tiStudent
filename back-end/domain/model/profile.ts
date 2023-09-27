@@ -40,4 +40,10 @@ export class Profile {
             this.avatar === otherProfile.avatar
         );
     }
+
+    getUpdatedAt = (): Date => this.updatedAt;
+    getLatestActivity = (): Date => this.latestActivity;
+    getUsername = (): string => this.username;
+    getBio = (): string | undefined => this.bio;
+    getAvatar = (): File | undefined => this.avatar;
 }
