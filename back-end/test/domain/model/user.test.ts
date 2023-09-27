@@ -1,6 +1,6 @@
 import { User } from '../../../domain/model/user';
 
-test(`given: valid values for user, when: user is created, then: user is created with those values`, () => {
+test(`given: valid values for User, when: User is created, then: User is created with those values`, () => {
     // given
     const email = 'test';
     const password = 'test';
