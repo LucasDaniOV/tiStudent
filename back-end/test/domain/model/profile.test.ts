@@ -6,14 +6,12 @@ test(`given: valid values for Profile, when: Profile is created, then: Profile i
     const user = new User({ email: 'sudo@tistudent.be', password: 'TopSecret007' });
     const username = 'sudo';
     const bio = 'The Terminator';
-    const avatar = new File([''], 'avatar.png');
 
     // when
-    const profile = new Profile({ user, username, bio, avatar });
+    const profile = new Profile({ user, username, bio });
 
     // then
     expect(profile.user).toEqual(user);
     expect(profile.getUsername()).toEqual(username);
     expect(profile.getBio()).toEqual(bio);
-    expect(profile.getAvatar()).toEqual(avatar);
 });
