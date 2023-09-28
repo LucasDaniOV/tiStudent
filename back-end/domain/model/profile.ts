@@ -1,7 +1,7 @@
 import { User } from './user';
 
 export class Profile {
-    readonly id: number;
+    readonly id?: number;
     readonly user: User;
     readonly createdAt: Date;
 
