@@ -9,6 +9,9 @@ const users: User[] = [
 
 const getAllUsers = (): User[] => users;
 
-const getUserById = (id: number): User => users.find((u) => u.id == id);
+const getUserById = (id: number): User => {
+    const u: User = users.find((u) => u.id == id);
+    return u;
+};
 
 export default { getAllUsers, getUserById };
