@@ -1,7 +1,7 @@
 import { User } from './user';
 
 export class Profile {
-    readonly id: number;
+    readonly id?: number;
     readonly user: User;
     readonly createdAt: Date;
 
@@ -9,7 +9,7 @@ export class Profile {
     private username: string;
     private bio?: string;
 
-    constructor(profile: { user: User; username: string; bio?: string; avatar?: File }) {
+    constructor(profile: { user: User; username: string; bio?: string }) {
         const now = new Date();
         this.user = profile.user;
         this.createdAt = now;
@@ -25,7 +25,6 @@ export class Profile {
         latestActivity: Date;
         username: string;
         bio?: string;
-        avatar?: File;
     }): boolean {
         return (
             this.user === otherProfile.user &&
