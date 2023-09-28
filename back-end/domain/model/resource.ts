@@ -1,133 +1,15 @@
 import { User } from './user';
+import { Category } from './category';
+import { Subject } from './subject';
 
-enum Category {
-    Summary = 'Summary',
-    CheatSheet = 'Cheat Sheet',
-    LectureNotes = 'Lecture Notes',
-}
-
-enum Subject {
-    //sommige vakken zitten in 2 of meerdere keuzetrajecten, ik heb ze chronologisch ingevuld
-    // vb. Digital Experience (DE) heeft User Interfaces -> zet het bij DE, SW DEV heeft dit ook, spijtig maar staat al bij DE
-
-    /*####################################################################
-                                  F A S E   1
-    ####################################################################*/
-
-    //SW DEV
-    FrontEnd_Development = 'Front-End Development',
-    Programming1 = 'Programming 1',
-    BackEnd_Development = 'Back-End Development',
-    Programming2 = 'Programming 2',
-
-    //Infrastructure
-    Computer_Systems = 'Computer Systems',
-    Computer_Networks = 'Computer Networks',
-
-    //AI
-    Database_Foundations = 'Database Foundations',
-
-    //Business
-    IT_Business = 'IT & Business',
-
-    //Prof. skills
-    Introductieproject = 'Introductieproject',
-    IT_Industry_Discovery = 'IT Industry Discovery',
-
-    /*####################################################################
-                                  F A S E   2
-    ####################################################################*/
-
-    //SW DEV
-    FullStack_Software_Develoment = 'Full-Stack Software Development',
-    Software_Engineering = 'Software Engineering',
-
-    //Infrastructure
-    Server_System_Management = 'Server & System Management',
-
-    //AI
-    Data_Analytics_Machine_Learning = 'Data Analytics & Machine Learning',
-    Data_Management = 'Data Management',
-
-    //Business
-    IT_Society = 'IT & Society',
-
-    //Prof. skills
-    Junior_Werkplekproject = 'Junior Werkplekproject',
-    IT_Integratieproject = 'IT Integratieproject',
-
-    //vakken AI
-    Advanced_AI = 'Advanced AI',
-    Data_Engineering = 'Data Engineering',
-    Data_Visualisation = 'Data Visualisation',
-
-    //vakken Business
-    Business_Solutions_Platforms = 'Business Solutions Platforms',
-    Innovation_Management = 'Innovation Management',
-
-    //vakken Digital Experience
-    User_Interfaces = 'User Interfaces',
-    New_Medialab_Gamification = 'New Medialab Gamification',
-    _3D_Graphics = '3D Graphics',
-
-    // Vakken Infrastructure
-    Cloud_Fundamentals = 'Cloud Fundamentals',
-    Wireless_Communications = 'Wireless Communications',
-    Advanced_Networking_Security_1 = 'Advanced Networking & Security 1',
-
-    //Vakken SW DEV
-    Advanced_Programming = 'Advanced Programming',
-
-    /*####################################################################
-                                  F A S E   3
-    ####################################################################*/
-
-    IT_Innovation = 'IT Innovation',
-    Senior_Werkplekproject = 'Senior Werkplekproject',
-    Bachelor_Project = 'Bachelor Project',
-    Bedrijfsstage = 'Bedrijfsstage',
-    Onderzoeksstage = 'Onderzoeksstage',
-
-    //AI
-    European_University_I_Living_Labs_1 = 'European University: I living Labs 1',
-    European_University_Explore_Learning_Snacks_1 = 'European University: Explore Learning Snacks 1',
-    AI_Applications = 'AI Applications',
-    Data_Incubator = 'Data Incubator',
-
-    //Business
-    Business_Solutions_Platforms_Project = 'Business Solutions Platforms Project',
-    IT_Consultancy = 'IT Consultancy',
-
-    //Digital Experience
-    Mobile_Applications = 'Mobile Applications',
-    Extended_Reality = 'Extended Reality',
-    New_Medialab_UX_UI_Design = 'New Medialab-UX & UI Design',
-    Internationaal_Innovations_Labs_IT = 'Internationaal Innovations Labs IT',
-
-    Bachelor_At_Work_Noord_Zuid = 'Bachelor@work Noord-Zuid',
-    Bachelor_At_Work_Small_Business_Project = 'Bachelor@work Small Business Project',
-
-    //Infrastructure
-    Enterprise_Server_Management = 'Enterprise Server Management',
-    Cloud_Operations = 'Cloud & Operations',
-    Application_Security = 'Application Security',
-    Advanced_Networking_Security_2 = 'Advanced Networking & Security 2',
-
-    //SW DEV
-    Distributed_Applications = 'Distributed Applications',
-    Cloud_Native_Engineering = 'Cloud Native Engineering',
-}
 export class Resource {
     readonly creator: User;
     readonly createdAt: Date;
 
-    private updatedAt: Date;
     private title: string;
     private description: string;
     private category: Category;
     private subject: Subject;
-    private thumbnail?: File;
-    private files?: FileList;
 
     constructor(resource: {
         creator: User;
@@ -135,50 +17,36 @@ export class Resource {
         description: string;
         category: Category;
         subject: Subject;
-        thumbnail?: File;
-        files?: FileList;
     }) {
         const now = new Date();
         this.creator = resource.creator;
         this.createdAt = now;
-        this.updatedAt = now;
         this.title = resource.title;
         this.description = resource.description;
         this.category = resource.category;
         this.subject = resource.subject;
-        this.thumbnail = resource.thumbnail;
-        this.files = resource.files;
     }
 
     equals(otherResource: {
         creator: User;
         createdAt: Date;
-        updatedAt: Date;
         title: string;
         description: string;
         category: Category;
         subject: Subject;
-        thumbnail?: File;
-        files?: FileList;
     }): boolean {
         return (
             this.creator === otherResource.creator &&
             this.createdAt === otherResource.createdAt &&
-            this.updatedAt === otherResource.updatedAt &&
             this.title === otherResource.title &&
             this.description === otherResource.description &&
             this.category == otherResource.category &&
-            this.subject == otherResource.subject &&
-            this.thumbnail === otherResource.thumbnail &&
-            this.files === otherResource.files
+            this.subject == otherResource.subject
         );
     }
 
-    getUpdatedAt = (): Date => this.updatedAt;
     getTitle = (): string => this.title;
     getDescription = (): string => this.description;
     getCategory = (): string => this.category; //returning string because easier for frontend to work with string than enum
     getSubject = (): string => this.subject; // idem, same as above
-    getThumbnail = (): File | undefined => this.thumbnail;
-    getFiles = (): FileList | undefined => this.files;
 }
