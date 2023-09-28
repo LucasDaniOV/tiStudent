@@ -10,8 +10,14 @@ const users: User[] = [
 const getAllUsers = (): User[] => users;
 
 const getUserById = (id: number): User => {
-    const u: User = users.find((u) => u.id == id);
-    return u;
+    const user: User = users.find((u) => u.id == id);
+    return user;
 };
 
-export default { getAllUsers, getUserById };
+const createUser = ({ email, password }: User): User => {
+    const newUser = new User({ email, password });
+    users.push(newUser);
+    return newUser;
+};
+
+export default { getAllUsers, getUserById, createUser };
