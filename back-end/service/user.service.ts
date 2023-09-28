@@ -1,5 +1,11 @@
 import userDb from '../domain/data-access/user.db';
 import { User } from '../domain/model/user';
+import { UserInput } from '../types';
+
+const createUser = ({ email, password }: UserInput): User => {
+    const u: User = new User({ email, password });
+    return userDb.createUser(u);
+};
 
 // const getAllUsers = async () : Promise<User[]> => userDb.getAllUsers()  -> pas gebruiken wanneer we met database werken
 const getAllUsers: () => User[] = () => userDb.getAllUsers();
@@ -13,4 +19,4 @@ const getUserById = (id: number): User => {
     }
 };
 
-export default { getAllUsers, getUserById };
+export default { getAllUsers, getUserById, createUser };
