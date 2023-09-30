@@ -1,9 +1,10 @@
+import { User } from './user';
 import { Category } from './category';
 import { Subject } from './subject';
 
 export class Resource {
     readonly id: number;
-    readonly creatorId: number;
+    readonly creator: User;
     readonly createdAt: Date;
 
     private title: string;
@@ -13,7 +14,7 @@ export class Resource {
 
     constructor(resource: {
         id: number;
-        creatorId: number;
+        creator: User;
         title: string;
         description: string;
         category: Category;
@@ -21,7 +22,7 @@ export class Resource {
     }) {
         const now = new Date();
         this.id = resource.id;
-        this.creatorId = resource.creatorId;
+        this.creator = resource.creator;
         this.createdAt = now;
         this.title = resource.title;
         this.description = resource.description;
@@ -31,7 +32,7 @@ export class Resource {
 
     equals(otherResource: {
         id: number;
-        creatorId: number;
+        creator: User;
         createdAt: Date;
         title: string;
         description: string;
@@ -40,7 +41,7 @@ export class Resource {
     }): boolean {
         return (
             this.id === otherResource.id &&
-            this.creatorId === otherResource.creatorId &&
+            this.creator === otherResource.creator &&
             this.createdAt === otherResource.createdAt &&
             this.title === otherResource.title &&
             this.description === otherResource.description &&
