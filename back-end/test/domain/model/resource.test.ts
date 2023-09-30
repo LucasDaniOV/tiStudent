@@ -3,25 +3,29 @@ import { Resource } from '../../../domain/model/resource';
 import { Category } from '../../../domain/model/category';
 import { Subject } from '../../../domain/model/subject';
 
-test(`given: valid values for Resource, when: Resource is created, then: Resource is created`, () => {
-    // given
-    const id = 0;
-    const creator = new User({ email: 'sudo@tistudent.be', password: 'TopSecret007$' });
-    const createdAt = new Date();
-    const title = 'Hello World';
-    const description = 'This is a test resource';
-    const category = Category.CheatSheet;
-    const subject = Subject.FullStack_Software_Develoment;
+const validUser = new User({ email: 'resource-test@tistudent.be', password: '_R3sourceTe5t' });
+const validCreatedAt = new Date();
+const validTitle = 'Hello World';
+const validDescription = 'This is a test resource';
+const validCategory = Category.CheatSheet;
+const validSubject = Subject.FullStack_Software_Develoment;
 
+test(`given: valid values for Resource, when: Resource is created, then: Resource is created`, () => {
     // when
-    const resource = new Resource({ id, creator, createdAt, title, description, category, subject });
+    const resource = new Resource({
+        creator: validUser,
+        createdAt: validCreatedAt,
+        title: validTitle,
+        description: validDescription,
+        category: validCategory,
+        subject: validSubject,
+    });
 
     // then
-    expect(resource.id).toEqual(id);
-    expect(resource.creator).toEqual(creator);
-    expect(resource.createdAt).toEqual(createdAt);
-    expect(resource.title).toEqual(title);
-    expect(resource.description).toEqual(description);
-    expect(resource.category).toEqual(category);
-    expect(resource.subject).toEqual(subject);
+    expect(resource.creator).toEqual(validUser);
+    expect(resource.createdAt).toEqual(validCreatedAt);
+    expect(resource.title).toEqual(validTitle);
+    expect(resource.description).toEqual(validDescription);
+    expect(resource.category).toEqual(validCategory);
+    expect(resource.subject).toEqual(validSubject);
 });
