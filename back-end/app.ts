@@ -5,6 +5,7 @@ import * as bodyParser from 'body-parser';
 import swaggerJSDoc from 'swagger-jsdoc';
 import swaggerUi from 'swagger-ui-express';
 import { userRouter } from './controller/user.routes';
+import { resourceRouter } from './controller/resource.routes';
 
 const app = express();
 dotenv.config();
@@ -18,6 +19,7 @@ app.get('/status', (req, res) => {
 });
 
 app.use('/users', userRouter);
+app.use('/resources', resourceRouter);
 
 app.listen(port || 3000, () => {
     console.log(`Back-end is running on port ${port}.`);
