@@ -1,29 +1,33 @@
 import { Resource } from '../model/resource';
-import { Category } from '../model/category';
-import { Subject } from '../model/subject';
 
 let currentId = 0;
 
-const resources: Resource[] = [
-    new Resource({
-        id: currentId++,
-        title: 'Hello World',
-        description: 'This is a test resource',
-        category: Category.CheatSheet,
-        subject: Subject.FullStack_Software_Develoment,
-    }),
-    new Resource({
-        id: currentId++,
-        title: 'Resource 2',
-        description: 'This is also a test resource',
-        category: Category.Summary,
-        subject: Subject.Data_Analytics_Machine_Learning,
-    }),
-];
+const resources: Resource[] = [];
 
 const getAllResources = (): Resource[] => resources;
 
-const getResourceById = (id: number): Resource | undefined =>
+const getResourceById = (id: number): Resource =>
     resources.find((resource) => resource.id === id);
 
-export default { getAllResources, getResourceById };
+const createResource = ({
+    creator,
+    createdAt,
+    title,
+    description,
+    category,
+    subject,
+}): Resource => {
+    const resource = new Resource({
+        id: currentId++,
+        creator,
+        createdAt,
+        title,
+        description,
+        category,
+        subject,
+    });
+    resources.push(resource);
+    return resource;
+};
+
+export default { getAllResources, getResourceById, createResource };
