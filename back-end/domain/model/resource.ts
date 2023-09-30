@@ -3,6 +3,7 @@ import { Category } from './category';
 import { Subject } from './subject';
 
 export class Resource {
+    readonly id: number;
     readonly creator: User;
     readonly createdAt: Date;
 
@@ -12,6 +13,7 @@ export class Resource {
     private subject: Subject;
 
     constructor(resource: {
+        id: number;
         creator: User;
         title: string;
         description: string;
@@ -19,6 +21,7 @@ export class Resource {
         subject: Subject;
     }) {
         const now = new Date();
+        this.id = resource.id;
         this.creator = resource.creator;
         this.createdAt = now;
         this.title = resource.title;
@@ -28,6 +31,7 @@ export class Resource {
     }
 
     equals(otherResource: {
+        id: number;
         creator: User;
         createdAt: Date;
         title: string;
@@ -36,6 +40,7 @@ export class Resource {
         subject: Subject;
     }): boolean {
         return (
+            this.id === otherResource.id &&
             this.creator === otherResource.creator &&
             this.createdAt === otherResource.createdAt &&
             this.title === otherResource.title &&
