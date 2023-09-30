@@ -21,6 +21,19 @@ app.get('/status', (req, res) => {
 app.use('/users', userRouter);
 app.use('/resources', resourceRouter);
 
+const swaggerOpts = {
+    definition: {
+        openapi: '3.0.0',
+        info: {
+            title: 'tiStudent API',
+            version: '1.0.0',
+        },
+    },
+    apis: ['./controller/*.routes.ts'],
+};
+const swaggerSpec = swaggerJSDoc(swaggerOpts);
+app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec));
+
 app.listen(port || 3000, () => {
     console.log(`Back-end is running on port ${port}.`);
 });
