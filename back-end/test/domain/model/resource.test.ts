@@ -20,8 +20,8 @@ test(`given: valid values for Resource, when: Resource is created, then: Resourc
     expect(resource.id).toEqual(id);
     expect(resource.creator).toEqual(creator);
     expect(resource.createdAt).toEqual(createdAt);
-    expect(resource.getTitle()).toEqual(title);
-    expect(resource.getDescription()).toEqual(description);
-    expect(resource.getCategory()).toEqual(category);
-    expect(resource.getSubject()).toEqual(subject);
+    expect(resource.title).toEqual(title);
+    expect(resource.description).toEqual(description);
+    expect(resource.category).toEqual(category);
+    expect(resource.subject).toEqual(subject);
 });

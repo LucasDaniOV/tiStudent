@@ -4,18 +4,17 @@ import { Subject } from './subject';
 
 export class Resource {
     readonly id?: number;
-    readonly creator?: User;
-    readonly createdAt?: Date;
-
-    private title: string;
-    private description: string;
-    private category: Category;
-    private subject: Subject;
+    readonly creator: User;
+    readonly createdAt: Date;
+    readonly title: string;
+    readonly description: string;
+    readonly category: Category;
+    readonly subject: Subject;
 
     constructor(resource: {
         id?: number;
-        creator?: User;
-        createdAt?: Date;
+        creator: User;
+        createdAt: Date;
         title: string;
         description: string;
         category: Category;
@@ -49,9 +48,4 @@ export class Resource {
             this.subject == otherResource.subject
         );
     }
-
-    getTitle = (): string => this.title;
-    getDescription = (): string => this.description;
-    getCategory = (): string => this.category; //returning string because easier for frontend to work with string than enum
-    getSubject = (): string => this.subject; // idem, same as above
 }
