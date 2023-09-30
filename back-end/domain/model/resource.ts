@@ -60,10 +60,14 @@ export class Resource {
         category: Category;
         subject: Subject;
     }): void {
-        if (resource.title === '') throw new Error('Title cannot be empty');
-        if (resource.title.length > 30) throw new Error('Title cannot be longer than 30 characters');
-        if (resource.description === '') throw new Error('Description cannot be empty');
-        if (resource.description.length > 500) throw new Error('Description cannot be longer than 500 characters');
+        if (!resource.creator) throw new Error('creator User is required');
+        if (!resource.createdAt) throw new Error('createdAt is required');
+        if (!resource.title) throw new Error('title is required');
+        if (!resource.description) throw new Error('description is required');
+        if (!resource.category) throw new Error('category is required');
+        if (!resource.subject) throw new Error('subject is required');
+        if (resource.title.length > 30) throw new Error('title cannot be longer than 30 characters');
+        if (resource.description.length > 500) throw new Error('description cannot be longer than 500 characters');
         if (!Object.values(Category).includes(resource.category)) throw new Error('Invalid category');
         if (!Object.values(Subject).includes(resource.subject)) throw new Error('Invalid subject');
     }

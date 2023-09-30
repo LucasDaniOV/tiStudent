@@ -30,23 +30,94 @@ test(`given: valid values for Resource, when: Resource is created, then: Resourc
     expect(resource.subject).toEqual(validSubject);
 });
 
-test(`given: empty title, when: Resource is created, then: error is thrown`, () => {
-    // given
-    const invalidTitle = '';
+test(`given: no creator, when: Resource is created, then: error is thrown`, () => {
+    // when
+    const createResource = () =>
+        new Resource({
+            createdAt: validCreatedAt,
+            title: validTitle,
+            description: validDescription,
+            category: validCategory,
+            subject: validSubject,
+        } as Resource);
 
+    // then
+    expect(createResource).toThrowError('creator User is required');
+});
+
+test(`given: no createdAt, when: Resource is created, then: error is thrown`, () => {
+    // when
+    const createResource = () =>
+        new Resource({
+            creator: validUser,
+            title: validTitle,
+            description: validDescription,
+            category: validCategory,
+            subject: validSubject,
+        } as Resource);
+
+    // then
+    expect(createResource).toThrowError('createdAt is required');
+});
+
+test(`given: no title, when: Resource is created, then: error is thrown`, () => {
     // when
     const createResource = () =>
         new Resource({
             creator: validUser,
             createdAt: validCreatedAt,
-            title: invalidTitle,
             description: validDescription,
             category: validCategory,
             subject: validSubject,
-        });
+        } as Resource);
 
     // then
-    expect(createResource).toThrowError('Title cannot be empty');
+    expect(createResource).toThrowError('title is required');
+});
+
+test(`given: no description, when: Resource is created, then: error is thrown`, () => {
+    // when
+    const createResource = () =>
+        new Resource({
+            creator: validUser,
+            createdAt: validCreatedAt,
+            title: validTitle,
+            category: validCategory,
+            subject: validSubject,
+        } as Resource);
+
+    // then
+    expect(createResource).toThrowError('description is required');
+});
+
+test(`given: no category, when: Resource is created, then: error is thrown`, () => {
+    // when
+    const createResource = () =>
+        new Resource({
+            creator: validUser,
+            createdAt: validCreatedAt,
+            title: validTitle,
+            description: validDescription,
+            subject: validSubject,
+        } as Resource);
+
+    // then
+    expect(createResource).toThrowError('category is required');
+});
+
+test(`given: no subject, when: Resource is created, then: error is thrown`, () => {
+    // when
+    const createResource = () =>
+        new Resource({
+            creator: validUser,
+            createdAt: validCreatedAt,
+            title: validTitle,
+            description: validDescription,
+            category: validCategory,
+        } as Resource);
+
+    // then
+    expect(createResource).toThrowError('subject is required');
 });
 
 test(`given: too long title, when: Resource is created, then: error is thrown`, () => {
@@ -65,31 +136,13 @@ test(`given: too long title, when: Resource is created, then: error is thrown`, 
         });
 
     // then
-    expect(createResource).toThrowError('Title cannot be longer than 30 characters');
-});
-
-test(`given: empty description, when: Resource is created, then: error is thrown`, () => {
-    // given
-    const invalidDescription = '';
-
-    // when
-    const createResource = () =>
-        new Resource({
-            creator: validUser,
-            createdAt: validCreatedAt,
-            title: validTitle,
-            description: invalidDescription,
-            category: validCategory,
-            subject: validSubject,
-        });
-
-    // then
-    expect(createResource).toThrowError('Description cannot be empty');
+    expect(createResource).toThrowError('title cannot be longer than 30 characters');
 });
 
 test(`given: too long description, when: Resource is created, then: error is thrown`, () => {
     // given
-    const invalidDescription = "As a developer, it's important to stay up-to-date with the latest technologies and trends in the industry. This means constantly learning and improving your skills, whether it's through online courses, attending conferences, or collaborating with other developers. It's also important to prioritize clean and efficient code, as this can save time and prevent errors down the line. Remember to always test your code thoroughly and seek feedback from others to ensure the best possible outcome. Happy coding!";
+    const invalidDescription =
+        "As a developer, it's important to stay up-to-date with the latest technologies and trends in the industry. This means constantly learning and improving your skills, whether it's through online courses, attending conferences, or collaborating with other developers. It's also important to prioritize clean and efficient code, as this can save time and prevent errors down the line. Remember to always test your code thoroughly and seek feedback from others to ensure the best possible outcome. Happy coding!";
 
     // when
     const createResource = () =>
@@ -103,7 +156,7 @@ test(`given: too long description, when: Resource is created, then: error is thr
         });
 
     // then
-    expect(createResource).toThrowError('Description cannot be longer than 500 characters');
+    expect(createResource).toThrowError('description cannot be longer than 500 characters');
 });
 
 test(`given: invalid category, when: Resource is created, then: error is thrown`, () => {
