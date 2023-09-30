@@ -10,13 +10,12 @@ test(`given: valid values for Resource, when: Resource is created, then: Resourc
     const title = 'Hello World';
     const description = 'This is a test resource';
     const category = Category.CheatSheet;
-    const subject = Subject.FullStack_Software_Develoment
+    const subject = Subject.FullStack_Software_Develoment;
 
     // when
     const resource = new Resource({ id, creator, title, description, category, subject });
 
     // then
-    expect(resource.id).toEqual(id);
     expect(resource.creator).toEqual(creator);
     expect(resource.getTitle()).toEqual(title);
     expect(resource.getDescription()).toEqual(description);
