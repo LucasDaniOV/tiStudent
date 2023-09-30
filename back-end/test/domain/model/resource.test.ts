@@ -5,7 +5,7 @@ import { Subject } from '../../../domain/model/subject';
 
 test(`given: valid values for Resource, when: Resource is created, then: Resource is created`, () => {
     // given
-    const creator = new User({ email: 'sudo@tistudent.be', password: 'TopSecret007' });
+    const creator = new User({ email: 'sudo@tistudent.be', password: 'TopSecret007$' });
     const title = 'Hello World';
     const description = 'This is a test resource';
     const category = Category.CheatSheet;
