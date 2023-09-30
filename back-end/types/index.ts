@@ -6,7 +6,7 @@ type UserInput = {
 
 type ResourceInput = {
     id?: number;
-    creatorId?: number;
+    creator?: UserInput;
     createdAt?: Date;
     title?: string;
     description?: string;

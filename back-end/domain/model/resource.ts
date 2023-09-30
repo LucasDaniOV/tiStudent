@@ -3,9 +3,9 @@ import { Category } from './category';
 import { Subject } from './subject';
 
 export class Resource {
-    readonly id: number;
-    readonly creator: User;
-    readonly createdAt: Date;
+    readonly id?: number;
+    readonly creator?: User;
+    readonly createdAt?: Date;
 
     private title: string;
     private description: string;
@@ -13,17 +13,17 @@ export class Resource {
     private subject: Subject;
 
     constructor(resource: {
-        id: number;
-        creator: User;
+        id?: number;
+        creator?: User;
+        createdAt?: Date;
         title: string;
         description: string;
         category: Category;
         subject: Subject;
     }) {
-        const now = new Date();
         this.id = resource.id;
         this.creator = resource.creator;
-        this.createdAt = now;
+        this.createdAt = resource.createdAt;
         this.title = resource.title;
         this.description = resource.description;
         this.category = resource.category;
