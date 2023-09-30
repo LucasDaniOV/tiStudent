@@ -20,6 +20,8 @@ export class Resource {
         category: Category;
         subject: Subject;
     }) {
+        this.validate(resource);
+
         this.id = resource.id;
         this.creator = resource.creator;
         this.createdAt = resource.createdAt;
@@ -47,5 +49,22 @@ export class Resource {
             this.category == otherResource.category &&
             this.subject == otherResource.subject
         );
+    }
+
+    validate(resource: {
+        id?: number;
+        creator: User;
+        createdAt: Date;
+        title: string;
+        description: string;
+        category: Category;
+        subject: Subject;
+    }): void {
+        if (resource.title === '') throw new Error('Title cannot be empty');
+        if (resource.title.length > 30) throw new Error('Title cannot be longer than 30 characters');
+        if (resource.description === '') throw new Error('Description cannot be empty');
+        if (resource.description.length > 500) throw new Error('Description cannot be longer than 500 characters');
+        if (!Object.values(Category).includes(resource.category)) throw new Error('Invalid category');
+        if (!Object.values(Subject).includes(resource.subject)) throw new Error('Invalid subject');
     }
 }

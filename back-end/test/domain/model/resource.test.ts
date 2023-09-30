@@ -29,3 +29,117 @@ test(`given: valid values for Resource, when: Resource is created, then: Resourc
     expect(resource.category).toEqual(validCategory);
     expect(resource.subject).toEqual(validSubject);
 });
+
+test(`given: empty title, when: Resource is created, then: error is thrown`, () => {
+    // given
+    const invalidTitle = '';
+
+    // when
+    const createResource = () =>
+        new Resource({
+            creator: validUser,
+            createdAt: validCreatedAt,
+            title: invalidTitle,
+            description: validDescription,
+            category: validCategory,
+            subject: validSubject,
+        });
+
+    // then
+    expect(createResource).toThrowError('Title cannot be empty');
+});
+
+test(`given: too long title, when: Resource is created, then: error is thrown`, () => {
+    // given
+    const invalidTitle = 'a'.repeat(31);
+
+    // when
+    const createResource = () =>
+        new Resource({
+            creator: validUser,
+            createdAt: validCreatedAt,
+            title: invalidTitle,
+            description: validDescription,
+            category: validCategory,
+            subject: validSubject,
+        });
+
+    // then
+    expect(createResource).toThrowError('Title cannot be longer than 30 characters');
+});
+
+test(`given: empty description, when: Resource is created, then: error is thrown`, () => {
+    // given
+    const invalidDescription = '';
+
+    // when
+    const createResource = () =>
+        new Resource({
+            creator: validUser,
+            createdAt: validCreatedAt,
+            title: validTitle,
+            description: invalidDescription,
+            category: validCategory,
+            subject: validSubject,
+        });
+
+    // then
+    expect(createResource).toThrowError('Description cannot be empty');
+});
+
+test(`given: too long description, when: Resource is created, then: error is thrown`, () => {
+    // given
+    const invalidDescription = "As a developer, it's important to stay up-to-date with the latest technologies and trends in the industry. This means constantly learning and improving your skills, whether it's through online courses, attending conferences, or collaborating with other developers. It's also important to prioritize clean and efficient code, as this can save time and prevent errors down the line. Remember to always test your code thoroughly and seek feedback from others to ensure the best possible outcome. Happy coding!";
+
+    // when
+    const createResource = () =>
+        new Resource({
+            creator: validUser,
+            createdAt: validCreatedAt,
+            title: validTitle,
+            description: invalidDescription,
+            category: validCategory,
+            subject: validSubject,
+        });
+
+    // then
+    expect(createResource).toThrowError('Description cannot be longer than 500 characters');
+});
+
+test(`given: invalid category, when: Resource is created, then: error is thrown`, () => {
+    // given
+    const invalidCategory = 'invalid category';
+
+    // when
+    const createResource = () =>
+        new Resource({
+            creator: validUser,
+            createdAt: validCreatedAt,
+            title: validTitle,
+            description: validDescription,
+            category: invalidCategory as Category,
+            subject: validSubject,
+        });
+
+    // then
+    expect(createResource).toThrowError('Invalid category');
+});
+
+test(`given: invalid subject, when: Resource is created, then: error is thrown`, () => {
+    // given
+    const invalidSubject = 'invalid subject';
+
+    // when
+    const createResource = () =>
+        new Resource({
+            creator: validUser,
+            createdAt: validCreatedAt,
+            title: validTitle,
+            description: validDescription,
+            category: validCategory,
+            subject: invalidSubject as Subject,
+        });
+
+    // then
+    expect(createResource).toThrowError('Invalid subject');
+});
