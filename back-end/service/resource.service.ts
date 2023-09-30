@@ -16,13 +16,13 @@ const getResourceById = async (id: number): Promise<Resource> => {
 // create resource
 const createResource = async ({
     creator: creatorInput,
+    createdAt,
     title,
     description,
     category,
     subject,
 }: ResourceInput): Promise<Resource> => {
     const creator = userDb.getUserById(creatorInput.id);
-    const createdAt = new Date();
     const resource = new Resource({ creator, createdAt, title, description, category, subject });
     return resourceDb.createResource(resource);
 };
