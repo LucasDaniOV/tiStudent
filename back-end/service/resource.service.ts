@@ -16,7 +16,7 @@ const getResourceById = async (id: number): Promise<Resource> => {
 // create resource
 const createResource = async ({
     creator: creatorInput,
-    createdAt,
+    createdAt = new Date(),
     title,
     description,
     category,
