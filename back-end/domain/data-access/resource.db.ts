@@ -6,17 +6,9 @@ const resources: Resource[] = [];
 
 const getAllResources = (): Resource[] => resources;
 
-const getResourceById = (id: number): Resource =>
-    resources.find((resource) => resource.id === id);
+const getResourceById = (id: number): Resource => resources.find((resource) => resource.id === id);
 
-const createResource = ({
-    creator,
-    createdAt,
-    title,
-    description,
-    category,
-    subject,
-}): Resource => {
+const createResource = ({ creator, createdAt, title, description, category, subject }): Resource => {
     const resource = new Resource({
         id: currentId++,
         creator,
