@@ -32,6 +32,7 @@ export class Resource {
     }
 
     equals(otherResource: {
+        id: number;
         creator: User;
         createdAt: Date;
         title: string;
@@ -40,6 +41,7 @@ export class Resource {
         subject: Subject;
     }): boolean {
         return (
+            this.id === otherResource.id &&
             this.creator === otherResource.creator &&
             this.createdAt === otherResource.createdAt &&
             this.title === otherResource.title &&
