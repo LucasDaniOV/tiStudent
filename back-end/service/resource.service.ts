@@ -24,6 +24,15 @@ const createResource = async ({
 }: ResourceInput): Promise<Resource> => {
     const creator = userDb.getUserById(creatorInput.id);
     const resource = new Resource({ creator, createdAt, title, description, category, subject });
+
+    const existing = resourceDb.getResourceByContent(
+        resource.title,
+        resource.description,
+        resource.category,
+        resource.subject
+    );
+    if (existing) throw new Error('Resource already exists');
+
     return resourceDb.createResource(resource);
 };
 
