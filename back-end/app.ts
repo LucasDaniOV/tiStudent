@@ -6,6 +6,7 @@ import swaggerJSDoc from 'swagger-jsdoc';
 import swaggerUi from 'swagger-ui-express';
 import { userRouter } from './controller/user.routes';
 import { resourceRouter } from './controller/resource.routes';
+import { version } from './package.json';
 
 const app = express();
 dotenv.config();
@@ -26,7 +27,7 @@ const swaggerOpts = {
         openapi: '3.0.0',
         info: {
             title: 'tiStudent API',
-            version: '1.0.0',
+            version,
         },
     },
     apis: ['./controller/*.routes.ts'],
