@@ -22,7 +22,9 @@ const createResource = async ({
     category,
     subject,
 }: ResourceInput): Promise<Resource> => {
+    if (!creatorInput) throw new Error('creator User is required');
     const creator = userDb.getUserById(creatorInput.id);
+    if (!creator) throw new Error(`User with id ${creatorInput.id} does not exist`);
     const resource = new Resource({ creator, createdAt, title, description, category, subject });
     return resourceDb.createResource(resource);
 };
