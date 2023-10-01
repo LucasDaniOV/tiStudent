@@ -1,3 +1,36 @@
+/**
+ * @swagger
+ * components:
+ *   securitySchemes:
+ *     bearerAuth:
+ *       type: http
+ *       scheme: bearer
+ *       bearerFormat: JWT
+ *   schemas:
+ *     Resource:
+ *       type: object
+ *       properties:
+ *         id:
+ *           type: integer
+ *           format: int64
+ *         creator:
+ *           type: object
+ *           properties:
+ *             id:
+ *               type: integer
+ *               format: int64
+ *         createdAt:
+ *           type: string
+ *           format: date-time
+ *         title:
+ *           type: string
+ *         description:
+ *           type: string
+ *         category:
+ *           type: string
+ *         subject:
+ *           type: string
+ */
 import express, { Request, Response } from 'express';
 import resourceService from '../service/resource.service';
 import { ResourceInput } from '../types';
