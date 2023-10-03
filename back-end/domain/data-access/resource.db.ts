@@ -22,4 +22,14 @@ const createResource = ({ creator, createdAt, title, description, category, subj
     return resource;
 };
 
-export default { getAllResources, getResourceById, createResource };
+const getResourceByContent = (title: string, description: string, category: string, subject: string): Resource => {
+    return resources.find(
+        (resource) =>
+            resource.title === title &&
+            resource.description === description &&
+            resource.category === category &&
+            resource.subject === subject
+    );
+};
+
+export default { getAllResources, getResourceById, createResource, getResourceByContent };

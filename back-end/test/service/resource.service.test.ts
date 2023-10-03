@@ -15,6 +15,7 @@ const description = 'This is a test resource';
 const category = Category.CheatSheet;
 const subject = Subject.FullStack_Software_Develoment;
 
+let mockResourceDbGetResourceByContent: jest.SpyInstance<Resource, [title: string, description: string, category: string, subject: string], any>;
 let mockResourceDbCreateResource: jest.SpyInstance<Resource, [{ creator: any; createdAt: any; title: any; description: any; category: any; subject: any }], any>;
 let mockUserDbGetUserById: jest.SpyInstance<User, [id: number], any>;
 let mockResourceDbGetResourceById: jest.SpyInstance<Resource, [id: number], any>;
@@ -23,6 +24,7 @@ let mockResourceDbGetAllResources: jest.SpyInstance<Resource[], [], any>;
 beforeEach(() => {
     mockResourceDbCreateResource = jest.spyOn(resourceDb, 'createResource');
     mockUserDbGetUserById = jest.spyOn(userDb, 'getUserById');
+    mockResourceDbGetResourceByContent = jest.spyOn(resourceDb, 'getResourceByContent');
     mockResourceDbGetResourceById = jest.spyOn(resourceDb, 'getResourceById');
     mockResourceDbGetAllResources = jest.spyOn(resourceDb, 'getAllResources');
 });
@@ -43,6 +45,21 @@ test(`given: valid values for Resource, when: Resource is created, then: Resourc
     expect(mockResourceDbCreateResource).toHaveBeenCalledWith(
         new Resource({ creator, createdAt, title, description, category, subject })
     );
+});
+
+test(`given: existing Resource, when: Resource is created, then: error is thrown`, () => {
+    // given
+    mockUserDbGetUserById.mockReturnValue(creator);
+    mockResourceDbGetResourceByContent.mockReturnValue(
+        new Resource({ creator, createdAt, title, description, category, subject })
+    );
+
+    // when
+    const createResource = () =>
+        resourceService.createResource({ creator, createdAt, title, description, category, subject });
+
+    // then
+    expect(createResource).rejects.toThrowError('Resource already exists');
 });
 
 test(`given: no creator, when: Resource is created, then: error is thrown`, async () => {
