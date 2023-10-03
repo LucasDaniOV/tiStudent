@@ -140,3 +140,15 @@ test(`given: available Resources, when: all Resources are requested, then: all R
     expect(mockResourceDbGetAllResources).toHaveBeenCalledTimes(1);
     expect(returnedResources).toEqual(resources);
 });
+
+test(`given: no createdAt, when: resource is created, then: resource is created with current date and time`, async () => {
+    // given
+    mockUserDbGetUserById.mockReturnValue(creator);
+    mockResourceDbGetResourceByContent.mockReturnValue(undefined);
+    
+    // when
+    const resource = await resourceService.createResource({ creator: creatorInput, title, description, category, subject });
+
+    // then
+    expect(new Date().getTime() - resource.createdAt.getTime()).toBeLessThan(1000);
+});
