@@ -28,7 +28,7 @@ export class Profile {
         );
     }
 
-    valiateUsername = (username: string): void => {
+    validateUsername = (username: string): void => {
         if (!username) throw new Error('username is required');
         if (username.length > 30) throw new Error('username cannot be longer than 30 characters');
     };
@@ -39,7 +39,7 @@ export class Profile {
 
     validate(profile: { user: User; username: string; bio?: string }): void {
         if (!profile.user) throw new Error('user is required');
-        this.valiateUsername(profile.username);
+        this.validateUsername(profile.username);
         if (profile.bio) this.validateBio(profile.bio);
     }
 
@@ -52,7 +52,7 @@ export class Profile {
     };
 
     updateUsername = (username: string): void => {
-        this.valiateUsername(username);
+        this.validateUsername(username);
         this.username = username;
         this.updateLatestActivity();
     };
