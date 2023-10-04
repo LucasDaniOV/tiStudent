@@ -122,7 +122,7 @@ test(`given: no subject, when: Resource is created, then: error is thrown`, () =
 
 test(`given: too long title, when: Resource is created, then: error is thrown`, () => {
     // given
-    const invalidTitle = 'a'.repeat(31);
+    const invalidTitle = 'a'.repeat(61);
 
     // when
     const createResource = () =>
@@ -136,7 +136,7 @@ test(`given: too long title, when: Resource is created, then: error is thrown`, 
         });
 
     // then
-    expect(createResource).toThrowError('title cannot be longer than 30 characters');
+    expect(createResource).toThrowError('title cannot be longer than 60 characters');
 });
 
 test(`given: too long description, when: Resource is created, then: error is thrown`, () => {

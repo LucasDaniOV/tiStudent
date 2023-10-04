@@ -66,7 +66,7 @@ export class Resource {
         if (!resource.description) throw new Error('description is required');
         if (!resource.category) throw new Error('category is required');
         if (!resource.subject) throw new Error('subject is required');
-        if (resource.title.length > 30) throw new Error('title cannot be longer than 30 characters');
+        if (resource.title.length > 60) throw new Error('title cannot be longer than 60 characters');
         if (resource.description.length > 500) throw new Error('description cannot be longer than 500 characters');
         if (!Object.values(Category).includes(resource.category)) throw new Error('Invalid category');
         if (!Object.values(Subject).includes(resource.subject)) throw new Error('Invalid subject');

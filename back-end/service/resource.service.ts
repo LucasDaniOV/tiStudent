@@ -26,6 +26,15 @@ const createResource = async ({
     const creator = userDb.getUserById(creatorInput.id);
     if (!creator) throw new Error(`User with id ${creatorInput.id} does not exist`);
     const resource = new Resource({ creator, createdAt, title, description, category, subject });
+
+    const existing = resourceDb.getResourceByContent(
+        resource.title,
+        resource.description,
+        resource.category,
+        resource.subject
+    );
+    if (existing) throw new Error('Resource already exists');
+
     return resourceDb.createResource(resource);
 };
 
