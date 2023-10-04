@@ -1,5 +1,5 @@
-import { Category } from "../domain/model/category";
-import { Subject } from "../domain/model/subject";
+import { Category } from '../domain/model/category';
+import { Subject } from '../domain/model/subject';
 
 type UserInput = {
     id?: number;
@@ -17,4 +17,9 @@ type ResourceInput = {
     subject?: Subject;
 };
 
-export { UserInput, ResourceInput };
+type ProfileInput = {
+    userId?: number;
+    username?: string;
+};
+
+export { UserInput, ResourceInput, ProfileInput };
