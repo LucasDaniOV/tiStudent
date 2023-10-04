@@ -7,6 +7,7 @@ import swaggerUi from 'swagger-ui-express';
 import { userRouter } from './controller/user.routes';
 import { resourceRouter } from './controller/resource.routes';
 import { version } from './package.json';
+import { profileRouter } from './controller/profile.routes';
 
 const app = express();
 dotenv.config();
@@ -21,6 +22,7 @@ app.get('/status', (req, res) => {
 
 app.use('/users', userRouter);
 app.use('/resources', resourceRouter);
+app.use('/profiles', profileRouter);
 
 const swaggerOpts = {
     definition: {
