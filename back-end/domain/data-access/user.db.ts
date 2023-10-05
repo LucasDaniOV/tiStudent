@@ -14,10 +14,15 @@ const getUserById = (id: number): User => {
     return user;
 };
 
+const getUserByEmail = (email: string): User => {
+    const user: User = users.find((u) => u.email == email);
+    return user;
+};
+
 const createUser = ({ email, password }: User): User => {
     const newUser = new User({ email, password });
     users.push(newUser);
     return newUser;
 };
 
-export default { getAllUsers, getUserById, createUser };
+export default { getAllUsers, getUserById, getUserByEmail, createUser };

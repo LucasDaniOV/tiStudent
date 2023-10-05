@@ -3,8 +3,12 @@ import { User } from '../domain/model/user';
 import { UserInput } from '../types';
 
 const createUser = ({ email, password }: UserInput): User => {
-    const u: User = new User({ email, password });
-    return userDb.createUser(u);
+    const existing = userDb.getUserByEmail(email);
+    if (existing) throw new Error(`User with email ${email} already exists`);
+    else {
+        const u: User = new User({ email, password });
+        return userDb.createUser(u);
+    }
 };
 
 // const getAllUsers = async () : Promise<User[]> => userDb.getAllUsers()  -> pas gebruiken wanneer we met database werken
