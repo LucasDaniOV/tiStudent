@@ -1,6 +1,7 @@
 import { User } from './user';
 import { Category } from './category';
 import { Subject } from './subject';
+import { ProfileInput } from '../../types';
 
 export class Resource {
     readonly id?: number;
@@ -10,6 +11,7 @@ export class Resource {
     readonly description: string;
     readonly category: Category;
     readonly subject: Subject;
+    private upvoters: ProfileInput[];
 
     constructor(resource: {
         id?: number;
@@ -29,6 +31,7 @@ export class Resource {
         this.description = resource.description;
         this.category = resource.category;
         this.subject = resource.subject;
+        this.upvoters = [];
     }
 
     equals(otherResource: {
@@ -71,4 +74,14 @@ export class Resource {
         if (!Object.values(Category).includes(resource.category)) throw new Error('Invalid category');
         if (!Object.values(Subject).includes(resource.subject)) throw new Error('Invalid subject');
     }
+
+    getLikes = (): number => {
+        return this.upvoters.length;
+    };
+
+    addUpvoter = (profile: ProfileInput): void => {
+        if (!this.upvoters.includes(profile)) {
+            this.upvoters.push(profile);
+        }
+    };
 }

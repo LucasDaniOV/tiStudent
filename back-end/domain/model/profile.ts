@@ -1,3 +1,4 @@
+import { Resource } from './resource';
 import { User } from './user';
 
 export class Profile {
@@ -8,6 +9,7 @@ export class Profile {
     private latestActivity: Date;
     private username: string;
     private bio?: string;
+    private likedResources?: Resource[]; // creates a circular JSON problem
 
     constructor(profile: { id?: number; user: User; username: string; bio?: string }) {
         this.validate(profile);
@@ -20,6 +22,7 @@ export class Profile {
         this.latestActivity = now;
         this.username = profile.username;
         this.bio = profile.bio;
+        this.likedResources = [];
     }
 
     equals(otherProfile: { user: User; username: string; bio?: string }): boolean {
@@ -62,5 +65,15 @@ export class Profile {
         this.validateBio(bio);
         this.bio = bio;
         this.updateLatestActivity();
+    };
+
+    getLikedResources = (): Resource[] => {
+        return this.likedResources;
+    };
+
+    likeResource = (resource: Resource): void => {
+        if (!this.likedResources.includes(resource)){
+            this.likedResources.push(resource);
+        }
     };
 }

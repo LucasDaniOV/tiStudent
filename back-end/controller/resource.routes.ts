@@ -164,4 +164,38 @@ resourceRouter.post('/', async (req: Request, res: Response) => {
     }
 });
 
+/**
+ * @swagger
+ * /resources/{id}/likes:
+ *   get:
+ *     tags:
+ *       - resources
+ *     summary: get amount of likes of a resource
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         schema:
+ *           type: number
+ *           format: int64
+ *           required: true
+ *           description: The resource id
+ *     responses:
+ *       200:
+ *         description: The amount of likes a resource has
+ *         content:
+ *           text/plain:
+ *             schema:
+ *               type: number
+ *               example: 12
+ */
+resourceRouter.get('/:id/likes', async (req: Request, res: Response) => {
+    try {
+        const resourceId = parseInt(req.params.id);
+        const resource = await resourceService.getResourceById(resourceId);
+        res.status(200).json(resource.getLikes());
+    } catch (error) {
+        res.status(400).json({ status: 'error', errorMessage: error.message });
+    }
+});
+
 export { resourceRouter };

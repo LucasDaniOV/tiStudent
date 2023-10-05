@@ -35,6 +35,42 @@
  *         username:
  *           type: string
  *           example: 'johndoe'
+ *     Resource:
+ *       type: object
+ *       properties:
+ *         id:
+ *           type: number
+ *           format: int64
+ *           example: 0
+ *         creator:
+ *           type: object
+ *           properties:
+ *             id:
+ *               type: number
+ *               format: int64
+ *               example: 1
+ *             email:
+ *               type: string
+ *               example: firstname.lastname@ucll.be
+ *             password:
+ *               type: string
+ *               example: password
+ *         createdAt:
+ *           type: string
+ *           format: date-time
+ *           example: 2023-10-03T19:27:40.812Z
+ *         title:
+ *           type: string
+ *           example: Programming 1 Cheat Sheet
+ *         description:
+ *           type: string
+ *           example: Includes all the important concepts from Programming 1
+ *         category:
+ *           type: string
+ *           example: Cheat Sheet
+ *         subject:
+ *           type: string
+ *           example: Programming 1
  */
 import express, { Request, Response } from 'express';
 import profileService from '../service/profile.service';
@@ -57,7 +93,7 @@ const profileRouter = express.Router();
  *             schema:
  *               type: array
  *               items:
- *                 $ref: '#/components/schemas/Profile' 
+ *                 $ref: '#/components/schemas/Profile'
  */
 profileRouter.get('/', (req: Request, res: Response) => {
     try {
@@ -128,6 +164,86 @@ profileRouter.post('/', (req: Request, res: Response) => {
         const profileInput = req.body as ProfileInput;
         const profile = profileService.createProfile(profileInput);
         res.status(200).json(profile);
+    } catch (error) {
+        res.status(400).json({ status: 'error', errorMessage: error.message });
+    }
+});
+
+/**
+ * @swagger
+ * /profiles/like/{profileId}/{resourceId}:
+ *   post:
+ *     tags:
+ *       - profiles
+ *     summary: Like a Resource
+ *     parameters:
+ *       - name: profileId
+ *         in: path
+ *         required: true
+ *         description: The ID of the Profile.
+ *         schema:
+ *           type: number
+ *           example: 0
+ *       - name: resourceId
+ *         in: path
+ *         required: true
+ *         description: The ID of the Resource.
+ *         schema:
+ *           type: number
+ *           example: 0
+ *     responses:
+ *       200:
+ *         description: The liked Resource
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/Resource'
+ */
+
+profileRouter.post('/like/:profileId/:resourceId', async (req: Request, res: Response) => {
+    try {
+        const profileId = parseInt(req.params.profileId);
+        const resourceId = parseInt(req.params.resourceId);
+        const resource = await profileService.likeResource({ profileId, resourceId });
+        res.status(200).json(resource);
+    } catch (error) {
+        res.status(400).json({ status: 'error', errorMessage: error.message });
+    }
+});
+
+/**
+ * @swagger
+ * /profiles/{profileId}/likedPosts:
+ *   get:
+ *     tags:
+ *       - profiles
+ *     summary: give an overview of a Profiles' liked Resources
+ *     parameters:
+ *       - name: profileId
+ *         in: path
+ *         required: true
+ *         description: The ID of the Profile.
+ *         schema:
+ *           type: number
+ *           example: 0
+ *
+ *     responses:
+ *       200:
+ *         description: The liked Resources of the Profile
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: array
+ *               items:
+ *                 $ref: '#/components/schemas/Resource'
+ */
+
+profileRouter.get('/:id/likedPosts', (req: Request, res: Response) => {
+    try {
+        const profileId = parseInt(req.params.id);
+        const profile = profileService.getProfileById(profileId);
+        const resources = profile.getLikedResources();
+        res.status(200).json(resources);
     } catch (error) {
         res.status(400).json({ status: 'error', errorMessage: error.message });
     }
