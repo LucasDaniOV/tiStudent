@@ -2,7 +2,7 @@ import { User } from '../model/user';
 
 let currentId = 1;
 
-const users: User[] = [
+let users: User[] = [
     new User({ id: currentId++, email: 'test1@ucll.be', password: 'Password!123' }),
     new User({ id: currentId++, email: 'test2@ucll.be', password: 'p@ssworD99' }),
 ];
@@ -19,10 +19,24 @@ const getUserByEmail = (email: string): User => {
     return user;
 };
 
-const createUser = ({ email, password }: User): User => {
-    const newUser = new User({ email, password });
+const createUser = ({ id, email, password }: User): User => {
+    const newUser = new User({ id, email, password });
     users.push(newUser);
     return newUser;
 };
 
-export default { getAllUsers, getUserById, getUserByEmail, createUser };
+const deleteUser = (userId: number): Boolean => {
+    const user = getUserById(userId);
+    if (!user) return false;
+    users = users.filter((u) => user.id != u.id);
+    return true;
+};
+
+const updateUserField = (userId: number, field: 'email' | 'password', value: string): User => {
+    const user = getUserById(userId);
+    user.update(field, value);
+    deleteUser(userId);
+    return createUser(user);
+};
+
+export default { getAllUsers, getUserById, getUserByEmail, createUser, deleteUser, updateUserField };
