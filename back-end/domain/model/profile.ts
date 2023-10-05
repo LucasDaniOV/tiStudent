@@ -9,7 +9,7 @@ export class Profile {
     private latestActivity: Date;
     private username: string;
     private bio?: string;
-    private likedResources?: Resource[]; // creates a circular JSON problem
+    private likedResources?: Resource[];
 
     constructor(profile: { id?: number; user: User; username: string; bio?: string }) {
         this.validate(profile);
@@ -72,8 +72,10 @@ export class Profile {
     };
 
     likeResource = (resource: Resource): void => {
-        if (!this.likedResources.includes(resource)){
+        if (!this.likedResources.includes(resource)) {
             this.likedResources.push(resource);
+        } else {
+            throw new Error(`Profile already likes Resource with id ${resource.id}`);
         }
     };
 }

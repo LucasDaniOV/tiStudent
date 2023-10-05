@@ -80,8 +80,11 @@ export class Resource {
     };
 
     addUpvoter = (profile: ProfileInput): void => {
+        //currently using profile input because otherwise generates infinite reference loop
         if (!this.upvoters.includes(profile)) {
             this.upvoters.push(profile);
+        } else {
+            throw new Error(`Resource already has upvoter with id ${profile.userId}`);
         }
     };
 }
