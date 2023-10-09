@@ -23,26 +23,26 @@
  *               example: 1
  *             email:
  *               type: string
- *               example: firstname.lastname@ucll.be
+ *               example: "firstname.lastname@ucll.be"
  *             password:
  *               type: string
- *               example: password
+ *               example: "password"
  *         createdAt:
  *           type: string
  *           format: date-time
- *           example: 2023-10-03T19:27:40.812Z
+ *           example: "2023-10-03T19:27:40.812Z"
  *         title:
  *           type: string
- *           example: Programming 1 Cheat Sheet
+ *           example: "Programming 1 Cheat Sheet"
  *         description:
  *           type: string
- *           example: Includes all the important concepts from Programming 1
+ *           example: "Includes all the important concepts from Programming 1"
  *         category:
  *           type: string
- *           example: Cheat Sheet
+ *           example: "Cheat Sheet"
  *         subject:
  *           type: string
- *           example: Programming 1
+ *           example: "Programming 1"
  */
 import express, { Request, Response } from 'express';
 import resourceService from '../service/resource.service';
@@ -133,19 +133,19 @@ resourceRouter.get('/:id', async (req: Request, res: Response) => {
  *               createdAt:
  *                 type: string
  *                 format: date-time
- *                 example: 2023-10-03T19:27:40.812Z
+ *                 example: "2023-10-03T19:27:40.812Z"
  *               title:
  *                 type: string
- *                 example: Programming 1 Cheat Sheet
+ *                 example: "Programming 1 Cheat Sheet"
  *               description:
  *                 type: string
- *                 example: Includes all the important concepts from Programming 1
+ *                 example: "Includes all the important concepts from Programming 1"
  *               category:
  *                 type: string
- *                 example: Cheat Sheet
+ *                 example: "Cheat Sheet"
  *               subject:
  *                 type: string
- *                 example: Programming 1
+ *                 example: "Programming 1"
  *     responses:
  *       200:
  *         description: The created resource object
@@ -166,33 +166,127 @@ resourceRouter.post('/', async (req: Request, res: Response) => {
 
 /**
  * @swagger
- * /resources/{id}/likes:
+ * /resources/{resourceId}/{field}:
  *   get:
  *     tags:
  *       - resources
- *     summary: get amount of likes of a resource
+ *     summary: get the value of a Resource's field
  *     parameters:
- *       - in: path
- *         name: id
+ *       - name: resourceId
+ *         in: path
+ *         required: true
+ *         description: The ID of the Resource.
  *         schema:
  *           type: number
- *           format: int64
- *           required: true
- *           description: The resource id
+ *           example: 0
+ *       - name: field
+ *         in: path
+ *         required: true
+ *         description: The field you want to view the value of
+ *         schema:
+ *           type: string
+ *           example: "title"
+ *
  *     responses:
  *       200:
- *         description: The amount of likes a resource has
+ *         description: The value of the Resource's field
  *         content:
  *           text/plain:
  *             schema:
- *               type: number
- *               example: 12
+ *               type: string
+ *               example: "Programming 1 Cheat Sheet"
  */
-resourceRouter.get('/:id/likes', async (req: Request, res: Response) => {
+resourceRouter.get('/:id/:field', async (req: Request, res: Response) => {
     try {
         const resourceId = parseInt(req.params.id);
         const resource = await resourceService.getResourceById(resourceId);
-        res.status(200).json(resource.getLikes());
+        const field = String(req.params.field);
+        res.status(200).json(resourceService.getField(resource, field));
+    } catch (error) {
+        res.status(400).json({ status: 'error', errorMessage: error.message });
+    }
+});
+
+/**
+ * @swagger
+ * /resources/{resourceId}/{field}:
+ *   put:
+ *     tags:
+ *       - resources
+ *     summary: update the value of a Resource's field
+ *     parameters:
+ *       - name: resourceId
+ *         in: path
+ *         required: true
+ *         description: The ID of the Resource.
+ *         schema:
+ *           type: number
+ *           example: 0
+ *       - name: field
+ *         in: path
+ *         required: true
+ *         description: The field you want to update
+ *         schema:
+ *           type: string
+ *           example: "title"
+ *       - name: newValue
+ *         in: query
+ *         required: true
+ *         description: The value you want to update the field with
+ *         schema:
+ *           type: string
+ *           example: "Programming 2 Cheat Sheet"
+ *
+ *     responses:
+ *       200:
+ *         description: The value of the Resource's field
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/Resource'
+ */
+resourceRouter.put('/:id/:field', async (req: Request, res: Response) => {
+    try {
+        const resourceId = parseInt(req.params.id);
+        const resource = await resourceService.getResourceById(resourceId);
+        const field = String(req.params.field);
+        const newValue = String(req.query.newValue);
+        res.status(200).json(resourceService.updateField(resource, field, newValue));
+    } catch (error) {
+        res.status(400).json({ status: 'error', errorMessage: error.message });
+    }
+});
+
+/**
+ * @swagger
+ * /resources/{resourceId}/delete:
+ *   delete:
+ *     tags:
+ *       - resources
+ *     summary: Delete a Resource
+ *     parameters:
+ *       - name: resourceId
+ *         in: path
+ *         required: true
+ *         description: The ID of the Resource.
+ *         schema:
+ *           type: number
+ *           example: 0
+ *
+ *     responses:
+ *       200:
+ *         description: A boolean saying whether or not the Resource was deleted
+ *         content:
+ *           text/plain:
+ *             schema:
+ *               type: string
+ *               example: true
+ */
+resourceRouter.delete('/:id/delete', async (req: Request, res: Response) => {
+    try {
+        const resourceId = parseInt(req.params.id);
+        const resource = await resourceService.getResourceById(resourceId);
+        res.status(200).json(resourceService.deleteResource(resource));
     } catch (error) {
         res.status(400).json({ status: 'error', errorMessage: error.message });
     }

@@ -1,7 +1,11 @@
+import profileDb from '../domain/data-access/profile.db';
 import resourceDb from '../domain/data-access/resource.db';
 import userDb from '../domain/data-access/user.db';
+import { Category } from '../domain/model/category';
 import { Resource } from '../domain/model/resource';
-import { ResourceInput } from '../types';
+import { Subject } from '../domain/model/subject';
+import { User } from '../domain/model/user';
+import { ProfileInput, ResourceInput } from '../types';
 
 // get all resources
 const getAllResources = async (): Promise<Resource[]> => resourceDb.getAllResources();
@@ -38,4 +42,64 @@ const createResource = async ({
     return resourceDb.createResource(resource);
 };
 
-export default { getAllResources, getResourceById, createResource };
+const updateField = (
+    resource: Resource,
+    field: string,
+    newValue: string | Category | Subject
+): Resource | ProfileInput[] => {
+    switch (field) {
+        case 'creator':
+            const userId = parseInt(newValue as string);
+            const user = userDb.getUserById(userId);
+            return resource.updateCreator(user);
+        case 'title':
+            return resource.updateTitle(newValue as string);
+
+        case 'description':
+            return resource.updateDescription(newValue as string);
+
+        case 'category':
+            return resource.updateCategory(newValue as Category);
+
+        case 'subject':
+            return resource.updateSubject(newValue as Subject);
+
+        case 'upvoters':
+            const profileId = parseInt(newValue as string);
+            const profile = profileDb.getProfileById(profileId);
+            const profileInput = { userId: profile.user.id, username: profile.username };
+            return resource.removeUpvoter(profileInput);
+        default:
+            throw new Error('Unsupported field');
+    }
+};
+const getField = (resource: Resource, field: string): string => {
+    switch (field) {
+        case 'likes':
+            return String(resource.likes);
+        case 'creator':
+            return JSON.stringify(resource.creator);
+        case 'title':
+            return resource.title;
+
+        case 'description':
+            return resource.description;
+
+        case 'category':
+            return resource.category;
+
+        case 'subject':
+            return resource.subject;
+
+        case 'upvoters':
+            return JSON.stringify(resource.upvoters);
+        default:
+            throw new Error('Unsupported field');
+    }
+};
+
+const deleteResource = (resource: Resource) => {
+    return resourceDb.deleteResource(resource);
+};
+
+export default { getAllResources, getResourceById, createResource, getField, updateField, deleteResource };

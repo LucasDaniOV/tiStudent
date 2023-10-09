@@ -1,4 +1,3 @@
-import { ProfileInput } from '../../types';
 import { Profile } from '../model/profile';
 import { User } from '../model/user';
 

@@ -2,7 +2,7 @@ import { Resource } from '../model/resource';
 
 let currentId = 0;
 
-const resources: Resource[] = [];
+let resources: Resource[] = [];
 
 const getAllResources = (): Resource[] => resources;
 
@@ -32,4 +32,9 @@ const getResourceByContent = (title: string, description: string, category: stri
     );
 };
 
-export default { getAllResources, getResourceById, createResource, getResourceByContent };
+const deleteResource = (resource: Resource): Boolean => {
+    resources = resources.filter((r) => r.id != resource.id);
+    return true;
+};
+
+export default { getAllResources, getResourceById, createResource, getResourceByContent, deleteResource };

@@ -46,4 +46,5 @@ export class User {
     public get password(): string {
         return this._password;
     }
+
 }
