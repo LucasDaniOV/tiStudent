@@ -20,7 +20,7 @@ const createProfile = ({ userId, username }: ProfileInput): Profile => {
     const profile = new Profile({ user, username });
     if (profileDb.getProfileByUsername(username)) throw new Error(`Username already exists`);
 
-    return profileDb.createProfile(profile.user, profile.getUsername());
+    return profileDb.createProfile(profile.user, profile.username);
 };
 
 const likeResource = async ({ profileId, resourceId }): Promise<Resource> => {
@@ -29,15 +29,15 @@ const likeResource = async ({ profileId, resourceId }): Promise<Resource> => {
     const resource = await resourceService.getResourceById(resourceId);
     if (!resource) throw new Error(`Resource with id ${resourceId} does not exist`);
     profile.likeResource(resource);
-    resource.addUpvoter({ userId: profile.id, username: profile.getUsername() });
+    resource.addUpvoter({ userId: profile.id, username: profile.username });
     return resource;
 };
 
 const getProfileField = (profile: Profile, field: 'username' | 'bio' | 'latestActivity' | 'likedResources') => {
-    if (field == 'username') return profile.getUsername();
-    else if (field == 'bio') return profile.getBio();
-    else if (field == 'latestActivity') return profile.getLatestActivity();
-    else return profile.getLikedResources();
+    if (field == 'username') return profile.username;
+    else if (field == 'bio') return profile.bio;
+    else if (field == 'latestActivity') return profile.latestActivity;
+    else return profile.likedResources;
 };
 
 const updateField = async (

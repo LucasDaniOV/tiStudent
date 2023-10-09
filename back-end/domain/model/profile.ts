@@ -50,10 +50,21 @@ export class Profile {
         if (profile.bio) this.validateBio(profile.bio);
     }
 
-    getUsername = (): string => this._username;
-    getBio = (): string | undefined => this._bio;
-    getLatestActivity = (): Date => this._latestActivity;
-    getLikedResources = (): Resource[] => this._likedResources;
+    public get username(): string {
+        return this._username;
+    }
+
+    public get bio(): string | undefined {
+        return this._bio;
+    }
+
+    public get latestActivity(): Date {
+        return this._latestActivity;
+    }
+
+    public get likedResources(): Resource[] {
+        return this._likedResources;
+    }
 
     updateLatestActivity = (): Profile => {
         this._latestActivity = new Date(); // is in foute timezone

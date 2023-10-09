@@ -12,8 +12,7 @@ const getProfileById = (id: number): Profile => profiles.find((profile) => profi
 
 const getProfileByUserId = (userId: number): Profile => profiles.find((profile) => profile.user.id === userId);
 
-const getProfileByUsername = (username: string): Profile =>
-    profiles.find((profile) => profile.getUsername() === username);
+const getProfileByUsername = (username: string): Profile => profiles.find((profile) => profile.username === username);
 
 const createProfile = (user: User, username: string): Profile => {
     const profile = new Profile({
