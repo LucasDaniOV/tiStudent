@@ -33,9 +33,37 @@ const likeResource = async ({ profileId, resourceId }): Promise<Resource> => {
     return resource;
 };
 
-const getLikedResources = (profileId: number): Resource[] => {
-    const profile = profileDb.getProfileById(profileId);
-    return profile.getLikedResources();
+const getProfileField = (profile: Profile, field: 'username' | 'bio' | 'latestActivity' | 'likedResources') => {
+    if (field == 'username') return profile.getUsername();
+    else if (field == 'bio') return profile.getBio();
+    else if (field == 'latestActivity') return profile.getLatestActivity();
+    else return profile.getLikedResources();
 };
 
-export default { getAllProfiles, getProfileById, createProfile, likeResource, getLikedResources };
+const updateField = async (
+    profile: Profile,
+    field: 'username' | 'bio' | 'likedResources',
+    newValue: string
+): Promise<Profile> => {
+    if (field == 'username') return profile.updateUsername(newValue);
+    else if (field == 'bio') return profile.updateBio(newValue);
+    else {
+        const resourceId = parseInt(newValue);
+        const resource = await resourceService.getResourceById(resourceId);
+        return profile.unLikeResource(resource);
+    }
+};
+
+const deleteProfile = (profile: Profile): Boolean => {
+    return profileDb.deleteProfile(profile);
+};
+
+export default {
+    getAllProfiles,
+    getProfileById,
+    createProfile,
+    likeResource,
+    getProfileField,
+    updateField,
+    deleteProfile,
+};

@@ -4,7 +4,7 @@ import { User } from '../model/user';
 
 let currentId = 0;
 
-const profiles: Profile[] = [];
+let profiles: Profile[] = [];
 
 const getAllProfiles = (): Profile[] => profiles;
 
@@ -12,16 +12,29 @@ const getProfileById = (id: number): Profile => profiles.find((profile) => profi
 
 const getProfileByUserId = (userId: number): Profile => profiles.find((profile) => profile.user.id === userId);
 
-const getProfileByUsername = (username: string): Profile => profiles.find((profile) => profile.getUsername() === username);
+const getProfileByUsername = (username: string): Profile =>
+    profiles.find((profile) => profile.getUsername() === username);
 
 const createProfile = (user: User, username: string): Profile => {
     const profile = new Profile({
         id: currentId++,
         user,
-        username
+        username,
     });
     profiles.push(profile);
     return profile;
 };
 
-export default { getAllProfiles, getProfileById, createProfile, getProfileByUserId, getProfileByUsername };
+const deleteProfile = (profile: Profile): Boolean => {
+    profiles = profiles.filter((p) => p.id != profile.id);
+    return true;
+};
+
+export default {
+    getAllProfiles,
+    getProfileById,
+    createProfile,
+    getProfileByUserId,
+    getProfileByUsername,
+    deleteProfile,
+};

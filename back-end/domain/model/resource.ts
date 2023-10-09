@@ -11,7 +11,7 @@ export class Resource {
     readonly description: string;
     readonly category: Category;
     readonly subject: Subject;
-    private upvoters: ProfileInput[];
+    private upvoters: ProfileInput[]; // profileInput ipv profile anders infinite reference loop
 
     constructor(resource: {
         id?: number;

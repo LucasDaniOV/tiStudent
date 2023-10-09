@@ -8,10 +8,10 @@
  *           id:
  *             type: number
  *             format: int64
- *           email:
+ *           _email:
  *             type: string
  *             format: email
- *           password:
+ *           _password:
  *             type: string
  *             format: password
  *             example: Str0ngPW!!!

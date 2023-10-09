@@ -25,18 +25,21 @@ const createUser = ({ id, email, password }: User): User => {
     return newUser;
 };
 
-const deleteUser = (userId: number): Boolean => {
-    const user = getUserById(userId);
-    if (!user) return false;
+const deleteUser = (user: User): void => {
+    if (!users.includes(user)) throw new Error(`User does not exist`)
     users = users.filter((u) => user.id != u.id);
-    return true;
 };
 
-const updateUserField = (userId: number, field: 'email' | 'password', value: string): User => {
-    const user = getUserById(userId);
-    user.update(field, value);
-    deleteUser(userId);
-    return createUser(user);
+const updateUserField = (user: User, field: 'email' | 'password', value: string): User => {
+    const updatedUser = new User({
+        id: user.id,
+        email: user.email,
+        password: user.password,
+    });
+    updatedUser.update(field, value);
+    deleteUser(user);
+    createUser(updatedUser);
+    return updatedUser;
 };
 
 export default { getAllUsers, getUserById, getUserByEmail, createUser, deleteUser, updateUserField };

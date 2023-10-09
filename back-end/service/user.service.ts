@@ -21,20 +21,18 @@ const getUserById = (id: number): User => {
 };
 
 const removeUser = (id: number): Boolean => {
-    if (userDb.getUserById(id)) {
-        return userDb.deleteUser(id);
-    } else {
-        throw new Error(`No User with id ${id} found`);
-    }
+    const user = getUserById(id);
+    userDb.deleteUser(user);
+    return true;
 };
 
 const updateUser = (updatedUser: UserInput): User => {
     const originalUser = getUserById(updatedUser.id);
     if (originalUser.email != updatedUser.email) {
-        userDb.updateUserField(originalUser.id, 'email', updatedUser.email);
+        userDb.updateUserField(originalUser, 'email', updatedUser.email);
     }
     if (originalUser.password != updatedUser.password) {
-        userDb.updateUserField(originalUser.id, 'password', updatedUser.password);
+        userDb.updateUserField(originalUser, 'password', updatedUser.password);
     }
     return getUserById(updatedUser.id);
 };
