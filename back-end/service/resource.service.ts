@@ -48,36 +48,26 @@ const updateField = (
     newValue: string | Category | Subject
 ): Resource | ProfileInput[] => {
     switch (field) {
-        case 'creator':
-            const userId = parseInt(newValue as string);
-            const user = userDb.getUserById(userId);
-            if (!user) throw new Error(`User with id ${userId} does not exist`);
-            return resource.updateCreator(user);
         case 'title':
-            return resource.updateTitle(newValue as string);
-
+            resource.title = newValue as string;
+            break;
         case 'description':
-            return resource.updateDescription(newValue as string);
-
+            resource.description = newValue as string;
+            break;
         case 'category':
-            return resource.updateCategory(newValue as Category);
-
+            resource.category = newValue as Category;
+            break;
         case 'subject':
-            return resource.updateSubject(newValue as Subject);
-
-        case 'upvoters':
-            const profileId = parseInt(newValue as string);
-            const profile = profileDb.getProfileById(profileId);
-            const profileInput = { userId: profile.user.id, username: profile.username };
-            return resource.removeUpvoter(profileInput);
+            resource.subject = newValue as Subject;
+            break;
         default:
             throw new Error('Unsupported field');
     }
+    return resource;
 };
+
 const getField = (resource: Resource, field: string): string => {
     switch (field) {
-        case 'likes':
-            return String(resource.likes);
         case 'creator':
             return JSON.stringify(resource.creator);
         case 'title':
@@ -91,9 +81,6 @@ const getField = (resource: Resource, field: string): string => {
 
         case 'subject':
             return resource.subject;
-
-        case 'upvoters':
-            return JSON.stringify(resource.upvoters);
         default:
             throw new Error('Unsupported field');
     }
