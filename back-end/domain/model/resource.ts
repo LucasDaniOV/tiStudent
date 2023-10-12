@@ -64,7 +64,7 @@ export class Resource {
         subject: Subject;
     }): void {
         this.validateCreator(resource.creator);
-        if (!resource.createdAt) throw new Error('CreatedAt is required');
+        if (!resource.createdAt) throw new Error('createdAt is required');
         this.validateTitle(resource.title);
         this.validateDescription(resource.description);
         this.validateCategory(resource.category);
@@ -72,27 +72,27 @@ export class Resource {
     }
 
     validateCreator = (creator: User) => {
-        if (!creator) throw new Error('Creator User is required');
+        if (!creator) throw new Error('creator User is required');
     };
 
     validateTitle = (title: string) => {
-        if (!title) throw new Error('Title is required');
-        if (title.length > 60) throw new Error('Title cannot be longer than 60 characters');
+        if (!title) throw new Error('title is required');
+        if (title.length > 60) throw new Error('title cannot be longer than 60 characters');
     };
 
     validateDescription = (description: string) => {
-        if (!description) throw new Error('Description is required');
-        if (description.length > 500) throw new Error('Description cannot be longer than 500 characters');
+        if (!description) throw new Error('description is required');
+        if (description.length > 500) throw new Error('description cannot be longer than 500 characters');
     };
 
     validateCategory = (category: Category) => {
-        if (!category) throw new Error('Category is required');
-        if (!Object.values(Category).includes(category)) throw new Error('Invalid Category');
+        if (!category) throw new Error('category is required');
+        if (!Object.values(Category).includes(category)) throw new Error('Invalid category');
     };
 
     validateSubject = (subject: Subject) => {
-        if (!subject) throw new Error('Subject is required');
-        if (!Object.values(Subject).includes(subject)) throw new Error('Invalid Subject');
+        if (!subject) throw new Error('subject is required');
+        if (!Object.values(Subject).includes(subject)) throw new Error('Invalid subject');
     };
 
     public get likes(): number {
