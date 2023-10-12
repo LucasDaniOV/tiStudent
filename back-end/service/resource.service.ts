@@ -51,6 +51,7 @@ const updateField = (
         case 'creator':
             const userId = parseInt(newValue as string);
             const user = userDb.getUserById(userId);
+            if (!user) throw new Error(`User with id ${userId} does not exist`);
             return resource.updateCreator(user);
         case 'title':
             return resource.updateTitle(newValue as string);
