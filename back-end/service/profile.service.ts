@@ -23,15 +23,15 @@ const createProfile = ({ userId, username }: ProfileInput): Profile => {
     return profileDb.createProfile(profile.user, profile.username);
 };
 
-const likeResource = async ({ profileId, resourceId }): Promise<Resource> => {
-    const profile = getProfileById(profileId);
-    if (!profile) throw new Error(`Profile with id ${profileId} does not exist`);
-    const resource = await resourceService.getResourceById(resourceId);
-    if (!resource) throw new Error(`Resource with id ${resourceId} does not exist`);
-    profile.likeResource(resource);
-    resource.addUpvoter({ userId: profile.id, username: profile.username });
-    return resource;
-};
+// const likeResource = async ({ profileId, resourceId }): Promise<Resource> => {
+//     const profile = getProfileById(profileId);
+//     if (!profile) throw new Error(`Profile with id ${profileId} does not exist`);
+//     const resource = await resourceService.getResourceById(resourceId);
+//     if (!resource) throw new Error(`Resource with id ${resourceId} does not exist`);
+//     profile.likeResource(resource);
+//     resource.addUpvoter({ userId: profile.id, username: profile.username });
+//     return resource;
+// };
 
 const getProfileField = (profile: Profile, field: 'username' | 'bio' | 'latestActivity' | 'likedResources') => {
     if (field == 'username') return profile.username;
@@ -62,7 +62,7 @@ export default {
     getAllProfiles,
     getProfileById,
     createProfile,
-    likeResource,
+    // likeResource,
     getProfileField,
     updateField,
     deleteProfile,
