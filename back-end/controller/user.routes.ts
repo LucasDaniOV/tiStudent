@@ -20,6 +20,7 @@
 import express, { Request, Response } from 'express';
 import userService from '../service/user.service';
 import { User } from '../domain/model/user';
+import { UserInput } from '../types';
 
 const userRouter = express.Router();
 
@@ -47,8 +48,9 @@ const userRouter = express.Router();
 
 userRouter.post('/', (req: Request, res: Response) => {
     try {
-        const user = <User>req.body;
-        res.status(200).json(userService.createUser(user));
+        const userInput = req.body as UserInput;
+        const user = userService.createUser(userInput);
+        res.status(200).json(user);
     } catch (error) {
         res.status(400).json({ status: 'error', errorMessage: error.message });
     }
@@ -81,7 +83,8 @@ userRouter.post('/', (req: Request, res: Response) => {
 userRouter.get('/:id', (req: Request, res: Response) => {
     try {
         const userId = parseInt(req.params.id);
-        res.status(200).json(userService.getUserById(userId));
+        const user = userService.getUserById(userId);
+        res.status(200).json(user);
     } catch (error) {
         res.status(400).json({ status: 'error', errorMessage: error.message });
     }
@@ -132,11 +135,14 @@ userRouter.get('/', (req: Request, res: Response) => {
  *             schema:
  *               $ref: '#/components/schemas/User'
  */
-
-userRouter.put('/', (req: Request, res: Response) => {
+userRouter.put('/:id/:field', (req: Request, res: Response) => {
     try {
-        const user = <User>req.body;
-        res.status(200).json(userService.updateUser(user));
+        if (!req.query.hasOwnProperty('newValue')) throw new Error("query parameter 'newValue' is missing");
+        const userId = parseInt(req.params.id);
+        const field = req.params.field;
+        const newValue = req.query.newValue as string;
+        const user = userService.updateUser(userId, field, newValue);
+        res.status(200).json(user);
     } catch (error) {
         res.status(400).json({ status: 'error', errorMessage: error.message });
     }
