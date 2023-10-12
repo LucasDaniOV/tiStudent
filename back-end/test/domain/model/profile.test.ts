@@ -57,7 +57,7 @@ test(`given: valid values for Profile, when: Profile is created, then: latestAct
     const profile = new Profile({ user, username, bio });
 
     // then
-    expect(new Date().getTime() - profile.getLatestActivity().getTime()).toBeLessThan(1000);
+    expect(new Date().getTime() - profile.latestActivity.getTime()).toBeLessThan(1000);
 });
 
 test(`given: valid values for Profile, when: Profile is created, then: latestActivity equals createdAt`, () => {
@@ -65,7 +65,7 @@ test(`given: valid values for Profile, when: Profile is created, then: latestAct
     const profile = new Profile({ user, username, bio });
 
     // then
-    expect(profile.getLatestActivity()).toEqual(profile.createdAt);
+    expect(profile.latestActivity).toEqual(profile.createdAt);
 });
 
 test(`given: no bio, when: Profile is created, then: bio is undefined`, () => {
@@ -73,7 +73,7 @@ test(`given: no bio, when: Profile is created, then: bio is undefined`, () => {
     const profile = new Profile({ user, username });
 
     // then
-    expect(profile.getBio()).toBeUndefined();
+    expect(profile.bio).toBeUndefined();
 });
 
 test(`given: too long bio, when: Profile is created, then: error is thrown`, () => {
@@ -92,11 +92,11 @@ test(`given: existing profile, when: getLatestActivity is called, then: latestAc
     const profile = new Profile({ user, username, bio });
 
     // when
-    const sut = profile.getLatestActivity();
+    const sut = profile.latestActivity;
 
     // then
     expect(sut instanceof Date).toBeTruthy();
-    expect(sut).toEqual(profile.getLatestActivity());
+    expect(sut).toEqual(profile.latestActivity);
 });
 
 test(`given: existing profile, when: getUsername is called, then: username is returned`, () => {
@@ -105,7 +105,7 @@ test(`given: existing profile, when: getUsername is called, then: username is re
     const profile = new Profile({ user, username: un, bio });
 
     // when
-    const sut = profile.getUsername();
+    const sut = profile.username;
 
     // then
     expect(sut).toEqual(un);
@@ -119,7 +119,7 @@ test(`given: existing profile, when: getBio is called, then: bio is returned`, (
     const sut = new Profile({ user, username, bio: b });
 
     // then
-    expect(sut.getBio()).toEqual(b);
+    expect(sut.bio).toEqual(b);
 });
 
 test(`given: existing profile, when: equals is called with same profile, then: true is returned`, () => {
@@ -128,7 +128,7 @@ test(`given: existing profile, when: equals is called with same profile, then: t
     const profile2 = new Profile({ user, username, bio });
 
     // when
-    const sut = profile.equals({ user: profile2.user, username: profile2.getUsername(), bio: profile2.getBio() });
+    const sut = profile.equals({ user: profile2.user, username: profile2.username, bio: profile2.bio });
 
     // then
     expect(sut).toBeTruthy();
@@ -140,7 +140,7 @@ test(`given: existing profile, when: equals is called with different profile, th
     const profile2 = new Profile({ user: user2, username: username2, bio: bio2 });
 
     // when
-    const sut = profile.equals({ user: profile2.user, username: profile2.getUsername(), bio: profile2.getBio() });
+    const sut = profile.equals({ user: profile2.user, username: profile2.username, bio: profile2.bio });
 
     // then
     expect(sut).toBeFalsy();
@@ -149,12 +149,12 @@ test(`given: existing profile, when: equals is called with different profile, th
 test(`given: existing profile, when: updateLatestActivity is called, then: latestActivity is updated`, async () => {
     // given
     const profile = new Profile({ user, username, bio });
-    const oldLatestActivity = profile.getLatestActivity();
+    const oldLatestActivity = profile.latestActivity;
 
     // when
     await new Promise((resolve) => setTimeout(resolve, 1000));
     profile.updateLatestActivity();
-    const newLatestActivity = profile.getLatestActivity();
+    const newLatestActivity = profile.latestActivity;
 
     // then
     expect(newLatestActivity.getTime()).toBeGreaterThan(oldLatestActivity.getTime());
@@ -163,11 +163,11 @@ test(`given: existing profile, when: updateLatestActivity is called, then: lates
 test(`given: existing profile, when: updateUsername is called, then: username is updated`, () => {
     // given
     const profile = new Profile({ user, username, bio });
-    const oldUsername = profile.getUsername();
+    const oldUsername = profile.username;
 
     // when
     profile.updateUsername(username2);
-    const newUsername = profile.getUsername();
+    const newUsername = profile.username;
 
     // then
     expect(newUsername).not.toEqual(oldUsername);
@@ -177,11 +177,11 @@ test(`given: existing profile, when: updateUsername is called, then: username is
 test(`given: existing profile, when: updateBio is called, then: bio is updated`, () => {
     // given
     const profile = new Profile({ user, username, bio });
-    const oldBio = profile.getBio();
+    const oldBio = profile.bio;
 
     // when
     profile.updateBio(bio2);
-    const newBio = profile.getBio();
+    const newBio = profile.bio;
 
     // then
     expect(newBio).not.toEqual(oldBio);
@@ -239,7 +239,7 @@ test(`given: existing profile, when: username is succesfully updated, then: late
     // when
     await new Promise((resolve) => setTimeout(resolve, 1000));
     profile.updateUsername(username2);
-    const latestActivity = profile.getLatestActivity();
+    const latestActivity = profile.latestActivity;
 
     // then
     expect(new Date().getTime() - latestActivity.getTime()).toBeLessThan(1000);
@@ -253,7 +253,7 @@ test(`given: existing profile, when: bio is succesfully updated, then: latestAct
     // when
     await new Promise((resolve) => setTimeout(resolve, 1000));
     profile.updateBio(bio2);
-    const latestActivity = profile.getLatestActivity();
+    const latestActivity = profile.latestActivity;
 
     // then
     expect(new Date().getTime() - latestActivity.getTime()).toBeLessThan(1000);
