@@ -33,18 +33,21 @@ afterEach(() => {
     jest.clearAllMocks();
 });
 
-test(`given: valid values for Resource, when: Resource is created, then: Resource is created with those values`, () => {
+test(`given: valid values for Resource, when: Resource is created, then: Resource is created with those values`, async () => {
     // given
     mockUserDbGetUserById.mockReturnValue(creator);
 
     // when
-    resourceService.createResource({ creator: creatorInput, createdAt, title, description, category, subject });
+    const resource = await resourceService.createResource({ creator: creatorInput, createdAt, title, description, category, subject });
 
     // then
     expect(mockResourceDbCreateResource).toHaveBeenCalledTimes(1);
-    expect(mockResourceDbCreateResource).toHaveBeenCalledWith(
-        new Resource({ creator, createdAt, title, description, category, subject })
-    );
+    expect(resource.creator).toEqual(creator);
+    expect(resource.createdAt).toEqual(createdAt);
+    expect(resource.title).toEqual(title);
+    expect(resource.description).toEqual(description);
+    expect(resource.category).toEqual(category);
+    expect(resource.subject).toEqual(subject);
 });
 
 test(`given: existing Resource, when: Resource is created, then: error is thrown`, () => {

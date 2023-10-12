@@ -2,13 +2,12 @@ import userDb from '../domain/data-access/user.db';
 import { User } from '../domain/model/user';
 import { UserInput } from '../types';
 
-const createUser = ({ id, email, password }: User): User => {
-    const existing = userDb.getUserByEmail(email);
-    if (existing) throw new Error(`User with email ${email} already exists`);
-    else {
-        const u: User = new User({ id, email, password });
-        return userDb.createUser(u);
-    }
+const createUser = ({ id, email, password }: UserInput): User => {
+    if (userDb.getUserById(id)) throw new Error(`User with id ${id} already exists`);
+    if (userDb.getUserByEmail(email)) throw new Error(`User with email ${email} already exists`);
+    const u: User = new User({ id, email, password });
+    const newUser = userDb.createUser(u);
+    return newUser;
 };
 
 // const getAllUsers = async () : Promise<User[]> => userDb.getAllUsers()  -> pas gebruiken wanneer we met database werken
@@ -26,15 +25,19 @@ const removeUser = (id: number): Boolean => {
     return true;
 };
 
-const updateUser = (updatedUser: UserInput): User => {
-    const originalUser = getUserById(updatedUser.id);
-    if (originalUser.email != updatedUser.email) {
-        userDb.updateUserField(originalUser, 'email', updatedUser.email);
+const updateUser = (id: number, field: string, newValue: string): User => {
+    const user = getUserById(id);
+    switch (field) {
+        case 'email':
+            user.email = newValue;
+            break;
+        case 'password':
+            user.password = newValue;
+            break;
+        default:
+            throw new Error('Unsupported field');
     }
-    if (originalUser.password != updatedUser.password) {
-        userDb.updateUserField(originalUser, 'password', updatedUser.password);
-    }
-    return getUserById(updatedUser.id);
+    return user;
 };
 
 export default { getAllUsers, getUserById, createUser, removeUser, updateUser };
