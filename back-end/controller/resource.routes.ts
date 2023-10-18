@@ -259,7 +259,7 @@ resourceRouter.put('/:id/:field', async (req: Request, res: Response) => {
 
 /**
  * @swagger
- * /resources/{resourceId}/delete:
+ * /resources/{resourceId}:
  *   delete:
  *     tags:
  *       - resources
@@ -278,11 +278,10 @@ resourceRouter.put('/:id/:field', async (req: Request, res: Response) => {
  *         description: A boolean saying whether or not the Resource was deleted
  *         content:
  *           text/plain:
- *             schema:
- *               type: string
- *               example: true
+ *             type: boolean
+ *             example: true
  */
-resourceRouter.delete('/:id/delete', async (req: Request, res: Response) => {
+resourceRouter.delete('/:id', async (req: Request, res: Response) => {
     try {
         const resourceId = parseInt(req.params.id);
         const resource = await resourceService.getResourceById(resourceId);

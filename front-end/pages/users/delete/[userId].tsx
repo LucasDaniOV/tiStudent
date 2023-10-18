@@ -4,7 +4,6 @@ import Head from "next/head";
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
 import { User } from "@/types";
-import UserInfo from "@/components/users/UserInfo";
 
 const DeleteUserById = () => {
   const [user, setUser] = useState<User>();
@@ -12,30 +11,28 @@ const DeleteUserById = () => {
   const router = useRouter();
   const { userId } = router.query;
 
-  const getUserById = async () => {
-    const [userResponse] = await Promise.all([
+  const deleteUserById = async () => {
+    const [returnedUser] = await Promise.all([
       UserService.getUserById(userId as string),
     ]);
-    const [user] = await Promise.all([userResponse.json()]);
+    const [user] = await Promise.all([returnedUser.json()]);
     setUser(user);
+    await UserService.deleteUserById(userId as string);
   };
 
   useEffect(() => {
-    if (userId) getUserById();
-  });
+    if (userId) deleteUserById();
+  }, []);
 
   return (
     <>
       <Head>
-        <title>User info</title>
+        <title>User deleted</title>
       </Head>
       <Header />
       <main>
-        <h1>Info about user {user && user.id}</h1>
+        <h1>Deleted user with ID: {user && userId}</h1>
         {!userId && <p>Loading</p>}
-        <section>
-          <UserInfo user={user as User}></UserInfo>
-        </section>
       </main>
     </>
   );

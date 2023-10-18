@@ -167,16 +167,16 @@ profileRouter.post('/', (req: Request, res: Response) => {
  *               $ref: '#/components/schemas/Resource'
  */
 
-profileRouter.post('/like/:profileId/:resourceId', async (req: Request, res: Response) => {
-    try {
-        const profileId = parseInt(req.params.profileId);
-        const resourceId = parseInt(req.params.resourceId);
-        const resource = await profileService.likeResource({ profileId, resourceId });
-        res.status(200).json(resource);
-    } catch (error) {
-        res.status(400).json({ status: 'error', errorMessage: error.message });
-    }
-});
+// profileRouter.post('/like/:profileId/:resourceId', async (req: Request, res: Response) => {
+//     try {
+//         const profileId = parseInt(req.params.profileId);
+//         const resourceId = parseInt(req.params.resourceId);
+//         const resource = await profileService.likeResource({ profileId, resourceId });
+//         res.status(200).json(resource);
+//     } catch (error) {
+//         res.status(400).json({ status: 'error', errorMessage: error.message });
+//     }
+// });
 
 /**
  * @swagger
@@ -462,7 +462,7 @@ profileRouter.put('/:id/likedResources', async (req: Request, res: Response) => 
 
 /**
  * @swagger
- * /profiles/{profileId}/delete:
+ * /profiles/{profileId}:
  *   delete:
  *     tags:
  *       - profiles
@@ -485,7 +485,7 @@ profileRouter.put('/:id/likedResources', async (req: Request, res: Response) => 
  *               type: string
  *               example: true
  */
-profileRouter.delete('/:id/delete', (req: Request, res: Response) => {
+profileRouter.delete('/:id', (req: Request, res: Response) => {
     try {
         const profileId = parseInt(req.params.id);
         const profile = profileService.getProfileById(profileId);
