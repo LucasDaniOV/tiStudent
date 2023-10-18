@@ -4,7 +4,9 @@ import { Category } from '../domain/model/category';
 import { Profile } from '../domain/model/profile';
 import { Resource } from '../domain/model/resource';
 import { Subject } from '../domain/model/subject';
-import { ProfileInput, ResourceInput } from '../types';
+import { ResourceInput } from '../types';
+import { Comment } from '../domain/model/comment';
+import commentDb from '../domain/data-access/comment.db';
 
 // get all resources
 const getAllResources = async (): Promise<Resource[]> => resourceDb.getAllResources();
@@ -60,7 +62,7 @@ const updateField = (resource: Resource, field: string, newValue: string | Categ
     return resource;
 };
 
-const getField = (resource: Resource, field: string): string | number | Profile[] | ProfileInput => {
+const getField = (resource: Resource, field: string): string | number | Profile[] | Profile | Comment[] => {
     switch (field) {
         case 'creator':
             return resource.creator;
@@ -77,10 +79,12 @@ const getField = (resource: Resource, field: string): string | number | Profile[
             return resource.subject;
 
         case 'likes':
-            return profileDb.getProfilesWithLikeOnResource(resource.id).length;
+            return profileDb.getProfilesWithLikeOnResource(resource).length;
 
         case 'upvoters':
-            return profileDb.getProfilesWithLikeOnResource(resource.id);
+            return profileDb.getProfilesWithLikeOnResource(resource);
+        case 'comments':
+            return commentDb.getAllCommentsOnResource(resource.id);
 
         default:
             throw new Error('Unsupported field');
@@ -91,4 +95,11 @@ const deleteResource = (resource: Resource) => {
     return resourceDb.deleteResource(resource);
 };
 
-export default { getAllResources, getResourceById, createResource, getField, updateField, deleteResource };
+export default {
+    getAllResources,
+    getResourceById,
+    createResource,
+    getField,
+    updateField,
+    deleteResource,
+};

@@ -1,4 +1,5 @@
 import { Category } from '../domain/model/category';
+import { Profile } from '../domain/model/profile';
 import { Subject } from '../domain/model/subject';
 
 type UserInput = {
@@ -9,7 +10,7 @@ type UserInput = {
 
 type ResourceInput = {
     id?: number;
-    creator?: UserInput;
+    creator?: Profile;
     createdAt?: Date;
     title?: string;
     description?: string;

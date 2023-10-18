@@ -4,6 +4,8 @@ import userDb from '../domain/data-access/user.db';
 import { Profile } from '../domain/model/profile';
 import { Resource } from '../domain/model/resource';
 import { ProfileInput } from '../types';
+import commentDb from '../domain/data-access/comment.db';
+import { Comment } from '../domain/model/comment';
 
 const getAllProfiles = () => profileDb.getAllProfiles();
 
@@ -28,7 +30,7 @@ const likeResource = async ({ profileId, resourceId }): Promise<Resource> => {
     if (!profile) throw new Error(`Profile with id ${profileId} does not exist`);
     const resource = await resourceService.getResourceById(resourceId);
     if (!resource) throw new Error(`Resource with id ${resourceId} does not exist`);
-    profile.likeResource(resource.id);
+    profile.likeResource(resource);
     return resource;
 };
 
@@ -49,13 +51,39 @@ const updateField = async (
     else {
         const resourceId = parseInt(newValue);
         const resource = await resourceService.getResourceById(resourceId);
-        return profile.unLikeResource(resource.id);
+        return profile.unLikeResource(resource);
     }
     return getProfileById(profile.id);
 };
 
 const deleteProfile = (profile: Profile): Boolean => {
     return profileDb.deleteProfile(profile);
+};
+
+const writeComment = (profile: Profile, resource: Resource, message: string) => {
+    return commentDb.createComment(profile, resource, message);
+};
+
+const getAllCommentsByProfile = (profileId: number): Comment[] => {
+    return commentDb.getAllCommentsByProfile(profileId);
+};
+
+const getAllCommentsByProfileOnResource = (profileId: number, resourceId: number): Comment[] => {
+    return commentDb.getAllCommentsByProfileOnResource(profileId, resourceId);
+};
+
+const getCommentById = (commentId: number): Comment => {
+    const comment = commentDb.getCommentById(commentId);
+    if (!comment) throw new Error(`No comment with id ${commentId} found`);
+    return comment;
+};
+
+const deleteComment = (profile: Profile, commentId: number): Comment => {
+    const comment = commentDb.getCommentById(commentId);
+    if (comment.profile != profile) throw new Error(`This Profile didn't write the comment with id ${comment.id}`);
+    if (!comment) throw new Error(`No comment with id ${commentId} found`);
+    commentDb.deleteComment(comment);
+    return comment;
 };
 
 export default {
@@ -66,4 +94,9 @@ export default {
     getProfileField,
     updateField,
     deleteProfile,
+    writeComment,
+    getAllCommentsByProfile,
+    getAllCommentsByProfileOnResource,
+    deleteComment,
+    getCommentById,
 };

@@ -9,7 +9,7 @@ export class Profile {
     readonly createdAt: Date;
 
     private _latestActivity: Date;
-    private _likedResources?: Number[];
+    private _likedResources?: Resource[];
 
     constructor(profile: { id?: number; user: User; username: string; bio?: string }) {
         this.validate(profile);
@@ -62,7 +62,7 @@ export class Profile {
         return this._latestActivity;
     }
 
-    public get likedResources(): Number[] {
+    public get likedResources(): Resource[] {
         return this._likedResources;
     }
 
@@ -83,23 +83,23 @@ export class Profile {
         this.updateLatestActivity();
     }
 
-    private set likedResources(v: Number[]) {
+    private set likedResources(v: Resource[]) {
         this._likedResources = v;
     }
 
-    unLikeResource = (resourceId: number): Profile => {
-        if (!this._likedResources.includes(resourceId))
+    unLikeResource = (resource: Resource): Profile => {
+        if (!this._likedResources.includes(resource))
             throw new Error(`User with this Profile doesn't have a like on this Resource`);
-        this.likedResources = this._likedResources.filter((r) => r != resourceId);
+        this.likedResources = this._likedResources.filter((r) => r != resource);
         this.updateLatestActivity();
         return this;
     };
 
-    likeResource = (resourceId: number): void => {
-        if (!this._likedResources.includes(resourceId)) {
-            this._likedResources.push(resourceId);
+    likeResource = (resource: Resource): void => {
+        if (!this._likedResources.includes(resource)) {
+            this._likedResources.push(resource);
         } else {
-            throw new Error(`User with this Profile already likes Resource with id ${resourceId}`);
+            throw new Error(`User with this Profile already likes Resource with id ${resource.id}`);
         }
         this.updateLatestActivity();
     };

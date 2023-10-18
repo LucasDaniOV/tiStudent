@@ -1,6 +1,7 @@
 import { Profile } from '../model/profile';
 import { ProfileInput } from '../../types';
 import { User } from '../model/user';
+import { Resource } from '../model/resource';
 
 let currentId = 0;
 
@@ -29,8 +30,8 @@ const deleteProfile = (profile: Profile): Boolean => {
     return true;
 };
 
-const getProfilesWithLikeOnResource = (resourceId: number): Profile[] => {
-    const upvoters = profiles.filter((p) => p.likedResources.includes(resourceId));
+const getProfilesWithLikeOnResource = (resource: Resource): Profile[] => {
+    const upvoters = profiles.filter((p) => p.likedResources.includes(resource));
     return upvoters;
 };
 

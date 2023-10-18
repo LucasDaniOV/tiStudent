@@ -113,7 +113,7 @@ resourceRouter.get('/:id', async (req: Request, res: Response) => {
  *             type: object
  *             properties:
  *               creator:
- *                 $ref: "#/components/schemas/ProfileInput"
+ *                 $ref: "#/components/schemas/Profile"
  *               createdAt:
  *                 type: string
  *                 format: date-time

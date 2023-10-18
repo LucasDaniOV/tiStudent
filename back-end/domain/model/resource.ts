@@ -1,10 +1,10 @@
 import { Category } from './category';
 import { Subject } from './subject';
-import { ProfileInput } from '../../types';
+import { Profile } from './profile';
 
 export class Resource {
     readonly id?: number;
-    readonly creator: ProfileInput;
+    readonly creator: Profile;
     readonly createdAt: Date;
     private _title: string;
     private _description: string;
@@ -13,7 +13,7 @@ export class Resource {
 
     constructor(resource: {
         id?: number;
-        creator: ProfileInput;
+        creator: Profile;
         createdAt: Date;
         title: string;
         description: string;
@@ -33,7 +33,7 @@ export class Resource {
 
     equals(otherResource: {
         id: number;
-        creator: ProfileInput;
+        creator: Profile;
         createdAt: Date;
         title: string;
         description: string;
@@ -53,7 +53,7 @@ export class Resource {
 
     validate(resource: {
         id?: number;
-        creator: ProfileInput;
+        creator: Profile;
         createdAt: Date;
         title: string;
         description: string;
@@ -68,7 +68,7 @@ export class Resource {
         this.validateSubject(resource.subject);
     }
 
-    validateCreator = (creator: ProfileInput) => {
+    validateCreator = (creator: Profile) => {
         if (!creator) throw new Error('creator Profile is required');
     };
 
