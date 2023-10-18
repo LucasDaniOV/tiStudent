@@ -1,10 +1,9 @@
 import profileDb from '../domain/data-access/profile.db';
 import resourceDb from '../domain/data-access/resource.db';
-import userDb from '../domain/data-access/user.db';
 import { Category } from '../domain/model/category';
+import { Profile } from '../domain/model/profile';
 import { Resource } from '../domain/model/resource';
 import { Subject } from '../domain/model/subject';
-import { User } from '../domain/model/user';
 import { ProfileInput, ResourceInput } from '../types';
 
 // get all resources
@@ -19,16 +18,15 @@ const getResourceById = async (id: number): Promise<Resource> => {
 
 // create resource
 const createResource = async ({
-    creator: creatorInput,
+    creator,
     createdAt = new Date(),
     title,
     description,
     category,
     subject,
 }: ResourceInput): Promise<Resource> => {
-    if (!creatorInput) throw new Error('creator User is required');
-    const creator = userDb.getUserById(creatorInput.id);
-    if (!creator) throw new Error(`User with id ${creatorInput.id} does not exist`);
+    if (!creator) throw new Error('creator Profile is required');
+    if (!profileDb.getProfileById(creator.id)) throw new Error(`Profile with id ${creator.id} does not exist`);
     const resource = new Resource({ creator, createdAt, title, description, category, subject });
 
     const existing = resourceDb.getResourceByContent(
@@ -42,11 +40,7 @@ const createResource = async ({
     return resourceDb.createResource(resource);
 };
 
-const updateField = (
-    resource: Resource,
-    field: string,
-    newValue: string | Category | Subject
-): Resource | ProfileInput[] => {
+const updateField = (resource: Resource, field: string, newValue: string | Category | Subject): Resource => {
     switch (field) {
         case 'title':
             resource.title = newValue as string;
@@ -66,10 +60,10 @@ const updateField = (
     return resource;
 };
 
-const getField = (resource: Resource, field: string): string => {
+const getField = (resource: Resource, field: string): string | number | Profile[] | ProfileInput => {
     switch (field) {
         case 'creator':
-            return JSON.stringify(resource.creator);
+            return resource.creator;
         case 'title':
             return resource.title;
 
@@ -81,6 +75,13 @@ const getField = (resource: Resource, field: string): string => {
 
         case 'subject':
             return resource.subject;
+
+        case 'likes':
+            return profileDb.getProfilesWithLikeOnResource(resource.id).length;
+
+        case 'upvoters':
+            return profileDb.getProfilesWithLikeOnResource(resource.id);
+
         default:
             throw new Error('Unsupported field');
     }

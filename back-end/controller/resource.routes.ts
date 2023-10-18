@@ -15,18 +15,7 @@
  *           format: int64
  *           example: 0
  *         creator:
- *           type: object
- *           properties:
- *             id:
- *               type: number
- *               format: int64
- *               example: 1
- *             email:
- *               type: string
- *               example: "firstname.lastname@ucll.be"
- *             password:
- *               type: string
- *               example: "password"
+ *           $ref: "#/components/schemas/ProfileInput"
  *         createdAt:
  *           type: string
  *           format: date-time
@@ -124,12 +113,7 @@ resourceRouter.get('/:id', async (req: Request, res: Response) => {
  *             type: object
  *             properties:
  *               creator:
- *                 type: object
- *                 properties:
- *                   id:
- *                     type: number
- *                     format: int64
- *                     example: 1
+ *                 $ref: "#/components/schemas/ProfileInput"
  *               createdAt:
  *                 type: string
  *                 format: date-time

@@ -18,6 +18,7 @@ type ResourceInput = {
 };
 
 type ProfileInput = {
+    id?: number;
     userId?: number;
     username?: string;
 };

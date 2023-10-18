@@ -23,15 +23,14 @@ const createProfile = ({ userId, username }: ProfileInput): Profile => {
     return profileDb.createProfile(profile.user, profile.username);
 };
 
-// const likeResource = async ({ profileId, resourceId }): Promise<Resource> => {
-//     const profile = getProfileById(profileId);
-//     if (!profile) throw new Error(`Profile with id ${profileId} does not exist`);
-//     const resource = await resourceService.getResourceById(resourceId);
-//     if (!resource) throw new Error(`Resource with id ${resourceId} does not exist`);
-//     profile.likeResource(resource);
-//     resource.addUpvoter({ userId: profile.id, username: profile.username });
-//     return resource;
-// };
+const likeResource = async ({ profileId, resourceId }): Promise<Resource> => {
+    const profile = getProfileById(profileId);
+    if (!profile) throw new Error(`Profile with id ${profileId} does not exist`);
+    const resource = await resourceService.getResourceById(resourceId);
+    if (!resource) throw new Error(`Resource with id ${resourceId} does not exist`);
+    profile.likeResource(resource.id);
+    return resource;
+};
 
 const getProfileField = (profile: Profile, field: 'username' | 'bio' | 'latestActivity' | 'likedResources') => {
     if (field == 'username') return profile.username;
@@ -45,13 +44,14 @@ const updateField = async (
     field: 'username' | 'bio' | 'likedResources',
     newValue: string
 ): Promise<Profile> => {
-    if (field == 'username') return profile.updateUsername(newValue);
-    else if (field == 'bio') return profile.updateBio(newValue);
+    if (field == 'username') profile.username = newValue;
+    else if (field == 'bio') profile.bio = newValue;
     else {
         const resourceId = parseInt(newValue);
         const resource = await resourceService.getResourceById(resourceId);
-        return profile.unLikeResource(resource);
+        return profile.unLikeResource(resource.id);
     }
+    return getProfileById(profile.id);
 };
 
 const deleteProfile = (profile: Profile): Boolean => {
@@ -62,7 +62,7 @@ export default {
     getAllProfiles,
     getProfileById,
     createProfile,
-    // likeResource,
+    likeResource,
     getProfileField,
     updateField,
     deleteProfile,

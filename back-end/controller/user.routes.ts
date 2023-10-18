@@ -150,6 +150,40 @@ userRouter.put('/:id/:field', (req: Request, res: Response) => {
 
 /**
  * @swagger
+ * /users:
+ *   get:
+ *     tags:
+ *       - users
+ *     summary: get a field of a User
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             $ref: '#/components/schemas/User'
+ *     responses:
+ *       200:
+ *         description: The User with updated field
+ *         content:
+ *           text/plain:
+ *             schema:
+ *               type: string
+ *               example: "johndoe"
+ */
+
+userRouter.get('/:id/:field', (req: Request, res: Response) => {
+    try {
+        const userId = parseInt(req.params.id);
+        const field = req.params.field;
+        const user = userService.getUserField(userId, field);
+        res.status(200).json(user);
+    } catch (error) {
+        res.status(400).json({ status: 'error', errorMessage: error.message });
+    }
+});
+
+/**
+ * @swagger
  * /users/{id}:
  *   delete:
  *     tags:

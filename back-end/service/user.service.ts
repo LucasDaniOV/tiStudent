@@ -40,4 +40,16 @@ const updateUser = (id: number, field: string, newValue: string): User => {
     return user;
 };
 
-export default { getAllUsers, getUserById, createUser, removeUser, updateUser };
+const getUserField = (id: number, field: string): string => {
+    const user = getUserById(id);
+    switch (field) {
+        case 'email':
+            return user.email;
+        case 'password':
+            return user.password;
+        default:
+            throw new Error('Unsupported field');
+    }
+};
+
+export default { getAllUsers, getUserById, createUser, removeUser, updateUser, getUserField };

@@ -31,6 +31,10 @@
  *     ProfileInput:
  *       type: object
  *       properties:
+ *         id:
+ *           type: number
+ *           format: int64
+ *           example: 0
  *         userId:
  *           type: number
  *           format: int64
@@ -167,16 +171,16 @@ profileRouter.post('/', (req: Request, res: Response) => {
  *               $ref: '#/components/schemas/Resource'
  */
 
-// profileRouter.post('/like/:profileId/:resourceId', async (req: Request, res: Response) => {
-//     try {
-//         const profileId = parseInt(req.params.profileId);
-//         const resourceId = parseInt(req.params.resourceId);
-//         const resource = await profileService.likeResource({ profileId, resourceId });
-//         res.status(200).json(resource);
-//     } catch (error) {
-//         res.status(400).json({ status: 'error', errorMessage: error.message });
-//     }
-// });
+profileRouter.post('/like/:profileId/:resourceId', async (req: Request, res: Response) => {
+    try {
+        const profileId = parseInt(req.params.profileId);
+        const resourceId = parseInt(req.params.resourceId);
+        const resource = await profileService.likeResource({ profileId, resourceId });
+        res.status(200).json(resource);
+    } catch (error) {
+        res.status(400).json({ status: 'error', errorMessage: error.message });
+    }
+});
 
 /**
  * @swagger

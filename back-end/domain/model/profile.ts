@@ -9,7 +9,7 @@ export class Profile {
     readonly createdAt: Date;
 
     private _latestActivity: Date;
-    private _likedResources?: Resource[];
+    private _likedResources?: Number[];
 
     constructor(profile: { id?: number; user: User; username: string; bio?: string }) {
         this.validate(profile);
@@ -62,47 +62,44 @@ export class Profile {
         return this._latestActivity;
     }
 
-    public get likedResources(): Resource[] {
+    public get likedResources(): Number[] {
         return this._likedResources;
     }
 
-    updateLatestActivity = (): Profile => {
-        this._latestActivity = new Date(); // is in foute timezone
-        return this;
-    };
+    private updateLatestActivity() {
+        this._latestActivity = new Date(); // is in foute time zone
+    }
 
-    updateUsername = (username: string): Profile => {
-        this.validateUsername(username);
-        this._username = username;
+    public set username(v: string) {
+        this.validateUsername(v);
+        this._username = v;
         this.updateLatestActivity();
-        return this;
-    };
+    }
 
-    updateBio = (bio: string): Profile => {
-        if (!bio) throw new Error('bio is required');
-        this.validateBio(bio);
-        this._bio = bio;
+    public set bio(v: string) {
+        if (!v) throw new Error('bio is required');
+        this.validateBio(v);
+        this._bio = v;
         this.updateLatestActivity();
-        return this;
-    };
+    }
 
-    updateLikedResources = (resources: Resource[]): void => {
-        this._likedResources = resources;
-    };
+    private set likedResources(v: Number[]) {
+        this._likedResources = v;
+    }
 
-    unLikeResource = (resource: Resource): Profile => {
-        if (!this._likedResources.includes(resource))
+    unLikeResource = (resourceId: number): Profile => {
+        if (!this._likedResources.includes(resourceId))
             throw new Error(`User with this Profile doesn't have a like on this Resource`);
-        this.updateLikedResources(this._likedResources.filter((r) => r.id != resource.id));
+        this.likedResources = this._likedResources.filter((r) => r != resourceId);
         this.updateLatestActivity();
         return this;
     };
 
-    likeResource = (resource: Resource): void => {
-        if (!this._likedResources.includes(resource)) {
-            this._likedResources.push(resource);
+    likeResource = (resourceId: number): void => {
+        if (!this._likedResources.includes(resourceId)) {
+            this._likedResources.push(resourceId);
         } else {
-            throw new Error(`User with this Profile already likes Resource with id ${resource.id}`);
+            throw new Error(`User with this Profile already likes Resource with id ${resourceId}`);
         }
         this.updateLatestActivity();
     };

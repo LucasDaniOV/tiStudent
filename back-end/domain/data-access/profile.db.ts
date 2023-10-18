@@ -1,4 +1,5 @@
 import { Profile } from '../model/profile';
+import { ProfileInput } from '../../types';
 import { User } from '../model/user';
 
 let currentId = 0;
@@ -28,6 +29,11 @@ const deleteProfile = (profile: Profile): Boolean => {
     return true;
 };
 
+const getProfilesWithLikeOnResource = (resourceId: number): Profile[] => {
+    const upvoters = profiles.filter((p) => p.likedResources.includes(resourceId));
+    return upvoters;
+};
+
 export default {
     getAllProfiles,
     getProfileById,
@@ -35,4 +41,5 @@ export default {
     getProfileByUserId,
     getProfileByUsername,
     deleteProfile,
+    getProfilesWithLikeOnResource,
 };
