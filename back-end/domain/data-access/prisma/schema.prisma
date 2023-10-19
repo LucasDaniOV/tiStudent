@@ -11,25 +11,54 @@ model User{
     id Int  @id @default(autoincrement())
     email String @unique
     password String
-    profile Profile? //why '?'
+
+    profile Profile?
 }
 
 model Profile {
-    id Int @id @default(autoincrement())
-    user User @relation(fields: [userId], references: [id])
-    userId Int @unique
-    username String
-    bio String
-    createdAt DateTime
-    latestActivity DateTime
-    likedResources Int[]
+    id                  Int @id @default(autoincrement())
+    userId              Int @unique
+    username            String
+    bio                 String?
+    createdAt           DateTime
+    latestActivity      DateTime
+
+    user                User @relation(fields: [userId], references: [id])
+
+    publishedResources  Resource[] @relation("publishedResources")
+
+    likedResources      Resource[]
+
+    writtenComments     Comment[] @relation("writtenComments")
+
+    likedComments       Comment[]
 }
 
-// model Resource {
-//     id Int @id @default(autoincrement())
-//     creator ProfileInput
-// }
+model Resource {
+    id          Int @id @default(autoincrement())
+    creatorId   Int @unique
+    creator     Profile @relation("publishedResources", fields: [creatorId], references: [id])
+    createdAt   DateTime
+    title       String
+    description String
+    category    String
+    subject     String
 
-// model ProfileInput{
+    upvoters    Profile[]
 
-// }
+    comments    Comment[]
+}
+
+model Comment {
+    id Int @id @default(autoincrement())
+    message String
+    createdAt DateTime
+
+    profileId Int @unique
+    profile Profile @relation("writtenComments", fields: [profileId], references: [id])
+
+    resourceId  Int @unique
+    resource Resource @relation(fields: [resourceId], references: [id])
+
+    upvoters Profile[]
+}
