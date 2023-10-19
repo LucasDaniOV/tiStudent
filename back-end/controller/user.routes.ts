@@ -80,10 +80,10 @@ userRouter.post('/', async (req: Request, res: Response) => {
  *                 $ref: '#/components/schemas/User'
  */
 
-userRouter.get('/:id', (req: Request, res: Response) => {
+userRouter.get('/:id', async (req: Request, res: Response) => {
     try {
         const userId = parseInt(req.params.id);
-        const user = userService.getUserById(userId);
+        const user = await userService.getUserById(userId);
         res.status(200).json(user);
     } catch (error) {
         res.status(400).json({ status: 'error', errorMessage: error.message });
@@ -135,13 +135,13 @@ userRouter.get('/', async (req: Request, res: Response) => {
  *             schema:
  *               $ref: '#/components/schemas/User'
  */
-userRouter.put('/:id/:field', (req: Request, res: Response) => {
+userRouter.put('/:id/:field', async (req: Request, res: Response) => {
     try {
         if (!req.query.hasOwnProperty('newValue')) throw new Error("query parameter 'newValue' is missing");
         const userId = parseInt(req.params.id);
         const field = req.params.field;
         const newValue = req.query.newValue as string;
-        const user = userService.updateUserField(userId, field, newValue);
+        const user = await userService.updateUserField(userId, field, newValue);
         res.status(200).json(user);
     } catch (error) {
         res.status(400).json({ status: 'error', errorMessage: error.message });
@@ -171,11 +171,11 @@ userRouter.put('/:id/:field', (req: Request, res: Response) => {
  *               example: "johndoe"
  */
 
-userRouter.get('/:id/:field', (req: Request, res: Response) => {
+userRouter.get('/:id/:field', async (req: Request, res: Response) => {
     try {
         const userId = parseInt(req.params.id);
         const field = req.params.field;
-        const user = userService.getUserField(userId, field);
+        const user = await userService.getUserField(userId, field);
         res.status(200).json(user);
     } catch (error) {
         res.status(400).json({ status: 'error', errorMessage: error.message });
@@ -206,10 +206,10 @@ userRouter.get('/:id/:field', (req: Request, res: Response) => {
  *             example: true
  */
 
-userRouter.delete('/:id', (req: Request, res: Response) => {
+userRouter.delete('/:id', async (req: Request, res: Response) => {
     try {
         const userId = parseInt(req.params.id);
-        res.status(200).json(userService.removeUser(userId));
+        res.status(200).json(await userService.removeUser(userId));
     } catch (error) {
         res.status(400).json({ status: 'error', errorMessage: error.message });
     }
