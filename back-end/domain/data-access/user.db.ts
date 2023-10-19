@@ -4,7 +4,7 @@ import { User } from '../model/user';
 const getAllUsers = async (): Promise<User[]> => {
     try {
         const usersPrisma = await database.user.findMany();
-        return usersPrisma.map((userPrisma) => User.from(userPrisma));
+        if (usersPrisma) return usersPrisma.map((userPrisma) => User.from(userPrisma));
     } catch (error) {
         console.error(error)
         throw new Error('Database error. See server log for details.')
@@ -18,7 +18,7 @@ const getUserById = async (id: number): Promise<User> => {
                 id
             }
         });
-        return User.from(userPrisma);
+        if (userPrisma) return User.from(userPrisma);
     } catch (error) {
         console.error(error)
         throw new Error('Database error. See server log for details.')
@@ -32,7 +32,7 @@ const getUserByEmail = async (email: string): Promise<User> => {
                 email
             }
         });
-        return User.from(userPrisma);
+        if (userPrisma) return User.from(userPrisma);
     } catch (error) {
         console.error(error)
         throw new Error('Database error. See server log for details.')
@@ -48,7 +48,7 @@ const createUser = async (email: string, password: string): Promise<User> => {
                 password: user.password
             }
         });
-        return User.from(userPrisma);
+        if (userPrisma) return User.from(userPrisma);
         
     } catch (error) {
         console.error(error)
@@ -80,7 +80,7 @@ const updateEmail = async (id: number, email: string): Promise<User> => {
                 email
             }
         });
-        return User.from(userPrisma);
+        if (userPrisma) return User.from(userPrisma);
     } catch (error) {
         console.error(error)
         throw new Error('Database error. See server log for details.')
@@ -97,7 +97,7 @@ const updatePassword = async (id: number, password: string): Promise<User> => {
                 password
             }
         });
-        return User.from(userPrisma);
+        if (userPrisma) return User.from(userPrisma);
     } catch (error) {
         console.error(error)
         throw new Error('Database error. See server log for details.')
