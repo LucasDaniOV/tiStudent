@@ -46,10 +46,10 @@ const userRouter = express.Router();
  *               $ref: '#/components/schemas/User'
  */
 
-userRouter.post('/', (req: Request, res: Response) => {
+userRouter.post('/', async (req: Request, res: Response) => {
     try {
         const userInput = req.body as UserInput;
-        const user = userService.createUser(userInput);
+        const user = await userService.createUser(userInput);
         res.status(200).json(user);
     } catch (error) {
         res.status(400).json({ status: 'error', errorMessage: error.message });
@@ -105,9 +105,9 @@ userRouter.get('/:id', (req: Request, res: Response) => {
  *             schema:
  *               $ref: '#/components/schemas/User'
  */
-userRouter.get('/', (req: Request, res: Response) => {
+userRouter.get('/', async (req: Request, res: Response) => {
     try {
-        const users = userService.getAllUsers();
+        const users = await userService.getAllUsers();
         res.status(200).json(users);
     } catch (error) {
         res.status(400).json({ status: 'error', errorMessage: error.message });
@@ -141,7 +141,7 @@ userRouter.put('/:id/:field', (req: Request, res: Response) => {
         const userId = parseInt(req.params.id);
         const field = req.params.field;
         const newValue = req.query.newValue as string;
-        const user = userService.updateUser(userId, field, newValue);
+        const user = userService.updateUserField(userId, field, newValue);
         res.status(200).json(user);
     } catch (error) {
         res.status(400).json({ status: 'error', errorMessage: error.message });

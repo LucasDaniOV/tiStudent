@@ -50,15 +50,11 @@ export class User {
         this._password = v;
     }
 
-    public static from({
-        id,
-        email,
-        password,
-    }: UserPrisma): User {
+    static from({ id, email, password }: UserPrisma): User {
         return new User({
             id: id,
             email: email,
             password: password,
-        })
+        });
     }
 }

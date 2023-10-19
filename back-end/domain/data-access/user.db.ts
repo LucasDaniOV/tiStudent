@@ -70,4 +70,38 @@ const deleteUser = async (id: number): Promise<Boolean> => {
     }
 };
 
-export default { getAllUsers, getUserById, getUserByEmail, createUser, deleteUser };
+const updateEmail = async (id: number, email: string): Promise<User> => {
+    try {
+        const userPrisma = await database.user.update({
+            where: {
+                id
+            },
+            data: {
+                email
+            }
+        });
+        return User.from(userPrisma);
+    } catch (error) {
+        console.error(error)
+        throw new Error('Database error. See server log for details.')
+    }
+}
+
+const updatePassword = async (id: number, password: string): Promise<User> => {
+    try {
+        const userPrisma = await database.user.update({
+            where: {
+                id
+            },
+            data: {
+                password
+            }
+        });
+        return User.from(userPrisma);
+    } catch (error) {
+        console.error(error)
+        throw new Error('Database error. See server log for details.')
+    }
+}
+
+export default { getAllUsers, getUserById, getUserByEmail, createUser, deleteUser, updateEmail, updatePassword };

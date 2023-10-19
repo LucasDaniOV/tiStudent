@@ -15,8 +15,8 @@ const getProfileById = (id: number) => {
     return profile;
 };
 
-const createProfile = ({ userId, username }: ProfileInput): Profile => {
-    const user = userDb.getUserById(userId);
+const createProfile = async ({ userId, username }: ProfileInput): Promise<Profile> => {
+    const user = await userDb.getUserById(userId);
     if (!user) throw new Error(`User with id ${userId} does not exist`);
     if (profileDb.getProfileByUserId(userId)) throw new Error(`User already has a profile`);
     const profile = new Profile({ user, username });
