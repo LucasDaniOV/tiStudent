@@ -6,8 +6,8 @@ const getAllUsers = async (): Promise<User[]> => {
         const usersPrisma = await database.user.findMany();
         if (usersPrisma) return usersPrisma.map((userPrisma) => User.from(userPrisma));
     } catch (error) {
-        console.error(error)
-        throw new Error('Database error. See server log for details.')
+        console.error(error);
+        throw new Error('Database error. See server log for details.');
     }
 };
 
@@ -15,13 +15,13 @@ const getUserById = async (id: number): Promise<User> => {
     try {
         const userPrisma = await database.user.findUnique({
             where: {
-                id
-            }
+                id,
+            },
         });
         if (userPrisma) return User.from(userPrisma);
     } catch (error) {
-        console.error(error)
-        throw new Error('Database error. See server log for details.')
+        console.error(error);
+        throw new Error('Database error. See server log for details.');
     }
 };
 
@@ -29,13 +29,13 @@ const getUserByEmail = async (email: string): Promise<User> => {
     try {
         const userPrisma = await database.user.findUnique({
             where: {
-                email
-            }
+                email,
+            },
         });
         if (userPrisma) return User.from(userPrisma);
     } catch (error) {
-        console.error(error)
-        throw new Error('Database error. See server log for details.')
+        console.error(error);
+        throw new Error('Database error. See server log for details.');
     }
 };
 
@@ -45,14 +45,13 @@ const createUser = async (email: string, password: string): Promise<User> => {
         const userPrisma = await database.user.create({
             data: {
                 email: user.email,
-                password: user.password
-            }
+                password: user.password,
+            },
         });
         if (userPrisma) return User.from(userPrisma);
-        
     } catch (error) {
-        console.error(error)
-        throw new Error('Database error. See server log for details.')        
+        console.error(error);
+        throw new Error('Database error. See server log for details.');
     }
 };
 
@@ -60,13 +59,13 @@ const deleteUser = async (id: number): Promise<Boolean> => {
     try {
         await database.user.delete({
             where: {
-                id
-            }
+                id,
+            },
         });
         return true;
     } catch (error) {
-        console.error(error)
-        throw new Error('Database error. See server log for details.')
+        console.error(error);
+        throw new Error('Database error. See server log for details.');
     }
 };
 
@@ -74,34 +73,34 @@ const updateEmail = async (id: number, email: string): Promise<User> => {
     try {
         const userPrisma = await database.user.update({
             where: {
-                id
+                id,
             },
             data: {
-                email
-            }
+                email,
+            },
         });
         if (userPrisma) return User.from(userPrisma);
     } catch (error) {
-        console.error(error)
-        throw new Error('Database error. See server log for details.')
+        console.error(error);
+        throw new Error('Database error. See server log for details.');
     }
-}
+};
 
 const updatePassword = async (id: number, password: string): Promise<User> => {
     try {
         const userPrisma = await database.user.update({
             where: {
-                id
+                id,
             },
             data: {
-                password
-            }
+                password,
+            },
         });
         if (userPrisma) return User.from(userPrisma);
     } catch (error) {
-        console.error(error)
-        throw new Error('Database error. See server log for details.')
+        console.error(error);
+        throw new Error('Database error. See server log for details.');
     }
-}
+};
 
 export default { getAllUsers, getUserById, getUserByEmail, createUser, deleteUser, updateEmail, updatePassword };

@@ -10,7 +10,7 @@ const createUser = async ({ email, password }: UserInput): Promise<User> => {
     return newUser;
 };
 
-const getAllUsers = async () : Promise<User[]> => userDb.getAllUsers();
+const getAllUsers = async (): Promise<User[]> => userDb.getAllUsers();
 
 const getUserById = async (id: number): Promise<User> => {
     const u: User = await userDb.getUserById(id);
@@ -22,7 +22,7 @@ const getUserByEmail = async (email: string): Promise<User> => {
     const u: User = await userDb.getUserByEmail(email);
     if (!u) throw new Error(`No user with email ${email} found`);
     return u;
-}
+};
 
 const removeUser = async (id: number): Promise<Boolean> => {
     const u = await getUserById(id);
@@ -58,6 +58,6 @@ const updateUserField = async (id: number, field: string, value: string): Promis
         default:
             throw new Error('Unsupported field');
     }
-}
+};
 
 export default { createUser, getAllUsers, getUserById, getUserByEmail, removeUser, getUserField, updateUserField };
