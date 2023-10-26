@@ -1,3 +1,4 @@
+import { Profile as ProfilePrisma, User as UserPrisma } from '@prisma/client';
 import { User } from './user';
 
 export class Profile {
@@ -47,5 +48,16 @@ export class Profile {
         if (!profile.user) throw new Error('user is required');
         this.validateUsername(profile.username);
         if (profile.bio) this.validateBio(profile.bio);
+    }
+    
+    static from({ id, username, bio, createdAt, latestActivity, user }: ProfilePrisma & { user: UserPrisma }): Profile {
+        return new Profile({
+            id,
+            username,
+            bio,
+            createdAt,
+            latestActivity,
+            user: User.from(user),
+        });
     }
 }
