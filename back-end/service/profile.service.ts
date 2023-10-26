@@ -19,42 +19,48 @@ const createProfile = async ({ userId, username }: ProfileInput): Promise<Profil
     const user = await userDb.getUserById(userId);
     if (!user) throw new Error(`User with id ${userId} does not exist`);
     if (profileDb.getProfileByUserId(userId)) throw new Error(`User already has a profile`);
-    const profile = new Profile({ user, username });
+    const profile = new Profile({ user, username, bio: '', createdAt: new Date(), latestActivity: new Date() });
     if (profileDb.getProfileByUsername(username)) throw new Error(`Username already exists`);
 
-    return profileDb.createProfile(profile.user, profile.username);
+    return profileDb.createProfile(
+        profile.user,
+        profile.username,
+        profile.bio,
+        profile.createdAt,
+        profile.latestActivity
+    );
 };
 
-const likeResource = async ({ profileId, resourceId }): Promise<Resource> => {
-    const profile = getProfileById(profileId);
-    if (!profile) throw new Error(`Profile with id ${profileId} does not exist`);
-    const resource = await resourceService.getResourceById(resourceId);
-    if (!resource) throw new Error(`Resource with id ${resourceId} does not exist`);
-    profile.likeResource(resource);
-    return resource;
-};
+// const likeResource = async ({ profileId, resourceId }): Promise<Resource> => {
+//     const profile = getProfileById(profileId);
+//     if (!profile) throw new Error(`Profile with id ${profileId} does not exist`);
+//     const resource = await resourceService.getResourceById(resourceId);
+//     if (!resource) throw new Error(`Resource with id ${resourceId} does not exist`);
+//     profile.likeResource(resource);
+//     return resource;
+// };
 
-const getProfileField = (profile: Profile, field: 'username' | 'bio' | 'latestActivity' | 'likedResources') => {
-    if (field == 'username') return profile.username;
-    else if (field == 'bio') return profile.bio;
-    else if (field == 'latestActivity') return profile.latestActivity;
-    else return profile.likedResources;
-};
+// const getProfileField = (profile: Profile, field: 'username' | 'bio' | 'latestActivity' | 'likedResources') => {
+//     if (field == 'username') return profile.username;
+//     else if (field == 'bio') return profile.bio;
+//     else if (field == 'latestActivity') return profile.latestActivity;
+//     else return profile.likedResources;
+// };
 
-const updateField = async (
-    profile: Profile,
-    field: 'username' | 'bio' | 'likedResources',
-    newValue: string
-): Promise<Profile> => {
-    if (field == 'username') profile.username = newValue;
-    else if (field == 'bio') profile.bio = newValue;
-    else {
-        const resourceId = parseInt(newValue);
-        const resource = await resourceService.getResourceById(resourceId);
-        return profile.unLikeResource(resource);
-    }
-    return getProfileById(profile.id);
-};
+// const updateField = async (
+//     profile: Profile,
+//     field: 'username' | 'bio' | 'likedResources',
+//     newValue: string
+// ): Promise<Profile> => {
+//     if (field == 'username') profile.username = newValue;
+//     else if (field == 'bio') profile.bio = newValue;
+//     else {
+//         const resourceId = parseInt(newValue);
+//         const resource = await resourceService.getResourceById(resourceId);
+//         return profile.unLikeResource(resource);
+//     }
+//     return getProfileById(profile.id);
+// };
 
 const deleteProfile = (profile: Profile): Boolean => {
     return profileDb.deleteProfile(profile);
@@ -90,9 +96,9 @@ export default {
     getAllProfiles,
     getProfileById,
     createProfile,
-    likeResource,
-    getProfileField,
-    updateField,
+    // likeResource,
+    // getProfileField,
+    // updateField,
     deleteProfile,
     writeComment,
     getAllCommentsByProfile,

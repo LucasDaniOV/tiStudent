@@ -78,11 +78,11 @@ const getField = (resource: Resource, field: string): string | number | Profile[
         case 'subject':
             return resource.subject;
 
-        case 'likes':
-            return profileDb.getProfilesWithLikeOnResource(resource).length;
+        // case 'likes':
+        //     return profileDb.getProfilesWithLikeOnResource(resource).length;
 
-        case 'upvoters':
-            return profileDb.getProfilesWithLikeOnResource(resource);
+        // case 'upvoters':
+        //     return profileDb.getProfilesWithLikeOnResource(resource);
         case 'comments':
             return commentDb.getAllCommentsOnResource(resource.id);
 

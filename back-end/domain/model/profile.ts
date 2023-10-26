@@ -2,12 +2,12 @@ import { Profile as ProfilePrisma, User as UserPrisma } from '@prisma/client';
 import { User } from './user';
 
 export class Profile {
-    readonly id?: number;
-    readonly username: string;
-    readonly bio?: string;
-    readonly createdAt: Date;
-    readonly latestActivity: Date;
+    readonly id: number;
     readonly user: User;
+    readonly username: string;
+    readonly bio: string = undefined;
+    readonly createdAt?: Date;
+    readonly latestActivity: Date;
 
     constructor(profile: {
         id?: number;
@@ -21,10 +21,11 @@ export class Profile {
 
         this.id = profile.id;
         this.username = profile.username;
+        this.user = profile.user;
         this.bio = profile.bio;
+
         this.createdAt = profile.createdAt;
         this.latestActivity = profile.latestActivity;
-        this.user = profile.user;
     }
 
     equals(otherProfile: { user: User; username: string; bio?: string }): boolean {
@@ -49,7 +50,7 @@ export class Profile {
         this.validateUsername(profile.username);
         if (profile.bio) this.validateBio(profile.bio);
     }
-    
+
     static from({ id, username, bio, createdAt, latestActivity, user }: ProfilePrisma & { user: UserPrisma }): Profile {
         return new Profile({
             id,

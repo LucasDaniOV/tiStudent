@@ -1,20 +1,20 @@
 import { Category } from './category';
 import { Subject } from './subject';
 import { Profile } from './profile';
+import { Profile as ProfilePrisma, User as UserPrisma, Resource as ResourcePrisma } from '@prisma/client';
 
 export class Resource {
     readonly id?: number;
     readonly creator: Profile;
     readonly createdAt: Date;
-    private _title: string;
-    private _description: string;
-    private _category: Category;
-    private _subject: Subject;
+    readonly title: string;
+    readonly description: string;
+    readonly category: Category;
+    readonly subject: Subject;
 
     constructor(resource: {
         id?: number;
         creator: Profile;
-        createdAt: Date;
         title: string;
         description: string;
         category: Category;
@@ -24,17 +24,16 @@ export class Resource {
 
         this.id = resource.id;
         this.creator = resource.creator;
-        this.createdAt = resource.createdAt;
-        this._title = resource.title;
-        this._description = resource.description;
-        this._category = resource.category;
-        this._subject = resource.subject;
+        this.createdAt = new Date();
+        this.title = resource.title;
+        this.description = resource.description;
+        this.category = resource.category;
+        this.subject = resource.subject;
     }
 
     equals(otherResource: {
         id: number;
         creator: Profile;
-        createdAt: Date;
         title: string;
         description: string;
         category: Category;
@@ -43,25 +42,22 @@ export class Resource {
         return (
             this.id === otherResource.id &&
             this.creator === otherResource.creator &&
-            this.createdAt === otherResource.createdAt &&
-            this._title === otherResource.title &&
-            this._description === otherResource.description &&
-            this._category == otherResource.category &&
-            this._subject == otherResource.subject
+            this.title === otherResource.title &&
+            this.description === otherResource.description &&
+            this.category == otherResource.category &&
+            this.subject == otherResource.subject
         );
     }
 
     validate(resource: {
         id?: number;
         creator: Profile;
-        createdAt: Date;
         title: string;
         description: string;
         category: Category;
         subject: Subject;
     }): void {
         this.validateCreator(resource.creator);
-        if (!resource.createdAt) throw new Error('createdAt is required');
         this.validateTitle(resource.title);
         this.validateDescription(resource.description);
         this.validateCategory(resource.category);
@@ -92,44 +88,21 @@ export class Resource {
         if (!Object.values(Subject).includes(subject)) throw new Error('Invalid subject');
     };
 
-    public get title(): string {
-        return this._title;
-    }
-
-    public get description(): string {
-        return this._description;
-    }
-
-    public get category(): Category {
-        return this._category;
-    }
-
-    public get subject(): Subject {
-        return this._subject;
-    }
-
-    public set title(newTitle: string) {
-        this.validateTitle(newTitle);
-        if (newTitle == this._title) throw new Error(`new title must be different from old title`);
-        this._title = newTitle;
-    }
-
-    public set description(newDescription: string) {
-        this.validateDescription(newDescription);
-        if (newDescription == this._description)
-            throw new Error(`new description must be different from old description`);
-        this._description = newDescription;
-    }
-
-    public set category(newCategory: Category) {
-        this.validateCategory(newCategory);
-        if (newCategory == this._category) throw new Error(`new category must be different from old category`);
-        this._category = newCategory;
-    }
-
-    public set subject(newSubject: Subject) {
-        this.validateSubject(newSubject);
-        if (newSubject == this._subject) throw new Error(`new subject must be different from old subject`);
-        this._subject = newSubject;
+    static from({
+        id,
+        profile,
+        title,
+        description,
+        category,
+        subject,
+    }: ResourcePrisma & { profile: ProfilePrisma & { user: UserPrisma } }) {
+        return new Resource({
+            id,
+            creator: Profile.from(profile),
+            title,
+            description,
+            category: category as Category,
+            subject: subject as Subject,
+        });
     }
 }

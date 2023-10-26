@@ -15,11 +15,14 @@ const getProfileByUserId = (userId: number): Profile => profiles.find((profile) 
 
 const getProfileByUsername = (username: string): Profile => profiles.find((profile) => profile.username === username);
 
-const createProfile = (user: User, username: string): Profile => {
+const createProfile = (user: User, username: string, bio: string, createdAt: Date, latestActivity: Date): Profile => {
     const profile = new Profile({
         id: currentId++,
         user,
         username,
+        bio,
+        createdAt,
+        latestActivity,
     });
     profiles.push(profile);
     return profile;
@@ -30,10 +33,10 @@ const deleteProfile = (profile: Profile): Boolean => {
     return true;
 };
 
-const getProfilesWithLikeOnResource = (resource: Resource): Profile[] => {
-    const upvoters = profiles.filter((p) => p.likedResources.includes(resource));
-    return upvoters;
-};
+// const getProfilesWithLikeOnResource = (resource: Resource): Profile[] => {
+//     const upvoters = profiles.filter((p) => p.likedResources.includes(resource));
+//     return upvoters;
+// };
 
 export default {
     getAllProfiles,
@@ -42,5 +45,5 @@ export default {
     getProfileByUserId,
     getProfileByUsername,
     deleteProfile,
-    getProfilesWithLikeOnResource,
+    // getProfilesWithLikeOnResource,
 };
