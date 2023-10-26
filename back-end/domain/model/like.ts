@@ -9,7 +9,6 @@ import { Profile } from './profile';
 import { Resource } from './resource';
 import { Comment } from './comment';
 
-
 export class Like {
     readonly id: number;
     readonly createdAt: Date;

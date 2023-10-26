@@ -90,15 +90,15 @@ export class Resource {
 
     static from({
         id,
-        profile,
+        creator,
         title,
         description,
         category,
         subject,
-    }: ResourcePrisma & { profile: ProfilePrisma & { user: UserPrisma } }) {
+    }: ResourcePrisma & { creator: ProfilePrisma & { user: UserPrisma } }) {
         return new Resource({
             id,
-            creator: Profile.from(profile),
+            creator: Profile.from(creator),
             title,
             description,
             category: category as Category,
