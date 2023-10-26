@@ -68,29 +68,12 @@ async function main() {
         },
     });
     console.log(aliceResource1);
-    // //can't create like because it needs a comment??
-    // const like = await prisma.like.upsert({
-    //     where: { profileId: 2 },
-    //     update: {},
-    //     create: {
-    //         createdAt: new Date(),
-    //         profileId: 2,
-    //         resource: {
-    //             connect: {
-    //                 id: 1,
-    //             },
-    //         }
-    //     },
-    // });
-    // console.log(like);
-
-    const bobComment = await prisma.comment.upsert({
+    const like = await prisma.like.upsert({
         where: { profileId: 2 },
         update: {},
         create: {
-            message: 'Great samenvatting Alice!',
             createdAt: new Date(),
-            profile: {
+            upvoter: {
                 connect: {
                     id: 2,
                 },
@@ -102,7 +85,91 @@ async function main() {
             },
         },
     });
+    console.log(like);
+    const bobComment = await prisma.comment.create({
+        data: {
+            resource: {
+                connect: {
+                    id: 1,
+                },
+            },
+            profile: {
+                connect: {
+                    id: 1,
+                },
+            },
+            message: 'Great summary Alice',
+            createdAt: new Date(),
+        },
+    });
     console.log(bobComment);
+    const aliceComment = await prisma.comment.create({
+        data: {
+            resource: {
+                connect: {
+                    id: 1,
+                },
+            },
+            profile: {
+                connect: {
+                    id: 1,
+                },
+            },
+            message: 'Thanks Bob',
+            createdAt: new Date(),
+            parent: {
+                connect: {
+                    id: 1,
+                },
+            },
+        },
+    });
+    console.log(aliceComment);
+    const bobComment2 = await prisma.comment.create({
+        data: {
+            resource: {
+                connect: {
+                    id: 1,
+                },
+            },
+            profile: {
+                connect: {
+                    id: 2,
+                },
+            },
+            message: "You're welcome Alice",
+            createdAt: new Date(),
+            parent: {
+                connect: {
+                    id: 1,
+                },
+            },
+        },
+    });
+    console.log(bobComment2);
+
+    const bobComment3 = await prisma.comment.create({
+        data: {
+            resource: {
+                connect: {
+                    id: 1,
+                },
+            },
+            profile: {
+                connect: {
+                    id: 2,
+                },
+            },
+            message: 'Love you too',
+            createdAt: new Date(),
+            parent: {
+                connect: {
+                    id: 1,
+                },
+            },
+        },
+    });
+    console.log(bobComment3);
 }
 main()
     .then(async () => {
