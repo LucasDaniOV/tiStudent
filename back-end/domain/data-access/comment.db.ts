@@ -24,7 +24,10 @@ const getAllComments = async (): Promise<Comment[]> => {
             },
         });
         if (commentsPrisma) return commentsPrisma.map((commentPrisma) => Comment.from(commentPrisma));
-    } catch (error) {}
+    } catch (error) {
+        console.error(error);
+        throw new Error('Database error. See server log for details.');
+    }
 };
 
 const getCommentById = async (commentId: number): Promise<Comment> => {
@@ -53,7 +56,10 @@ const getCommentById = async (commentId: number): Promise<Comment> => {
         if (commentPrisma) return Comment.from(commentPrisma);
 
         return;
-    } catch (error) {}
+    } catch (error) {
+        console.error(error);
+        throw new Error('Database error. See server log for details.');
+    }
 };
 
 const getAllCommentsOnResource = async (resourceId: number): Promise<Comment[]> => {
@@ -80,8 +86,10 @@ const getAllCommentsOnResource = async (resourceId: number): Promise<Comment[]> 
             },
         });
         if (commentsPrisma) return commentsPrisma.map((comment) => Comment.from(comment));
-    } catch (error) {}
-    // return comments.filter((comment) => comment.resource.id == resourceId);
+    } catch (error) {
+        console.error(error);
+        throw new Error('Database error. See server log for details.');
+    }
 };
 const getAllCommentsByProfile = async (profileId: number): Promise<Comment[]> => {
     try {
@@ -107,8 +115,10 @@ const getAllCommentsByProfile = async (profileId: number): Promise<Comment[]> =>
             },
         });
         if (commentsPrisma) return commentsPrisma.map((comment) => Comment.from(comment));
-    } catch (error) {}
-    // return comments.filter((comment) => comment.resource.id == resourceId);
+    } catch (error) {
+        console.error(error);
+        throw new Error('Database error. See server log for details.');
+    }
 };
 
 const getAllCommentsByProfileOnResource = async (profileId: number, resourceId: number): Promise<Comment[]> => {
@@ -136,8 +146,10 @@ const getAllCommentsByProfileOnResource = async (profileId: number, resourceId: 
             },
         });
         if (commentsPrisma) return commentsPrisma.map((comment) => Comment.from(comment));
-    } catch (error) {}
-    // return comments.filter((comment) => comment.resource.id == resourceId);
+    } catch (error) {
+        console.error(error);
+        throw new Error('Database error. See server log for details.');
+    }
 };
 
 const createComment = async (profile: Profile, resource: Resource, message: string, parent = null) => {
@@ -181,7 +193,10 @@ const createComment = async (profile: Profile, resource: Resource, message: stri
             },
         });
         if (commentPrisma) return Comment.from(commentPrisma);
-    } catch (error) {}
+    } catch (error) {
+        console.error(error);
+        throw new Error('Database error. See server log for details.');
+    }
 };
 
 const deleteComment = async (commentId: number): Promise<Boolean> => {
@@ -191,8 +206,11 @@ const deleteComment = async (commentId: number): Promise<Boolean> => {
                 id: commentId,
             },
         });
-            return true;
-    } catch (error) {}
+        return true;
+    } catch (error) {
+        console.error(error);
+        throw new Error('Database error. See server log for details.');
+    }
 };
 
 export default {

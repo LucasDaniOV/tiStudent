@@ -68,7 +68,10 @@ const createResource = async ({ creator, title, description, category, subject }
             },
         });
         if (resourcePrisma) return Resource.from(resourcePrisma);
-    } catch (error) {}
+    } catch (error) {
+        console.error(error);
+        throw new Error('Database error. See server log for details.');
+    }
 };
 
 const getResourceByContent = async (
@@ -94,7 +97,10 @@ const getResourceByContent = async (
             },
         });
         if (resourcePrisma) return Resource.from(resourcePrisma);
-    } catch (error) {}
+    } catch (error) {
+        console.error(error);
+        throw new Error('Database error. See server log for details.');
+    }
 };
 
 const deleteResource = async (resourceId: number): Promise<Boolean> => {
@@ -105,7 +111,10 @@ const deleteResource = async (resourceId: number): Promise<Boolean> => {
             },
         });
         return true;
-    } catch (error) {}
+    } catch (error) {
+        console.error(error);
+        throw new Error('Database error. See server log for details.');
+    }
 };
 
 export default { getAllResources, getResourceById, createResource, getResourceByContent, deleteResource };

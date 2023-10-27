@@ -34,21 +34,21 @@ export class Like {
 
     static from({
         id,
-        profile,
+        upvoter,
         resource,
         comment,
-    }: LikePrisma & { profile: ProfilePrisma & { user: UserPrisma } } & {
-        resource: ResourcePrisma & { profile: ProfilePrisma & { user: UserPrisma } };
+    }: LikePrisma & { upvoter: ProfilePrisma & { user: UserPrisma } } & {
+        resource: ResourcePrisma & { creator: ProfilePrisma & { user: UserPrisma } };
     } & {
-        comment: CommentPrisma & { profile: ProfilePrisma } & {
-            resource: ResourcePrisma & { profile: ProfilePrisma & { user: UserPrisma } };
+        comment: CommentPrisma & { profile: ProfilePrisma & { user: UserPrisma } } & {
+            resource: ResourcePrisma & { creator: ProfilePrisma & { user: UserPrisma } };
         };
     }) {
         return new Like({
             id,
-            profile: Profile.from(profile),
+            profile: Profile.from(upvoter),
             resource: Resource.from(resource),
-            comment: Comment.from(comment, profile),
+            comment: Comment.from(comment),
         });
     }
 }
