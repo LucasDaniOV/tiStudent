@@ -351,28 +351,33 @@ const deleteLike = async (likeId: number): Promise<Boolean> => {
     }
 };
 
-const createLike = async (profile: Profile, resource: Resource, comment: Comment) => {
+const createLike = async (profile: Profile, resource: Resource | null, comment: Comment | null) => {
     try {
         const like = new Like({ profile, resource, comment });
-        const likePrisma = await database.like.create({
-            data: {
-                createdAt: new Date(),
-                upvoter: {
-                    connect: {
-                        id: like.profile.id,
-                    },
-                },
-                resource: {
-                    connect: {
-                        id: like.resource.id,
-                    },
-                },
-                comment: {
-                    connect: {
-                        id: like.comment.id,
-                    },
+        const likeData = {
+            createdAt: new Date(),
+            upvoter: {
+                connect: {
+                    id: like.profile.id,
                 },
             },
+        };
+        if (resource == null) {
+            likeData['resource'] = {
+                connect: {
+                    id: like.resource.id,
+                },
+            };
+        } else if (comment == null) {
+            likeData['comment'] = {
+                connect: like.comment.id,
+            };
+        }
+        console.log(likeData);
+
+
+        const likePrisma = await database.like.create({
+            data: likeData,
             include: {
                 upvoter: {
                     include: {

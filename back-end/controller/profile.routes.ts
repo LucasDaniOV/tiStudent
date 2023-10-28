@@ -42,7 +42,6 @@
  *         username:
  *           type: string
  *           example: 'johndoe'
- *
  *     Comment:
  *       type: object
  *       properties:
@@ -63,6 +62,22 @@
  *         edited:
  *           type: boolean
  *           example: false
+ *     Like:
+ *       type: object
+ *       properties:
+ *         id:
+ *           type: number
+ *           format: int64
+ *           example: 0
+ *         createdAt:
+ *           type: date-time
+ *           example: '2023-01-01T00:00:00.000Z'
+ *         profile:
+ *           $ref: '#/components/schemas/Profile'
+ *         resource:
+ *           $ref: '#/components/schemas/Resource'
+ *         comment:
+ *           $ref: '#/components/schemas/Comment'
  */
 import express, { Request, Response } from 'express';
 import profileService from '../service/profile.service';
@@ -162,47 +177,55 @@ profileRouter.post('/', (req: Request, res: Response) => {
     }
 });
 
-// /**
-//  * @swagger
-//  * /profiles/like/{profileId}/{resourceId}:
-//  *   post:
-//  *     tags:
-//  *       - profiles
-//  *     summary: Like a Resource
-//  *     parameters:
-//  *       - name: profileId
-//  *         in: path
-//  *         required: true
-//  *         description: The ID of the Profile.
-//  *         schema:
-//  *           type: number
-//  *           example: 0
-//  *       - name: resourceId
-//  *         in: path
-//  *         required: true
-//  *         description: The ID of the Resource.
-//  *         schema:
-//  *           type: number
-//  *           example: 0
-//  *     responses:
-//  *       200:
-//  *         description: The liked Resource
-//  *         content:
-//  *           application/json:
-//  *             schema:
-//  *               $ref: '#/components/schemas/Resource'
-//  */
+/**
+ * @swagger
+ * /profiles/like/{profileId}/{objectId}?object:
+ *   post:
+ *     tags:
+ *       - profiles
+ *     summary: Like an object (resource or comment)
+ *     parameters:
+ *       - name: profileId
+ *         in: path
+ *         required: true
+ *         description: The ID of the Profile.
+ *         schema:
+ *           type: number
+ *           example: 0
+ *       - name: objectId
+ *         in: path
+ *         required: true
+ *         description: The ID of the object
+ *         schema:
+ *           type: number
+ *           example: 0
+ *       - name: object
+ *         in: query
+ *         required: true
+ *         description: The name of what object you want to like
+ *         schema:
+ *           type: string
+ *           example: comment
+ *     responses:
+ *       200:
+ *         description: The liked object
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/Like'
+ */
 
-// profileRouter.post('/like/:profileId/:resourceId', async (req: Request, res: Response) => {
-//     try {
-//         const profileId = parseInt(req.params.profileId);
-//         const resourceId = parseInt(req.params.resourceId);
-//         const resource = await profileService.likeResource({ profileId, resourceId });
-//         res.status(200).json(resource);
-//     } catch (error) {
-//         res.status(400).json({ status: 'error', errorMessage: error.message });
-//     }
-// });
+profileRouter.post('/like/:profileId/:objectId', async (req: Request, res: Response) => {
+    try {
+        const profileId = parseInt(req.params.profileId);
+        const resourceId = parseInt(req.params.resourceId);
+        const object = String(req.query.object);
+        const resource = await profileService.likeObject(profileId, object, resourceId);
+        res.status(200).json(resource);
+    } catch (error) {
+        res.status(400).json({ status: 'error', errorMessage: error.message });
+    }
+});
 
 // /**
 //  * @swagger

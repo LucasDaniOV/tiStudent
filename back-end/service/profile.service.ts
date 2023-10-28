@@ -7,11 +7,13 @@ import { ProfileInput } from '../types';
 import commentDb from '../domain/data-access/comment.db';
 import { Comment } from '../domain/model/comment';
 import { SourceTextModule } from 'vm';
+import likeDb from '../domain/data-access/like.db';
+import { Like } from '../domain/model/like';
 
 const getAllProfiles = async () => await profileDb.getAllProfiles();
 
-const getProfileById = async (id: number) => {
-    const profile = profileDb.getProfileById(id);
+const getProfileById = async (id: number): Promise<Profile> => {
+    const profile = await profileDb.getProfileById(id);
     if (!profile) throw new Error(`Profile with id ${id} does not exist`);
     return profile;
 };
@@ -33,14 +35,25 @@ const createProfile = async ({ userId, username }: ProfileInput): Promise<Profil
     );
 };
 
-// const likeResource = async ({ profileId, resourceId }): Promise<Resource> => {
-//     const profile = getProfileById(profileId);
-//     if (!profile) throw new Error(`Profile with id ${profileId} does not exist`);
-//     const resource = await resourceService.getResourceById(resourceId);
-//     if (!resource) throw new Error(`Resource with id ${resourceId} does not exist`);
-//     profile.likeResource(resource);
-//     return resource;
-// };
+const likeObject = async (profileId: number, object: string, id: number): Promise<Like> => {
+    const profile = await getProfileById(profileId);
+    if (!profile) throw new Error(`Profile with id ${profileId} does not exist`);
+    switch (object) {
+        case 'resource':
+            const resource = await resourceService.getResourceById(id);
+            if (!resource) throw new Error(`Resource with id ${id} does not exist`);
+            const likeResource = likeDb.createLike(profile, resource, null);
+            return likeResource;
+        case 'comment':
+            const comment = await getCommentById(id);
+            if (!comment) throw new Error(`Comment with id ${id} does not exist`);
+            const likeComment = likeDb.createLike(profile, null, comment);
+            return likeComment;
+
+        default:
+            throw new Error('Unsupported field');
+    }
+};
 
 // const getProfileField = async (profile: Profile, field: 'username' | 'bio' | 'latestActivity' | 'likedResources') => {
 //     if (field == 'username') return profile.username;
@@ -113,7 +126,7 @@ export default {
     getAllProfiles,
     getProfileById,
     createProfile,
-    // likeResource,
+    likeObject,
     // getProfileField,
     // updateField,
     deleteProfile,

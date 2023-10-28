@@ -47,14 +47,8 @@ export class Like {
         return new Like({
             id,
             profile: Profile.from(upvoter),
-            resource: Resource.from(resource),
-            comment: Comment.from(comment),
+            resource: resource ? Resource.from(resource) : null,
+            comment: comment ? Comment.from(comment) : null,
         });
     }
 }
-
-// // misschien voor like te fixen
-// export enum Type {
-//     Resource,
-//     Comment,
-// }
