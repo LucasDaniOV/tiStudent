@@ -55,27 +55,30 @@ const likeObject = async (profileId: number, object: string, id: number): Promis
     }
 };
 
-// const getProfileField = async (profile: Profile, field: 'username' | 'bio' | 'latestActivity' | 'likedResources') => {
-//     if (field == 'username') return profile.username;
-//     else if (field == 'bio') return profile.bio;
-//     else if (field == 'latestActivity') return profile.latestActivity;
-//     else return profile.likedResources;
-// };
+const getProfileField = async (profile: Profile, field: string) => {
+    if (field == 'username') return profile.username;
+    else if (field == 'bio') return profile.bio;
+    else if (field == 'latestActivity') return profile.latestActivity;
+    else if (field == 'likedResources') return likeDb.getLikesByProfile(profile.id);
+};
 
-// const updateField = async (
-//     profile: Profile,
-//     field: 'username' | 'bio' | 'likedResources',
-//     newValue: string
-// ): Promise<Profile> => {
-//     if (field == 'username') profile.username = newValue;
-//     else if (field == 'bio') profile.bio = newValue;
-//     else {
-//         const resourceId = parseInt(newValue);
-//         const resource = await resourceService.getResourceById(resourceId);
-//         return profile.unLikeResource(resource);
-//     }
-//     return getProfileById(profile.id);
-// };
+const updateField = async (profile: Profile, field: string, value: string): Promise<Profile | Like[]> => {
+    if (field == 'bio') return await profileDb.updateProfileBio(profile.id, value);
+    else if (field == 'likes') {
+        const likeId = parseInt(value);
+        const likes = await likeDb.getLikesByProfile(profile.id);
+        const like = likes.findIndex((l) => l.id == likeId);
+        if (like) {
+            const removed = await likeDb.deleteLike(likeId);
+            if (removed) return await likeDb.getLikesByProfile(profile.id);
+            else throw new Error('Something went wrong');
+        } else {
+            throw new Error('Profile has no like on this object');
+        }
+    } else {
+        throw new Error('Unsupported field');
+    }
+};
 
 const deleteProfile = async (profileId: number): Promise<Boolean> => {
     return profileDb.deleteProfile(profileId);
@@ -127,8 +130,8 @@ export default {
     getProfileById,
     createProfile,
     likeObject,
-    // getProfileField,
-    // updateField,
+    getProfileField,
+    updateField,
     deleteProfile,
     writeComment,
     getAllCommentsByProfile,

@@ -39,7 +39,7 @@ const getProfileByUserId = async (userId: number): Promise<Profile> => {
     try {
         const profilePrisma = await database.profile.findUnique({
             where: {
-                userId,
+                userId: userId,
             },
             include: {
                 user: true,

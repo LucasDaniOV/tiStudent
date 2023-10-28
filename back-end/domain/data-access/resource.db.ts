@@ -168,7 +168,7 @@ const updateFieldOfResource = async (
                             id: resourceId,
                         },
                         data: {
-                            category: newValue,
+                            category: newValue as Category,
                         },
                         include: {
                             creator: {
@@ -186,7 +186,7 @@ const updateFieldOfResource = async (
                             id: resourceId,
                         },
                         data: {
-                            subject: newValue,
+                            subject: newValue as Subject,
                         },
                         include: {
                             creator: {

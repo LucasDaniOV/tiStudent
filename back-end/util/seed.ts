@@ -1,5 +1,6 @@
 import { PrismaClient } from '@prisma/client';
 import { Subject } from '../domain/model/subject';
+import { Category } from '../domain/model/category';
 const prisma = new PrismaClient();
 async function main() {
     const alice = await prisma.user.upsert({
@@ -50,8 +51,6 @@ async function main() {
         },
     });
     console.log(bobProfile);
-
-    console.log(aliceProfile);
     const aliceResource1 = await prisma.resource.upsert({
         where: { id: 1 },
         update: {},
@@ -59,7 +58,7 @@ async function main() {
             title: 'P1 fundamentals summary',
             createdAt: new Date(),
             description: 'All the important stuff for p1',
-            category: 'Summary',
+            category: Category.Summary,
             subject: Subject.Programming1,
             creator: {
                 connect: {
@@ -69,10 +68,8 @@ async function main() {
         },
     });
     console.log(aliceResource1);
-    const like = await prisma.like.upsert({
-        where: { profileId: 2 },
-        update: {},
-        create: {
+    const like = await prisma.like.create({
+        data: {
             createdAt: new Date(),
             upvoter: {
                 connect: {
@@ -128,6 +125,22 @@ async function main() {
         },
     });
     console.log(aliceComment);
+    const like2 = await prisma.like.create({
+        data: {
+            createdAt: new Date(),
+            upvoter: {
+                connect: {
+                    id: 2,
+                },
+            },
+            comment: {
+                connect: {
+                    id: 2,
+                },
+            },
+        },
+    });
+    console.log(like2);
     const bobComment2 = await prisma.comment.create({
         data: {
             resource: {
@@ -140,6 +153,7 @@ async function main() {
                     id: 2,
                 },
             },
+
             message: "You're welcome Alice",
             createdAt: new Date(),
             edited: false,

@@ -22,6 +22,8 @@ const getResourceById = async (id: number): Promise<Resource> => {
 const createResource = async ({ creator, title, description, category, subject }: ResourceInput): Promise<Resource> => {
     if (!creator) throw new Error('creator Profile is required');
     if (!profileDb.getProfileById(creator.id)) throw new Error(`Profile with id ${creator.id} does not exist`);
+    if (!Object.values(Category).includes(category)) throw new Error('Invalid Category');
+    if (!Object.values(Subject).includes(subject)) throw new Error('Invalid Subject');
     const resource = new Resource({ creator, title, description, category, subject });
 
     const existing = resourceDb.getResourceByContent(
@@ -35,25 +37,14 @@ const createResource = async ({ creator, title, description, category, subject }
     return resourceDb.createResource(resource);
 };
 
-// const updateField = (resource: Resource, field: string, newValue: string | Category | Subject): Resource => {
-//     switch (field) {
-//         case 'title':
-//             resource.title = newValue as string;
-//             break;
-//         case 'description':
-//             resource.description = newValue as string;
-//             break;
-//         case 'category':
-//             resource.category = newValue as Category;
-//             break;
-//         case 'subject':
-//             resource.subject = newValue as Subject;
-//             break;
-//         default:
-//             throw new Error('Unsupported field');
-//     }
-//     return resource;
-// };
+const updateField = async (
+    resourceId: number,
+    field: string,
+    newValue: string | Category | Subject
+): Promise<Resource> => {
+    const resource = await resourceDb.getResourceById(resourceId);
+    return await resourceDb.updateFieldOfResource(resource.id, field, newValue);
+};
 
 const getField = (resource: Resource, field: string): string | number | Profile[] | Profile | Comment[] => {
     switch (field) {
@@ -93,6 +84,6 @@ export default {
     getResourceById,
     createResource,
     getField,
-    // updateField,
+    updateField,
     deleteResource,
 };

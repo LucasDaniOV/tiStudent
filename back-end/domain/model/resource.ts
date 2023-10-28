@@ -96,12 +96,12 @@ export class Resource {
 
     validateCategory = (category: Category) => {
         if (!category) throw new Error('category is required');
-        if (!Object.values(Category).includes(category)) throw new Error('Invalid category');
+        if (!Object.values(Category).includes(category as Category)) throw new Error('Invalid category');
     };
 
     validateSubject = (subject: Subject) => {
         if (!subject) throw new Error('subject is required');
-        if (!Object.values(Subject).includes(subject)) throw new Error('Invalid subject');
+        if (!Object.values(Subject).includes(subject as Subject)) throw new Error('Invalid subject');
     };
 
     static from({
