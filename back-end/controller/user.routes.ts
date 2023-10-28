@@ -140,7 +140,7 @@ userRouter.put('/:id/:field', async (req: Request, res: Response) => {
         if (!req.query.hasOwnProperty('newValue')) throw new Error("query parameter 'newValue' is missing");
         const userId = parseInt(req.params.id);
         const field = req.params.field;
-        const newValue = req.query.newValue as string;
+        const newValue = String(req.query.newValue);
         const user = await userService.updateUserField(userId, field, newValue);
         res.status(200).json(user);
     } catch (error) {
@@ -174,7 +174,7 @@ userRouter.put('/:id/:field', async (req: Request, res: Response) => {
 userRouter.get('/:id/:field', async (req: Request, res: Response) => {
     try {
         const userId = parseInt(req.params.id);
-        const field = req.params.field;
+        const field = String(req.params.field);
         const user = await userService.getUserField(userId, field);
         res.status(200).json(user);
     } catch (error) {

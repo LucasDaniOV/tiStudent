@@ -187,7 +187,7 @@ resourceRouter.get('/:id/:field', async (req: Request, res: Response) => {
         const resourceId = parseInt(req.params.id);
         const resource = await resourceService.getResourceById(resourceId);
         const field = String(req.params.field);
-        res.status(200).json(resourceService.getField(resource, field));
+        res.status(200).json(await resourceService.getField(resource, field));
     } catch (error) {
         res.status(400).json({ status: 'error', errorMessage: error.message });
     }
@@ -270,7 +270,7 @@ resourceRouter.delete('/:id', async (req: Request, res: Response) => {
     try {
         const resourceId = parseInt(req.params.id);
         const resource = await resourceService.getResourceById(resourceId);
-        if (resource) res.status(200).json(resourceService.deleteResource(resourceId));
+        if (resource) res.status(200).json(await resourceService.deleteResource(resourceId));
     } catch (error) {
         res.status(400).json({ status: 'error', errorMessage: error.message });
     }

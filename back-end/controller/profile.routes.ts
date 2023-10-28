@@ -135,10 +135,10 @@ profileRouter.get('/', async (req: Request, res: Response) => {
  *             schema:
  *               $ref: '#/components/schemas/Profile'
  */
-profileRouter.get('/:id', (req: Request, res: Response) => {
+profileRouter.get('/:id', async (req: Request, res: Response) => {
     try {
         const id = parseInt(req.params.id);
-        const profile = profileService.getProfileById(id);
+        const profile = await profileService.getProfileById(id);
         res.status(200).json(profile);
     } catch (error) {
         res.status(400).json({ status: 'error', errorMessage: error.message });
@@ -167,10 +167,10 @@ profileRouter.get('/:id', (req: Request, res: Response) => {
  *             schema:
  *               $ref: '#/components/schemas/Profile'
  */
-profileRouter.post('/', (req: Request, res: Response) => {
+profileRouter.post('/', async (req: Request, res: Response) => {
     try {
         const profileInput = req.body as ProfileInput;
-        const profile = profileService.createProfile(profileInput);
+        const profile = await profileService.createProfile(profileInput);
         res.status(200).json(profile);
     } catch (error) {
         res.status(400).json({ status: 'error', errorMessage: error.message });
@@ -455,7 +455,7 @@ profileRouter.get('/:profileId/:resourceId/comments', async (req: Request, res: 
         const resourceId = parseInt(req.params.resourceId);
         const profile = await profileService.getProfileById(profileId);
         const resource = await resourceService.getResourceById(resourceId);
-        const comments = profileService.getAllCommentsByProfileOnResource(profile.id, resource.id);
+        const comments = await profileService.getAllCommentsByProfileOnResource(profile.id, resource.id);
         res.status(200).json(comments);
     } catch (error) {
         res.status(400).json({ status: 'error', errorMessage: error.message });
@@ -643,7 +643,7 @@ profileRouter.post('/comment/:profileId/:resourceId', async (req: Request, res: 
         const message = String(req.query.message);
         const profile = await profileService.getProfileById(profileId);
         const resource = await resourceService.getResourceById(resourceId);
-        const comment = profileService.writeComment(profile, resource, message);
+        const comment = await profileService.writeComment(profile, resource, message);
         res.status(200).json(comment);
     } catch (error) {
         res.status(400).json({ status: 'error', errorMessage: error.message });
@@ -675,10 +675,10 @@ profileRouter.post('/comment/:profileId/:resourceId', async (req: Request, res: 
  *               type: string
  *               example: true
  */
-profileRouter.delete('/:id', (req: Request, res: Response) => {
+profileRouter.delete('/:id', async (req: Request, res: Response) => {
     try {
         const profileId = parseInt(req.params.id);
-        const profile = profileService.getProfileById(profileId);
+        const profile = await profileService.getProfileById(profileId);
         if (profile) res.status(200).json(profileService.deleteProfile(profileId));
     } catch (error) {
         res.status(400).json({ status: 'error', errorMessage: error.message });

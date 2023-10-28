@@ -202,6 +202,7 @@ const getLikesOnResource = async (resourceId: number): Promise<Like[]> => {
     }
 };
 
+
 const getLikesOnComment = async (commentId: number): Promise<Like[]> => {
     try {
         const likesPrisma = await database.like.findMany({
@@ -374,7 +375,6 @@ const createLike = async (profile: Profile, resource: Resource | null, comment: 
             };
         }
         console.log(likeData);
-
 
         const likePrisma = await database.like.create({
             data: likeData,

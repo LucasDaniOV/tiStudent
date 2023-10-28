@@ -3,6 +3,7 @@ import { ProfileInput } from '../../types';
 import { User } from '../model/user';
 import { Resource } from '../model/resource';
 import database from '../../util/database';
+import likeDb from './like.db';
 
 const getAllProfiles = async (): Promise<Profile[]> => {
     try {
@@ -132,10 +133,11 @@ const updateProfileBio = async (id: number, newBio: string): Promise<Profile> =>
     }
 };
 
-// const getProfilesWithLikeOnResource = (resource: Resource): Profile[] => {
-//     const upvoters = profiles.filter((p) => p.likedResources.includes(resource));
-//     return upvoters;
-// };
+const getProfilesWithLikeOnResource = async (resource: Resource): Promise<Profile[]> => {
+    const profiles = await getAllProfiles();
+    const likes = await likeDb.getLikesOnResource(resource.id);
+    return profiles.filter((p) => likes.filter((like) => like.profile.id == p.id));
+};
 
 export default {
     getAllProfiles,
@@ -145,5 +147,5 @@ export default {
     getProfileByUsername,
     deleteProfile,
     updateProfileBio,
-    // getProfilesWithLikeOnResource,
+    getProfilesWithLikeOnResource,
 };

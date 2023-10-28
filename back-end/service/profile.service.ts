@@ -26,7 +26,7 @@ const createProfile = async ({ userId, username }: ProfileInput): Promise<Profil
     const profile = new Profile({ user, username, bio: '', createdAt: new Date(), latestActivity: new Date() });
     if (profileDb.getProfileByUsername(username)) throw new Error(`Username already exists`);
 
-    return profileDb.createProfile(
+    return await profileDb.createProfile(
         profile.user,
         profile.username,
         profile.bio,
@@ -42,12 +42,12 @@ const likeObject = async (profileId: number, object: string, id: number): Promis
         case 'resource':
             const resource = await resourceService.getResourceById(id);
             if (!resource) throw new Error(`Resource with id ${id} does not exist`);
-            const likeResource = likeDb.createLike(profile, resource, null);
+            const likeResource = await likeDb.createLike(profile, resource, null);
             return likeResource;
         case 'comment':
             const comment = await getCommentById(id);
             if (!comment) throw new Error(`Comment with id ${id} does not exist`);
-            const likeComment = likeDb.createLike(profile, null, comment);
+            const likeComment = await likeDb.createLike(profile, null, comment);
             return likeComment;
 
         default:
@@ -59,7 +59,7 @@ const getProfileField = async (profile: Profile, field: string) => {
     if (field == 'username') return profile.username;
     else if (field == 'bio') return profile.bio;
     else if (field == 'latestActivity') return profile.latestActivity;
-    else if (field == 'likedResources') return likeDb.getLikesByProfile(profile.id);
+    else if (field == 'likedResources') return await likeDb.getLikesByProfile(profile.id);
 };
 
 const updateField = async (profile: Profile, field: string, value: string): Promise<Profile | Like[]> => {
@@ -81,23 +81,23 @@ const updateField = async (profile: Profile, field: string, value: string): Prom
 };
 
 const deleteProfile = async (profileId: number): Promise<Boolean> => {
-    return profileDb.deleteProfile(profileId);
+    return await profileDb.deleteProfile(profileId);
 };
 
 const writeComment = async (profile: Profile, resource: Resource, message: string): Promise<Comment> => {
-    return commentDb.createComment(profile, resource, message);
+    return await commentDb.createComment(profile, resource, message);
 };
 
 const getAllCommentsByProfile = async (profileId: number): Promise<Comment[]> => {
-    return commentDb.getAllCommentsByProfile(profileId);
+    return await commentDb.getAllCommentsByProfile(profileId);
 };
 
 const getAllCommentsByProfileOnResource = async (profileId: number, resourceId: number): Promise<Comment[]> => {
-    return commentDb.getAllCommentsByProfileOnResource(profileId, resourceId);
+    return await commentDb.getAllCommentsByProfileOnResource(profileId, resourceId);
 };
 
 const getCommentById = async (commentId: number): Promise<Comment> => {
-    const comment = commentDb.getCommentById(commentId);
+    const comment = await commentDb.getCommentById(commentId);
     if (!comment) throw new Error(`No comment with id ${commentId} found`);
     return comment;
 };

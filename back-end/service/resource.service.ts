@@ -7,13 +7,15 @@ import { Subject } from '../domain/model/subject';
 import { ResourceInput } from '../types';
 import { Comment } from '../domain/model/comment';
 import commentDb from '../domain/data-access/comment.db';
+import likeDb from '../domain/data-access/like.db';
+import { Like } from '../domain/model/like';
 
 // get all resources
 const getAllResources = async (): Promise<Resource[]> => await resourceDb.getAllResources();
 
 // get resource by id
 const getResourceById = async (id: number): Promise<Resource> => {
-    const resource = resourceDb.getResourceById(id);
+    const resource = await resourceDb.getResourceById(id);
     if (!resource) throw new Error(`Resource with id ${id} does not exist`);
     return resource;
 };
@@ -34,7 +36,7 @@ const createResource = async ({ creator, title, description, category, subject }
     );
     if (existing) throw new Error('Resource already exists');
 
-    return resourceDb.createResource(resource);
+    return await resourceDb.createResource(resource);
 };
 
 const updateField = async (
@@ -46,7 +48,10 @@ const updateField = async (
     return await resourceDb.updateFieldOfResource(resource.id, field, newValue);
 };
 
-const getField = (resource: Resource, field: string): string | number | Profile[] | Profile | Comment[] => {
+const getField = async (
+    resource: Resource,
+    field: string
+): Promise<string | number | Profile[] | Profile | Comment[] | Like[]> => {
     switch (field) {
         case 'creator':
             return resource.creator;
@@ -62,21 +67,21 @@ const getField = (resource: Resource, field: string): string | number | Profile[
         case 'subject':
             return resource.subject;
 
-        // case 'likes':
-        //     return profileDb.getProfilesWithLikeOnResource(resource).length;
+        case 'likes':
+            return (await likeDb.getLikesOnResource(resource.id)).length;
 
-        // case 'upvoters':
-        //     return profileDb.getProfilesWithLikeOnResource(resource);
-        // case 'comments':
-        //     return commentDb.getAllCommentsOnResource(resource.id);
+        case 'upvoters':
+            return await profileDb.getProfilesWithLikeOnResource(resource);
+        case 'comments':
+            return commentDb.getAllCommentsOnResource(resource.id);
 
         default:
             throw new Error('Unsupported field');
     }
 };
 
-const deleteResource = (resourceId: number) => {
-    return resourceDb.deleteResource(resourceId);
+const deleteResource = async (resourceId: number) => {
+    return await resourceDb.deleteResource(resourceId);
 };
 
 export default {
