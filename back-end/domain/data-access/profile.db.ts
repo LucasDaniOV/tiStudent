@@ -122,7 +122,7 @@ const updateProfileBio = async (id: number, newBio: string): Promise<Profile> =>
     try {
         const updatedProfile = await database.profile.update({
             where: { id },
-            data: { bio: newBio },
+            data: { bio: newBio, latestActivity: new Date() },
             include: { user: true },
         });
         return Profile.from(updatedProfile);

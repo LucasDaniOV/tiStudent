@@ -50,13 +50,19 @@
  *           type: number
  *           format: int64
  *           example: 0
+ *         message:
+ *           type: string
+ *           example: Great summary!!
+ *         createdAt:
+ *           type: date-time
+ *           example: '2023-01-01T00:00:00.000Z'
  *         profile:
  *           $ref: '#/components/schemas/Profile'
  *         resource:
  *           $ref: '#/components/schemas/Resource'
- *         message:
- *           type: string
- *           example: Great summary!!
+ *         edited:
+ *           type: boolean
+ *           example: false
  */
 import express, { Request, Response } from 'express';
 import profileService from '../service/profile.service';
@@ -82,9 +88,9 @@ const profileRouter = express.Router();
  *               items:
  *                 $ref: '#/components/schemas/Profile'
  */
-profileRouter.get('/', (req: Request, res: Response) => {
+profileRouter.get('/', async (req: Request, res: Response) => {
     try {
-        const profiles = profileService.getAllProfiles();
+        const profiles = await profileService.getAllProfiles();
         res.status(200).json(profiles);
     } catch (error) {
         res.status(400).json({ status: 'error', errorMessage: error.message });
@@ -375,11 +381,11 @@ profileRouter.post('/', (req: Request, res: Response) => {
  *                 $ref: '#/components/schemas/Comment'
  */
 
-profileRouter.get('/:id/comments', (req: Request, res: Response) => {
+profileRouter.get('/:id/comments', async (req: Request, res: Response) => {
     try {
         const profileId = parseInt(req.params.id);
-        const profile = profileService.getProfileById(profileId);
-        const comments = profileService.getAllCommentsByProfile(profile.id);
+        const profile = await profileService.getProfileById(profileId);
+        const comments = await profileService.getAllCommentsByProfile(profile.id);
         res.status(200).json(comments);
     } catch (error) {
         res.status(400).json({ status: 'error', errorMessage: error.message });
@@ -424,7 +430,7 @@ profileRouter.get('/:profileId/:resourceId/comments', async (req: Request, res: 
     try {
         const profileId = parseInt(req.params.profileId);
         const resourceId = parseInt(req.params.resourceId);
-        const profile = profileService.getProfileById(profileId);
+        const profile = await profileService.getProfileById(profileId);
         const resource = await resourceService.getResourceById(resourceId);
         const comments = profileService.getAllCommentsByProfileOnResource(profile.id, resource.id);
         res.status(200).json(comments);
@@ -471,9 +477,9 @@ profileRouter.delete('/:profileId/:commentId', async (req: Request, res: Respons
     try {
         const profileId = parseInt(req.params.profileId);
         const commentId = parseInt(req.params.commentId);
-        const profile = profileService.getProfileById(profileId);
-        const comment = profileService.getCommentById(commentId);
-        res.status(200).json(profileService.deleteComment(profile, comment.id));
+        const profile = await profileService.getProfileById(profileId);
+        const comment = await profileService.getCommentById(commentId);
+        res.status(200).json(await profileService.deleteComment(profile, comment.id));
     } catch (error) {
         res.status(400).json({ status: 'error', errorMessage: error.message });
     }
@@ -654,7 +660,7 @@ profileRouter.post('/comment/:profileId/:resourceId', async (req: Request, res: 
         const profileId = parseInt(req.params.profileId);
         const resourceId = parseInt(req.params.resourceId);
         const message = String(req.query.message);
-        const profile = profileService.getProfileById(profileId);
+        const profile = await profileService.getProfileById(profileId);
         const resource = await resourceService.getResourceById(resourceId);
         const comment = profileService.writeComment(profile, resource, message);
         res.status(200).json(comment);
@@ -692,7 +698,61 @@ profileRouter.delete('/:id', (req: Request, res: Response) => {
     try {
         const profileId = parseInt(req.params.id);
         const profile = profileService.getProfileById(profileId);
-        res.status(200).json(profileService.deleteProfile(profile));
+        if (profile) res.status(200).json(profileService.deleteProfile(profileId));
+    } catch (error) {
+        res.status(400).json({ status: 'error', errorMessage: error.message });
+    }
+});
+
+/**
+ * @swagger
+ * /profiles/{profileId}/{commentId}?newMessage:
+ *   put:
+ *     tags:
+ *       - profiles
+ *     summary: Edit a Comment
+ *     parameters:
+ *       - name: profileId
+ *         in: path
+ *         required: true
+ *         description: The ID of the Profile.
+ *         schema:
+ *           type: number
+ *           example: 0
+ *       - name: commentId
+ *         in: path
+ *         required: true
+ *         description: The ID of the Comment to be edited
+ *         schema:
+ *           type: number
+ *           example: 0
+ *       - name: message
+ *         in: query
+ *         required: true
+ *         description: The new message for the Comment
+ *         schema:
+ *           type: string
+ *           example: "Nice!!"
+ *
+ *     responses:
+ *       200:
+ *         description: The updated Comment
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/Comment'
+ */
+profileRouter.put('/:profileId/:commentId', async (req: Request, res: Response) => {
+    try {
+        const profileId = parseInt(req.params.profileId);
+        const commentId = parseInt(req.params.commentId);
+        const profile = await profileService.getProfileById(profileId);
+        const comment = await profileService.getCommentById(commentId);
+        const message = String(req.query.message);
+        if (profile && comment) {
+            const updatedComment = await profileService.updateComment(profile, comment, message);
+            res.status(200).json(updatedComment);
+        }
     } catch (error) {
         res.status(400).json({ status: 'error', errorMessage: error.message });
     }

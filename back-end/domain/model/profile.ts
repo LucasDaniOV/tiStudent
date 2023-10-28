@@ -14,7 +14,7 @@ export class Profile {
         user: User;
         username: string;
         bio?: string;
-        createdAt: Date;
+        createdAt?: Date;
         latestActivity: Date;
     }) {
         this.validate(profile);
@@ -23,8 +23,11 @@ export class Profile {
         this.username = profile.username;
         this.user = profile.user;
         this.bio = profile.bio;
-
-        this.createdAt = profile.createdAt;
+        if (profile.createdAt) {
+            this.createdAt = profile.createdAt;
+        } else {
+            this.createdAt = new Date();
+        }
         this.latestActivity = profile.latestActivity;
     }
 
@@ -56,7 +59,7 @@ export class Profile {
             id,
             username,
             bio,
-            createdAt,
+            createdAt: createdAt ? createdAt : null,
             latestActivity,
             user: User.from(user),
         });

@@ -9,7 +9,7 @@ import { Comment } from '../domain/model/comment';
 import commentDb from '../domain/data-access/comment.db';
 
 // get all resources
-const getAllResources = async (): Promise<Resource[]> => resourceDb.getAllResources();
+const getAllResources = async (): Promise<Resource[]> => await resourceDb.getAllResources();
 
 // get resource by id
 const getResourceById = async (id: number): Promise<Resource> => {
@@ -19,17 +19,10 @@ const getResourceById = async (id: number): Promise<Resource> => {
 };
 
 // create resource
-const createResource = async ({
-    creator,
-    createdAt = new Date(),
-    title,
-    description,
-    category,
-    subject,
-}: ResourceInput): Promise<Resource> => {
+const createResource = async ({ creator, title, description, category, subject }: ResourceInput): Promise<Resource> => {
     if (!creator) throw new Error('creator Profile is required');
     if (!profileDb.getProfileById(creator.id)) throw new Error(`Profile with id ${creator.id} does not exist`);
-    const resource = new Resource({ creator, createdAt, title, description, category, subject });
+    const resource = new Resource({ creator, title, description, category, subject });
 
     const existing = resourceDb.getResourceByContent(
         resource.title,
@@ -42,25 +35,25 @@ const createResource = async ({
     return resourceDb.createResource(resource);
 };
 
-const updateField = (resource: Resource, field: string, newValue: string | Category | Subject): Resource => {
-    switch (field) {
-        case 'title':
-            resource.title = newValue as string;
-            break;
-        case 'description':
-            resource.description = newValue as string;
-            break;
-        case 'category':
-            resource.category = newValue as Category;
-            break;
-        case 'subject':
-            resource.subject = newValue as Subject;
-            break;
-        default:
-            throw new Error('Unsupported field');
-    }
-    return resource;
-};
+// const updateField = (resource: Resource, field: string, newValue: string | Category | Subject): Resource => {
+//     switch (field) {
+//         case 'title':
+//             resource.title = newValue as string;
+//             break;
+//         case 'description':
+//             resource.description = newValue as string;
+//             break;
+//         case 'category':
+//             resource.category = newValue as Category;
+//             break;
+//         case 'subject':
+//             resource.subject = newValue as Subject;
+//             break;
+//         default:
+//             throw new Error('Unsupported field');
+//     }
+//     return resource;
+// };
 
 const getField = (resource: Resource, field: string): string | number | Profile[] | Profile | Comment[] => {
     switch (field) {
@@ -83,16 +76,16 @@ const getField = (resource: Resource, field: string): string | number | Profile[
 
         // case 'upvoters':
         //     return profileDb.getProfilesWithLikeOnResource(resource);
-        case 'comments':
-            return commentDb.getAllCommentsOnResource(resource.id);
+        // case 'comments':
+        //     return commentDb.getAllCommentsOnResource(resource.id);
 
         default:
             throw new Error('Unsupported field');
     }
 };
 
-const deleteResource = (resource: Resource) => {
-    return resourceDb.deleteResource(resource);
+const deleteResource = (resourceId: number) => {
+    return resourceDb.deleteResource(resourceId);
 };
 
 export default {
@@ -100,6 +93,6 @@ export default {
     getResourceById,
     createResource,
     getField,
-    updateField,
+    // updateField,
     deleteResource,
 };

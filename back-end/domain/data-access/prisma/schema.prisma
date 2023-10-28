@@ -21,7 +21,7 @@ model Profile {
     createdAt          DateTime
     latestActivity     DateTime
     userId             Int        @unique
-    user               User       @relation(fields: [userId], references: [id])
+    user               User       @relation(fields: [userId], references: [id], onDelete: Cascade)
     publishedResources Resource[] @relation("publishedResources")
     writtenComments    Comment[]  @relation("writtenComments")
     likedResources     Like[]
@@ -35,7 +35,7 @@ model Resource {
     category    String
     subject     String
     creatorId   Int
-    creator     Profile   @relation("publishedResources", fields: [creatorId], references: [id])
+    creator     Profile   @relation("publishedResources", fields: [creatorId], references: [id], onDelete: Cascade)
     comments    Comment[] @relation("commentsOnResource")
     upvoters    Like[]
 }
@@ -44,13 +44,14 @@ model Comment {
     id              Int       @id @default(autoincrement())
     message         String
     createdAt       DateTime
+    edited          Boolean
     profileId       Int
-    profile         Profile   @relation("writtenComments", fields: [profileId], references: [id])
+    profile         Profile   @relation("writtenComments", fields: [profileId], references: [id], onDelete: Cascade)
     resourceId      Int?
-    resource        Resource? @relation("commentsOnResource", fields: [resourceId], references: [id])
+    resource        Resource? @relation("commentsOnResource", fields: [resourceId], references: [id], onDelete: Cascade)
     likers          Like[]
-    commentId       Int?
-    parent          Comment?  @relation("comments", fields: [commentId], references: [id])
+    parentId        Int?
+    parent          Comment?  @relation("comments", fields: [parentId], references: [id], onDelete: Cascade)
     comments        Comment[] @relation("comments")
 }
 
@@ -60,7 +61,7 @@ model Like {
     profileId  Int       @unique
     resourceId Int?       @unique
     commentId  Int?       @unique
-    upvoter    Profile   @relation(fields: [profileId], references: [id])
-    resource   Resource? @relation( fields: [resourceId], references: [id])
-    comment    Comment?  @relation( fields: [commentId], references: [id])
+    upvoter    Profile   @relation(fields: [profileId], references: [id], onDelete: Cascade)
+    resource   Resource? @relation( fields: [resourceId], references: [id], onDelete: Cascade)
+    comment    Comment?  @relation( fields: [commentId], references: [id], onDelete: Cascade)
 }

@@ -1,4 +1,5 @@
 import { PrismaClient } from '@prisma/client';
+import { Subject } from '../domain/model/subject';
 const prisma = new PrismaClient();
 async function main() {
     const alice = await prisma.user.upsert({
@@ -22,7 +23,7 @@ async function main() {
         where: { userId: 1 },
         update: {},
         create: {
-            username: 'Al-ICE money bang bang',
+            username: 'ICE money bang bang',
             createdAt: new Date(),
             latestActivity: new Date(),
             user: {
@@ -52,14 +53,14 @@ async function main() {
 
     console.log(aliceProfile);
     const aliceResource1 = await prisma.resource.upsert({
-        where: { creatorId: 1 },
+        where: { id: 1 },
         update: {},
         create: {
             title: 'P1 fundamentals summary',
             createdAt: new Date(),
             description: 'All the important stuff for p1',
             category: 'Summary',
-            subject: 'Programming1',
+            subject: Subject.Programming1,
             creator: {
                 connect: {
                     id: 1,
@@ -95,11 +96,12 @@ async function main() {
             },
             profile: {
                 connect: {
-                    id: 1,
+                    id: 2,
                 },
             },
             message: 'Great summary Alice',
             createdAt: new Date(),
+            edited: false,
         },
     });
     console.log(bobComment);
@@ -117,6 +119,7 @@ async function main() {
             },
             message: 'Thanks Bob',
             createdAt: new Date(),
+            edited: false,
             parent: {
                 connect: {
                     id: 1,
@@ -139,6 +142,7 @@ async function main() {
             },
             message: "You're welcome Alice",
             createdAt: new Date(),
+            edited: false,
             parent: {
                 connect: {
                     id: 1,
@@ -162,6 +166,7 @@ async function main() {
             },
             message: 'Love you too',
             createdAt: new Date(),
+            edited: false,
             parent: {
                 connect: {
                     id: 1,

@@ -169,6 +169,7 @@ const createComment = async (profile: Profile, resource: Resource, message: stri
                 },
                 createdAt: new Date(),
                 message: comment.message,
+                edited: false,
                 parent: {
                     connect: {
                         id: comment.parent.id,
@@ -199,6 +200,40 @@ const createComment = async (profile: Profile, resource: Resource, message: stri
     }
 };
 
+const updateMessageOnComment = async (commentId: number, newValue: string): Promise<Comment> => {
+    try {
+        const commentMessagePrisma = await database.comment.update({
+            where: {
+                id: commentId,
+            },
+            data: {
+                edited: true,
+                message: newValue,
+            },
+            include: {
+                profile: {
+                    include: {
+                        user: true,
+                    },
+                },
+                resource: {
+                    include: {
+                        creator: {
+                            include: {
+                                user: true,
+                            },
+                        },
+                    },
+                },
+            },
+        });
+        if (commentMessagePrisma) return Comment.from(commentMessagePrisma);
+    } catch (error) {
+        console.error(error);
+        throw new Error('Database error. See server log for details.');
+    }
+};
+
 const deleteComment = async (commentId: number): Promise<Boolean> => {
     try {
         await database.comment.delete({
@@ -218,7 +253,8 @@ export default {
     getAllCommentsOnResource,
     getAllCommentsByProfile,
     getAllCommentsByProfileOnResource,
-    createComment,
     getCommentById,
+    createComment,
+    updateMessageOnComment,
     deleteComment,
 };

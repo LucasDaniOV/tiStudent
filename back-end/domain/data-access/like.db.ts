@@ -351,54 +351,6 @@ const deleteLike = async (likeId: number): Promise<Boolean> => {
     }
 };
 
-const deleteLikesOnResource = async (resourceId: number): Promise<Boolean> => {
-    try {
-        await database.like.deleteMany({
-            where: {
-                resource: {
-                    id: resourceId,
-                },
-            },
-        });
-        return true;
-    } catch (error) {
-        console.error(error);
-        throw new Error('Database error. See server log for details.');
-    }
-};
-
-const deleteLikesOnComment = async (commentId: number): Promise<Boolean> => {
-    try {
-        await database.like.deleteMany({
-            where: {
-                comment: {
-                    id: commentId,
-                },
-            },
-        });
-        return true;
-    } catch (error) {
-        console.error(error);
-        throw new Error('Database error. See server log for details.');
-    }
-};
-
-const deleteLikesByProfile = async (profileId: number): Promise<Boolean> => {
-    try {
-        await database.like.deleteMany({
-            where: {
-                upvoter: {
-                    id: profileId,
-                },
-            },
-        });
-        return true;
-    } catch (error) {
-        console.error(error);
-        throw new Error('Database error. See server log for details.');
-    }
-};
-
 const createLike = async (profile: Profile, resource: Resource, comment: Comment) => {
     try {
         const like = new Like({ profile, resource, comment });
@@ -488,8 +440,5 @@ export default {
     getLikesOnComment,
     getLikesByProfile,
     deleteLike,
-    deleteLikesOnResource,
-    deleteLikesOnComment,
-    deleteLikesByProfile,
     createLike,
 };

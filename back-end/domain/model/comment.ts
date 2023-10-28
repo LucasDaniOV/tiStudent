@@ -10,15 +10,28 @@ import {
 export class Comment {
     readonly id?: number;
     readonly message: string;
-    readonly createdAt: Date;
+    readonly createdAt?: Date;
     readonly profile: Profile;
     readonly resource: Resource;
+    readonly edited?: Boolean = false;
     readonly parent?: Comment = null;
     readonly subComments?: Comment[] = null;
 
-    constructor(comment: { id?: number; profile: Profile; resource: Resource; message: string; parent?: Comment }) {
+    constructor(comment: {
+        id?: number;
+        message: string;
+        createdAt?: Date;
+        profile: Profile;
+        resource: Resource;
+        parent?: Comment;
+        edited?: Boolean;
+    }) {
         this.id = comment.id;
-        this.createdAt = new Date();
+        if (comment.createdAt) {
+            this.createdAt = comment.createdAt;
+        } else {
+            this.createdAt = new Date();
+        }
         if (comment.message.trim().length == 0) throw new Error("Message can't be empty");
         this.message = comment.message;
         this.profile = comment.profile;
@@ -35,9 +48,28 @@ export class Comment {
         }
     }
 
+    equals(otherComment: {
+        id?: number;
+        message: string;
+        createdAt?: Date;
+        profile: Profile;
+        resource: Resource;
+        parent?: Comment;
+        edited?: Boolean;
+    }) {
+        return (
+            otherComment.id == this.id &&
+            otherComment.message == this.message &&
+            otherComment.profile.id == this.profile.id &&
+            otherComment.resource.id == this.resource.id
+        );
+    }
+
     static from({
         id,
         message,
+        createdAt,
+        edited,
         profile,
         resource,
     }: CommentPrisma & { profile: ProfilePrisma & { user: UserPrisma } } & {
@@ -46,6 +78,8 @@ export class Comment {
         return new Comment({
             id,
             message,
+            createdAt: createdAt ? createdAt : new Date(),
+            edited,
             profile: Profile.from(profile),
             resource: Resource.from(resource),
         });

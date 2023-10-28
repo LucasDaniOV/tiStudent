@@ -117,4 +117,102 @@ const deleteResource = async (resourceId: number): Promise<Boolean> => {
     }
 };
 
-export default { getAllResources, getResourceById, createResource, getResourceByContent, deleteResource };
+const updateFieldOfResource = async (
+    resourceId: number,
+    field: string,
+    newValue: string | Category | Subject
+): Promise<Resource> => {
+    try {
+        const resource = await getResourceById(resourceId);
+        if (resource) {
+            switch (field) {
+                case 'title':
+                    const resourceTitlePrisma = await database.resource.update({
+                        where: {
+                            id: resourceId,
+                        },
+                        data: {
+                            title: newValue,
+                        },
+                        include: {
+                            creator: {
+                                include: {
+                                    user: true,
+                                },
+                            },
+                        },
+                    });
+                    if (resourceTitlePrisma) return Resource.from(resourceTitlePrisma);
+                    break;
+                case 'description':
+                    const resourceDescriptionPrisma = await database.resource.update({
+                        where: {
+                            id: resourceId,
+                        },
+                        data: {
+                            description: newValue,
+                        },
+                        include: {
+                            creator: {
+                                include: {
+                                    user: true,
+                                },
+                            },
+                        },
+                    });
+                    if (resourceDescriptionPrisma) return Resource.from(resourceDescriptionPrisma);
+                    break;
+                case 'category':
+                    const resourceCategoryPrisma = await database.resource.update({
+                        where: {
+                            id: resourceId,
+                        },
+                        data: {
+                            category: newValue,
+                        },
+                        include: {
+                            creator: {
+                                include: {
+                                    user: true,
+                                },
+                            },
+                        },
+                    });
+                    if (resourceCategoryPrisma) return Resource.from(resourceCategoryPrisma);
+                    break;
+                case 'subject':
+                    const resourceSubjectPrisma = await database.resource.update({
+                        where: {
+                            id: resourceId,
+                        },
+                        data: {
+                            subject: newValue,
+                        },
+                        include: {
+                            creator: {
+                                include: {
+                                    user: true,
+                                },
+                            },
+                        },
+                    });
+                    if (resourceSubjectPrisma) return Resource.from(resourceSubjectPrisma);
+                    break;
+                default:
+                    throw new Error('Field not supported');
+            }
+        }
+    } catch (error) {
+        console.error(error);
+        throw new Error('Database error. See server log for details.');
+    }
+};
+
+export default {
+    getAllResources,
+    getResourceById,
+    createResource,
+    getResourceByContent,
+    deleteResource,
+    updateFieldOfResource,
+};

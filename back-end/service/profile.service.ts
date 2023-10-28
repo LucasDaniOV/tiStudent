@@ -6,10 +6,11 @@ import { Resource } from '../domain/model/resource';
 import { ProfileInput } from '../types';
 import commentDb from '../domain/data-access/comment.db';
 import { Comment } from '../domain/model/comment';
+import { SourceTextModule } from 'vm';
 
-const getAllProfiles = () => profileDb.getAllProfiles();
+const getAllProfiles = async () => await profileDb.getAllProfiles();
 
-const getProfileById = (id: number) => {
+const getProfileById = async (id: number) => {
     const profile = profileDb.getProfileById(id);
     if (!profile) throw new Error(`Profile with id ${id} does not exist`);
     return profile;
@@ -18,6 +19,7 @@ const getProfileById = (id: number) => {
 const createProfile = async ({ userId, username }: ProfileInput): Promise<Profile> => {
     const user = await userDb.getUserById(userId);
     if (!user) throw new Error(`User with id ${userId} does not exist`);
+
     if (profileDb.getProfileByUserId(userId)) throw new Error(`User already has a profile`);
     const profile = new Profile({ user, username, bio: '', createdAt: new Date(), latestActivity: new Date() });
     if (profileDb.getProfileByUsername(username)) throw new Error(`Username already exists`);
@@ -40,7 +42,7 @@ const createProfile = async ({ userId, username }: ProfileInput): Promise<Profil
 //     return resource;
 // };
 
-// const getProfileField = (profile: Profile, field: 'username' | 'bio' | 'latestActivity' | 'likedResources') => {
+// const getProfileField = async (profile: Profile, field: 'username' | 'bio' | 'latestActivity' | 'likedResources') => {
 //     if (field == 'username') return profile.username;
 //     else if (field == 'bio') return profile.bio;
 //     else if (field == 'latestActivity') return profile.latestActivity;
@@ -62,34 +64,49 @@ const createProfile = async ({ userId, username }: ProfileInput): Promise<Profil
 //     return getProfileById(profile.id);
 // };
 
-const deleteProfile = (profile: Profile): Boolean => {
-    return profileDb.deleteProfile(profile);
+const deleteProfile = async (profileId: number): Promise<Boolean> => {
+    return profileDb.deleteProfile(profileId);
 };
 
-const writeComment = (profile: Profile, resource: Resource, message: string) => {
+const writeComment = async (profile: Profile, resource: Resource, message: string): Promise<Comment> => {
     return commentDb.createComment(profile, resource, message);
 };
 
-const getAllCommentsByProfile = (profileId: number): Comment[] => {
+const getAllCommentsByProfile = async (profileId: number): Promise<Comment[]> => {
     return commentDb.getAllCommentsByProfile(profileId);
 };
 
-const getAllCommentsByProfileOnResource = (profileId: number, resourceId: number): Comment[] => {
+const getAllCommentsByProfileOnResource = async (profileId: number, resourceId: number): Promise<Comment[]> => {
     return commentDb.getAllCommentsByProfileOnResource(profileId, resourceId);
 };
 
-const getCommentById = (commentId: number): Comment => {
+const getCommentById = async (commentId: number): Promise<Comment> => {
     const comment = commentDb.getCommentById(commentId);
     if (!comment) throw new Error(`No comment with id ${commentId} found`);
     return comment;
 };
 
-const deleteComment = (profile: Profile, commentId: number): Comment => {
-    const comment = commentDb.getCommentById(commentId);
-    if (comment.profile != profile) throw new Error(`This Profile didn't write the comment with id ${comment.id}`);
+const deleteComment = async (profile: Profile, commentId: number): Promise<Comment> => {
+    const comment = await commentDb.getCommentById(commentId);
     if (!comment) throw new Error(`No comment with id ${commentId} found`);
-    commentDb.deleteComment(comment);
+    if (comment.profile.id != profile.id)
+        throw new Error(`This Profile didn't write the comment with id ${comment.id}`);
+    commentDb.deleteComment(comment.id);
     return comment;
+};
+
+const updateComment = async (profile: Profile, comment: Comment, newMessage: string): Promise<Comment | Profile> => {
+    const comments = await getAllCommentsByProfile(profile.id);
+    const includes = comments.findIndex((c) => c.equals(comment));
+
+    if (includes !== -1) {
+        const newComment = await commentDb.updateMessageOnComment(comment.id, newMessage);
+        if (newComment) {
+            return newComment;
+        }
+    } else {
+        throw new Error('Profile with this ID did not comment this.');
+    }
 };
 
 export default {
@@ -105,4 +122,5 @@ export default {
     getAllCommentsByProfileOnResource,
     deleteComment,
     getCommentById,
+    updateComment,
 };

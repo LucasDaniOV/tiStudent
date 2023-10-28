@@ -191,55 +191,54 @@ resourceRouter.get('/:id/:field', async (req: Request, res: Response) => {
     }
 });
 
-/**
- * @swagger
- * /resources/{resourceId}/{field}:
- *   put:
- *     tags:
- *       - resources
- *     summary: update the value of a Resource's field
- *     parameters:
- *       - name: resourceId
- *         in: path
- *         required: true
- *         description: The ID of the Resource.
- *         schema:
- *           type: number
- *           example: 0
- *       - name: field
- *         in: path
- *         required: true
- *         description: The field you want to update
- *         schema:
- *           type: string
- *           example: "title"
- *       - name: newValue
- *         in: query
- *         required: true
- *         description: The value you want to update the field with
- *         schema:
- *           type: string
- *           example: "Programming 2 Cheat Sheet"
- *
- *     responses:
- *       200:
- *         description: The value of the Resource's field
- *         content:
- *           application/json:
- *             schema:
- *               $ref: '#/components/schemas/Resource'
- */
-resourceRouter.put('/:id/:field', async (req: Request, res: Response) => {
-    try {
-        const resourceId = parseInt(req.params.id);
-        const resource = await resourceService.getResourceById(resourceId);
-        const field = String(req.params.field);
-        const newValue = String(req.query.newValue);
-        res.status(200).json(resourceService.updateField(resource, field, newValue));
-    } catch (error) {
-        res.status(400).json({ status: 'error', errorMessage: error.message });
-    }
-});
+// /**
+//  * @swagger
+//  * /resources/{resourceId}/{field}:
+//  *   put:
+//  *     tags:
+//  *       - resources
+//  *     summary: update the value of a Resource's field
+//  *     parameters:
+//  *       - name: resourceId
+//  *         in: path
+//  *         required: true
+//  *         description: The ID of the Resource.
+//  *         schema:
+//  *           type: number
+//  *           example: 0
+//  *       - name: field
+//  *         in: path
+//  *         required: true
+//  *         description: The field you want to update
+//  *         schema:
+//  *           type: string
+//  *           example: "title"
+//  *       - name: newValue
+//  *         in: query
+//  *         required: true
+//  *         description: The value you want to update the field with
+//  *         schema:
+//  *           type: string
+//  *           example: "Programming 2 Cheat Sheet"
+//  *
+//  *     responses:
+//  *       200:
+//  *         description: The value of the Resource's field
+//  *         content:
+//  *           application/json:
+//  *             schema:
+//  *               $ref: '#/components/schemas/Resource'
+//  */
+// resourceRouter.put('/:id/:field', async (req: Request, res: Response) => {
+//     try {
+//         const resourceId = parseInt(req.params.id);
+//         const field = String(req.params.field);
+//         const newValue = String(req.query.newValue);
+//         res.status(200).json(resourceService.updateField(resourceId, field, newValue));
+//     } catch (error) {
+//         res.status(400).json({ status: 'error', errorMessage: error.message });
+//     }
+// });
 
 /**
  * @swagger
@@ -269,7 +268,7 @@ resourceRouter.delete('/:id', async (req: Request, res: Response) => {
     try {
         const resourceId = parseInt(req.params.id);
         const resource = await resourceService.getResourceById(resourceId);
-        res.status(200).json(resourceService.deleteResource(resource));
+        if (resource) res.status(200).json(resourceService.deleteResource(resourceId));
     } catch (error) {
         res.status(400).json({ status: 'error', errorMessage: error.message });
     }
