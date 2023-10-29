@@ -51,8 +51,6 @@ model Comment {
     resource        Resource? @relation("commentsOnResource", fields: [resourceId], references: [id], onDelete: Cascade)
     likers          Like[]
     parentId        Int?
-    parent          Comment?  @relation("comments", fields: [parentId], references: [id], onDelete: Cascade)
-    comments        Comment[] @relation("comments")
 }
 
 model Like {

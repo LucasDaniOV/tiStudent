@@ -600,6 +600,66 @@ profileRouter.delete('/:profileId/like/:likeId', async (req: Request, res: Respo
 
 /**
  * @swagger
+ * /profiles/comment-on-comment/{profileId}/{resourceId}/{commentId}:
+ *   post:
+ *     tags:
+ *       - profiles
+ *     summary: Comment on a Comment on a Resource
+ *     parameters:
+ *       - name: profileId
+ *         in: path
+ *         required: true
+ *         description: The ID of the Profile.
+ *         schema:
+ *           type: number
+ *           example: 0
+ *       - name: resourceId
+ *         in: path
+ *         required: true
+ *         description: The ID of the Resource.
+ *         schema:
+ *           type: number
+ *           example: 0
+ *       - name: commentId
+ *         in: path
+ *         required: true
+ *         description: The ID of the Comment.
+ *         schema:
+ *           type: number
+ *           example: 0
+ *       - name: message
+ *         in: query
+ *         required: true
+ *         description: The message you want to comment on the Comment
+ *         schema:
+ *           type: string
+ *           example: Great summary!
+ *     responses:
+ *       200:
+ *         description: The Comment
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/Comment'
+ */
+
+profileRouter.post('/comment-on-comment/:profileId/:resourceId/:commentId', async (req: Request, res: Response) => {
+    try {
+        const profileId = parseInt(req.params.profileId);
+        const resourceId = parseInt(req.params.resourceId);
+        const commentId = parseInt(req.params.commentId);
+        const message = String(req.query.message);
+        const profile = await profileService.getProfileById(profileId);
+        const resource = await resourceService.getResourceById(resourceId);
+        const newComment = await profileService.writeComment(profile, resource, message, commentId);
+        res.status(200).json(newComment);
+    } catch (error) {
+        res.status(400).json({ status: 'error', errorMessage: error.message });
+    }
+});
+
+/**
+ * @swagger
  * /profiles/comment/{profileId}/{resourceId}:
  *   post:
  *     tags:

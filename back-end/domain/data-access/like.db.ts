@@ -38,24 +38,6 @@ const getAllLikes = async (): Promise<Like[]> => {
                                 },
                             },
                         },
-                        parent: {
-                            include: {
-                                resource: {
-                                    include: {
-                                        creator: {
-                                            include: {
-                                                user: true,
-                                            },
-                                        },
-                                    },
-                                },
-                                profile: {
-                                    include: {
-                                        user: true,
-                                    },
-                                },
-                            },
-                        },
                     },
                 },
             },
@@ -99,24 +81,6 @@ const getLikeById = async (likeId: number): Promise<Like> => {
                         resource: {
                             include: {
                                 creator: {
-                                    include: {
-                                        user: true,
-                                    },
-                                },
-                            },
-                        },
-                        parent: {
-                            include: {
-                                resource: {
-                                    include: {
-                                        creator: {
-                                            include: {
-                                                user: true,
-                                            },
-                                        },
-                                    },
-                                },
-                                profile: {
                                     include: {
                                         user: true,
                                     },
@@ -173,24 +137,6 @@ const getLikesOnResource = async (resourceId: number): Promise<Like[]> => {
                                 },
                             },
                         },
-                        parent: {
-                            include: {
-                                resource: {
-                                    include: {
-                                        creator: {
-                                            include: {
-                                                user: true,
-                                            },
-                                        },
-                                    },
-                                },
-                                profile: {
-                                    include: {
-                                        user: true,
-                                    },
-                                },
-                            },
-                        },
                     },
                 },
             },
@@ -201,7 +147,6 @@ const getLikesOnResource = async (resourceId: number): Promise<Like[]> => {
         throw new Error('Database error. See server log for details.');
     }
 };
-
 
 const getLikesOnComment = async (commentId: number): Promise<Like[]> => {
     try {
@@ -236,24 +181,6 @@ const getLikesOnComment = async (commentId: number): Promise<Like[]> => {
                         resource: {
                             include: {
                                 creator: {
-                                    include: {
-                                        user: true,
-                                    },
-                                },
-                            },
-                        },
-                        parent: {
-                            include: {
-                                resource: {
-                                    include: {
-                                        creator: {
-                                            include: {
-                                                user: true,
-                                            },
-                                        },
-                                    },
-                                },
-                                profile: {
                                     include: {
                                         user: true,
                                     },
@@ -303,24 +230,6 @@ const getLikesByProfile = async (profileId: number): Promise<Like[]> => {
                         resource: {
                             include: {
                                 creator: {
-                                    include: {
-                                        user: true,
-                                    },
-                                },
-                            },
-                        },
-                        parent: {
-                            include: {
-                                resource: {
-                                    include: {
-                                        creator: {
-                                            include: {
-                                                user: true,
-                                            },
-                                        },
-                                    },
-                                },
-                                profile: {
                                     include: {
                                         user: true,
                                     },
@@ -403,24 +312,6 @@ const createLike = async (profile: Profile, resource: Resource | null, comment: 
                         resource: {
                             include: {
                                 creator: {
-                                    include: {
-                                        user: true,
-                                    },
-                                },
-                            },
-                        },
-                        parent: {
-                            include: {
-                                resource: {
-                                    include: {
-                                        creator: {
-                                            include: {
-                                                user: true,
-                                            },
-                                        },
-                                    },
-                                },
-                                profile: {
                                     include: {
                                         user: true,
                                     },

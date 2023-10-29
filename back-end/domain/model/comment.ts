@@ -14,8 +14,7 @@ export class Comment {
     readonly profile: Profile;
     readonly resource: Resource;
     readonly edited?: Boolean = false;
-    readonly parent?: Comment = null;
-    readonly subComments?: Comment[] = null;
+    readonly parentId?: number | null = null;
 
     constructor(comment: {
         id?: number;
@@ -23,7 +22,7 @@ export class Comment {
         createdAt?: Date;
         profile: Profile;
         resource: Resource;
-        parent?: Comment;
+        parentId?: number;
         edited?: Boolean;
     }) {
         this.id = comment.id;
@@ -36,33 +35,7 @@ export class Comment {
         this.message = comment.message;
         this.profile = comment.profile;
         this.resource = comment.resource;
-        if (comment.parent) {
-            if (comment.parent.parent !== null) {
-                this.parent = comment.parent.parent;
-                // throw new Error("Can't comment on comment with parent (comments have max. depth of 2)")
-            } else {
-                this.parent = comment.parent;
-            }
-        } else {
-            this.subComments = [];
-        }
-    }
-
-    equals(otherComment: {
-        id?: number;
-        message: string;
-        createdAt?: Date;
-        profile: Profile;
-        resource: Resource;
-        parent?: Comment;
-        edited?: Boolean;
-    }) {
-        return (
-            otherComment.id == this.id &&
-            otherComment.message == this.message &&
-            otherComment.profile.id == this.profile.id &&
-            otherComment.resource.id == this.resource.id
-        );
+        if (this.parentId) this.parentId = comment.parentId;
     }
 
     static from({
@@ -72,6 +45,7 @@ export class Comment {
         edited,
         profile,
         resource,
+        parentId,
     }: CommentPrisma & { profile: ProfilePrisma & { user: UserPrisma } } & {
         resource: ResourcePrisma & { creator: ProfilePrisma & { user: UserPrisma } };
     }) {
@@ -82,6 +56,7 @@ export class Comment {
             edited,
             profile: Profile.from(profile),
             resource: Resource.from(resource),
+            parentId: parentId ? parentId : null,
         });
     }
 }

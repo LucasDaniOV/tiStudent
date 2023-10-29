@@ -152,9 +152,9 @@ const getAllCommentsByProfileOnResource = async (profileId: number, resourceId: 
     }
 };
 
-const createComment = async (profile: Profile, resource: Resource, message: string, parent = null) => {
+const createComment = async (profile: Profile, resource: Resource, message: string, parentId: number | null = null) => {
     try {
-        const comment = new Comment({ profile, resource, message, parent });
+        const comment = new Comment({ profile, resource, message, parentId });
         const commentPrisma = await database.comment.create({
             data: {
                 profile: {
@@ -168,13 +168,9 @@ const createComment = async (profile: Profile, resource: Resource, message: stri
                     },
                 },
                 createdAt: new Date(),
+                parentId: parentId ? parentId : null,
                 message: comment.message,
                 edited: false,
-                parent: {
-                    connect: {
-                        id: comment.parent.id,
-                    },
-                },
             },
             include: {
                 profile: {

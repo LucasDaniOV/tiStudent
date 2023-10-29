@@ -84,6 +84,12 @@ const deleteResource = async (resourceId: number) => {
     return await resourceDb.deleteResource(resourceId);
 };
 
+const getCommentsOnComment = async (commentId: number) => {
+    const comments = await resourceDb.getCommentsOnComment(commentId);
+    if (comments) return comments;
+    else throw new Error('This comment has no subcomments');
+};
+
 export default {
     getAllResources,
     getResourceById,
@@ -91,4 +97,5 @@ export default {
     getField,
     updateField,
     deleteResource,
+    getCommentsOnComment,
 };

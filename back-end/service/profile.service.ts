@@ -9,6 +9,7 @@ import { Comment } from '../domain/model/comment';
 import { SourceTextModule } from 'vm';
 import likeDb from '../domain/data-access/like.db';
 import { Like } from '../domain/model/like';
+import resourceDb from '../domain/data-access/resource.db';
 
 const getAllProfiles = async () => await profileDb.getAllProfiles();
 
@@ -84,8 +85,22 @@ const deleteProfile = async (profileId: number): Promise<Boolean> => {
     return await profileDb.deleteProfile(profileId);
 };
 
-const writeComment = async (profile: Profile, resource: Resource, message: string): Promise<Comment> => {
-    return await commentDb.createComment(profile, resource, message);
+const writeComment = async (
+    profile: Profile,
+    resource: Resource,
+    message: string,
+    parentId: number | null = null
+): Promise<Comment> => {
+    if (parentId) {
+        const parentComments = await commentDb.getAllCommentsOnResource(resource.id);
+        console.log(parentComments);
+
+        if (parentComments.findIndex((c) => c.id == parentId) !== -1) {
+            return await commentDb.createComment(profile, resource, message, parentId);
+        } else {
+            throw new Error(`Parent Comment with id ${parentId} is not present on Resource with id ${resource.id}`);
+        }
+    } else return await commentDb.createComment(profile, resource, message);
 };
 
 const getAllCommentsByProfile = async (profileId: number): Promise<Comment[]> => {
@@ -113,7 +128,7 @@ const deleteComment = async (profile: Profile, commentId: number): Promise<Comme
 
 const updateComment = async (profile: Profile, comment: Comment, newMessage: string): Promise<Comment | Profile> => {
     const comments = await getAllCommentsByProfile(profile.id);
-    const includes = comments.findIndex((c) => c.equals(comment));
+    const includes = comments.findIndex((c) => c.id == comment.id);
 
     if (includes !== -1) {
         const newComment = await commentDb.updateMessageOnComment(comment.id, newMessage);
