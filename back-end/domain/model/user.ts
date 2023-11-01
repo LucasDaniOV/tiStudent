@@ -25,7 +25,7 @@ export class User {
         if (password.length < 8) throw new Error('password must be at least 8 characters long');
         if (!password.match(/\d/)) throw new Error('password must contain at least 1 number');
         if (!password.match(/[A-Z]/)) throw new Error('password must contain at least 1 capital letter');
-        if (!password.match(/[!@#$%^&*()+\-=\[\]{};':"\\|,.<>\/?]/)) {
+        if (!password.match(/[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]/)) {
             throw new Error(`password must contain at least 1 special character (!@#$%^&*()_+-=\[\]{};':"\\|,.<>\/?)`);
         }
     };
