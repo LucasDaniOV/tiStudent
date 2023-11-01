@@ -26,7 +26,7 @@ export class User {
         if (!password.match(/\d/)) throw new Error('password must contain at least 1 number');
         if (!password.match(/[A-Z]/)) throw new Error('password must contain at least 1 capital letter');
         if (!password.match(/[!@#$%^&*()+\-=\[\]{};':"\\|,.<>\/?]/)) {
-            throw new Error(`password must contain at least 1 special character (!@#$%^&*()+-=\[\]{};':"\\|,.<>\/?)`);
+            throw new Error(`password must contain at least 1 special character (!@#$%^&*()_+-=\[\]{};':"\\|,.<>\/?)`);
         }
     };
 
