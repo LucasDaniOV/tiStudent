@@ -32,20 +32,24 @@ export class Profile {
             this.username === otherProfile.username && this.bio === otherProfile.bio && this.user === otherProfile.user
         );
     }
+    
+    validate(profile: { username: string; bio?: string; user: User; }): void {
+        this.validateUsername(profile.username);
+        this.validateBio(profile.bio);
+        this.validateUser(profile.user);
+    }
 
     validateUsername = (username: string): void => {
+        if (!username) throw new Error('username is required');
         if (username.length > 30) throw new Error('username cannot be longer than 30 characters');
     };
 
     validateBio = (bio: string): void => {
-        if (bio.length > 200) throw new Error('bio cannot be longer than 200 characters');
+        if (bio != null && bio.length > 200) throw new Error('bio cannot be longer than 200 characters');
     };
 
-    validate(profile: { user: User; username: string; bio?: string }): void {
-        if (!profile.user) throw new Error('user is required');
-        if (!profile.username) throw new Error('username is required');
-        this.validateUsername(profile.username);
-        if (profile.bio) this.validateBio(profile.bio);
+    validateUser = (user: User): void => {
+        if (!user) throw new Error('user is required');
     }
 
     static from({ id, username, bio, createdAt, latestActivity, user }: ProfilePrisma & { user: UserPrisma }): Profile {
