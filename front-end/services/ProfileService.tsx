@@ -32,8 +32,21 @@ const deleteProfileById = async (profileId: number): Promise<Boolean> => {
     return res.json();
 };
 
+const createProfile = async (username: string, bio: string, userId: string): Promise<Profile> => {
+    const id = parseInt(userId);
+    const res = await fetch(baseUrl, {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ username, bio, userId: id }),
+    });
+    return res.json();
+}
+
 export default {
     getAllProfiles,
     getProfileById,
     deleteProfileById,
+    createProfile,
 };
