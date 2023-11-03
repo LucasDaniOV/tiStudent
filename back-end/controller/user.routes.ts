@@ -160,9 +160,9 @@ userRouter.post('/', async (req: Request, res: Response) => {
     try {
         const userInput = req.body as UserInput;
         const user = await userService.createUser(userInput);
-        res.status(200).json(user);
+        res.status(200).json({ status: 'success', message: 'User created', user});
     } catch (error) {
-        res.status(400).json({ status: 'error', errorMessage: error.message });
+        res.status(400).json({ status: 'error', message: error.message });
     }
 });
 

@@ -5,6 +5,7 @@ import { User } from "../../types";
 import Header from "@/components/header";
 import UserService from "../../services/UserService";
 import React from "react";
+import UserCreateForm from "@/components/users/UserCreateForm";
 
 const Users: React.FC = () => {
   const [users, setUsers] = useState<Array<User>>();
@@ -28,6 +29,8 @@ const Users: React.FC = () => {
       <main>
         <h1>Users</h1>
         <section>{users && <UsersOverviewTable users={users} />}</section>
+        <h1>Create new user</h1>
+        <section><UserCreateForm /></section>
       </main>
     </>
   );
