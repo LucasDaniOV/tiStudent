@@ -19,21 +19,25 @@ const getProfileById = async (id: number): Promise<Profile> => {
     return profile;
 };
 
-const createProfile = async ({ userId, username }: ProfileInput): Promise<Profile> => {
+const createProfile = async ({ username, bio, userId }: ProfileInput): Promise<Profile> => {
+    // check that userID is a number
+    if (typeof userId !== 'number') throw new Error('userId must be a number');
+    
+    // check if user with userId exists
     const user = await userDb.getUserById(userId);
     if (!user) throw new Error(`User with id ${userId} does not exist`);
 
+    // check if user already has a profile
     if (await profileDb.getProfileByUserId(userId)) throw new Error(`User already has a profile`);
-    const profile = new Profile({ user, username, bio: '', createdAt: new Date(), latestActivity: new Date() });
+    
+    // check if errors occur when creating profile object
+    const profile = new Profile({ username, bio, user });
+
+    // check if username is already taken
     if (await profileDb.getProfileByUsername(username)) throw new Error(`Username already exists`);
 
-    return await profileDb.createProfile(
-        profile.user,
-        profile.username,
-        profile.bio,
-        profile.createdAt,
-        profile.latestActivity
-    );
+    // create profile
+    return await profileDb.createProfile(profile.user, profile.username, profile.bio);
 };
 
 const likeObject = async (profileId: number, object: string, id: number): Promise<Like> => {

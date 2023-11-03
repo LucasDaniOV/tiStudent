@@ -34,17 +34,17 @@ export class Profile {
     }
     
     validate(profile: { username: string; bio?: string; user: User; }): void {
-        this.validateUsername(profile.username);
-        this.validateBio(profile.bio);
+        Profile.validateUsername(profile.username);
+        Profile.validateBio(profile.bio);
         this.validateUser(profile.user);
     }
 
-    validateUsername = (username: string): void => {
+    static validateUsername = (username: string): void => {
         if (!username) throw new Error('username is required');
         if (username.length > 30) throw new Error('username cannot be longer than 30 characters');
     };
 
-    validateBio = (bio: string): void => {
+    static validateBio = (bio: string): void => {
         if (bio != null && bio.length > 200) throw new Error('bio cannot be longer than 200 characters');
     };
 

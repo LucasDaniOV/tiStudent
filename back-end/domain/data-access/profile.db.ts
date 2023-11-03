@@ -75,12 +75,10 @@ const getProfileByUsername = async (username: string): Promise<Profile> => {
 const createProfile = async (
     user: User,
     username: string,
-    bio: string,
-    createdAt: Date,
-    latestActivity: Date
+    bio?: string,
 ): Promise<Profile> => {
     try {
-        const profile = new Profile({ user, username, bio, createdAt, latestActivity });
+        const profile = new Profile({ user, username, bio });
         const profilePrisma = await database.profile.create({
             data: {
                 user: {

@@ -50,10 +50,10 @@ test(`given: invalid userId, when: Profile is created, then: error is thrown`, (
     userDb.getUserById = mockUserDbGetUserById.mockResolvedValue(undefined);
 
     // when
-    const createProfile = async () => await profileService.createProfile({ userId: undefined, username });
+    const createProfile = async () => await profileService.createProfile({ userId: 42, username });
 
     // then
-    expect(createProfile).rejects.toThrowError('User with id undefined does not exist');
+    expect(createProfile).rejects.toThrowError('User with id 42 does not exist');
 });
 
 test(`given: existing Profile for User, when: Profile is created, then: error is thrown`, () => {
