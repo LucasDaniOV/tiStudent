@@ -9,78 +9,80 @@ const username = 'TheProfileServiceTester';
 
 const profileInput = { userId: 0, username };
 
-let mockProfileDbGetAllProfiles: jest.SpyInstance<Profile[], [], any>;
-let mockProfileDbGetProfileById: jest.SpyInstance<Profile, [id: number], any>;
-let mockProfileDbCreateProfile: jest.SpyInstance<Profile, [user: User, username: string], any>;
-let mockUserDbGetUserById: jest.SpyInstance<User, [id: number], any>;
-let mockProfileDbGetProfileByUserId: jest.SpyInstance<Profile, [userId: number], any>;
-let mockProfileDbGetProfileByUsername: jest.SpyInstance<Profile, [username: string], any>;
+let mockProfileDbGetAllProfiles: jest.Mock;
+let mockProfileDbGetProfileById: jest.Mock;
+let mockProfileDbCreateProfile: jest.Mock;
+let mockUserDbGetUserById: jest.Mock;
+let mockProfileDbGetProfileByUserId: jest.Mock;
+let mockProfileDbGetProfileByUsername: jest.Mock;
 
 beforeEach(() => {
-    mockProfileDbGetAllProfiles = jest.spyOn(profileDb, 'getAllProfiles');
-    mockProfileDbGetProfileById = jest.spyOn(profileDb, 'getProfileById');
-    mockProfileDbCreateProfile = jest.spyOn(profileDb, 'createProfile');
-    mockUserDbGetUserById = jest.spyOn(userDb, 'getUserById');
-    mockProfileDbGetProfileByUserId = jest.spyOn(profileDb, 'getProfileByUserId');
-    mockProfileDbGetProfileByUsername = jest.spyOn(profileDb, 'getProfileByUsername');
+    mockProfileDbGetAllProfiles = jest.fn();
+    mockProfileDbGetProfileById = jest.fn();
+    mockProfileDbCreateProfile = jest.fn();
+    mockUserDbGetUserById = jest.fn();
+    mockProfileDbGetProfileByUserId = jest.fn();
+    mockProfileDbGetProfileByUsername = jest.fn();
 });
 
 afterEach(() => {
     jest.clearAllMocks();
 });
 
-test(`given: valid values for Profile, when: Profile is created, then: Profile is created with those values`, () => {
+test(`given: valid values for Profile, when: Profile is created, then: Profile is created with those values`, async () => {
     // given
-    mockUserDbGetUserById.mockReturnValue(user);
-    mockProfileDbGetProfileByUserId.mockReturnValue(undefined);
-    mockProfileDbGetProfileByUsername.mockReturnValue(undefined);
-
+    const profile = new Profile({ user, username });
+    userDb.getUserById = mockUserDbGetUserById.mockResolvedValue(user);
+    profileDb.getProfileByUserId = mockProfileDbGetProfileByUserId.mockResolvedValue(undefined);
+    profileDb.getProfileByUsername = mockProfileDbGetProfileByUsername.mockResolvedValue(undefined);
+    profileDb.createProfile = mockProfileDbCreateProfile.mockResolvedValue(profile);
     // when
-    profileService.createProfile(profileInput);
+    const sut = await profileService.createProfile(profileInput);
 
     // then
     expect(mockProfileDbCreateProfile).toHaveBeenCalledTimes(1);
-    expect(mockProfileDbCreateProfile).toHaveBeenCalledWith(user, username);
+    expect(sut.username).toEqual(username);
+    expect(sut.user).toEqual(user);
 });
 
 test(`given: invalid userId, when: Profile is created, then: error is thrown`, () => {
     // given
-    mockUserDbGetUserById.mockReturnValue(undefined);
+    userDb.getUserById = mockUserDbGetUserById.mockResolvedValue(undefined);
 
     // when
-    const createProfile = () => profileService.createProfile({ userId: undefined, username });
+    const createProfile = async () => await profileService.createProfile({ userId: undefined, username });
 
     // then
-    expect(createProfile).toThrowError('User with id undefined does not exist');
+    expect(createProfile).rejects.toThrowError('User with id undefined does not exist');
 });
 
 test(`given: existing Profile for User, when: Profile is created, then: error is thrown`, () => {
     // given
     const profile = new Profile({ user, username });
-    mockProfileDbGetProfileByUserId.mockReturnValue(profile);
-    mockUserDbGetUserById.mockReturnValue(user);
+    profileDb.getProfileByUserId = mockProfileDbGetProfileByUserId.mockResolvedValue(profile);
+    userDb.getUserById = mockUserDbGetUserById.mockResolvedValue(user);
 
     // when
-    const createProfile = () => profileService.createProfile(profileInput);
+    const createProfile = async () => await profileService.createProfile(profileInput);
 
     // then
-    expect(createProfile).toThrowError('User already has a profile');
+    expect(createProfile).rejects.toThrowError('User already has a profile');
 });
 
 test(`given: taken username, when: Profile is created, then: error is thrown`, () => {
     // given
-    mockUserDbGetUserById.mockReturnValue(user);
-    mockProfileDbGetProfileByUserId.mockReturnValue(undefined);
-    mockProfileDbGetProfileByUsername.mockReturnValue(new Profile({ user, username }));
+    userDb.getUserById = mockUserDbGetUserById.mockResolvedValue(user);
+    profileDb.getProfileByUserId = mockProfileDbGetProfileByUserId.mockResolvedValue(undefined);
+    profileDb.getProfileByUsername = mockProfileDbGetProfileByUsername.mockResolvedValue(new Profile({ user, username }));
 
     // when
-    const createProfile = () => profileService.createProfile(profileInput);
+    const createProfile = async () => await profileService.createProfile(profileInput);
 
     // then
-    expect(createProfile).toThrowError('Username already exists');
+    expect(createProfile).rejects.toThrowError('Username already exists');
 });
 
-test(`given: existing profiles, when: getAllProfiles is called, then: all profiles are returned`, () => {
+test(`given: existing profiles, when: getAllProfiles is called, then: all profiles are returned`, async () => {
     // given
     const profiles = [
         new Profile({ user, username }),
@@ -88,22 +90,22 @@ test(`given: existing profiles, when: getAllProfiles is called, then: all profil
         new Profile({ user, username }),
         new Profile({ user, username }),
     ];
-    mockProfileDbGetAllProfiles.mockReturnValue(profiles);
+    profileDb.getAllProfiles = mockProfileDbGetAllProfiles.mockResolvedValue(profiles);
 
     // when
-    const sut = profileService.getAllProfiles();
+    const sut = await profileService.getAllProfiles();
 
     // then
     expect(sut).toEqual(profiles);
 });
 
-test(`given: existing profile, when: getProfileById is called, then: profile is returned`, () => {
+test(`given: existing profile, when: getProfileById is called, then: profile is returned`, async () => {
     // given
     const profile = new Profile({ user, username });
-    mockProfileDbGetProfileById.mockReturnValue(profile);
+    profileDb.getProfileById = mockProfileDbGetProfileById.mockResolvedValue(profile);
 
     // when
-    const sut = profileService.getProfileById(0);
+    const sut = await profileService.getProfileById(0);
 
     // then
     expect(sut).toEqual(profile);
@@ -111,11 +113,11 @@ test(`given: existing profile, when: getProfileById is called, then: profile is 
 
 test(`given: non-existing profile, when: getProfileById is called, then: error is thrown`, () => {
     // given
-    mockProfileDbGetProfileById.mockReturnValue(undefined);
+    profileDb.getProfileById = mockProfileDbGetProfileById.mockResolvedValue(undefined);
 
     // when
-    const getProfileById = () => profileService.getProfileById(0);
+    const getProfileById = async () => await profileService.getProfileById(0);
 
     // then
-    expect(getProfileById).toThrowError('Profile with id 0 does not exist');
+    expect(getProfileById).rejects.toThrowError('Profile with id 0 does not exist');
 });
