@@ -31,8 +31,8 @@ const UsersOverviewTable: React.FC<Props> = ({ users }: Props) => {
                 }}
               >
                 <td>{user.id}</td>
-                <td>{user._email}</td>
-                <td>{user._password}</td>
+                <td>{user.email}</td>
+                <td>{user.password}</td>
               </tr>
             ))}
           </tbody>

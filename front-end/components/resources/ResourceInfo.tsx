@@ -5,7 +5,7 @@ type Props = {
   resource: Resource;
 };
 
-const UserInfo: React.FC<Props> = ({ resource }: Props) => {
+const ResourceInfo: React.FC<Props> = ({ resource }: Props) => {
   return (
     <>
       {resource && (
@@ -20,16 +20,16 @@ const UserInfo: React.FC<Props> = ({ resource }: Props) => {
             <strong>Created at:</strong> {String(resource.createdAt)}
           </p>
           <p>
-            <strong>Title:</strong> {resource._title}
+            <strong>Title:</strong> {resource.title}
           </p>
           <p>
-            <strong>Description:</strong> {resource._description}
+            <strong>Description:</strong> {resource.description}
           </p>
           <p>
-            <strong>Category:</strong> {resource._category}
+            <strong>Category:</strong> {resource.category}
           </p>
           <p>
-            <strong>Subject:</strong> {resource._subject}
+            <strong>Subject:</strong> {resource.subject}
           </p>
         </div>
       )}
@@ -37,4 +37,4 @@ const UserInfo: React.FC<Props> = ({ resource }: Props) => {
   );
 };
 
-export default UserInfo;
+export default ResourceInfo;

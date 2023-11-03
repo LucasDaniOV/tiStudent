@@ -38,10 +38,10 @@ const ResourceOverviewTable: React.FC<Props> = ({ resources }: Props) => {
                 <td>{resource.id}</td>
                 <td>{resource.creator.id}</td>
                 <td>{String(resource.createdAt)}</td>
-                <td>{resource._title}</td>
-                <td>{resource._description}</td>
-                <td>{resource._category}</td>
-                <td>{resource._subject}</td>
+                <td>{resource.title}</td>
+                <td>{resource.description}</td>
+                <td>{resource.category}</td>
+                <td>{resource.subject}</td>
               </tr>
             ))}
           </tbody>

@@ -154,6 +154,27 @@ table tbody tr:hover {
   background-color: #979797; /* This is the hover effect */
 }
 
+label {
+  margin: 1rem 0 1rem;
+}
+
+form {
+  display: flex;
+  flex-direction: column;
+}
+
+.radio-option {
+  display: flex;
+  align-items: center;
+}
+
+.radio-option label {
+  margin: 0 0 0.5rem 1rem;
+}
+.radio-option input {
+  margin-bottom: 0.5rem;
+}
+
 @media (prefers-color-scheme: dark) {
   html {
     color-scheme: dark;
