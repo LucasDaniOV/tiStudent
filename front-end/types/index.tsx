@@ -16,3 +16,12 @@ export type Resource = {
   category: Category;
   subject: Subject;
 };
+
+export type Profile = {
+  id: number;
+  username: string;
+  bio?: string;
+  createdAt: Date;
+  latestActivity: Date;
+  user: User;
+}
