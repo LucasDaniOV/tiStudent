@@ -25,3 +25,8 @@ export type Profile = {
   latestActivity: Date;
   user: User;
 }
+
+export type StatusMessage = {
+  message: string;
+  type: "error" | "success";
+};
