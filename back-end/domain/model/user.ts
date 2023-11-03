@@ -17,16 +17,16 @@ export class User {
         return this.id == otherUser.id && this.email === otherUser.email && this.password === otherUser.password;
     }
 
-    public static validateEmail = (email: string): void => {
+    static validateEmail = (email: string): void => {
         if (!email.includes('@')) throw new Error("email must contain a '@'");
     };
 
-    public static validatePassword = (password: string): void => {
+    static validatePassword = (password: string): void => {
         if (password.length < 8) throw new Error('password must be at least 8 characters long');
         if (!password.match(/\d/)) throw new Error('password must contain at least 1 number');
         if (!password.match(/[A-Z]/)) throw new Error('password must contain at least 1 capital letter');
-        if (!password.match(/[!@#$%^&*()+\-=\[\]{};':"\\|,.<>\/?]/)) {
-            throw new Error(`password must contain at least 1 special character (!@#$%^&*()+-=\[\]{};':"\\|,.<>\/?)`);
+        if (!password.match(/[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]/)) {
+            throw new Error(`password must contain at least 1 special character (!@#$%^&*()_+-=\[\]{};':"\\|,.<>\/?)`);
         }
     };
 

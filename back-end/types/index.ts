@@ -22,6 +22,7 @@ type ProfileInput = {
     id?: number;
     userId?: number;
     username?: string;
+    bio?: string;
 };
 
 export { UserInput, ResourceInput, ProfileInput };

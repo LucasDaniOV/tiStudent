@@ -171,9 +171,9 @@ profileRouter.post('/', async (req: Request, res: Response) => {
     try {
         const profileInput = req.body as ProfileInput;
         const profile = await profileService.createProfile(profileInput);
-        res.status(200).json(profile);
+        res.status(200).json({ status: 'success', message: 'Profile created', data: profile });
     } catch (error) {
-        res.status(400).json({ status: 'error', errorMessage: error.message });
+        res.status(400).json({ status: 'error', message: error.message });
     }
 });
 

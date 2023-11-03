@@ -3,16 +3,30 @@ import { Subject } from "../../back-end/domain/model/subject";
 
 export type User = {
   id: string;
-  _email: string;
-  _password: string;
+  email: string;
+  password: string;
 };
 
 export type Resource = {
   id: string;
   creator: User;
   createdAt: Date;
-  _title: string;
-  _description: string;
-  _category: Category;
-  _subject: Subject;
+  title: string;
+  description: string;
+  category: Category;
+  subject: Subject;
+};
+
+export type Profile = {
+  id: number;
+  username: string;
+  bio?: string;
+  createdAt: Date;
+  latestActivity: Date;
+  user: User;
+}
+
+export type StatusMessage = {
+  message: string;
+  type: "error" | "success";
 };

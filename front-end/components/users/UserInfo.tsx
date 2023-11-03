@@ -11,8 +11,8 @@ const UserInfo: React.FC<Props> = ({ user }: Props) => {
       {user && (
         <div>
           <p>{user.id}</p>
-          <p>{user._email}</p>
-          <p>{user._password}</p>
+          <p>{user.email}</p>
+          <p>{user.password}</p>
         </div>
       )}
     </>
