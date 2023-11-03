@@ -1,88 +1,66 @@
+import { Profile as ProfilePrisma, Resource as ResourcePrisma, User as UserPrisma } from '@prisma/client';
 import { Category } from './category';
-import { Subject } from './subject';
 import { Profile } from './profile';
-import { Profile as ProfilePrisma, User as UserPrisma, Resource as ResourcePrisma } from '@prisma/client';
+import { Subject } from './subject';
 
 export class Resource {
     readonly id?: number;
-    readonly creator: Profile;
     readonly createdAt?: Date;
     readonly title: string;
     readonly description: string;
     readonly category: Category;
     readonly subject: Subject;
-    // readonly filePath: string;
+    readonly creator: Profile;
 
     constructor(resource: {
         id?: number;
-        creator: Profile;
         createdAt?: Date;
         title: string;
         description: string;
         category: Category;
         subject: Subject;
-        // filePath: string;
+        creator: Profile;
     }) {
         this.validate(resource);
 
         this.id = resource.id;
-        this.creator = resource.creator;
-        if (resource.createdAt) {
-            this.createdAt = resource.createdAt;
-        }
-        this.createdAt = new Date();
+        this.createdAt = resource.createdAt ? resource.createdAt : new Date();
         this.title = resource.title;
         this.description = resource.description;
         this.category = resource.category;
         this.subject = resource.subject;
-        // this.filePath = resource.filePath;
+        this.creator = resource.creator;
     }
 
     equals(otherResource: {
-        id: number;
-        creator: Profile;
         title: string;
         description: string;
         category: Category;
         subject: Subject;
-        // filePath: string;
+        creator: Profile;
     }): boolean {
         return (
-            this.id === otherResource.id &&
-            this.creator === otherResource.creator &&
             this.title === otherResource.title &&
             this.description === otherResource.description &&
             this.category == otherResource.category &&
-            this.subject == otherResource.subject
-            // && this.filePath == otherResource.filePath
+            this.subject == otherResource.subject &&
+            this.creator === otherResource.creator
         );
     }
 
     validate(resource: {
-        id?: number;
-        creator: Profile;
         title: string;
         description: string;
         category: Category;
         subject: Subject;
-        // filePath: string;
+        creator: Profile;
     }): void {
-        this.validateCreator(resource.creator);
         this.validateTitle(resource.title);
         this.validateDescription(resource.description);
         this.validateCategory(resource.category);
         this.validateSubject(resource.subject);
-        // this.validateFilePath(resource.filePath);
+        this.validateCreator(resource.creator);
     }
-
-    // validateFilePath(filePath: string) {
-    //     if (!filePath) throw new Error('Filepath is required');
-    //     if (filePath.trim() === '') throw new Error("Filepath can't be empty");
-    // }
-
-    validateCreator = (creator: Profile) => {
-        if (!creator) throw new Error('creator Profile is required');
-    };
 
     validateTitle = (title: string) => {
         if (!title) throw new Error('title is required');
@@ -104,6 +82,10 @@ export class Resource {
         if (!Object.values(Subject).includes(subject as Subject)) throw new Error('Invalid subject');
     };
 
+    validateCreator = (creator: Profile) => {
+        if (!creator) throw new Error('creator Profile is required');
+    };
+
     static from({
         id,
         creator,
@@ -112,17 +94,15 @@ export class Resource {
         description,
         category,
         subject,
-    }: // filePath,
-    ResourcePrisma & { creator: ProfilePrisma & { user: UserPrisma } }) {
+    }: ResourcePrisma & { creator: ProfilePrisma & { user: UserPrisma } }) {
         return new Resource({
             id,
             creator: Profile.from(creator),
-            createdAt: createdAt ? createdAt : null,
+            createdAt: createdAt,
             title,
             description,
             category: category as Category,
             subject: subject as Subject,
-            // filePath,
         });
     }
 }

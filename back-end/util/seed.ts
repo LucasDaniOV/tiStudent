@@ -7,8 +7,8 @@ async function main() {
         where: { email: 'alice@prisma.io' },
         update: {},
         create: {
-            email: 'alice12@prisma.io',
-            password: 'Aliceecila!$000',
+            email: 'user@tistudent.be',
+            password: 'Str0ngPW!!!',
         },
     });
     const bob = await prisma.user.upsert({

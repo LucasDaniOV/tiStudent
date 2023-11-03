@@ -41,16 +41,16 @@ model Resource {
 }
 
 model Comment {
-    id              Int       @id @default(autoincrement())
-    message         String
-    createdAt       DateTime
-    edited          Boolean
-    profileId       Int
-    profile         Profile   @relation("writtenComments", fields: [profileId], references: [id], onDelete: Cascade)
-    resourceId      Int?
-    resource        Resource? @relation("commentsOnResource", fields: [resourceId], references: [id], onDelete: Cascade)
-    likers          Like[]
-    parentId        Int?
+    id         Int       @id @default(autoincrement())
+    message    String
+    createdAt  DateTime
+    edited     Boolean
+    profileId  Int
+    profile    Profile   @relation("writtenComments", fields: [profileId], references: [id], onDelete: Cascade)
+    resourceId Int?
+    resource   Resource? @relation("commentsOnResource", fields: [resourceId], references: [id], onDelete: Cascade)
+    likers     Like[]
+    parentId   Int?
 }
 
 model Like {
@@ -60,6 +60,6 @@ model Like {
     resourceId Int?
     commentId  Int?
     upvoter    Profile   @relation(fields: [profileId], references: [id], onDelete: Cascade)
-    resource   Resource? @relation( fields: [resourceId], references: [id], onDelete: Cascade)
-    comment    Comment?  @relation( fields: [commentId], references: [id], onDelete: Cascade)
+    resource   Resource? @relation(fields: [resourceId], references: [id], onDelete: Cascade)
+    comment    Comment?  @relation(fields: [commentId], references: [id], onDelete: Cascade)
 }

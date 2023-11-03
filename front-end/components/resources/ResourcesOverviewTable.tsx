@@ -1,7 +1,6 @@
+import { useRouter } from "next/router";
 import React from "react";
 import { Resource } from "../../types";
-import { useRouter } from "next/router";
-import ResourceService from "@/services/ResourceService";
 
 type Props = {
   resources: Array<Resource>;

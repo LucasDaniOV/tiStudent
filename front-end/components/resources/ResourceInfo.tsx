@@ -1,5 +1,5 @@
-import React from "react";
 import { Resource } from "@/types";
+import React from "react";
 
 type Props = {
   resource: Resource;

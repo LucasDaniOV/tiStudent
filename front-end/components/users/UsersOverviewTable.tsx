@@ -1,7 +1,6 @@
+import { useRouter } from "next/router";
 import React from "react";
 import { User } from "../../types";
-import { useRouter } from "next/router";
-import UserInfo from "./UserInfo";
 
 type Props = {
   users: Array<User>;
@@ -15,6 +14,7 @@ const UsersOverviewTable: React.FC<Props> = ({ users }: Props) => {
         <table>
           <thead>
             <tr>
+              <th scope="col">Id</th>
               <th scope="col">Email</th>
               <th scope="col">Password</th>
             </tr>

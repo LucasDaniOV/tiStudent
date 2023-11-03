@@ -5,155 +5,149 @@ import userService from '../../service/user.service';
 const validEmail = 'bob@ucll.com';
 const validPassword = 'B0bbi3!!';
 
-let mockUserDbCreateUser: jest.SpyInstance<User, [{ email: any; password: any }]>;
-let mockUserDbGetAllUsers: jest.SpyInstance<User[]>;
-let mockUserDbGetUserById: jest.SpyInstance<User, [id: number]>;
+let mockUserDbCreateUser: jest.Mock;
+let mockUserDbGetAllUsers: jest.Mock;
+let mockUserDbGetUserById: jest.Mock;
+let mockUserDbDeleteUser: jest.Mock;
+let mockUserDbUpdateEmail: jest.Mock;
 
 beforeEach(() => {
-    mockUserDbCreateUser = jest.spyOn(userDb, 'createUser');
-    mockUserDbGetAllUsers = jest.spyOn(userDb, 'getAllUsers');
-    mockUserDbGetUserById = jest.spyOn(userDb, 'getUserById');
+    mockUserDbCreateUser = jest.fn();
+    mockUserDbGetAllUsers = jest.fn();
+    mockUserDbGetUserById = jest.fn();
+    mockUserDbDeleteUser = jest.fn();
+    mockUserDbUpdateEmail = jest.fn();
 });
 
 afterEach(() => {
     jest.clearAllMocks();
 });
 
-test(`given: valid values for User, when: creating User, then: User is created with those values`, () => {
+test(`given: valid values for User, when: creating User, then: User is created with those values`, async () => {
     // given
+    const user = new User({ email: validEmail, password: validPassword });
+    userDb.createUser = mockUserDbCreateUser.mockResolvedValue(user);
+    
     // when
-    const user = userService.createUser({ email: validEmail, password: validPassword });
+    const sut = await userService.createUser({ email: validEmail, password: validPassword });
 
     // then
     expect(mockUserDbCreateUser).toHaveBeenCalledTimes(1);
-    expect(user.email).toEqual(validEmail);
-    expect(user.password).toEqual(validPassword);
-    expect(user.id).toBeDefined();
+    expect(sut.email).toEqual(validEmail);
+    expect(sut.password).toEqual(validPassword);
 });
 
-test(`given: existing Users, when: requesting all users, then: all users are returned `, () => {
+test(`given: existing Users, when: requesting all users, then: all users are returned `, async () => {
     // given
     const users = [
         new User({ email: validEmail, password: validPassword }),
         new User({ email: validEmail, password: validPassword }),
         new User({ email: validEmail, password: validPassword }),
     ];
-    mockUserDbGetAllUsers.mockReturnValue(users);
+    userDb.getAllUsers = mockUserDbGetAllUsers.mockReturnValue(users);
 
     // when
-    const returnedUsers = userService.getAllUsers();
+    const sut = await userService.getAllUsers();
 
     // then
     expect(mockUserDbGetAllUsers).toHaveBeenCalledTimes(1);
-    expect(returnedUsers).toBe(users);
+    expect(sut).toBe(users);
 });
 
-test(`given: no Users, when: requesting all users, then: empty array is returned`, () => {
+test(`given: no Users, when: requesting all users, then: empty array is returned`, async () => {
     // given
-    mockUserDbGetAllUsers.mockReturnValue([]);
+    userDb.getAllUsers = mockUserDbGetAllUsers.mockResolvedValue([]);
 
     // when
-    const returnedUsers = userService.getAllUsers();
+    const sut = await userService.getAllUsers();
 
     // then
     expect(mockUserDbGetAllUsers).toHaveBeenCalledTimes(1);
-    expect(returnedUsers).toEqual([]);
+    expect(sut).toEqual([]);
 });
 
-test(`given: valid id, when: requesting User by id, then: the User with this id is returned`, () => {
+test(`given: valid id, when: requesting User by id, then: the User with this id is returned`, async () => {
     // given
     const validId = 1;
     const validUser = new User({ id: validId, email: validEmail, password: validPassword });
 
-    mockUserDbGetUserById.mockReturnValue(validUser);
+    userDb.getUserById = mockUserDbGetUserById.mockResolvedValue(validUser);
 
     // when
-    const requestedUser = userService.getUserById(validId);
+    const sut = await userService.getUserById(validId);
 
     // then
-    expect(requestedUser).toBe(validUser);
+    expect(sut).toBe(validUser);
     expect(mockUserDbGetUserById).toHaveBeenCalledTimes(1);
 });
 
 test(`given: invalid id, when: requesting User by id, then: Error is thrown`, () => {
     // given
-    mockUserDbGetUserById.mockReturnValue(undefined);
+    userDb.getUserById = mockUserDbGetUserById.mockResolvedValue(undefined);
 
     // when
-    const requestedUser = () => userService.getUserById(69);
+    const sut = async () => await userService.getUserById(69);
 
     // then
-    expect(requestedUser).toThrowError('No user with ID 69 found');
+    expect(sut).rejects.toThrowError('No user with id 69 found');
     expect(mockUserDbGetUserById).toHaveBeenCalledTimes(1);
     expect(mockUserDbGetUserById).toHaveBeenCalledWith(69);
 });
 
-test(`given: valid id, when: deleting User by id, then: User is deleted`, () => {
+test(`given: valid id, when: deleting User by id, then: User is deleted`, async () => {
     // given
     const validId = 42;
     const validUser = new User({ id: validId, email: validEmail, password: validPassword });
-    mockUserDbGetUserById.mockReturnValue(validUser);
+    userDb.getUserById = mockUserDbGetUserById.mockResolvedValue(validUser);
+    userDb.deleteUser = mockUserDbDeleteUser.mockResolvedValue(true);
 
     // when
-    const deleted = userService.removeUser(42);
+    const sut = await userService.removeUserById(42);
 
     // then
-    expect(deleted).toBe(true);
+    expect(sut).toBe(true);
     expect(mockUserDbGetUserById).toHaveBeenCalledTimes(1);
     expect(mockUserDbGetUserById).toHaveBeenCalledWith(42);
 });
 
 test(`given: invalid id, when: deleting User by id, then: Error is thrown`, () => {
     // given
-    mockUserDbGetUserById.mockReturnValue(undefined);
+    userDb.getUserById = mockUserDbGetUserById.mockResolvedValue(undefined);
 
     // when
-    const deleted = () => userService.removeUser(69);
+    const deleted = async () => await userService.removeUserById(69);
 
     // then
-    expect(deleted).toThrowError('No user with ID 69 found');
+    expect(deleted).rejects.toThrowError('No user with id 69 found');
     expect(mockUserDbGetUserById).toHaveBeenCalledTimes(1);
     expect(mockUserDbGetUserById).toHaveBeenCalledWith(69);
 });
 
-test(`given: valid values, when: updating User, then: User is updated`, () => {
+test(`given: valid values, when: updating User, then: User is updated`, async () => {
     // given
     const validId = 42;
     const validUser = new User({ id: validId, email: validEmail, password: validPassword });
     const validNewEmail = 'newemail@tistudent.be';
-    mockUserDbGetUserById.mockReturnValue(validUser);
+    userDb.getUserById = mockUserDbGetUserById.mockResolvedValue(validUser);
+    userDb.updateEmail = mockUserDbUpdateEmail.mockResolvedValue(new User({ id: validId, email: validNewEmail, password: validPassword }));
 
     //when
-    userService.updateUser(validId, 'email', validNewEmail);
+    const sut = await userService.updateEmailById(validId, validNewEmail);
 
     //then
-    expect(validUser.email).toBe(validNewEmail);
+    expect(sut.email).toBe(validNewEmail);
     expect(mockUserDbGetUserById).toHaveBeenCalledTimes(1);
     expect(mockUserDbGetUserById).toHaveBeenCalledWith(validId);
 });
 
 test(`given: invalid id, when: updating User, then: Error is thrown`, () => {
     // given
-    mockUserDbGetUserById.mockReturnValue(undefined);
+    userDb.getUserById = mockUserDbGetUserById.mockResolvedValue(undefined);
 
     //when
-    const updateUser = () => userService.updateUser(undefined, 'email', '@');
+    const sut = async () => await userService.updateEmailById(undefined, '@');
 
     //then
-    expect(updateUser).toThrowError('No user with ID undefined found');
-    expect(mockUserDbGetUserById).toHaveBeenCalledTimes(1);
-});
-
-test(`given: invalid field, when: updating User, then: Error is thrown`, () => {
-    // given
-    const validId = 42;
-    const validUser = new User({ id: validId, email: validEmail, password: validPassword });
-    mockUserDbGetUserById.mockReturnValue(validUser);
-
-    //when
-    const updateUser = () => userService.updateUser(validId, 'invalidField', 'newValue');
-
-    //then
-    expect(updateUser).toThrowError('Unsupported field');
+    expect(sut).rejects.toThrowError('No user with id undefined found');
     expect(mockUserDbGetUserById).toHaveBeenCalledTimes(1);
 });
