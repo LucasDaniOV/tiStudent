@@ -36,6 +36,9 @@
 import express, { Request, Response } from 'express';
 import resourceService from '../service/resource.service';
 import { ResourceInput } from '../types';
+import { Subject } from '../domain/model/subject';
+import { Category } from '../domain/model/category';
+import profileService from '../service/profile.service';
 
 const resourceRouter = express.Router();
 
@@ -185,7 +188,7 @@ resourceRouter.get('/:id/:field', async (req: Request, res: Response) => {
         const resourceId = parseInt(req.params.id);
         const resource = await resourceService.getResourceById(resourceId);
         const field = String(req.params.field);
-        res.status(200).json(resourceService.getField(resource, field));
+        res.status(200).json(await resourceService.getField(resource, field));
     } catch (error) {
         res.status(400).json({ status: 'error', errorMessage: error.message });
     }
@@ -232,10 +235,9 @@ resourceRouter.get('/:id/:field', async (req: Request, res: Response) => {
 resourceRouter.put('/:id/:field', async (req: Request, res: Response) => {
     try {
         const resourceId = parseInt(req.params.id);
-        const resource = await resourceService.getResourceById(resourceId);
         const field = String(req.params.field);
         const newValue = String(req.query.newValue);
-        res.status(200).json(resourceService.updateField(resource, field, newValue));
+        res.status(200).json(await resourceService.updateField(resourceId, field, newValue));
     } catch (error) {
         res.status(400).json({ status: 'error', errorMessage: error.message });
     }
@@ -269,7 +271,17 @@ resourceRouter.delete('/:id', async (req: Request, res: Response) => {
     try {
         const resourceId = parseInt(req.params.id);
         const resource = await resourceService.getResourceById(resourceId);
-        res.status(200).json(resourceService.deleteResource(resource));
+        if (resource) res.status(200).json(await resourceService.deleteResource(resourceId));
+    } catch (error) {
+        res.status(400).json({ status: 'error', errorMessage: error.message });
+    }
+});
+
+resourceRouter.get('/comments/:commentId/comments', async (req: Request, res: Response) => {
+    try {
+        const commentId = parseInt(req.params.commentId);
+        const comment = profileService.getCommentById(commentId);
+        if (comment) res.status(200).json(await resourceService.getCommentsOnComment(commentId));
     } catch (error) {
         res.status(400).json({ status: 'error', errorMessage: error.message });
     }

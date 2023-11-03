@@ -1,3 +1,7 @@
+import express, { Request, Response } from 'express';
+import userService from '../service/user.service';
+import { UserInput } from '../types';
+
 /**
  * @swagger
  *   components:
@@ -8,98 +12,28 @@
  *           id:
  *             type: number
  *             format: int64
- *           _email:
+ *             example: 1
+ *           email:
  *             type: string
  *             format: email
- *           _password:
+ *             example: user@tistudent.be
+ *           password:
  *             type: string
  *             format: password
  *             example: Str0ngPW!!!
  */
-
-import express, { Request, Response } from 'express';
-import userService from '../service/user.service';
-import { User } from '../domain/model/user';
-import { UserInput } from '../types';
-
 const userRouter = express.Router();
 
 /**
  * @swagger
  * /users:
- *   post:
- *     tags:
- *       - users
- *     summary: Create a new User
- *     requestBody:
- *       required: true
- *       content:
- *         application/json:
- *           schema:
- *             $ref: '#/components/schemas/User'
- *     responses:
- *       200:
- *         description: Information about the new user
- *         content:
- *           application/json:
- *             schema:
- *               $ref: '#/components/schemas/User'
- */
-
-userRouter.post('/', async (req: Request, res: Response) => {
-    try {
-        const userInput = req.body as UserInput;
-        const user = await userService.createUser(userInput);
-        res.status(200).json(user);
-    } catch (error) {
-        res.status(400).json({ status: 'error', errorMessage: error.message });
-    }
-});
-
-/**
- * @swagger
- * /users/{id}:
  *   get:
  *     tags:
  *       - users
- *     summary: Returns User with given id
- *     parameters:
- *       - name: id
- *         in: path
- *         required: true
- *         description: The id of the User
- *         schema:
- *           type: number
- *           example: 0
- *     responses:
- *         200:
- *           description: The User with the id
- *           content:
- *             application/json:
- *               schema:
- *                 $ref: '#/components/schemas/User'
- */
-
-userRouter.get('/:id', async (req: Request, res: Response) => {
-    try {
-        const userId = parseInt(req.params.id);
-        const user = await userService.getUserById(userId);
-        res.status(200).json(user);
-    } catch (error) {
-        res.status(400).json({ status: 'error', errorMessage: error.message });
-    }
-});
-
-/**
- * @swagger
- * /users:
- *   get:
- *     tags:
- *       - users
- *     summary: Returns a list of all the users
+ *     summary: Get all users
  *     responses:
  *       200:
- *         description: List of all users
+ *         description: list of all users
  *         content:
  *           application/json:
  *             schema:
@@ -116,32 +50,64 @@ userRouter.get('/', async (req: Request, res: Response) => {
 
 /**
  * @swagger
- * /users:
- *   put:
+ * /users/{id}:
+ *   get:
  *     tags:
  *       - users
- *     summary: Update a field of User
- *     requestBody:
- *       required: true
- *       content:
- *         application/json:
- *           schema:
- *             $ref: '#/components/schemas/User'
+ *     summary: Get user by id
+ *     parameters:
+ *       - name: id
+ *         in: path
+ *         required: true
+ *         description: id of the user
+ *         schema:
+ *           type: number
+ *           example: 1
  *     responses:
- *       200:
- *         description: The User with updated field
- *         content:
- *           application/json:
- *             schema:
- *               $ref: '#/components/schemas/User'
+ *         200:
+ *           description: user with given id
+ *           content:
+ *             application/json:
+ *               schema:
+ *                 $ref: '#/components/schemas/User'
  */
-userRouter.put('/:id/:field', async (req: Request, res: Response) => {
+userRouter.get('/:id', async (req: Request, res: Response) => {
     try {
-        if (!req.query.hasOwnProperty('newValue')) throw new Error("query parameter 'newValue' is missing");
         const userId = parseInt(req.params.id);
-        const field = req.params.field;
-        const newValue = req.query.newValue as string;
-        const user = await userService.updateUserField(userId, field, newValue);
+        const user = await userService.getUserById(userId);
+        res.status(200).json(user);
+    } catch (error) {
+        res.status(400).json({ status: 'error', errorMessage: error.message });
+    }
+});
+
+/**
+ * @swagger
+ * /users/email/{email}:
+ *   get:
+ *     tags:
+ *       - users
+ *     summary: Get user by email
+ *     parameters:
+ *       - name: email
+ *         in: path
+ *         required: true
+ *         description: email of the User
+ *         schema:
+ *           type: string
+ *           example: user@tistudent.be
+ *     responses:
+ *         200:
+ *           description: user with given email
+ *           content:
+ *             application/json:
+ *               schema:
+ *                 $ref: '#/components/schemas/User'
+ */
+userRouter.get('/email/:email', async (req: Request, res: Response) => {
+    try {
+        const userEmail = req.params.email;
+        const user = await userService.getUserByEmail(userEmail);
         res.status(200).json(user);
     } catch (error) {
         res.status(400).json({ status: 'error', errorMessage: error.message });
@@ -151,31 +117,49 @@ userRouter.put('/:id/:field', async (req: Request, res: Response) => {
 /**
  * @swagger
  * /users:
- *   get:
+ *   post:
  *     tags:
  *       - users
- *     summary: get a field of a User
+ *     summary: Create new user
  *     requestBody:
  *       required: true
  *       content:
  *         application/json:
  *           schema:
- *             $ref: '#/components/schemas/User'
+ *             type: object
+ *             properties:
+ *               email:
+ *                 type: string
+ *                 format: email
+ *                 example: satoshi.nakamoto@gmail.com
+ *               password:
+ *                 type: string
+ *                 format: password
+ *                 example: Str0ngPW!!!2
  *     responses:
  *       200:
- *         description: The User with updated field
+ *         description: new user
  *         content:
- *           text/plain:
+ *           application/json:
  *             schema:
- *               type: string
- *               example: "johndoe"
+ *               type: object
+ *               properties:
+ *                 id:
+ *                   type: number
+ *                   format: int64
+ *                 email:
+ *                   type: string
+ *                   format: email
+ *                   example: satoshi.nakamoto@gmail.com
+ *                 password:
+ *                   type: string
+ *                   format: password
+ *                   example: Str0ngPW!!!2
  */
-
-userRouter.get('/:id/:field', async (req: Request, res: Response) => {
+userRouter.post('/', async (req: Request, res: Response) => {
     try {
-        const userId = parseInt(req.params.id);
-        const field = req.params.field;
-        const user = await userService.getUserField(userId, field);
+        const userInput = req.body as UserInput;
+        const user = await userService.createUser(userInput);
         res.status(200).json(user);
     } catch (error) {
         res.status(400).json({ status: 'error', errorMessage: error.message });
@@ -188,28 +172,142 @@ userRouter.get('/:id/:field', async (req: Request, res: Response) => {
  *   delete:
  *     tags:
  *       - users
- *     summary: Remove a of User
+ *     summary: Remove user by id
  *     parameters:
  *       - name: id
  *         in: path
  *         required: true
- *         description: The id of the User
+ *         description: id of the user
  *         schema:
  *           type: number
- *           example: 0
+ *           example: 1
  *     responses:
  *       200:
- *         description: A boolean saying whether the user was removed or not
+ *         description: boolean saying whether the user was removed or not
  *         content:
- *           text/plain:
+ *           application/json:
  *             type: boolean
  *             example: true
  */
-
 userRouter.delete('/:id', async (req: Request, res: Response) => {
     try {
         const userId = parseInt(req.params.id);
-        res.status(200).json(await userService.removeUser(userId));
+        res.status(200).json(await userService.removeUserById(userId));
+    } catch (error) {
+        res.status(400).json({ status: 'error', errorMessage: error.message });
+    }
+});
+
+/**
+ * @swagger
+ * /users/{id}/email:
+ *   put:
+ *     tags:
+ *       - users
+ *     summary: Update user email
+ *     parameters:
+ *       - name: id
+ *         in: path
+ *         required: true
+ *         description: id of the user
+ *         schema:
+ *           type: number
+ *           example: 1
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               email:
+ *                 type: string
+ *                 format: email
+ *                 example: newemail@tistudent.be
+ *     responses:
+ *       200:
+ *         description: updated user
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 id:
+ *                   type: number
+ *                   format: int64
+ *                   example: 1
+ *                 email:
+ *                   type: string
+ *                   format: email
+ *                   example: newemail@tistudent.be
+ *                 password:
+ *                   type: string
+ *                   format: password
+ *                   example: Str0ngPW!!!
+ */
+userRouter.put('/:id/email', async (req: Request, res: Response) => {
+    try {
+        const id = parseInt(req.params.id);
+        const email = String(req.query.email);
+        const user = await userService.updateEmailById(id, email);
+        res.status(200).json(user);
+    } catch (error) {
+        res.status(400).json({ status: 'error', errorMessage: error.message });
+    }
+});
+
+/**
+ * @swagger
+ * /users/{id}/password:
+ *   put:
+ *     tags:
+ *       - users
+ *     summary: Update user password
+ *     parameters:
+ *       - name: id
+ *         in: path
+ *         required: true
+ *         description: id of the user
+ *         schema:
+ *           type: number
+ *           example: 1
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               password:
+ *                 type: string
+ *                 example: Str0ngPW!!!2
+ *     responses:
+ *       200:
+ *         description: updated user
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 id:
+ *                   type: number
+ *                   format: int64
+ *                   example: 1
+ *                 email:
+ *                   type: string
+ *                   format: email
+ *                   example: user@tistudent.be
+ *                 password:
+ *                   type: string
+ *                   format: password
+ *                   example: Str0ngPW!!!2
+ */
+userRouter.put('/:id/password', async (req: Request, res: Response) => {
+    try {
+        const id = parseInt(req.params.id);
+        const password = String(req.query.password);
+        const user = await userService.updatePasswordById(id, password);
+        res.status(200).json(user);
     } catch (error) {
         res.status(400).json({ status: 'error', errorMessage: error.message });
     }

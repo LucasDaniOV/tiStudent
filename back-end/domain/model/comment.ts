@@ -1,28 +1,62 @@
 import { Profile } from './profile';
 import { Resource } from './resource';
-import { User } from './user';
+import {
+    Profile as ProfilePrisma,
+    User as UserPrisma,
+    Resource as ResourcePrisma,
+    Comment as CommentPrisma,
+} from '@prisma/client';
 
 export class Comment {
     readonly id?: number;
+    readonly message: string;
+    readonly createdAt?: Date;
     readonly profile: Profile;
     readonly resource: Resource;
-    readonly message: string;
-    readonly createdAt: Date;
-    private _upvoters?: Profile[];
+    readonly edited?: Boolean = false;
+    readonly parentId?: number | null = null;
 
-    constructor(comment: { id?: number; profile: Profile; resource: Resource; message: string }) {
+    constructor(comment: {
+        id?: number;
+        message: string;
+        createdAt?: Date;
+        profile: Profile;
+        resource: Resource;
+        parentId?: number;
+        edited?: Boolean;
+    }) {
         this.id = comment.id;
-        // validation gebeurt hogerop
-        this.profile = comment.profile;
-        this.resource = comment.resource;
+        if (comment.createdAt) {
+            this.createdAt = comment.createdAt;
+        } else {
+            this.createdAt = new Date();
+        }
         if (comment.message.trim().length == 0) throw new Error("Message can't be empty");
         this.message = comment.message;
+        this.profile = comment.profile;
         this.resource = comment.resource;
-        this.createdAt = new Date();
-        this._upvoters = [];
+        if (this.parentId) this.parentId = comment.parentId;
     }
 
-    public get upvoters(): Profile[] {
-        return this._upvoters;
+    static from({
+        id,
+        message,
+        createdAt,
+        edited,
+        profile,
+        resource,
+        parentId,
+    }: CommentPrisma & { profile: ProfilePrisma & { user: UserPrisma } } & {
+        resource: ResourcePrisma & { creator: ProfilePrisma & { user: UserPrisma } };
+    }) {
+        return new Comment({
+            id,
+            message,
+            createdAt: createdAt ? createdAt : new Date(),
+            edited,
+            profile: Profile.from(profile),
+            resource: Resource.from(resource),
+            parentId: parentId ? parentId : null,
+        });
     }
 }

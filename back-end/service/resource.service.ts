@@ -7,31 +7,28 @@ import { Subject } from '../domain/model/subject';
 import { ResourceInput } from '../types';
 import { Comment } from '../domain/model/comment';
 import commentDb from '../domain/data-access/comment.db';
+import likeDb from '../domain/data-access/like.db';
+import { Like } from '../domain/model/like';
 
 // get all resources
-const getAllResources = async (): Promise<Resource[]> => resourceDb.getAllResources();
+const getAllResources = async (): Promise<Resource[]> => await resourceDb.getAllResources();
 
 // get resource by id
 const getResourceById = async (id: number): Promise<Resource> => {
-    const resource = resourceDb.getResourceById(id);
+    const resource = await resourceDb.getResourceById(id);
     if (!resource) throw new Error(`Resource with id ${id} does not exist`);
     return resource;
 };
 
 // create resource
-const createResource = async ({
-    creator,
-    createdAt = new Date(),
-    title,
-    description,
-    category,
-    subject,
-}: ResourceInput): Promise<Resource> => {
+const createResource = async ({ creator, title, description, category, subject }: ResourceInput): Promise<Resource> => {
     if (!creator) throw new Error('creator Profile is required');
-    if (!profileDb.getProfileById(creator.id)) throw new Error(`Profile with id ${creator.id} does not exist`);
-    const resource = new Resource({ creator, createdAt, title, description, category, subject });
+    if (!await profileDb.getProfileById(creator.id)) throw new Error(`Profile with id ${creator.id} does not exist`);
+    if (!Object.values(Category).includes(category)) throw new Error('Invalid Category');
+    if (!Object.values(Subject).includes(subject)) throw new Error('Invalid Subject');
+    const resource = new Resource({ creator, title, description, category, subject });
 
-    const existing = resourceDb.getResourceByContent(
+    const existing = await resourceDb.getResourceByContent(
         resource.title,
         resource.description,
         resource.category,
@@ -39,30 +36,22 @@ const createResource = async ({
     );
     if (existing) throw new Error('Resource already exists');
 
-    return resourceDb.createResource(resource);
+    return await resourceDb.createResource(resource);
 };
 
-const updateField = (resource: Resource, field: string, newValue: string | Category | Subject): Resource => {
-    switch (field) {
-        case 'title':
-            resource.title = newValue as string;
-            break;
-        case 'description':
-            resource.description = newValue as string;
-            break;
-        case 'category':
-            resource.category = newValue as Category;
-            break;
-        case 'subject':
-            resource.subject = newValue as Subject;
-            break;
-        default:
-            throw new Error('Unsupported field');
-    }
-    return resource;
+const updateField = async (
+    resourceId: number,
+    field: string,
+    newValue: string | Category | Subject
+): Promise<Resource> => {
+    const resource = await resourceDb.getResourceById(resourceId);
+    return await resourceDb.updateFieldOfResource(resource.id, field, newValue);
 };
 
-const getField = (resource: Resource, field: string): string | number | Profile[] | Profile | Comment[] => {
+const getField = async (
+    resource: Resource,
+    field: string
+): Promise<string | number | Profile[] | Profile | Comment[] | Like[]> => {
     switch (field) {
         case 'creator':
             return resource.creator;
@@ -79,10 +68,10 @@ const getField = (resource: Resource, field: string): string | number | Profile[
             return resource.subject;
 
         case 'likes':
-            return profileDb.getProfilesWithLikeOnResource(resource).length;
+            return (await likeDb.getLikesOnResource(resource.id)).length;
 
         case 'upvoters':
-            return profileDb.getProfilesWithLikeOnResource(resource);
+            return await profileDb.getProfilesWithLikeOnResource(resource);
         case 'comments':
             return commentDb.getAllCommentsOnResource(resource.id);
 
@@ -91,8 +80,14 @@ const getField = (resource: Resource, field: string): string | number | Profile[
     }
 };
 
-const deleteResource = (resource: Resource) => {
-    return resourceDb.deleteResource(resource);
+const deleteResource = async (resourceId: number) => {
+    return await resourceDb.deleteResource(resourceId);
+};
+
+const getCommentsOnComment = async (commentId: number) => {
+    const comments = await resourceDb.getCommentsOnComment(commentId);
+    if (comments) return comments;
+    else throw new Error('This comment has no subcomments');
 };
 
 export default {
@@ -102,4 +97,5 @@ export default {
     getField,
     updateField,
     deleteResource,
+    getCommentsOnComment,
 };

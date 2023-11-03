@@ -4,61 +4,62 @@ generator client {
 
 datasource db {
     provider = "postgres"
-    url= env("DATABASE_URL")
+    url      = env("DATABASE_URL")
 }
 
-model User{
-    id Int  @id @default(autoincrement())
-    email String @unique
+model User {
+    id       Int      @id @default(autoincrement())
+    email    String   @unique
     password String
-
-    profile Profile?
+    profile  Profile?
 }
 
 model Profile {
-    id                  Int @id @default(autoincrement())
-    userId              Int @unique
-    username            String
-    bio                 String?
-    createdAt           DateTime
-    latestActivity      DateTime
-
-    user                User @relation(fields: [userId], references: [id])
-
-    publishedResources  Resource[] @relation("publishedResources")
-
-    likedResources      Resource[]
-
-    writtenComments     Comment[] @relation("writtenComments")
-
-    likedComments       Comment[]
+    id                 Int        @id @default(autoincrement())
+    username           String     @unique
+    bio                String?
+    createdAt          DateTime
+    latestActivity     DateTime
+    userId             Int        @unique
+    user               User       @relation(fields: [userId], references: [id], onDelete: Cascade)
+    publishedResources Resource[] @relation("publishedResources")
+    writtenComments    Comment[]  @relation("writtenComments")
+    likedResources     Like[]
 }
 
 model Resource {
-    id          Int @id @default(autoincrement())
-    creatorId   Int @unique
-    creator     Profile @relation("publishedResources", fields: [creatorId], references: [id])
+    id          Int       @id @default(autoincrement())
     createdAt   DateTime
     title       String
     description String
     category    String
     subject     String
-
-    upvoters    Profile[]
-
-    comments    Comment[]
+    creatorId   Int
+    creator     Profile   @relation("publishedResources", fields: [creatorId], references: [id], onDelete: Cascade)
+    comments    Comment[] @relation("commentsOnResource")
+    upvoters    Like[]
 }
 
 model Comment {
-    id Int @id @default(autoincrement())
-    message String
-    createdAt DateTime
+    id         Int       @id @default(autoincrement())
+    message    String
+    createdAt  DateTime
+    edited     Boolean
+    profileId  Int
+    profile    Profile   @relation("writtenComments", fields: [profileId], references: [id], onDelete: Cascade)
+    resourceId Int?
+    resource   Resource? @relation("commentsOnResource", fields: [resourceId], references: [id], onDelete: Cascade)
+    likers     Like[]
+    parentId   Int?
+}
 
-    profileId Int @unique
-    profile Profile @relation("writtenComments", fields: [profileId], references: [id])
-
-    resourceId  Int @unique
-    resource Resource @relation(fields: [resourceId], references: [id])
-
-    upvoters Profile[]
+model Like {
+    id         Int       @id @default(autoincrement())
+    createdAt  DateTime
+    profileId  Int
+    resourceId Int?
+    commentId  Int?
+    upvoter    Profile   @relation(fields: [profileId], references: [id], onDelete: Cascade)
+    resource   Resource? @relation(fields: [resourceId], references: [id], onDelete: Cascade)
+    comment    Comment?  @relation(fields: [commentId], references: [id], onDelete: Cascade)
 }

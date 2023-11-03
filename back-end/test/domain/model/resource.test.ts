@@ -1,9 +1,11 @@
-import { User } from '../../../domain/model/user';
-import { Resource } from '../../../domain/model/resource';
 import { Category } from '../../../domain/model/category';
+import { Profile } from '../../../domain/model/profile';
+import { Resource } from '../../../domain/model/resource';
 import { Subject } from '../../../domain/model/subject';
+import { User } from '../../../domain/model/user';
 
 const validUser = new User({ email: 'resource-test@tistudent.be', password: '_R3sourceTe5t' });
+const validProfile = new Profile({ username: 'resource-test', user: validUser });
 const validCreatedAt = new Date();
 const validTitle = 'Hello World';
 const validDescription = 'This is a test resource';
@@ -13,7 +15,7 @@ const validSubject = Subject.FullStack_Software_Develoment;
 test(`given: valid values for Resource, when: Resource is created, then: Resource is created`, () => {
     // when
     const resource = new Resource({
-        creator: validUser,
+        creator: validProfile,
         createdAt: validCreatedAt,
         title: validTitle,
         description: validDescription,
@@ -22,7 +24,7 @@ test(`given: valid values for Resource, when: Resource is created, then: Resourc
     });
 
     // then
-    expect(resource.creator).toEqual(validUser);
+    expect(resource.creator).toEqual(validProfile);
     expect(resource.createdAt).toEqual(validCreatedAt);
     expect(resource.title).toEqual(validTitle);
     expect(resource.description).toEqual(validDescription);
@@ -42,29 +44,28 @@ test(`given: no creator, when: Resource is created, then: error is thrown`, () =
         } as Resource);
 
     // then
-    expect(createResource).toThrowError('creator User is required');
+    expect(createResource).toThrowError('creator Profile is required');
 });
 
-test(`given: no createdAt, when: Resource is created, then: error is thrown`, () => {
+test(`given: no createdAt, when: Resource is created, then: createdAt is set to now`, () => {
     // when
-    const createResource = () =>
-        new Resource({
-            creator: validUser,
-            title: validTitle,
-            description: validDescription,
-            category: validCategory,
-            subject: validSubject,
-        } as Resource);
+    const resource = new Resource({
+        creator: validProfile,
+        title: validTitle,
+        description: validDescription,
+        category: validCategory,
+        subject: validSubject,
+    });
 
     // then
-    expect(createResource).toThrowError('createdAt is required');
+    expect(new Date().getTime() - resource.createdAt.getTime()).toBeLessThan(1000);
 });
 
 test(`given: no title, when: Resource is created, then: error is thrown`, () => {
     // when
     const createResource = () =>
         new Resource({
-            creator: validUser,
+            creator: validProfile,
             createdAt: validCreatedAt,
             description: validDescription,
             category: validCategory,
@@ -79,7 +80,7 @@ test(`given: no description, when: Resource is created, then: error is thrown`, 
     // when
     const createResource = () =>
         new Resource({
-            creator: validUser,
+            creator: validProfile,
             createdAt: validCreatedAt,
             title: validTitle,
             category: validCategory,
@@ -94,7 +95,7 @@ test(`given: no category, when: Resource is created, then: error is thrown`, () 
     // when
     const createResource = () =>
         new Resource({
-            creator: validUser,
+            creator: validProfile,
             createdAt: validCreatedAt,
             title: validTitle,
             description: validDescription,
@@ -109,7 +110,7 @@ test(`given: no subject, when: Resource is created, then: error is thrown`, () =
     // when
     const createResource = () =>
         new Resource({
-            creator: validUser,
+            creator: validProfile,
             createdAt: validCreatedAt,
             title: validTitle,
             description: validDescription,
@@ -127,7 +128,7 @@ test(`given: too long title, when: Resource is created, then: error is thrown`, 
     // when
     const createResource = () =>
         new Resource({
-            creator: validUser,
+            creator: validProfile,
             createdAt: validCreatedAt,
             title: invalidTitle,
             description: validDescription,
@@ -147,7 +148,7 @@ test(`given: too long description, when: Resource is created, then: error is thr
     // when
     const createResource = () =>
         new Resource({
-            creator: validUser,
+            creator: validProfile,
             createdAt: validCreatedAt,
             title: validTitle,
             description: invalidDescription,
@@ -166,7 +167,7 @@ test(`given: invalid category, when: Resource is created, then: error is thrown`
     // when
     const createResource = () =>
         new Resource({
-            creator: validUser,
+            creator: validProfile,
             createdAt: validCreatedAt,
             title: validTitle,
             description: validDescription,
@@ -185,7 +186,7 @@ test(`given: invalid subject, when: Resource is created, then: error is thrown`,
     // when
     const createResource = () =>
         new Resource({
-            creator: validUser,
+            creator: validProfile,
             createdAt: validCreatedAt,
             title: validTitle,
             description: validDescription,

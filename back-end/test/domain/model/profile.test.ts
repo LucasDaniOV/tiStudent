@@ -128,7 +128,7 @@ test(`given: existing profile, when: equals is called with same profile, then: t
     const profile2 = new Profile({ user, username, bio });
 
     // when
-    const sut = profile.equals({ user: profile2.user, username: profile2.username, bio: profile2.bio });
+    const sut = profile.equals(profile2);
 
     // then
     expect(sut).toBeTruthy();
@@ -140,122 +140,8 @@ test(`given: existing profile, when: equals is called with different profile, th
     const profile2 = new Profile({ user: user2, username: username2, bio: bio2 });
 
     // when
-    const sut = profile.equals({ user: profile2.user, username: profile2.username, bio: profile2.bio });
+    const sut = profile.equals(profile2);
 
     // then
     expect(sut).toBeFalsy();
-});
-
-test(`given: existing profile, when: updateLatestActivity is called, then: latestActivity is updated`, async () => {
-    // given
-    const profile = new Profile({ user, username, bio });
-    const oldLatestActivity = profile.latestActivity;
-
-    // when
-    await new Promise((resolve) => setTimeout(resolve, 1000));
-    profile.updateLatestActivity();
-    const newLatestActivity = profile.latestActivity;
-
-    // then
-    expect(newLatestActivity.getTime()).toBeGreaterThan(oldLatestActivity.getTime());
-});
-
-test(`given: existing profile, when: updateUsername is called, then: username is updated`, () => {
-    // given
-    const profile = new Profile({ user, username, bio });
-    const oldUsername = profile.username;
-
-    // when
-    profile.updateUsername(username2);
-    const newUsername = profile.username;
-
-    // then
-    expect(newUsername).not.toEqual(oldUsername);
-    expect(newUsername).toEqual(username2);
-});
-
-test(`given: existing profile, when: updateBio is called, then: bio is updated`, () => {
-    // given
-    const profile = new Profile({ user, username, bio });
-    const oldBio = profile.bio;
-
-    // when
-    profile.updateBio(bio2);
-    const newBio = profile.bio;
-
-    // then
-    expect(newBio).not.toEqual(oldBio);
-    expect(newBio).toEqual(bio2);
-});
-
-test(`given: existing profile, when: updateUsername is called with too long username, then: error is thrown`, () => {
-    // given
-    const profile = new Profile({ user, username, bio });
-
-    // when
-    const updateUsername = () => profile.updateUsername('a'.repeat(31));
-
-    // then
-    expect(updateUsername).toThrowError('username cannot be longer than 30 characters');
-});
-
-test(`given: existing profile, when: updateBio is called with too long bio, then: error is thrown`, () => {
-    // given
-    const profile = new Profile({ user, username, bio });
-
-    // when
-    const updateBio = () => profile.updateBio('a'.repeat(201));
-
-    // then
-    expect(updateBio).toThrowError('bio cannot be longer than 200 characters');
-});
-
-test(`given: existing profile, when: updateUsername is called with undefined username, then: error is thrown`, () => {
-    // given
-    const profile = new Profile({ user, username, bio });
-
-    // when
-    const updateUsername = () => profile.updateUsername(undefined);
-
-    // then
-    expect(updateUsername).toThrowError('username is required');
-});
-
-test(`given: existing profile, when: updateBio is called with undefined bio, then: error is thrown`, () => {
-    // given
-    const profile = new Profile({ user, username, bio });
-
-    // when
-    const updateBio = () => profile.updateBio(undefined);
-
-    // then
-    expect(updateBio).toThrowError('bio is required');
-});
-
-test(`given: existing profile, when: username is succesfully updated, then: latestActivity is updated`, async () => {
-    // given
-    const profile = new Profile({ user, username, bio });
-
-    // when
-    await new Promise((resolve) => setTimeout(resolve, 1000));
-    profile.updateUsername(username2);
-    const latestActivity = profile.latestActivity;
-
-    // then
-    expect(new Date().getTime() - latestActivity.getTime()).toBeLessThan(1000);
-    expect(latestActivity.getTime()).toBeGreaterThan(profile.createdAt.getTime());
-});
-
-test(`given: existing profile, when: bio is succesfully updated, then: latestActivity is updated`, async () => {
-    // given
-    const profile = new Profile({ user, username, bio });
-
-    // when
-    await new Promise((resolve) => setTimeout(resolve, 1000));
-    profile.updateBio(bio2);
-    const latestActivity = profile.latestActivity;
-
-    // then
-    expect(new Date().getTime() - latestActivity.getTime()).toBeLessThan(1000);
-    expect(latestActivity.getTime()).toBeGreaterThan(profile.createdAt.getTime());
 });

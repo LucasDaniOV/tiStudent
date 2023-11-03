@@ -106,3 +106,5 @@ dist
 .DS_Store
 vscode/
 .vscode
+
+back-end/domain/data-access/prisma/migrations/
