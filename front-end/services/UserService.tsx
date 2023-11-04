@@ -38,11 +38,23 @@ const createUser = async (email: string, password: string) => {
   return res.json();
 }
 
+const getGithubUser = async (code: string) => {
+  const url = `${baseUrl}/login/github?code=${code}`
+  const res = await fetch(url, {
+    method: "GET",
+    headers: {
+      "Content-Type": "application/json",
+    },
+  });
+  return res;
+}
+
 const UserService = {
   getAllUsers,
   getUserById,
   deleteUserById,
   createUser,
+  getGithubUser
 };
 
 export default UserService;

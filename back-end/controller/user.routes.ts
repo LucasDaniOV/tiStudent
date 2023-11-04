@@ -160,7 +160,7 @@ userRouter.post('/', async (req: Request, res: Response) => {
     try {
         const userInput = req.body as UserInput;
         const user = await userService.createUser(userInput);
-        res.status(200).json({ status: 'success', message: 'User created', user});
+        res.status(200).json({ status: 'success', message: 'User created', user });
     } catch (error) {
         res.status(400).json({ status: 'error', message: error.message });
     }
@@ -308,6 +308,25 @@ userRouter.put('/:id/password', async (req: Request, res: Response) => {
         const password = String(req.query.password);
         const user = await userService.updatePasswordById(id, password);
         res.status(200).json(user);
+    } catch (error) {
+        res.status(400).json({ status: 'error', errorMessage: error.message });
+    }
+});
+
+/**
+ * @swagger
+ * /users/github:
+ *   get:
+ *     tags:
+ *       - users
+ *     summary: Get GitHub user
+ */
+userRouter.get('/login/github', async (req: Request, res: Response) => {
+    try {
+        const code = String(req.query.code);
+        const access_token = await userService.getGithubAccessToken(code);
+        const githubUser = await userService.getGithubUser(access_token);
+        res.status(200).json(githubUser);
     } catch (error) {
         res.status(400).json({ status: 'error', errorMessage: error.message });
     }

@@ -5,6 +5,13 @@ import styles from "@/styles/Home.module.css";
 import React from "react";
 
 const Home: React.FC = () => {
+
+  const [name, setName] = React.useState<string>("");
+  React.useEffect(() => {
+    const name = sessionStorage.getItem("name");
+    if (name) setName(name);
+  }, []);
+
   return (
     <>
       <Head>
@@ -23,7 +30,7 @@ const Home: React.FC = () => {
           style={{ padding: "1rem" }}
         />
         <span>
-          <h1>Welcome!</h1>
+          <h1>Welcome {name}!</h1>
         </span>
         <div className={styles.description}>
           <p>
