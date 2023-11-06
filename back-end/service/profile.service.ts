@@ -19,17 +19,24 @@ const getProfileById = async (id: number): Promise<Profile> => {
     return profile;
 };
 
+const getProfileByEmail = async (email: string): Promise<Profile> => {
+    const profiles = await profileDb.getAllProfiles();
+    const profile = profiles.find((p) => p.user.email === email);
+    if (!profile) throw new Error(`Profile with email ${email} does not exist`);
+    return profile;
+};
+
 const createProfile = async ({ username, bio, userId }: ProfileInput): Promise<Profile> => {
     // check that userID is a number
     if (typeof userId !== 'number') throw new Error('userId must be a number');
-    
+
     // check if user with userId exists
     const user = await userDb.getUserById(userId);
     if (!user) throw new Error(`User with id ${userId} does not exist`);
 
     // check if user already has a profile
     if (await profileDb.getProfileByUserId(userId)) throw new Error(`User already has a profile`);
-    
+
     // check if errors occur when creating profile object
     const profile = new Profile({ username, bio, user });
 
@@ -147,6 +154,7 @@ const updateComment = async (profile: Profile, comment: Comment, newMessage: str
 export default {
     getAllProfiles,
     getProfileById,
+    getProfileByEmail,
     createProfile,
     likeObject,
     getProfileField,
