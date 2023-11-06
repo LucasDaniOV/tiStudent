@@ -41,6 +41,46 @@ const updatePasswordById = async (id: number, password: string): Promise<User> =
     return await userDb.updatePassword(id, password);
 };
 
+const getGithubAccessToken = async (code: string): Promise<string> => {
+    try {
+        const client_id = process.env.GITHUB_CLIENT_ID;
+        const client_secret = process.env.GITHUB_CLIENT_SECRET;
+        const required_scope = 'read:user';
+
+        const res = await fetch('https://github.com/login/oauth/access_token', {
+            method: 'POST',
+            headers: {
+                Accept: 'application/json',
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+                client_id,
+                client_secret,
+                code,
+            }),
+        });
+
+        const { access_token, scope } = await res.json();
+        if (scope !== required_scope) throw new Error('Invalid scope');
+        return access_token;
+    } catch (error) {
+        throw new Error('Failed to fetch access token');
+    }
+};
+
+const getGithubUser = async (access_token: string): Promise<any> => {
+    try {
+        const res = await fetch('https://api.github.com/user', {
+            headers: {
+                Authorization: `Bearer ${access_token}`,
+            },
+        });
+        return await res.json();
+    } catch (error) {
+        throw new Error('Failed to fetch user');
+    }
+};
+
 export default {
     getAllUsers,
     getUserById,
@@ -49,4 +89,6 @@ export default {
     removeUserById,
     updateEmailById,
     updatePasswordById,
+    getGithubAccessToken,
+    getGithubUser,
 };

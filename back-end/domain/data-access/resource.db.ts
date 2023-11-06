@@ -51,7 +51,7 @@ const createResource = async ({ creator, title, description, category, subject }
             data: {
                 creator: {
                     connect: {
-                        id: resource.creator.id,
+                        id: Number(resource.creator.id),
                     },
                 },
                 title: resource.title,

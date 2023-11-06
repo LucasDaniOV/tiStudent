@@ -10,6 +10,7 @@ let mockUserDbGetAllUsers: jest.Mock;
 let mockUserDbGetUserById: jest.Mock;
 let mockUserDbDeleteUser: jest.Mock;
 let mockUserDbUpdateEmail: jest.Mock;
+let mockUserDbGetUserByEmail: jest.Mock;
 
 beforeEach(() => {
     mockUserDbCreateUser = jest.fn();
@@ -17,6 +18,7 @@ beforeEach(() => {
     mockUserDbGetUserById = jest.fn();
     mockUserDbDeleteUser = jest.fn();
     mockUserDbUpdateEmail = jest.fn();
+    mockUserDbGetUserByEmail = jest.fn();
 });
 
 afterEach(() => {
@@ -27,6 +29,7 @@ test(`given: valid values for User, when: creating User, then: User is created w
     // given
     const user = new User({ email: validEmail, password: validPassword });
     userDb.createUser = mockUserDbCreateUser.mockResolvedValue(user);
+    userDb.getUserByEmail = mockUserDbGetUserByEmail.mockResolvedValue(undefined);
     
     // when
     const sut = await userService.createUser({ email: validEmail, password: validPassword });
