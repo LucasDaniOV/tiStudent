@@ -31,13 +31,12 @@ const deleteResourceById = (resourceId: string) => {
 };
 
 const createResource = async (
-  profileId: string,
+  creator: Profile,
   title: string,
   description: string,
   category: string,
   subject: string
 ) => {
-  const creator = await ProfileService.getProfileById(profileId);
   const res = await fetch(baseUrl, {
     method: "POST",
     headers: {

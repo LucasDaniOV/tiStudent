@@ -5,10 +5,11 @@ import GithubLoginButton from "@/components/users/GithubLoginButton";
 import { useEffect, useState } from "react";
 
 const Login: React.FC = () => {
-  const [user, setUser] = useState<Object | null>(null);
+  const [user, setUser] = useState<string | null>(null);
   useEffect(() => {
     setUser(sessionStorage.getItem("loggedInUser"));
   }, []);
+
   //   let userObject = null;
   //   if (user) userObject = JSON.parse(user);
   return (

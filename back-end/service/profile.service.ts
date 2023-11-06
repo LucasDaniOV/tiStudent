@@ -22,7 +22,7 @@ const getProfileById = async (id: number): Promise<Profile> => {
 const getProfileByEmail = async (email: string): Promise<Profile> => {
     const profiles = await profileDb.getAllProfiles();
     const profile = profiles.find((p) => p.user.email === email);
-    if (!profile) throw new Error(`Profile with email ${email} does not exist`);
+    if (!profile) throw new Error(`Profile with email "${email}" does not exist`);
     return profile;
 };
 
