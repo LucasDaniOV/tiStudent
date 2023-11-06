@@ -27,8 +27,17 @@ const UserLoginForm: React.FC = () => {
     if (!validate()) return;
     const user = await UserService.getUserByEmail(email);
     const userResponse = JSON.stringify(user);
-    sessionStorage.setItem("loggedInUser", userResponse);
-    setStatusMessages([{ message: `Welcome, ${email}`, type: "success" }]);
+    console.log(user);
+    console.log(userResponse);
+    if (
+      userResponse ===
+      `{"status":"error","errorMessage":"No user with email ${email} found"}`
+    ) {
+      setStatusMessages([{ message: "Invalid email", type: "error" }]);
+    } else {
+      sessionStorage.setItem("loggedInUser", userResponse);
+      setStatusMessages([{ message: `Welcome, ${email}`, type: "success" }]);
+    }
   };
 
   return (

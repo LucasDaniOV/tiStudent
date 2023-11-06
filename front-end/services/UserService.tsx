@@ -18,13 +18,17 @@ const getUserById = (userId: string) => {
   });
 };
 
-const getUserByEmail = (email: string) => {
-  return fetch(process.env.NEXT_PUBLIC_API_URL + `/users/email/` + email, {
-    method: "GET",
-    headers: {
-      "Content-Type": "application/json",
-    },
-  });
+const getUserByEmail = async (email: string) => {
+  const res = await fetch(
+    process.env.NEXT_PUBLIC_API_URL + `/users/email/` + email,
+    {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+      },
+    }
+  );
+  return res.json();
 };
 
 const deleteUserById = (userId: string) => {
@@ -45,10 +49,10 @@ const createUser = async (email: string, password: string) => {
     body: JSON.stringify({ email, password }),
   });
   return res.json();
-}
+};
 
 const getGithubUser = async (code: string) => {
-  const url = `${baseUrl}/login/github?code=${code}`
+  const url = `${baseUrl}/login/github?code=${code}`;
   const res = await fetch(url, {
     method: "GET",
     headers: {
@@ -56,7 +60,7 @@ const getGithubUser = async (code: string) => {
     },
   });
   return res;
-}
+};
 
 const UserService = {
   getAllUsers,
@@ -64,7 +68,7 @@ const UserService = {
   getUserByEmail,
   deleteUserById,
   createUser,
-  getGithubUser
+  getGithubUser,
 };
 
 export default UserService;
