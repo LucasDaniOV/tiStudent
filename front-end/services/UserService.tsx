@@ -16,6 +16,15 @@ const getUserById = (userId: string) => {
   });
 };
 
+const getUserByEmail = (email: string) => {
+  return fetch(process.env.NEXT_PUBLIC_API_URL + `/users/email/` + email, {
+    method: "GET",
+    headers: {
+      "Content-Type": "application/json",
+    },
+  });
+};
+
 const deleteUserById = (userId: string) => {
   return fetch(process.env.NEXT_PUBLIC_API_URL + `/users/${userId}`, {
     method: "DELETE",
@@ -28,6 +37,7 @@ const deleteUserById = (userId: string) => {
 const UserService = {
   getAllUsers,
   getUserById,
+  getUserByEmail,
   deleteUserById,
 };
 
