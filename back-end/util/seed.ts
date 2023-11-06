@@ -4,10 +4,10 @@ import { Category } from '../domain/model/category';
 const prisma = new PrismaClient();
 async function main() {
     const alice = await prisma.user.upsert({
-        where: { email: 'alice@prisma.io' },
+        where: { email: 'user@tistudent.be' },
         update: {},
         create: {
-            email: 'user@tistudent.be',
+            email: 'alice12@prisma.io',
             password: 'Str0ngPW!!!',
         },
     });

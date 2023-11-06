@@ -154,6 +154,70 @@ table tbody tr:hover {
   background-color: #979797; /* This is the hover effect */
 }
 
+label {
+  margin: 1rem 0 1rem;
+}
+
+form {
+  display: flex;
+  flex-direction: column;
+}
+
+.radio-option {
+  display: flex;
+  align-items: center;
+}
+
+.radio-option label {
+  margin: 0 0 0.5rem 1rem;
+}
+.radio-option input {
+  margin-bottom: 0.5rem;
+}
+
+.resourceInfo ul {
+  display: grid;
+  grid-template-columns: 40% 70%;
+}
+
+.subjects {
+  background-color: white;
+  & li {
+    color: black;
+    border-bottom: 1px black solid;
+    &:hover {
+      background-color: #d9d9d9;
+    }
+  }
+}
+
+.subject-list {
+  background-color: white;
+  color: black;
+  font-size: 1rem;
+  &:hover {
+    background-color: #dedede;
+    color: black;
+  }
+}
+
+.resourceOverview {
+  display: grid;
+  grid-template-columns: 70% 30%;
+
+  & section#addResource {
+    margin: auto;
+    & a {
+      margin: 1rem;
+      background-color: white;
+      color: black;
+      &:hover {
+        background-color: #dbdbdb;
+      }
+    }
+  }
+}
+
 @media (prefers-color-scheme: dark) {
   html {
     color-scheme: dark;

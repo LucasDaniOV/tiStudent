@@ -32,8 +32,8 @@ export class Profile {
             this.username === otherProfile.username && this.bio === otherProfile.bio && this.user === otherProfile.user
         );
     }
-    
-    validate(profile: { username: string; bio?: string; user: User; }): void {
+
+    validate(profile: { username: string; bio?: string; user: User }): void {
         Profile.validateUsername(profile.username);
         Profile.validateBio(profile.bio);
         this.validateUser(profile.user);
@@ -50,7 +50,7 @@ export class Profile {
 
     validateUser = (user: User): void => {
         if (!user) throw new Error('user is required');
-    }
+    };
 
     static from({ id, username, bio, createdAt, latestActivity, user }: ProfilePrisma & { user: UserPrisma }): Profile {
         return new Profile({

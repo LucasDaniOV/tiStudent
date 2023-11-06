@@ -5,36 +5,36 @@ type Props = {
   resource: Resource;
 };
 
-const UserInfo: React.FC<Props> = ({ resource }: Props) => {
+const ResourceInfo: React.FC<Props> = ({ resource }: Props) => {
   return (
     <>
       {resource && (
-        <div>
-          <p>
-            <strong>ID:</strong> {resource.id}
-          </p>
-          <p>
-            <strong>Creator ID:</strong> {resource.creator.id}
-          </p>
-          <p>
-            <strong>Created at:</strong> {String(resource.createdAt)}
-          </p>
-          <p>
+        <div className="resourceInfo">
+          <h1>
             <strong>Title:</strong> {resource.title}
-          </p>
-          <p>
+          </h1>
+          <h3>
             <strong>Description:</strong> {resource.description}
-          </p>
-          <p>
-            <strong>Category:</strong> {resource.category}
-          </p>
-          <p>
-            <strong>Subject:</strong> {resource.subject}
-          </p>
+          </h3>
+          <ul>
+            <p>
+              <strong>Category:</strong> {resource.category}
+            </p>
+            <p>
+              <strong>Created at:</strong> {String(resource.createdAt)}
+            </p>
+            <p>
+              <strong>Subject:</strong> {resource.subject}
+            </p>
+            <p>
+              <strong>Creator ID:</strong> {resource.creator.id}
+            </p>
+          </ul>
+          <br />
         </div>
       )}
     </>
   );
 };
 
-export default UserInfo;
+export default ResourceInfo;

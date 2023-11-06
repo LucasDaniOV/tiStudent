@@ -9,7 +9,7 @@ export type User = {
 
 export type Resource = {
   id: string;
-  creator: User;
+  creator: Profile;
   createdAt: Date;
   title: string;
   description: string;
@@ -24,7 +24,7 @@ export type Profile = {
   createdAt: Date;
   latestActivity: Date;
   user: User;
-}
+};
 
 export type StatusMessage = {
   message: string;
