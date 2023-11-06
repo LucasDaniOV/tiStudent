@@ -1,7 +1,10 @@
-import { Resource } from "@/types";
+import { Profile, Resource } from "@/types";
+import ProfileService from "./ProfileService";
+
+const baseUrl = process.env.NEXT_PUBLIC_API_URL + "/resources";
 
 const getAllResources = () => {
-  return fetch(process.env.NEXT_PUBLIC_API_URL + "/resources", {
+  return fetch(baseUrl, {
     method: "GET",
     headers: {
       "Content-Type": "application/json",
@@ -10,7 +13,7 @@ const getAllResources = () => {
 };
 
 const getResourceById = (resourceId: string) => {
-  return fetch(process.env.NEXT_PUBLIC_API_URL + `/resources/${resourceId}`, {
+  return fetch(baseUrl + "/" + resourceId, {
     method: "GET",
     headers: {
       "Content-Type": "application/json",
@@ -19,21 +22,43 @@ const getResourceById = (resourceId: string) => {
 };
 
 const deleteResourceById = (resourceId: string) => {
-  return fetch(
-    process.env.NEXT_PUBLIC_API_URL + `/resources/${parseInt(resourceId)}`,
-    {
-      method: "DELETE",
-      headers: {
-        "Content-Type": "application/json",
-      },
-    }
-  );
+  return fetch(baseUrl + "/" + parseInt(resourceId), {
+    method: "DELETE",
+    headers: {
+      "Content-Type": "application/json",
+    },
+  });
+};
+
+const createResource = async (
+  profileId: string,
+  title: string,
+  description: string,
+  category: string,
+  subject: string
+) => {
+  const creator = await ProfileService.getProfileById(profileId);
+  const res = await fetch(baseUrl, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({
+      creator,
+      title,
+      description,
+      category,
+      subject,
+    }),
+  });
+  return res.json();
 };
 
 const ResourceService = {
   getAllResources,
   getResourceById,
   deleteResourceById,
+  createResource,
 };
 
 export default ResourceService;

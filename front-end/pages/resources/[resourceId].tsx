@@ -31,7 +31,6 @@ const ReadResourceById = () => {
       </Head>
       <Header />
       <main>
-        <h1>Info about Resource {resource && resource.id}</h1>
         {!resourceId && <p>Loading</p>}
         <section>
           <ResourceInfo resource={resource as Resource}></ResourceInfo>

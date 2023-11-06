@@ -5,6 +5,7 @@ import { Resource } from "../../types";
 import Header from "@/components/header";
 import ResourceService from "../../services/ResourceService";
 import React from "react";
+import Link from "next/link";
 
 const Resources: React.FC = () => {
   const [resources, setResources] = useState<Array<Resource>>();
@@ -25,11 +26,17 @@ const Resources: React.FC = () => {
         <title>Resources</title>
       </Head>
       <Header />
-      <main>
-        <h1>Resources</h1>
-        <section>
+      <main className="resourceOverview">
+        <section style={{ alignItems: "center" }}>
+          <h1 style={{ margin: "auto" }}>Resources</h1>
           {resources && <ResourcesOverviewTable resources={resources} />}
         </section>
+        <aside>
+          {/* {sessionStorage.getItem("loggedInUser")} */}
+          <section id="addResource">
+            <Link href="/resources/create">Add a Resource</Link>
+          </section>
+        </aside>
       </main>
     </>
   );

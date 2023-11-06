@@ -22,8 +22,8 @@ export class Comment {
         createdAt?: Date;
         profile: Profile;
         resource: Resource;
-        parentId?: number;
         edited?: Boolean;
+        parentId?: number;
     }) {
         this.id = comment.id;
         if (comment.createdAt) {
