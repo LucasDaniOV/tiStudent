@@ -117,7 +117,11 @@ async function main() {
             message: 'Thanks Bob',
             createdAt: new Date(),
             edited: false,
-            parentId: 1,
+            parent: {
+                connect: {
+                    id: bobComment.id,
+                },
+            },
         },
     });
     console.log(aliceComment);
@@ -153,7 +157,11 @@ async function main() {
             message: "You're welcome Alice",
             createdAt: new Date(),
             edited: false,
-            parentId: 1,
+            parent: {
+                connect: {
+                    id: bobComment.id,
+                },
+            },
         },
     });
     console.log(bobComment2);
@@ -173,7 +181,11 @@ async function main() {
             message: 'Love you too',
             createdAt: new Date(),
             edited: false,
-            parentId: 1,
+            parent: {
+                connect: {
+                    id: bobComment.id,
+                },
+            },
         },
     });
     console.log(bobComment3);
