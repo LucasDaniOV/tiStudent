@@ -13,8 +13,9 @@ export class Comment {
     readonly createdAt?: Date;
     readonly profile: Profile;
     readonly resource: Resource;
-    readonly edited?: Boolean = false;
-    readonly parentId?: number | null = null;
+    readonly edited?: boolean = false;
+    readonly parentId: number | null;
+    readonly childComments: Comment[];
 
     constructor(comment: {
         id?: number;
@@ -22,8 +23,9 @@ export class Comment {
         createdAt?: Date;
         profile: Profile;
         resource: Resource;
-        edited?: Boolean;
-        parentId?: number;
+        edited?: boolean;
+        parentId: number | null;
+        // childComments?: Comment[];
     }) {
         this.id = comment.id;
         if (comment.createdAt) {
@@ -31,11 +33,15 @@ export class Comment {
         } else {
             this.createdAt = new Date();
         }
-        if (comment.message.trim().length == 0) throw new Error("Message can't be empty");
+        if (comment.message.trim().length === 0) {
+            throw new Error("Message can't be empty");
+        }
         this.message = comment.message;
         this.profile = comment.profile;
         this.resource = comment.resource;
-        if (this.parentId) this.parentId = comment.parentId;
+        this.edited = comment.edited;
+        this.parentId = comment.parentId;
+        // this.childComments = comment.childComments || [];
     }
 
     static from({
@@ -46,9 +52,11 @@ export class Comment {
         profile,
         resource,
         parentId,
-    }: CommentPrisma & { profile: ProfilePrisma & { user: UserPrisma } } & {
+    }: CommentPrisma & {
+        profile: ProfilePrisma & { user: UserPrisma };
+    } & {
         resource: ResourcePrisma & { creator: ProfilePrisma & { user: UserPrisma } };
-    }) {
+    } & { parentId: number | null }) {
         return new Comment({
             id,
             message,
@@ -56,7 +64,7 @@ export class Comment {
             edited,
             profile: Profile.from(profile),
             resource: Resource.from(resource),
-            parentId: parentId ? parentId : null,
+            parentId,
         });
     }
 }

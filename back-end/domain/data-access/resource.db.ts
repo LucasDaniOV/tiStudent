@@ -211,7 +211,7 @@ const updateFieldOfResource = async (
 
 const getCommentsOnComment = async (commentId: number) => {
     const commentsPrisma = await commentDb.getAllComments();
-    return commentsPrisma.filter((comment) => comment.parentId == commentId);
+    return commentsPrisma.filter((comment) => comment.parentId === commentId);
 };
 
 export default {
