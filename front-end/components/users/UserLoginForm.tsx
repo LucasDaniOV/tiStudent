@@ -1,6 +1,7 @@
 import ProfileService from "@/services/ProfileService";
 import UserService from "@/services/UserService";
 import { StatusMessage } from "@/types";
+import { useRouter } from "next/router";
 import { FormEvent, useState } from "react";
 
 const UserLoginForm: React.FC = () => {
@@ -10,6 +11,7 @@ const UserLoginForm: React.FC = () => {
   const [passwordError, setPasswordError] = useState("");
   const [statusMessages, setStatusMessages] = useState<StatusMessage[]>([]);
 
+  const router = useRouter();
   const clearErrors = () => {
     setEmailError("");
     setStatusMessages([]);
@@ -43,6 +45,7 @@ const UserLoginForm: React.FC = () => {
       if (password === profile.user.password) {
         sessionStorage.setItem("loggedInProfile", profileResponse);
         setStatusMessages([{ message: `Welcome, ${email}`, type: "success" }]);
+        router.reload();
       } else {
         setStatusMessages([{ message: "Invalid password", type: "error" }]);
       }
