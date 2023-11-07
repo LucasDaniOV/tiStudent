@@ -33,12 +33,12 @@ const Comments: React.FC<Props> = ({ id, object }: Props) => {
     e: React.MouseEvent<HTMLButtonElement, MouseEvent>,
     comment: Comment
   ): Promise<void> => {
+    e.stopPropagation();
+    e.preventDefault();
     const profileObject = sessionStorage.getItem("loggedInProfile");
     if (!profileObject) return;
     const profile = JSON.parse(profileObject);
     if (profile.id === comment.profile.id) {
-      e.stopPropagation();
-      e.preventDefault();
       if (
         !confirm(
           `Are you sure you want to delete this comment? (${comment.message})`
@@ -66,9 +66,10 @@ const Comments: React.FC<Props> = ({ id, object }: Props) => {
           {commentsOnResource.map((com, index) => (
             <tr
               key={index}
-              onClick={() =>
-                router.push("/resources/comments/" + String(com.id))
-              }
+              onClick={(e) => {
+                e.stopPropagation();
+                router.push("/resources/comments/" + String(com.id));
+              }}
               tabIndex={0}
               // onKeyDown={(e) => {
               //   if (e.key === "Enter") {
@@ -79,7 +80,13 @@ const Comments: React.FC<Props> = ({ id, object }: Props) => {
               <td>{com.message}</td>
               <td>{com.profile.username}</td>
               <td>
-                <button onClick={(e) => handleDelete(e, com)}>&times;</button>
+                <button
+                  onClick={(e) => {
+                    handleDelete(e, com);
+                  }}
+                >
+                  &times;
+                </button>
               </td>
             </tr>
           ))}
