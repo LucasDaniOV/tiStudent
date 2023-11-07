@@ -26,6 +26,16 @@ export type Profile = {
   user: User;
 };
 
+export type Comment = {
+  id: number;
+  message: string;
+  createdAt: Date;
+  edited: boolean;
+  profile: Profile;
+  resource: Resource;
+  parentId: number;
+};
+
 export type StatusMessage = {
   message: string;
   type: "error" | "success";
