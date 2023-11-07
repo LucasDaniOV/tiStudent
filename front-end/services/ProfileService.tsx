@@ -42,16 +42,20 @@ const deleteProfileById = async (profileId: number): Promise<Boolean> => {
   return res.json();
 };
 
-const createProfile = async (username: string, bio: string, userId: string) => {
-  const id = parseInt(userId);
+const createProfile = async (username: string, bio: string, userId: number) => {
   const res = await fetch(baseUrl, {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
     },
-    body: JSON.stringify({ username, bio, userId: id }),
+    body: JSON.stringify({ username, bio, userId }),
   });
   return res.json();
+};
+
+const getCommentById = async (commentId: string) => {
+  const comment = await fetch(baseUrl + `/comments/${commentId}`);
+  return comment.json();
 };
 
 export default {
@@ -60,4 +64,5 @@ export default {
   getProfileByEmail,
   deleteProfileById,
   createProfile,
+  getCommentById,
 };

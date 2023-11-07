@@ -5,11 +5,13 @@ import styles from "@/styles/Home.module.css";
 import React from "react";
 
 const Home: React.FC = () => {
-
   const [name, setName] = React.useState<string>("");
   React.useEffect(() => {
-    const name = sessionStorage.getItem("name");
-    if (name) setName(name);
+    const profile = sessionStorage.getItem("loggedInProfile");
+    if (profile) {
+      const username = JSON.parse(profile).username;
+      setName(username);
+    }
   }, []);
 
   return (

@@ -191,6 +191,19 @@ form {
   }
 }
 
+.comments {
+  width: auto;
+  background-color: white;
+  & li {
+    border: 1px black solid;
+    display: flex;
+    color: black;
+    &:hover {
+      background-color: #d9d9d9;
+    }
+  }
+}
+
 .subject-list {
   background-color: white;
   color: black;
@@ -215,6 +228,15 @@ form {
         background-color: #dbdbdb;
       }
     }
+  }
+}
+
+.login {
+  display: grid;
+  grid-template-columns: 40% 60%;
+  & section {
+    margin: auto;
+    width: min-content;
   }
 }
 

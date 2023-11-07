@@ -3,11 +3,13 @@ import Header from "@/components/header";
 import UserLoginForm from "@/components/users/UserLoginForm";
 import GithubLoginButton from "@/components/users/GithubLoginButton";
 import { useEffect, useState } from "react";
+import UserCreateForm from "@/components/users/UserCreateForm";
+import ProfileCreateForm from "@/components/profiles/ProfileCreateForm";
 
 const Login: React.FC = () => {
-  const [user, setUser] = useState<string | null>(null);
+  const [profile, setProfile] = useState<string | null>(null);
   useEffect(() => {
-    setUser(sessionStorage.getItem("loggedInUser"));
+    setProfile(sessionStorage.getItem("loggedInProfile"));
   }, []);
 
   //   let userObject = null;
@@ -18,21 +20,36 @@ const Login: React.FC = () => {
         <title>Login</title>
       </Head>
       <Header />{" "}
-      {user ? (
+      {profile ? (
         <>
           <main>
             <h1>Logout</h1>
-            <form onSubmit={() => sessionStorage.removeItem("loggedInUser")}>
+            <form
+              onSubmit={() => {
+                sessionStorage.removeItem("loggedInProfile");
+              }}
+            >
               <button type="submit">Logout</button>
             </form>
           </main>
         </>
       ) : (
-        <main>
-          <h1>Login</h1>
+        <main className="login">
           <section>
-            <UserLoginForm />
-            <GithubLoginButton />
+            <h1>Login</h1>
+            <section>
+              <UserLoginForm />
+              <GithubLoginButton />
+            </section>
+          </section>
+          <section>
+            <h1>Or create new profile</h1>
+            <section>
+              <UserCreateForm />
+            </section>
+            <section>
+              <ProfileCreateForm />
+            </section>
           </section>
         </main>
       )}

@@ -4,7 +4,7 @@ import React, { FormEvent, useEffect, useRef, useState } from "react";
 import { Subject } from "../../../back-end/domain/model/subject";
 import ResourceService from "@/services/ResourceService";
 import { useRouter } from "next/router";
-import Subjects from "@/components/resources/Subjects";
+import Subjects from "@/components/Subjects";
 import { Profile, Resource, StatusMessage } from "@/types";
 import ProfileService from "@/services/ProfileService";
 
