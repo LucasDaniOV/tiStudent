@@ -1,3 +1,4 @@
+import ProfileService from "@/services/ProfileService";
 import UserService from "@/services/UserService";
 import { StatusMessage } from "@/types";
 import { FormEvent, useState } from "react";
@@ -5,6 +6,8 @@ import { FormEvent, useState } from "react";
 const UserLoginForm: React.FC = () => {
   const [email, setEmail] = useState("");
   const [emailError, setEmailError] = useState("");
+  const [password, setPassword] = useState("");
+  const [passwordError, setPasswordError] = useState("");
   const [statusMessages, setStatusMessages] = useState<StatusMessage[]>([]);
 
   const clearErrors = () => {
@@ -18,6 +21,10 @@ const UserLoginForm: React.FC = () => {
       setEmailError("email is required");
       isValid = false;
     }
+    if (!password.trim()) {
+      setPasswordError("Password is required");
+      isValid = false;
+    }
     return isValid;
   };
 
@@ -25,18 +32,20 @@ const UserLoginForm: React.FC = () => {
     e.preventDefault();
     clearErrors();
     if (!validate()) return;
-    const user = await UserService.getUserByEmail(email);
-    const userResponse = JSON.stringify(user);
-    console.log(user);
-    console.log(userResponse);
+    const profile = await ProfileService.getProfileByEmail(email);
+    const profileResponse = JSON.stringify(profile);
     if (
-      userResponse ===
+      profileResponse ===
       `{"status":"error","errorMessage":"No user with email ${email} found"}`
     ) {
       setStatusMessages([{ message: "Invalid email", type: "error" }]);
     } else {
-      sessionStorage.setItem("loggedInUser", userResponse);
-      setStatusMessages([{ message: `Welcome, ${email}`, type: "success" }]);
+      if (password === profile.user.password) {
+        sessionStorage.setItem("loggedInProfile", profileResponse);
+        setStatusMessages([{ message: `Welcome, ${email}`, type: "success" }]);
+      } else {
+        setStatusMessages([{ message: "Invalid password", type: "error" }]);
+      }
     }
   };
 
@@ -61,7 +70,15 @@ const UserLoginForm: React.FC = () => {
           onChange={(e) => setEmail(e.target.value)}
         />
         <br />
+        <label htmlFor="password">Password</label>
+        <input
+          id="password"
+          type="password"
+          value={password}
+          onChange={(e) => setPassword(e.target.value)}
+        />
         {emailError && <div>{emailError}</div>}
+        {passwordError && <div>{passwordError}</div>}
         <button type="submit">Login</button>
       </form>
     </>

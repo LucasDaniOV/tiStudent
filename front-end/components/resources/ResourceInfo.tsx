@@ -1,5 +1,6 @@
-import { Resource } from "@/types";
+import { Resource, Comment } from "@/types";
 import React from "react";
+import Comments from "../comments/Comments";
 
 type Props = {
   resource: Resource;
