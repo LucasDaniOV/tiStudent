@@ -11,8 +11,7 @@ const Resources: React.FC = () => {
   const [resources, setResources] = useState<Array<Resource>>();
 
   const getResources = async () => {
-    const response = await ResourceService.getAllResources();
-    const fetchedResources = await response.json();
+    const fetchedResources = await ResourceService.getAllResources();
     return setResources(fetchedResources);
   };
 

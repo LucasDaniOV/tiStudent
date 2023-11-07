@@ -684,7 +684,7 @@ profileRouter.post('/comment-on-comment/:profileId/:resourceId/:commentId', asyn
         const profile = await profileService.getProfileById(profileId);
         const resource = await resourceService.getResourceById(resourceId);
         const newComment = await profileService.writeComment(profile, resource, message, commentId);
-        res.status(200).json(newComment);
+        res.status(200).json({ status: 'success', message: 'Comment added', data: newComment });
     } catch (error) {
         res.status(400).json({ status: 'error', errorMessage: error.message });
     }

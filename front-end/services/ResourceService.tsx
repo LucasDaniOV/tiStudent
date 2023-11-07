@@ -1,10 +1,19 @@
 import { Profile, Resource, Comment } from "@/types";
-import ProfileService from "./ProfileService";
 
 const baseUrl = process.env.NEXT_PUBLIC_API_URL + "/resources";
 
-const getAllResources = () => {
-  return fetch(baseUrl, {
+const getAllResources = async (): Promise<Resource[]> => {
+  const resources = await fetch(baseUrl, {
+    method: "GET",
+    headers: {
+      "Content-Type": "application/json",
+    },
+  });
+  return resources.json();
+};
+
+const getResourceById = async (resourceId: string) => {
+  return await fetch(baseUrl + "/" + resourceId, {
     method: "GET",
     headers: {
       "Content-Type": "application/json",
@@ -12,17 +21,8 @@ const getAllResources = () => {
   });
 };
 
-const getResourceById = (resourceId: string) => {
-  return fetch(baseUrl + "/" + resourceId, {
-    method: "GET",
-    headers: {
-      "Content-Type": "application/json",
-    },
-  });
-};
-
-const deleteResourceById = (resourceId: string) => {
-  return fetch(baseUrl + "/" + parseInt(resourceId), {
+const deleteResourceById = async (resourceId: string) => {
+  return await fetch(baseUrl + "/" + parseInt(resourceId), {
     method: "DELETE",
     headers: {
       "Content-Type": "application/json",

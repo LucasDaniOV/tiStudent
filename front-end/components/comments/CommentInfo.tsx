@@ -9,16 +9,10 @@ const CommentInfo: React.FC<Props> = ({ comment }: Props) => {
   return (
     <>
       {comment && (
-        //   style={{
-        //     display: "flex",
-        //     padding: "1rem",
-        //     listStyleType: "none",
-        //     textDecoration: "none",
-        //     borderBottom: "none",
-        //   }}
-        // >
         <>
-          <h1>{comment.message}</h1>
+          <h1>
+            {comment.message} - {comment.profile.username}
+          </h1>
         </>
       )}
     </>
