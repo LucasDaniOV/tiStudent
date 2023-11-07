@@ -831,4 +831,16 @@ profileRouter.put('/:profileId/:commentId', async (req: Request, res: Response) 
     }
 });
 
+profileRouter.get('/comments/:commentId', async (req: Request, res: Response) => {
+    try {
+        const commentId = parseInt(req.params.commentId);
+        const comment = await profileService.getCommentById(commentId);
+        if (comment) {
+            res.status(200).json(await profileService.getCommentById(comment.id));
+        }
+    } catch (error) {
+        res.status(400).json({ status: 'error', errorMessage: error.message });
+    }
+});
+
 export { profileRouter };
