@@ -3,7 +3,6 @@ import Header from "@/components/header";
 import UserLoginForm from "@/components/users/UserLoginForm";
 import GithubLoginButton from "@/components/users/GithubLoginButton";
 import { useEffect, useState } from "react";
-import UserCreateForm from "@/components/users/UserCreateForm";
 import ProfileCreateForm from "@/components/profiles/ProfileCreateForm";
 
 const Login: React.FC = () => {
@@ -44,9 +43,6 @@ const Login: React.FC = () => {
           </section>
           <section>
             <h1>Or create new profile</h1>
-            <section>
-              <UserCreateForm />
-            </section>
             <section>
               <ProfileCreateForm />
             </section>
