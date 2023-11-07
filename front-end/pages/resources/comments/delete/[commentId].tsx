@@ -15,7 +15,7 @@ const DeleteCommentById = () => {
 
   const deleteCommentById = async () => {
     const comment = await ProfileService.getCommentById(String(CommentId));
-    await Promise.all([ProfileService.deleteCommentById(comment)]);
+    await Promise.all([ProfileService.deleteComment(comment)]);
     setComment(comment);
   };
 
