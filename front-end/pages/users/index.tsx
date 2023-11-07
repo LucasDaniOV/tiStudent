@@ -29,8 +29,6 @@ const Users: React.FC = () => {
       <main>
         <h1>Users</h1>
         <section>{users && <UsersOverviewTable users={users} />}</section>
-        <h1>Create new user</h1>
-        <section><UserCreateForm /></section>
       </main>
     </>
   );

@@ -67,6 +67,7 @@ const getAllCommentsOnResource = async (resourceId: number): Promise<Comment[]> 
         const commentsPrisma = await database.comment.findMany({
             where: {
                 resourceId: resourceId,
+                parentId: null,
             },
             include: {
                 profile: {
@@ -168,7 +169,11 @@ const createComment = async (profile: Profile, resource: Resource, message: stri
                     },
                 },
                 createdAt: new Date(),
-                parentId: parentId ? parentId : null,
+                parent: {
+                    connect: {
+                        id: comment.parentId,
+                    },
+                },
                 message: comment.message,
                 edited: false,
             },

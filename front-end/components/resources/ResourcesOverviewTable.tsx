@@ -1,6 +1,8 @@
 import { useRouter } from "next/router";
 import React from "react";
 import { Resource } from "../../types";
+import ResourceService from "@/services/ResourceService";
+import { MouseEvent } from "react";
 
 type Props = {
   resources: Array<Resource>;
@@ -8,6 +10,14 @@ type Props = {
 
 const ResourceOverviewTable: React.FC<Props> = ({ resources }: Props) => {
   const router = useRouter();
+
+  const deleteResource = async (e: MouseEvent, resource: Resource) => {
+    e.stopPropagation();
+    e.preventDefault();
+    if (!confirm(`Are you sure you want to delete ${resource.id}?`)) return;
+    await ResourceService.deleteResourceById(resource.id);
+    router.reload();
+  };
   return (
     <>
       {resources && (
@@ -41,6 +51,7 @@ const ResourceOverviewTable: React.FC<Props> = ({ resources }: Props) => {
                 <td>{resource.description}</td>
                 <td>{resource.category}</td>
                 <td>{resource.subject}</td>
+                <td onClick={(e) => deleteResource(e, resource)}>delete</td>
               </tr>
             ))}
           </tbody>

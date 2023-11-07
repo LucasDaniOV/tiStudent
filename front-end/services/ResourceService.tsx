@@ -1,4 +1,4 @@
-import { Profile, Resource } from "@/types";
+import { Profile, Resource, Comment } from "@/types";
 import ProfileService from "./ProfileService";
 
 const baseUrl = process.env.NEXT_PUBLIC_API_URL + "/resources";
@@ -31,13 +31,12 @@ const deleteResourceById = (resourceId: string) => {
 };
 
 const createResource = async (
-  profileId: string,
+  creator: Profile,
   title: string,
   description: string,
   category: string,
   subject: string
 ) => {
-  const creator = await ProfileService.getProfileById(profileId);
   const res = await fetch(baseUrl, {
     method: "POST",
     headers: {
@@ -54,11 +53,33 @@ const createResource = async (
   return res.json();
 };
 
+const getCommentsOnResource = async (id: string): Promise<Comment[]> => {
+  const comments = await fetch(baseUrl + `/${id}/comments`, {
+    method: "GET",
+    headers: {
+      "Content-Type": "application/json",
+    },
+  });
+  return comments.json();
+};
+
+const getCommentsOnComment = async (id: string): Promise<Comment[]> => {
+  const comments = await fetch(baseUrl + `/comments/${id}/comments`, {
+    method: "GET",
+    headers: {
+      "Content-Type": "application/json",
+    },
+  });
+  return comments.json();
+};
+
 const ResourceService = {
   getAllResources,
   getResourceById,
   deleteResourceById,
   createResource,
+  getCommentsOnResource,
+  getCommentsOnComment,
 };
 
 export default ResourceService;

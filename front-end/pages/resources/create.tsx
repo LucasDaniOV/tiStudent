@@ -4,14 +4,12 @@ import React, { FormEvent, useEffect, useRef, useState } from "react";
 import { Subject } from "../../../back-end/domain/model/subject";
 import ResourceService from "@/services/ResourceService";
 import { useRouter } from "next/router";
-import Subjects from "@/components/resources/Subjects";
+import Subjects from "@/components/Subjects";
 import { Profile, Resource, StatusMessage } from "@/types";
+import ProfileService from "@/services/ProfileService";
 
 const CreateResourceForm: React.FC = () => {
-  const loggedInUser =
-    typeof window !== "undefined"
-      ? sessionStorage.getItem("loggedInUser")
-      : null;
+  const loggedInUser = sessionStorage.getItem("loggedInUser");
 
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
@@ -43,16 +41,21 @@ const CreateResourceForm: React.FC = () => {
   // const validate = () => {}
 
   const createResource = async () => {
-    const result = await ResourceService.createResource(
-      profileId,
-      title,
-      description,
-      category,
-      subject
-    );
-    const message = result.message;
-    const type = result.status;
-    setStatusMessages([{ message, type }]);
+    if (loggedInUser) {
+      const email = JSON.parse(loggedInUser).email;
+      const profile = await ProfileService.getProfileByEmail(email);
+
+      const result = await ResourceService.createResource(
+        profile,
+        title,
+        description,
+        category,
+        subject
+      );
+      const message = result.message;
+      const type = result.status;
+      setStatusMessages([{ message, type }]);
+    }
   };
 
   const handleSubmit = (e: FormEvent) => {
@@ -87,105 +90,98 @@ const CreateResourceForm: React.FC = () => {
         <title>Resources</title>
       </Head>
       <Header />
-      {loggedInUser ? (
-        <main>
-          {statusMessages && (
-            <ul>
-              {statusMessages.map((statusMessage, index) => (
-                <li key={index}>{statusMessage.message}</li>
-              ))}
-            </ul>
-          )}
-          <section>
-            <form onSubmit={(e) => handleSubmit(e)}>
-              <label htmlFor="profileId">ProfileID</label>
-              <input
-                type="text"
-                id="profileId"
-                value={profileId}
-                onChange={(e) => setProfileId(e.target.value)}
-              />
-              <label htmlFor="title">Title: </label>
-              <input
-                type="text"
-                id="title"
-                onChange={(e) => {
-                  setTitle(e.target.value);
-                }}
-              />
-              <label htmlFor="description">Description: </label>
-              <textarea
-                id="description"
-                cols={30}
-                rows={5}
-                onChange={(e) => {
-                  setDescription(e.target.value);
-                }}
-              ></textarea>
-              <label>Category</label>
-              <div className="radio-option">
+      <main>
+        {loggedInUser ? (
+          <>
+            {statusMessages && (
+              <ul>
+                {statusMessages.map((statusMessage, index) => (
+                  <li key={index}>{statusMessage.message}</li>
+                ))}
+              </ul>
+            )}
+            <section>
+              <form onSubmit={(e) => handleSubmit(e)}>
+                <label htmlFor="title">Title: </label>
                 <input
-                  type="radio"
-                  id="summary"
-                  name="category"
-                  value={"Summary"}
-                  onChange={(e) => setCategory(e.target.value)}
+                  type="text"
+                  id="title"
+                  onChange={(e) => {
+                    setTitle(e.target.value);
+                  }}
                 />
-                <label htmlFor="summary">Summary</label>
-              </div>
-              <div className="radio-option">
+                <label htmlFor="description">Description: </label>
+                <textarea
+                  id="description"
+                  cols={30}
+                  rows={5}
+                  onChange={(e) => {
+                    setDescription(e.target.value);
+                  }}
+                ></textarea>
+                <label>Category</label>
+                <div className="radio-option">
+                  <input
+                    type="radio"
+                    id="summary"
+                    name="category"
+                    value={"Summary"}
+                    onChange={(e) => setCategory(e.target.value)}
+                  />
+                  <label htmlFor="summary">Summary</label>
+                </div>
+                <div className="radio-option">
+                  <input
+                    type="radio"
+                    id="cheat-sheet"
+                    name="category"
+                    value={"Cheat Sheet"}
+                    onChange={(e) => setCategory(e.target.value)}
+                  />
+                  <label htmlFor="cheat-sheet">Cheat Sheet</label>
+                </div>
+                <div className="radio-option">
+                  <input
+                    type="radio"
+                    id="lecture-notes"
+                    name="category"
+                    value={"Lecture Notes"}
+                    onChange={(e) => setCategory(e.target.value)}
+                  />
+                  <label htmlFor="lecture-notes">Lecture Notes</label>
+                </div>
+                <label htmlFor="subject">Subject</label>
                 <input
-                  type="radio"
-                  id="cheat-sheet"
-                  name="category"
-                  value={"Cheat Sheet"}
-                  onChange={(e) => setCategory(e.target.value)}
+                  type="search"
+                  id="subject"
+                  onFocus={() => setVisible(true)}
+                  ref={subjectsInputRef}
+                  value={subject}
+                  placeholder="Subject..."
+                  onChange={(e) => setSubject(e.target.value)}
                 />
-                <label htmlFor="cheat-sheet">Cheat Sheet</label>
-              </div>
-              <div className="radio-option">
-                <input
-                  type="radio"
-                  id="lecture-notes"
-                  name="category"
-                  value={"Lecture Notes"}
-                  onChange={(e) => setCategory(e.target.value)}
-                />
-                <label htmlFor="lecture-notes">Lecture Notes</label>
-              </div>
-              <label htmlFor="subject">Subject</label>
-              <input
-                type="search"
-                id="subject"
-                onFocus={() => setVisible(true)}
-                ref={subjectsInputRef}
-                value={subject}
-                placeholder="Subject..."
-                onChange={(e) => setSubject(e.target.value)}
-              />
-              {isVisible && (
-                <Subjects
-                  visible={isVisible}
-                  func={setSubject}
-                  filter={subject}
-                />
-              )}
-              <br />
-              {profileIdError && <div>{profileIdError}</div>}
-              {titleError && <div>{titleError}</div>}
-              {descriptionError && <div>{descriptionError}</div>}
-              {categoryError && <div>{categoryError}</div>}
-              {subjectError && <div>{subjectError}</div>}
-              <button type="submit">Submit</button>
-              <br />
-            </form>
-          </section>
-        </main>
-      ) : (
-        <div>
-          <h2>You need an account to create a resource</h2>
-        </div>
-      )}
+                {isVisible && (
+                  <Subjects
+                    visible={isVisible}
+                    func={setSubject}
+                    filter={subject}
+                  />
+                )}
+                <br />
+                {profileIdError && <div>{profileIdError}</div>}
+                {titleError && <div>{titleError}</div>}
+                {descriptionError && <div>{descriptionError}</div>}
+                {categoryError && <div>{categoryError}</div>}
+                {subjectError && <div>{subjectError}</div>}
+                <button type="submit">Submit</button>
+                <br />
+              </form>
+            </section>
+          </>
+        ) : (
+          <h2>You need to be logged in to create a resource</h2>
+        )}
+      </main>
     </>
   );
 };

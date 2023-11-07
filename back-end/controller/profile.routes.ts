@@ -144,6 +144,38 @@ profileRouter.get('/:id', async (req: Request, res: Response) => {
         res.status(400).json({ status: 'error', errorMessage: error.message });
     }
 });
+/**
+ * @swagger
+ * /profiles/user/{email}:
+ *   get:
+ *     tags:
+ *       - profiles
+ *     summary: Get a profile by user email
+ *     parameters:
+ *       - in: path
+ *         name: email
+ *         schema:
+ *           type: string
+ *           required: true
+ *           description: The email of the user that this Profile belongs to
+ *           example: alice12@prisma.io
+ *     responses:
+ *       200:
+ *         description: A profile object
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/Profile'
+ */
+profileRouter.get('/user/:email', async (req: Request, res: Response) => {
+    try {
+        const email = req.params.email;
+        const profile = await profileService.getProfileByEmail(email);
+        res.status(200).json(profile);
+    } catch (error) {
+        res.status(400).json({ status: 'error', errorMessage: error.message });
+    }
+});
 
 /**
  * @swagger
@@ -793,6 +825,18 @@ profileRouter.put('/:profileId/:commentId', async (req: Request, res: Response) 
         if (profile && comment) {
             const updatedComment = await profileService.updateComment(profile, comment, message);
             res.status(200).json(updatedComment);
+        }
+    } catch (error) {
+        res.status(400).json({ status: 'error', errorMessage: error.message });
+    }
+});
+
+profileRouter.get('/comments/:commentId', async (req: Request, res: Response) => {
+    try {
+        const commentId = parseInt(req.params.commentId);
+        const comment = await profileService.getCommentById(commentId);
+        if (comment) {
+            res.status(200).json(await profileService.getCommentById(comment.id));
         }
     } catch (error) {
         res.status(400).json({ status: 'error', errorMessage: error.message });

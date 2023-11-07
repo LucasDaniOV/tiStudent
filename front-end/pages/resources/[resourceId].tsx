@@ -5,6 +5,7 @@ import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
 import { Resource } from "@/types/index";
 import ResourceInfo from "@/components/resources/ResourceInfo";
+import Comments from "@/components/comments/Comments";
 
 const ReadResourceById = () => {
   const [resource, setResource] = useState<Resource>();
@@ -34,6 +35,9 @@ const ReadResourceById = () => {
         {!resourceId && <p>Loading</p>}
         <section>
           <ResourceInfo resource={resource as Resource}></ResourceInfo>
+        </section>
+        <section>
+          {resource && <Comments id={resource.id} object="resource"></Comments>}
         </section>
       </main>
     </>

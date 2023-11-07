@@ -1,4 +1,5 @@
 import ProfileService from "@/services/ProfileService";
+import UserService from "@/services/UserService";
 import { StatusMessage } from "@/types";
 import { useRouter } from "next/router";
 import React, { FormEvent, useState } from "react";
@@ -6,22 +7,32 @@ import React, { FormEvent, useState } from "react";
 const ProfileCreateForm: React.FC = () => {
   const [username, setUsername] = useState("");
   const [bio, setBio] = useState("");
-  const [userId, setUserId] = useState("");
   const [usernameError, setUsernameError] = useState<string>("");
   const [bioError, setBioError] = useState<string>("");
   const [userIdError, setUserIdError] = useState<string>("");
+  const [email, setEmail] = useState("");
+  const [emailError, setEmailError] = useState("");
+  const [password, setPassword] = useState("");
+  const [passwordError, setPasswordError] = useState("");
   const [statusMessages, setStatusMessages] = useState<StatusMessage[]>([]);
+
   const router = useRouter();
 
   const clearErrors = () => {
     setUsernameError("");
     setBioError("");
     setUserIdError("");
+    setEmailError("");
+    setPasswordError("");
     setStatusMessages([]);
   };
 
   const validate = () => {
     let isValid = true;
+    if (!email.trim()) {
+      setEmailError("email is required");
+      isValid = false;
+    }
     if (!username.trim()) {
       setUsernameError("username is required");
       isValid = false;
@@ -34,25 +45,33 @@ const ProfileCreateForm: React.FC = () => {
       setBioError("bio cannot be longer than 200 characters");
       isValid = false;
     }
-    if (!userId.trim()) {
-      setUserIdError("user id is required");
-      isValid = false;
-    }
     return isValid;
   };
 
-  const createProfile = async () => {
-    const res = await ProfileService.createProfile(username, bio, userId);
+  const createProfile = async (email: string) => {
+    const user = JSON.stringify(await UserService.getUserByEmail(email));
+    console.log(user);
+    const userObject = JSON.parse(user);
+
+    const res = await ProfileService.createProfile(
+      username,
+      bio,
+      parseInt(userObject.id)
+    );
+    const profileObject = await ProfileService.getProfileByEmail(email);
+    const profile = JSON.stringify(profileObject);
+    sessionStorage.setItem("loggedInProfile", profile);
     const message = res.message;
     const type = res.status;
     setStatusMessages([{ message, type }]);
   };
 
-  const handleSubmit = (e: FormEvent) => {
+  const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
     clearErrors();
     if (!validate()) return;
-    createProfile();
+    await UserService.createUser(email, password);
+    await createProfile(email);
   };
 
   return (
@@ -85,16 +104,27 @@ const ProfileCreateForm: React.FC = () => {
         />
         <br />
 
-        <label htmlFor="userIdInput">User ID:</label>
+        <label htmlFor="emailInput">Email</label>
         <br />
         <input
-          id="userIdInput"
-          type="number"
-          value={userId}
-          onChange={(e) => setUserId(e.target.value)}
+          id="emailInput"
+          type="email"
+          value={email}
+          onChange={(e) => setEmail(e.target.value)}
         />
         <br />
+        {emailError && <div>{emailError}</div>}
 
+        <label htmlFor="passwordInput">Password</label>
+        <br />
+        <input
+          id="passwordInput"
+          type="password"
+          value={password}
+          onChange={(e) => setPassword(e.target.value)}
+        />
+        <br />
+        {passwordError && <div>{passwordError}</div>}
         {usernameError && <div>{usernameError}</div>}
         {bioError && <div>{bioError}</div>}
         {userIdError && <div>{userIdError}</div>}
