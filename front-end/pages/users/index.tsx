@@ -11,9 +11,8 @@ const Users: React.FC = () => {
   const [users, setUsers] = useState<Array<User>>();
 
   const getUsers = async () => {
-    const response = await UserService.getAllUsers();
-    const fetchedUsers = await response.json();
-    return setUsers(fetchedUsers);
+    const users = await UserService.getAllUsers();
+    return setUsers(users);
   };
 
   useEffect(() => {
