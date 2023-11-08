@@ -23,7 +23,10 @@ const getResourceById = async (id: number): Promise<Resource> => {
 // create resource
 const createResource = async ({ creator, title, description, category, subject }: ResourceInput): Promise<Resource> => {
     if (!creator) throw new Error('creator Profile is required');
-    if (!await profileDb.getProfileById(Number(creator.id))) throw new Error(`Profile with id ${creator.id} does not exist`);
+    // check that userID is a number
+    if (typeof creator.id !== 'number') throw new Error('userId must be a number');
+    const profile = await profileDb.getProfileById(Number(creator.id));
+    if (!profile) throw new Error(`Profile with id ${creator.id} does not exist`);
     if (!Object.values(Category).includes(category)) throw new Error('Invalid Category');
     if (!Object.values(Subject).includes(subject)) throw new Error('Invalid Subject');
     const resource = new Resource({ creator, title, description, category, subject });

@@ -30,7 +30,7 @@ test(`given: valid values for User, when: creating User, then: User is created w
     const user = new User({ email: validEmail, password: validPassword });
     userDb.createUser = mockUserDbCreateUser.mockResolvedValue(user);
     userDb.getUserByEmail = mockUserDbGetUserByEmail.mockResolvedValue(undefined);
-    
+
     // when
     const sut = await userService.createUser({ email: validEmail, password: validPassword });
 
@@ -132,7 +132,9 @@ test(`given: valid values, when: updating User, then: User is updated`, async ()
     const validUser = new User({ id: validId, email: validEmail, password: validPassword });
     const validNewEmail = 'newemail@tistudent.be';
     userDb.getUserById = mockUserDbGetUserById.mockResolvedValue(validUser);
-    userDb.updateEmail = mockUserDbUpdateEmail.mockResolvedValue(new User({ id: validId, email: validNewEmail, password: validPassword }));
+    userDb.updateEmail = mockUserDbUpdateEmail.mockResolvedValue(
+        new User({ id: validId, email: validNewEmail, password: validPassword })
+    );
 
     //when
     const sut = await userService.updateEmailById(validId, validNewEmail);

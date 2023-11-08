@@ -37,7 +37,14 @@ const createResource = async (
   category: string,
   subject: string
 ) => {
-  const creator = await ProfileService.getProfileById(profileId);
+  const creator = await ProfileService.getProfileById('3925486');
+  console.log(creator);
+  if (!creator) {
+    return {
+      message: "Profile does not exist",
+      status: "error",
+    };
+  }
   const res = await fetch(baseUrl, {
     method: "POST",
     headers: {

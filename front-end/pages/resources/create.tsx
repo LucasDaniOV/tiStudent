@@ -5,6 +5,7 @@ import { Subject } from "../../../back-end/domain/model/subject";
 import ResourceService from "@/services/ResourceService";
 import { useRouter } from "next/router";
 import Subjects from "@/components/resources/Subjects";
+import subjects from "@/components/resources/subjects";
 import { Profile, Resource, StatusMessage } from "@/types";
 
 const CreateResourceForm: React.FC = () => {
@@ -34,8 +35,56 @@ const CreateResourceForm: React.FC = () => {
     setStatusMessages([]);
   };
 
-  //validate komt nog
-  // const validate = () => {}
+  const validate = () => {
+    let isValid = true;
+
+    if (!title.trim()) {
+      setTitleError("title is required");
+      isValid = false;
+    }
+
+    if (title.length > 60) {
+      setTitleError("title cannot be longer than 60 characters");
+      isValid = false;
+    }
+
+    if (!description.trim()) {
+      setDescriptionError("description is required");
+      isValid = false;
+    }
+
+    if (description.length > 500) {
+      setDescriptionError("description cannot be longer than 500 characters");
+      isValid = false;
+    }
+
+    if (!category.trim()) {
+      setCategoryError("category is required");
+      isValid = false;
+    }
+
+    if (!["Summary", "Cheat Sheet", "Lecture Notes"].includes(category)) {
+      setCategoryError("Invalid category");
+      isValid = false;
+    }
+
+    if (!subject.trim()) {
+      setSubjectError("subject is required");
+      isValid = false;
+    }
+
+    if (!subjects.includes(subject)) {
+      setSubjectError("Invalid subject");
+      isValid = false;
+    }
+
+    if (!profileId.trim()) {
+      setProfileIdError("profileId is required");
+      isValid = false;
+    }
+
+    return isValid;
+  };
 
   const createResource = async () => {
     const result = await ResourceService.createResource(
@@ -45,6 +94,8 @@ const CreateResourceForm: React.FC = () => {
       category,
       subject
     );
+  
+    console.log(result)
     const message = result.message;
     const type = result.status;
     setStatusMessages([{ message, type }]);
@@ -53,9 +104,8 @@ const CreateResourceForm: React.FC = () => {
   const handleSubmit = (e: FormEvent) => {
     e.preventDefault();
     clearErrors();
-    // if (!validate()) return;
+    if (!validate()) return;
     createResource();
-    router.push("/resources");
   };
 
   const handleOutsideClicks = (event: MouseEvent) => {
