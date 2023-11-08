@@ -37,8 +37,7 @@ const createResource = async (
   category: string,
   subject: string
 ) => {
-  const creator = await ProfileService.getProfileById('3925486');
-  console.log(creator);
+  const creator = await ProfileService.getProfileById(profileId);
   if (!creator) {
     return {
       message: "Profile does not exist",
