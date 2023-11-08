@@ -21,7 +21,9 @@ const Resources: React.FC = () => {
     getResources();
   }, []);
 
-  useInterval(getResources, 5000);
+  useInterval(() => {
+    getResources()
+  }, 5000);
 
   return (
     <>
