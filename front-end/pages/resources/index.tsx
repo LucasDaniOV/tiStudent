@@ -6,6 +6,7 @@ import Header from "@/components/header";
 import ResourceService from "../../services/ResourceService";
 import React from "react";
 import Link from "next/link";
+import useInterval from "use-interval";
 
 const Resources: React.FC = () => {
   const [resources, setResources] = useState<Array<Resource>>();
@@ -19,6 +20,8 @@ const Resources: React.FC = () => {
   useEffect(() => {
     getResources();
   }, []);
+
+  useInterval(getResources, 5000);
 
   return (
     <>
