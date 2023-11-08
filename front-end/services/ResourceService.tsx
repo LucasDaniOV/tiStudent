@@ -62,7 +62,16 @@ const createResource = async (
     }),
   });
 
-  return res2.json();
+  const res2Json = await res2.json();
+
+  if (res2Json.status === "error") {
+    return {
+      status: "error",
+      message: res2Json.message
+    };
+  }
+
+  return res2Json;
 };
 
 const ResourceService = {

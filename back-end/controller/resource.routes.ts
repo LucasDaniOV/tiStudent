@@ -147,7 +147,7 @@ resourceRouter.post('/', async (req: Request, res: Response) => {
         const result = await resourceService.createResource(resource);
         res.status(200).json({ status: 'succes', message: 'Resource created', data: result });
     } catch (error) {
-        res.status(400).json({ status: 'error', errorMessage: error.message });
+        res.status(400).json({ status: 'error', message: error.message });
     }
 });
 
