@@ -12,7 +12,7 @@ const getAllProfiles = async (): Promise<Profile[]> => {
     return res.json();
 };
 
-const getProfileById = async (profileId: string): Promise<Profile> => {
+const getProfileById = async (profileId: string) => {
     const res = await fetch(baseUrl + `/${profileId}`, {
         method: "GET",
         headers: {

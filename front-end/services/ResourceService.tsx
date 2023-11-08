@@ -37,14 +37,18 @@ const createResource = async (
   category: string,
   subject: string
 ) => {
-  const creator = await ProfileService.getProfileById(profileId);
-  if (!creator) {
+  const res1 = await ProfileService.getProfileById(profileId);
+
+  if (res1.status === "error") {
     return {
       message: "Profile does not exist",
       status: "error",
     };
   }
-  const res = await fetch(baseUrl, {
+
+  const creator = res1.data as Profile;
+
+  const res2 = await fetch(baseUrl, {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
@@ -57,7 +61,8 @@ const createResource = async (
       subject,
     }),
   });
-  return res.json();
+
+  return res2.json();
 };
 
 const ResourceService = {

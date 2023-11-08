@@ -139,7 +139,7 @@ profileRouter.get('/:id', async (req: Request, res: Response) => {
     try {
         const id = parseInt(req.params.id);
         const profile = await profileService.getProfileById(id);
-        res.status(200).json(profile);
+        res.status(200).json({ status: 'success', message: 'Have fun with your profile', data: profile });
     } catch (error) {
         res.status(400).json({ status: 'error', errorMessage: error.message });
     }
