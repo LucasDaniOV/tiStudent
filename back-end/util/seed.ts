@@ -3,18 +3,14 @@ import { Subject } from '../domain/model/subject';
 import { Category } from '../domain/model/category';
 const prisma = new PrismaClient();
 async function main() {
-    const alice = await prisma.user.upsert({
-        where: { email: 'user@tistudent.be' },
-        update: {},
-        create: {
+    const alice = await prisma.user.create({
+        data: {
             email: 'alice12@prisma.io',
             password: 'Str0ngPW!!!',
         },
     });
-    const bob = await prisma.user.upsert({
-        where: { email: 'bob@prisma.io' },
-        update: {},
-        create: {
+    const bob = await prisma.user.create({
+        data: {
             email: 'bob9@prisma.io',
             password: 'passWord123!$',
         },

@@ -1,39 +1,56 @@
 const baseUrl = process.env.NEXT_PUBLIC_API_URL + "/users";
 
-const getAllUsers = () => {
-  return fetch(process.env.NEXT_PUBLIC_API_URL + "/users", {
+const getAllUsers = async () => {
+  const res = await fetch(process.env.NEXT_PUBLIC_API_URL + "/users", {
     method: "GET",
     headers: {
       "Content-Type": "application/json",
     },
   });
+  const users = await res.json();
+  return users;
 };
 
-const getUserById = (userId: string) => {
-  return fetch(process.env.NEXT_PUBLIC_API_URL + `/users/${userId}`, {
-    method: "GET",
-    headers: {
-      "Content-Type": "application/json",
-    },
-  });
+const getUserById = async (userId: string) => {
+  const res = await fetch(
+    process.env.NEXT_PUBLIC_API_URL + `/users/${userId}`,
+    {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+      },
+    }
+  );
+  const user = await res.json();
+  return user;
 };
 
-const getUserByEmail = (email: string) => {
-  return fetch(process.env.NEXT_PUBLIC_API_URL + `/users/email/` + email, {
-    method: "GET",
-    headers: {
-      "Content-Type": "application/json",
-    },
-  });
+const getUserByEmail = async (email: string) => {
+  const res = await fetch(
+    process.env.NEXT_PUBLIC_API_URL + `/users/email/` + email,
+    {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+      },
+    }
+  );
+  const user = await res.json();
+  return user;
 };
 
-const deleteUserById = (userId: string) => {
-  return fetch(process.env.NEXT_PUBLIC_API_URL + `/users/${userId}`, {
-    method: "DELETE",
-    headers: {
-      "Content-Type": "application/json",
-    },
-  });
+const deleteUserById = async (userId: string) => {
+  const res = await fetch(
+    process.env.NEXT_PUBLIC_API_URL + `/users/${userId}`,
+    {
+      method: "DELETE",
+      headers: {
+        "Content-Type": "application/json",
+      },
+    }
+  );
+  const user = await res.json();
+  return user;
 };
 
 const createUser = async (email: string, password: string) => {
@@ -44,19 +61,21 @@ const createUser = async (email: string, password: string) => {
     },
     body: JSON.stringify({ email, password }),
   });
-  return res.json();
-}
+  const user = await res.json();
+  return user;
+};
 
 const getGithubUser = async (code: string) => {
-  const url = `${baseUrl}/login/github?code=${code}`
+  const url = `${baseUrl}/login/github?code=${code}`;
   const res = await fetch(url, {
     method: "GET",
     headers: {
       "Content-Type": "application/json",
     },
   });
-  return res;
-}
+  const user = await res.json();
+  return user;
+};
 
 const UserService = {
   getAllUsers,
@@ -64,7 +83,7 @@ const UserService = {
   getUserByEmail,
   deleteUserById,
   createUser,
-  getGithubUser
+  getGithubUser,
 };
 
 export default UserService;

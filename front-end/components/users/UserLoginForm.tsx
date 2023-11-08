@@ -26,8 +26,7 @@ const UserLoginForm: React.FC = () => {
     clearErrors();
     if (!validate()) return;
     const user = await UserService.getUserByEmail(email);
-    const userResponse = JSON.stringify(user);
-    sessionStorage.setItem("loggedInUser", userResponse);
+    sessionStorage.setItem("loggedInUser", JSON.stringify(user));
     setStatusMessages([{ message: `Welcome, ${email}`, type: "success" }]);
   };
 
