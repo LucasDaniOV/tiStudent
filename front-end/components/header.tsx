@@ -3,16 +3,14 @@ import React from "react";
 
 const Header: React.FC = () => {
   return (
-    <header>
-      <a> tiStudent App</a>
+    <header role="heading">
+      <h1>tiStudent App</h1>
       <nav>
-        <div>
-          <Link href="/">Home</Link>
-          <Link href="/users">Users</Link>
-          <Link href="/resources">Resources</Link>
-          <Link href="/profiles">Profiles</Link>
-          <Link href="/login">Login</Link>
-        </div>
+        <Link href="/">Home</Link>
+        <Link href="/users">Users</Link>
+        <Link href="/resources">Resources</Link>
+        <Link href="/profiles">Profiles</Link>
+        <Link href="/login">Login</Link>
       </nav>
     </header>
   );
