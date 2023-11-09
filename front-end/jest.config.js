@@ -1,6 +1,5 @@
+/** @type {import('ts-jest').JestConfigWithTsJest} */
 module.exports = {
-  testEnvironment: 'jsdom',
-  transform: {
-    '\\.[jt]sx?$': 'esbuild-jest',
-  },
-}
+  preset: 'ts-jest',
+  testEnvironment: 'node',
+};
