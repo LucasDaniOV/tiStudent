@@ -3,7 +3,7 @@ import React from "react";
 
 const Header: React.FC = () => {
   return (
-    <header role="heading">
+    <header role="header">
       <h1>tiStudent App</h1>
       <nav>
         <Link href="/">Home</Link>
