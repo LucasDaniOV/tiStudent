@@ -588,7 +588,7 @@ profileRouter.post('/comment-on-comment/:profileId/:resourceId/:commentId', asyn
         const message = String(req.query.message);
         const profile = await profileService.getProfileById(profileId);
         const resource = await resourceService.getResourceById(resourceId);
-        const newComment = await profileService.writeComment(profile, resource, message, commentId);
+        const newComment = await commentService.writeComment(profile, resource, message, commentId);
         res.status(200).json({ status: 'success', message: 'Comment added', data: newComment });
     } catch (error) {
         res.status(400).json({ status: 'error', errorMessage: error.message });
@@ -640,7 +640,7 @@ profileRouter.post('/comment/:profileId/:resourceId', async (req: Request, res: 
         const message = String(req.query.message);
         const profile = await profileService.getProfileById(profileId);
         const resource = await resourceService.getResourceById(resourceId);
-        const comment = await profileService.writeComment(profile, resource, message);
+        const comment = await commentService.writeComment(profile, resource, message);
         res.status(200).json(comment);
     } catch (error) {
         res.status(400).json({ status: 'error', errorMessage: error.message });
@@ -725,10 +725,10 @@ profileRouter.put('/:profileId/:commentId', async (req: Request, res: Response) 
         const profileId = parseInt(req.params.profileId);
         const commentId = parseInt(req.params.commentId);
         const profile = await profileService.getProfileById(profileId);
-        const comment = await profileService.getCommentById(commentId);
+        const comment = await commentService.getCommentById(commentId);
         const message = String(req.query.message);
         if (profile && comment) {
-            const updatedComment = await profileService.updateComment(profile, comment, message);
+            const updatedComment = await commentService.updateComment(profile, comment, message);
             res.status(200).json(updatedComment);
         }
     } catch (error) {
@@ -739,9 +739,9 @@ profileRouter.put('/:profileId/:commentId', async (req: Request, res: Response) 
 profileRouter.get('/comments/:commentId', async (req: Request, res: Response) => {
     try {
         const commentId = parseInt(req.params.commentId);
-        const comment = await profileService.getCommentById(commentId);
+        const comment = await commentService.getCommentById(commentId);
         if (comment) {
-            res.status(200).json(await profileService.getCommentById(comment.id));
+            res.status(200).json(await commentService.getCommentById(comment.id));
         }
     } catch (error) {
         res.status(400).json({ status: 'error', errorMessage: error.message });

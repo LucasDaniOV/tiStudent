@@ -1,6 +1,7 @@
 import express, { Request, Response } from 'express';
 import commentService from '../service/comment.service';
 import likeService from '../service/like.service';
+import profileService from '../service/profile.service';
 
 const likeRouter = express.Router();
 
@@ -87,7 +88,6 @@ likeRouter.post('/:profileId/comment/:commentId', async (req: Request, res: Resp
         res.status(400).json({ status: 'error', errorMessage: error.message });
     }
 });
-
 
 /**
  * @swagger
