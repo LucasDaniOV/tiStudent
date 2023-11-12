@@ -83,6 +83,7 @@ import express, { Request, Response } from 'express';
 import profileService from '../service/profile.service';
 import { ProfileInput } from '../types';
 import resourceService from '../service/resource.service';
+import commentService from '../service/comment.service';
 
 const profileRouter = express.Router();
 
@@ -206,56 +207,6 @@ profileRouter.post('/', async (req: Request, res: Response) => {
         res.status(200).json({ status: 'success', message: 'Profile created', data: profile });
     } catch (error) {
         res.status(400).json({ status: 'error', message: error.message });
-    }
-});
-
-/**
- * @swagger
- * /profiles/like/{profileId}/{objectId}?object:
- *   post:
- *     tags:
- *       - profiles
- *     summary: Like an object (resource or comment)
- *     parameters:
- *       - name: profileId
- *         in: path
- *         required: true
- *         description: The ID of the Profile.
- *         schema:
- *           type: number
- *           example: 0
- *       - name: objectId
- *         in: path
- *         required: true
- *         description: The ID of the object
- *         schema:
- *           type: number
- *           example: 0
- *       - name: object
- *         in: query
- *         required: true
- *         description: The name of what object you want to like
- *         schema:
- *           type: string
- *           example: comment
- *     responses:
- *       200:
- *         description: The liked object
- *         content:
- *           application/json:
- *             schema:
- *               $ref: '#/components/schemas/Like'
- */
-
-profileRouter.post('/like/:profileId/:objectId', async (req: Request, res: Response) => {
-    try {
-        const profileId = parseInt(req.params.profileId);
-        const resourceId = parseInt(req.params.resourceId);
-        const object = String(req.query.object);
-        const resource = await profileService.likeObject(profileId, object, resourceId);
-        res.status(200).json(resource);
-    } catch (error) {
-        res.status(400).json({ status: 'error', errorMessage: error.message });
     }
 });
 
@@ -440,7 +391,7 @@ profileRouter.get('/:id/comments', async (req: Request, res: Response) => {
     try {
         const profileId = parseInt(req.params.id);
         const profile = await profileService.getProfileById(profileId);
-        const comments = await profileService.getAllCommentsByProfile(profile.id);
+        const comments = await commentService.getAllCommentsByProfile(profile.id);
         res.status(200).json(comments);
     } catch (error) {
         res.status(400).json({ status: 'error', errorMessage: error.message });
@@ -487,7 +438,7 @@ profileRouter.get('/:profileId/:resourceId/comments', async (req: Request, res: 
         const resourceId = parseInt(req.params.resourceId);
         const profile = await profileService.getProfileById(profileId);
         const resource = await resourceService.getResourceById(resourceId);
-        const comments = await profileService.getAllCommentsByProfileOnResource(profile.id, resource.id);
+        const comments = await commentService.getAllCommentsByProfileOnResource(profile.id, resource.id);
         res.status(200).json(comments);
     } catch (error) {
         res.status(400).json({ status: 'error', errorMessage: error.message });
@@ -533,8 +484,8 @@ profileRouter.delete('/:profileId/comment/:commentId', async (req: Request, res:
         const profileId = parseInt(req.params.profileId);
         const commentId = parseInt(req.params.commentId);
         const profile = await profileService.getProfileById(profileId);
-        const comment = await profileService.getCommentById(commentId);
-        res.status(200).json(await profileService.deleteComment(profile, comment.id));
+        const comment = await commentService.getCommentById(commentId);
+        res.status(200).json(await commentService.deleteComment(profile, comment.id));
     } catch (error) {
         res.status(400).json({ status: 'error', errorMessage: error.message });
     }
@@ -579,52 +530,6 @@ profileRouter.put('/:id/bio', async (req: Request, res: Response) => {
         const profile = await profileService.getProfileById(profileId);
         const bio = await profileService.updateField(profile, 'bio', newBio);
         res.status(200).json(bio);
-    } catch (error) {
-        res.status(400).json({ status: 'error', errorMessage: error.message });
-    }
-});
-
-/**
- * @swagger
- * /profiles/{profileId}/like/{likeId}:
- *   delete:
- *     tags:
- *       - profiles
- *     summary: Remove a like on some object (a comment or a resource)
- *     parameters:
- *       - name: profileId
- *         in: path
- *         required: true
- *         description: The ID of the Profile.
- *         schema:
- *           type: number
- *           example: 0
- *       - name: likeId
- *         in: path
- *         required: true
- *         description: The ID of Like
- *         schema:
- *           type: number
- *           example: 0
- *
- *     responses:
- *       200:
- *         description: The updated list of likes
- *         content:
- *           application/json:
- *             schema:
- *               type: array
- *               items:
- *                 $ref: '#/components/schemas/Like'
- */
-
-profileRouter.delete('/:profileId/like/:likeId', async (req: Request, res: Response) => {
-    try {
-        const profileId = parseInt(req.params.profileId);
-        const likeId = String(req.params.likeId);
-        const profile = await profileService.getProfileById(profileId);
-        const likedResources = await profileService.updateField(profile, 'likes', likeId);
-        res.status(200).json(likedResources);
     } catch (error) {
         res.status(400).json({ status: 'error', errorMessage: error.message });
     }
