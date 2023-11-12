@@ -249,6 +249,11 @@ const deleteComment = async (commentId: number): Promise<Boolean> => {
     }
 };
 
+const getCommentsOnComment = async (commentId: number) => {
+    const commentsPrisma = await getAllComments();
+    return commentsPrisma.filter((comment) => comment.parentId === commentId);
+};
+
 export default {
     getAllComments,
     getAllCommentsOnResource,
@@ -258,4 +263,5 @@ export default {
     createComment,
     updateMessageOnComment,
     deleteComment,
+    getCommentsOnComment,
 };

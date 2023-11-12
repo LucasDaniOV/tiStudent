@@ -1,8 +1,7 @@
-import { Profile } from '../model/profile';
-import { ProfileInput } from '../../types';
-import { User } from '../model/user';
-import { Resource } from '../model/resource';
 import database from '../../util/database';
+import { Profile } from '../model/profile';
+import { Resource } from '../model/resource';
+import { User } from '../model/user';
 import likeDb from './like.db';
 
 const getAllProfiles = async (): Promise<Profile[]> => {
