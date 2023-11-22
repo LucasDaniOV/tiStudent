@@ -1,9 +1,11 @@
 import userDb from '../../domain/data-access/user.db';
 import { User } from '../../domain/model/user';
 import userService from '../../service/user.service';
+import { Role } from '../../types';
 
 const validEmail = 'bob@ucll.com';
 const validPassword = 'B0bbi3!!';
+const validRole = 'user';
 
 let mockUserDbCreateUser: jest.Mock;
 let mockUserDbGetAllUsers: jest.Mock;
@@ -50,7 +52,7 @@ test(`given: existing Users, when: requesting all users, then: all users are ret
     userDb.getAllUsers = mockUserDbGetAllUsers.mockReturnValue(users);
 
     // when
-    const sut = await userService.getAllUsers();
+    const sut = await userService.getAllUsers('admin');
 
     // then
     expect(mockUserDbGetAllUsers).toHaveBeenCalledTimes(1);
@@ -62,7 +64,7 @@ test(`given: no Users, when: requesting all users, then: empty array is returned
     userDb.getAllUsers = mockUserDbGetAllUsers.mockResolvedValue([]);
 
     // when
-    const sut = await userService.getAllUsers();
+    const sut = await userService.getAllUsers('admin');
 
     // then
     expect(mockUserDbGetAllUsers).toHaveBeenCalledTimes(1);
@@ -155,4 +157,43 @@ test(`given: invalid id, when: updating User, then: Error is thrown`, () => {
     //then
     expect(sut).rejects.toThrowError('No user with id undefined found');
     expect(mockUserDbGetUserById).toHaveBeenCalledTimes(1);
+});
+
+test(`given valid role, when: creating user, then: user is created with that role`, async () => {
+    // given
+    const user = new User({ email: validEmail, password: validPassword, role: validRole });
+    userDb.createUser = mockUserDbCreateUser.mockResolvedValue(user);
+    userDb.getUserByEmail = mockUserDbGetUserByEmail.mockResolvedValue(undefined);
+
+    // when
+    const sut = await userService.createUser({ email: validEmail, password: validPassword, role: validRole });
+
+    // then
+    expect(mockUserDbCreateUser).toHaveBeenCalledTimes(1);
+    expect(sut.email).toEqual(validEmail);
+    expect(sut.password).toEqual(validPassword);
+    expect(sut.role).toEqual(validRole);
+});
+
+test(`given: invalid role, when: creating user, then: user is not created and error is thrown`, () => {
+    // given
+    const invalidRole = 'invalidRole';
+    userDb.getUserByEmail = mockUserDbGetUserByEmail.mockResolvedValue(undefined);
+
+    // when
+    const sut = async () => await userService.createUser({ email: validEmail, password: validPassword, role: invalidRole as Role });
+
+    // then
+    expect(sut).rejects.toThrowError('role must be one of admin, user, or guest');
+});
+
+test(`given: unauthorized role, when: requesting all users, then: Error is thrown`, () => {
+    // given
+    const unauthorizedRole = 'user';
+
+    // when
+    const sut = async () => await userService.getAllUsers(unauthorizedRole);
+
+    // then
+    expect(sut).rejects.toThrowError('Only admins can get all users');
 });

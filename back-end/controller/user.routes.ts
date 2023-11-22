@@ -1,4 +1,4 @@
-import express, { Request, Response } from 'express';
+import express, { NextFunction, Request, Response } from 'express';
 import userService from '../service/user.service';
 import { UserInput } from '../types';
 
@@ -28,6 +28,8 @@ const userRouter = express.Router();
  * @swagger
  * /users:
  *   get:
+ *     security:
+ *       - bearerAuth: []
  *     tags:
  *       - users
  *     summary: Get all users
@@ -39,9 +41,10 @@ const userRouter = express.Router();
  *             schema:
  *               $ref: '#/components/schemas/User'
  */
-userRouter.get('/', async (req: Request, res: Response) => {
+userRouter.get('/', async (req: Request & { auth: any }, res: Response, next: NextFunction) => {
     try {
-        const users = await userService.getAllUsers();
+        const { role } = req.auth;
+        const users = await userService.getAllUsers(role);
         res.status(200).json(users);
     } catch (error) {
         res.status(400).json({ status: 'error', errorMessage: error.message });
@@ -52,6 +55,8 @@ userRouter.get('/', async (req: Request, res: Response) => {
  * @swagger
  * /users/{id}:
  *   get:
+ *     security:
+ *       - bearerAuth: []
  *     tags:
  *       - users
  *     summary: Get user by id
@@ -85,6 +90,8 @@ userRouter.get('/:id', async (req: Request, res: Response) => {
  * @swagger
  * /users/email/{email}:
  *   get:
+ *     security:
+ *       - bearerAuth: []
  *     tags:
  *       - users
  *     summary: Get user by email
@@ -116,7 +123,7 @@ userRouter.get('/email/:email', async (req: Request, res: Response) => {
 
 /**
  * @swagger
- * /users:
+ * /users/signup:
  *   post:
  *     tags:
  *       - users
@@ -156,13 +163,13 @@ userRouter.get('/email/:email', async (req: Request, res: Response) => {
  *                   format: password
  *                   example: Str0ngPW!!!2
  */
-userRouter.post('/', async (req: Request, res: Response) => {
+userRouter.post('/signup', async (req: Request, res: Response, next: NextFunction) => {
     try {
         const userInput = req.body as UserInput;
         const user = await userService.createUser(userInput);
         res.status(200).json({ status: 'success', message: 'User created', user });
     } catch (error) {
-        res.status(400).json({ status: 'error', message: error.message });
+        next(error);
     }
 });
 
@@ -170,6 +177,8 @@ userRouter.post('/', async (req: Request, res: Response) => {
  * @swagger
  * /users/{id}:
  *   delete:
+ *     security:
+ *       - bearerAuth: []
  *     tags:
  *       - users
  *     summary: Remove user by id
@@ -202,6 +211,8 @@ userRouter.delete('/:id', async (req: Request, res: Response) => {
  * @swagger
  * /users/{id}/email:
  *   put:
+ *     security:
+ *       - bearerAuth: []
  *     tags:
  *       - users
  *     summary: Update user email
@@ -260,6 +271,8 @@ userRouter.put('/:id/email', async (req: Request, res: Response) => {
  * @swagger
  * /users/{id}/password:
  *   put:
+ *     security:
+ *       - bearerAuth: []
  *     tags:
  *       - users
  *     summary: Update user password
@@ -329,6 +342,24 @@ userRouter.get('/login/github', async (req: Request, res: Response) => {
         res.status(200).json(githubUser);
     } catch (error) {
         res.status(400).json({ status: 'error', errorMessage: error.message });
+    }
+});
+
+/**
+ * @swagger
+ * /users/login:
+ *   post:
+ *     tags:
+ *       - users
+ *     summary: Authenticate user
+ */
+userRouter.post('/login', async (req: Request, res: Response, next: NextFunction) => {
+    try {
+        const userInput: UserInput = req.body;
+        const response = await userService.authenticate(userInput);
+        res.status(200).json({ message: 'Authentication successful', ...response });
+    } catch (error) {
+        next(error);
     }
 });
 
