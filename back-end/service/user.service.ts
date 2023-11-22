@@ -1,7 +1,8 @@
 import bcrypt from 'bcrypt';
+import jwt from 'jsonwebtoken';
 import userDb from '../domain/data-access/user.db';
 import { User } from '../domain/model/user';
-import { UserInput } from '../types';
+import { AuthenticationResponse, UserInput } from '../types';
 
 const getAllUsers = async (): Promise<User[]> => userDb.getAllUsers();
 
@@ -88,6 +89,18 @@ const authenticate = async ({ email, password }: UserInput): Promise<Authenticat
     const isValidPassword = await bcrypt.compare(password, user.password);
     if (!isValidPassword) throw new Error('Invalid password');
     return { token: generateJwtToken({ email }), email: email };
+};
+
+const generateJwtToken = ({ email }): string => {
+    const options = { expiresIn: `${process.env.JWT_EXPIRES_HOURS}h`, issuer: process.env.JWT_ISSUER };
+    const secret = process.env.JWT_SECRET;
+
+    try {
+        return jwt.sign({ email }, secret, options);
+    } catch (error) {
+        console.log(error);
+        throw new Error('Error generating JWT token, see server log for details.');
+    }
 };
 
 export default {
