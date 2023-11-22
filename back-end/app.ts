@@ -8,6 +8,7 @@ import { userRouter } from './controller/user.routes';
 import { resourceRouter } from './controller/resource.routes';
 import { version } from './package.json';
 import { profileRouter } from './controller/profile.routes';
+import { Request, Response, NextFunction } from 'express';
 
 const app = express();
 dotenv.config();
@@ -23,6 +24,14 @@ app.get('/status', (req, res) => {
 app.use('/users', userRouter);
 app.use('/resources', resourceRouter);
 app.use('/profiles', profileRouter);
+
+app.use((err: Error, req: Request, res: Response, next: NextFunction) => {
+    if (err.name === 'UnauthorizedError') {
+        res.status(401).json({ status: 'unauthorized', message: err.message });
+    } else {
+        res.status(400).json({ status: 'application error', message: err.message });
+    }
+});
 
 const swaggerOpts = {
     definition: {
