@@ -19,12 +19,14 @@ const getUserByEmail = async (email: string): Promise<User> => {
     return u;
 };
 
-const createUser = async ({ email, password }: UserInput): Promise<User> => {
-    User.validateEmail(email);
-    User.validatePassword(password);
+const createUser = async ({ email, password, role }: UserInput): Promise<User> => {  
+    // check if email is already taken
     if (await userDb.getUserByEmail(email)) throw new Error(`User with email ${email} already exists`);
+    User.validateRole(role);
+    
+    // create user
     const hashedPassword = await bcrypt.hash(password, 12);
-    return await userDb.createUser(email, hashedPassword);
+    return await userDb.createUser(email, hashedPassword, role);
 };
 
 const removeUserById = async (id: number): Promise<Boolean> => {

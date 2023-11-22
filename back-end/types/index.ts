@@ -6,6 +6,7 @@ type UserInput = {
     id?: number;
     email?: string;
     password?: string;
+    role?: Role;
 };
 
 type ResourceInput = {
@@ -30,4 +31,6 @@ type AuthenticationResponse = {
     email: string;
 };
 
-export { UserInput, ResourceInput, ProfileInput, AuthenticationResponse };
+type Role = 'admin' | 'user' | 'guest';
+
+export { UserInput, ResourceInput, ProfileInput, AuthenticationResponse, Role };
