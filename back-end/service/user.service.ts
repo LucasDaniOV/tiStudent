@@ -1,3 +1,4 @@
+import bcrypt from 'bcrypt';
 import userDb from '../domain/data-access/user.db';
 import { User } from '../domain/model/user';
 import { UserInput } from '../types';
@@ -21,7 +22,8 @@ const createUser = async ({ email, password }: UserInput): Promise<User> => {
     User.validateEmail(email);
     User.validatePassword(password);
     if (await userDb.getUserByEmail(email)) throw new Error(`User with email ${email} already exists`);
-    return await userDb.createUser(email, password);
+    const hashedPassword = await bcrypt.hash(password, 12);
+    return await userDb.createUser(email, hashedPassword);
 };
 
 const removeUserById = async (id: number): Promise<Boolean> => {
