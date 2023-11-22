@@ -182,12 +182,9 @@ test(`given: invalid role, when: creating user, then: user is not created and er
 
     // when
     const sut = async () => await userService.createUser({ email: validEmail, password: validPassword, role: invalidRole as Role });
-    console.log(sut)
 
     // then
     expect(sut).rejects.toThrowError('role must be one of admin, user, or guest');
-
-    console.log(sut)
 });
 
 test(`given: unauthorized role, when: requesting all users, then: Error is thrown`, () => {
