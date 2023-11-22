@@ -1,12 +1,11 @@
+import CommentInfo from "@/components/comments/CommentInfo";
+import Comments from "@/components/comments/Comments";
 import Header from "@/components/header";
-import ResourceService from "@/services/ResourceService";
+import CommentService from "@/services/CommentService";
+import { Comment, Profile, StatusMessage } from "@/types/index";
 import Head from "next/head";
 import { useRouter } from "next/router";
 import { FormEvent, useEffect, useState } from "react";
-import { Comment, Profile, StatusMessage } from "@/types/index";
-import CommentInfo from "@/components/comments/CommentInfo";
-import Comments from "@/components/comments/Comments";
-import ProfileService from "@/services/ProfileService";
 
 const ReadCommentById = () => {
   const [profile, setProfile] = useState<Profile>();
@@ -26,7 +25,7 @@ const ReadCommentById = () => {
 
   const createComment = async (commentMessage: string) => {
     if (!parent || !comment || !profile) return false;
-    const res = await ProfileService.writeComment(
+    const res = await CommentService.writeComment(
       String(profile.id),
       String(comment.resource.id),
       String(parent.id),
@@ -40,14 +39,18 @@ const ReadCommentById = () => {
   };
 
   const getCommentById = async () => {
-    const [commentResponse] = await Promise.all([
-      ProfileService.getCommentById(String(commentId)),
-    ]);
+    const commentResponse = await CommentService.getCommentById(
+      String(commentId)
+    );
     setComment(commentResponse);
-    if (commentResponse.parent) {
-      setParent(commentResponse.parent);
+    if (commentResponse.parentId) {
+      const parent = await CommentService.getCommentById(
+        commentResponse.parentId
+      );
+      setParent(parent);
+    } else {
+      setParent(commentResponse);
     }
-    setParent(commentResponse);
   };
 
   useEffect(() => {
@@ -76,11 +79,12 @@ const ReadCommentById = () => {
         {!commentId && <p>Loading</p>}
 
         <section>
-          {parent && (
+          {comment && (
             <>
-              <CommentInfo comment={parent}></CommentInfo>
-              <Comments id={String(commentId)} object="comment"></Comments>
-              {}
+              <CommentInfo comment={comment}></CommentInfo>
+              {!comment.parentId && (
+                <Comments id={String(comment.id)} object="comment"></Comments>
+              )}
             </>
           )}
         </section>

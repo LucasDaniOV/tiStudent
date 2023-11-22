@@ -1,8 +1,7 @@
-import { useRouter } from "next/router";
-import React from "react";
-import { Resource } from "../../types";
 import ResourceService from "@/services/ResourceService";
-import { MouseEvent } from "react";
+import { useRouter } from "next/router";
+import React, { MouseEvent } from "react";
+import { Resource } from "../../types";
 
 type Props = {
   resources: Array<Resource>;

@@ -1,9 +1,8 @@
+import CommentService from "@/services/CommentService";
 import ResourceService from "@/services/ResourceService";
-import React, { useState, useEffect } from "react";
-import CommentInfo from "./CommentInfo";
 import { Comment } from "@/types";
 import { useRouter } from "next/router";
-import ProfileService from "@/services/ProfileService";
+import React, { useEffect, useState } from "react";
 
 type Props = {
   id: string;
@@ -16,11 +15,11 @@ const Comments: React.FC<Props> = ({ id, object }: Props) => {
   useEffect(() => {
     const fetchComments = async () => {
       try {
-        if (object == "resource") {
+        if (object === "resource") {
           const comments = await ResourceService.getCommentsOnResource(id);
           setComments(comments);
         } else {
-          const comments = await ResourceService.getCommentsOnComment(id);
+          const comments = await CommentService.getCommentsOnComment(id);
           setComments(comments);
         }
       } catch (error) {
@@ -28,7 +27,7 @@ const Comments: React.FC<Props> = ({ id, object }: Props) => {
       }
     };
     fetchComments();
-  }, [id]);
+  }, []);
   const handleDelete = async (
     e: React.MouseEvent<HTMLButtonElement, MouseEvent>,
     comment: Comment
@@ -45,7 +44,7 @@ const Comments: React.FC<Props> = ({ id, object }: Props) => {
         )
       )
         return;
-      await ProfileService.deleteComment(comment);
+      await CommentService.deleteComment(comment);
       router.reload();
     } else {
       alert("You are not the creator of this comment");
@@ -54,44 +53,46 @@ const Comments: React.FC<Props> = ({ id, object }: Props) => {
 
   return (
     <>
-      <table>
-        <thead>
-          <tr>
-            <th scope="col">Message</th>
-            <th scope="col">Author</th>
-            <th scope="col">Delete</th>
-          </tr>
-        </thead>
-        <tbody>
-          {commentsOnResource.map((com, index) => (
-            <tr
-              key={index}
-              onClick={(e) => {
-                e.stopPropagation();
-                router.push("/resources/comments/" + String(com.id));
-              }}
-              tabIndex={0}
-              // onKeyDown={(e) => {
-              //   if (e.key === "Enter") {
-              //     func(sub);
-              //   }
-              // }}
-            >
-              <td>{com.message}</td>
-              <td>{com.profile.username}</td>
-              <td>
-                <button
-                  onClick={(e) => {
-                    handleDelete(e, com);
-                  }}
-                >
-                  &times;
-                </button>
-              </td>
+      {commentsOnResource.length > 0 && (
+        <table>
+          <thead>
+            <tr>
+              <th scope="col">Message</th>
+              <th scope="col">Author</th>
+              <th scope="col">Delete</th>
             </tr>
-          ))}
-        </tbody>
-      </table>
+          </thead>
+          <tbody>
+            {commentsOnResource.map((com, index) => (
+              <tr
+                key={index}
+                onClick={(e) => {
+                  e.stopPropagation();
+                  router.push("/resources/comments/" + String(com.id));
+                }}
+                tabIndex={0}
+                // onKeyDown={(e) => {
+                //   if (e.key === "Enter") {
+                //     func(sub);
+                //   }
+                // }}
+              >
+                <td>{com.message}</td>
+                <td>{com.profile.username}</td>
+                <td>
+                  <button
+                    onClick={(e) => {
+                      handleDelete(e, com);
+                    }}
+                  >
+                    &times;
+                  </button>
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      )}
     </>
   );
 };

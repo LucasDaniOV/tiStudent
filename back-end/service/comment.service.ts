@@ -3,6 +3,12 @@ import { Comment } from '../domain/model/comment';
 import { Profile } from '../domain/model/profile';
 import { Resource } from '../domain/model/resource';
 
+const getAllComments = async () => {
+    const comments = await commentDb.getAllComments();
+    if (!comments) throw new Error('There are no comments');
+    return comments;
+};
+
 const getCommentById = async (commentId: number): Promise<Comment> => {
     const comment = await commentDb.getCommentById(commentId);
     if (!comment) throw new Error(`No comment with id ${commentId} found`);
@@ -35,26 +41,21 @@ const getAllCommentsByProfileOnResource = async (profileId: number, resourceId: 
     return await commentDb.getAllCommentsByProfileOnResource(profileId, resourceId);
 };
 
-const deleteComment = async (profile: Profile, commentId: number): Promise<Comment> => {
+const deleteComment = async (commentId: number): Promise<Comment> => {
     const comment = await commentDb.getCommentById(commentId);
     if (!comment) throw new Error(`No comment with id ${commentId} found`);
-    if (comment.profile.id != profile.id)
-        throw new Error(`This Profile didn't write the comment with id ${comment.id}`);
     commentDb.deleteComment(comment.id);
     return comment;
 };
 
-const updateComment = async (profile: Profile, comment: Comment, newMessage: string): Promise<Comment | Profile> => {
-    const comments = await getAllCommentsByProfile(profile.id);
-    const includes = comments.findIndex((c) => c.id == comment.id);
-
-    if (includes !== -1) {
-        const newComment = await commentDb.updateMessageOnComment(comment.id, newMessage);
+const updateComment = async (comment: Comment, newMessage: string): Promise<Comment | Profile> => {
+    const c = await getCommentById(comment.id);
+    if (c) {
+        if (!newMessage.trim()) throw new Error("New message can't be empty");
+        const newComment = await commentDb.updateMessageOnComment(c.id, newMessage);
         if (newComment) {
             return newComment;
         }
-    } else {
-        throw new Error('Profile with this ID did not comment this.');
     }
 };
 
@@ -65,6 +66,7 @@ const getCommentsOnComment = async (commentId: number) => {
 };
 
 export default {
+    getAllComments,
     getCommentById,
     writeComment,
     getAllCommentsByProfile,

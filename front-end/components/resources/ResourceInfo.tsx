@@ -1,6 +1,5 @@
-import { Resource, Comment } from "@/types";
+import { Resource } from "@/types";
 import React from "react";
-import Comments from "../comments/Comments";
 
 type Props = {
   resource: Resource;
@@ -10,7 +9,7 @@ const ResourceInfo: React.FC<Props> = ({ resource }: Props) => {
   return (
     <>
       {resource && (
-        <div className="resourceInfo">
+        <div className="resourceInfo" role="resourceInfo">
           <h1>
             <strong>Title:</strong> {resource.title}
           </h1>

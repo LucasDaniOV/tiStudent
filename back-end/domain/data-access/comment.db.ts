@@ -57,7 +57,6 @@ const getCommentById = async (commentId: number): Promise<Comment> => {
 
         return;
     } catch (error) {
-        console.error(error);
         throw new Error('Database error. See server log for details.');
     }
 };

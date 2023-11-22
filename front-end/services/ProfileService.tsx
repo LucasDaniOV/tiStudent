@@ -1,4 +1,4 @@
-import { Comment, Profile } from "../types";
+import { Profile } from "../types";
 
 const baseUrl = process.env.NEXT_PUBLIC_API_URL + "/profiles";
 
@@ -42,18 +42,6 @@ const deleteProfileById = async (profileId: number): Promise<Boolean> => {
   return res.json();
 };
 
-const deleteComment = async (comment: Comment): Promise<Boolean> => {
-  const res = await fetch(
-    baseUrl + `/${comment.profile.id}/comment/${comment.id}`,
-    {
-      method: "DELETE",
-      headers: {
-        "Content-Type": "application/json",
-      },
-    }
-  );
-  return res.json();
-};
 
 const createProfile = async (username: string, bio: string, userId: number) => {
   const res = await fetch(baseUrl, {
@@ -66,42 +54,10 @@ const createProfile = async (username: string, bio: string, userId: number) => {
   return res.json();
 };
 
-const getCommentById = async (commentId: string) => {
-  const comment = await fetch(baseUrl + `/comments/${commentId}`, {
-    method: "GET",
-    headers: {
-      "Content-Type": "application/json",
-    },
-  });
-  return comment.json();
-};
-
-const writeComment = async (
-  profileId: string,
-  resourceId: string,
-  commentId: string,
-  message: string
-) => {
-  const comment = await fetch(
-    baseUrl +
-      `/comment-on-comment/${profileId}/${resourceId}/${commentId}?message=${message}`,
-    {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-    }
-  );
-  return comment.json();
-};
-
 export default {
   getAllProfiles,
   getProfileById,
   getProfileByEmail,
   deleteProfileById,
   createProfile,
-  getCommentById,
-  writeComment,
-  deleteComment,
 };

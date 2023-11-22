@@ -63,23 +63,12 @@ const getCommentsOnResource = async (id: string): Promise<Comment[]> => {
   return comments.json();
 };
 
-const getCommentsOnComment = async (id: string): Promise<Comment[]> => {
-  const comments = await fetch(baseUrl + `/comments/${id}/comments`, {
-    method: "GET",
-    headers: {
-      "Content-Type": "application/json",
-    },
-  });
-  return comments.json();
-};
-
 const ResourceService = {
   getAllResources,
   getResourceById,
   deleteResourceById,
   createResource,
   getCommentsOnResource,
-  getCommentsOnComment,
 };
 
 export default ResourceService;

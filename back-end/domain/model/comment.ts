@@ -25,7 +25,6 @@ export class Comment {
         resource: Resource;
         edited?: boolean;
         parentId: number | null;
-        // childComments?: Comment[];
     }) {
         this.id = comment.id;
         if (comment.createdAt) {
@@ -41,7 +40,6 @@ export class Comment {
         this.resource = comment.resource;
         this.edited = comment.edited;
         this.parentId = comment.parentId;
-        // this.childComments = comment.childComments || [];
     }
 
     static from({

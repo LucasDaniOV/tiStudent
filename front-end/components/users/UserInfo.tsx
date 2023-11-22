@@ -9,7 +9,7 @@ const UserInfo: React.FC<Props> = ({ user }: Props) => {
   return (
     <>
       {user && (
-        <div>
+        <div role="userInfo">
           <p>{user.id}</p>
           <p>{user.email}</p>
           <p>{user.password}</p>

@@ -1,3 +1,25 @@
+/**
+ * @swagger
+ * components:
+ *   schemas:
+ *     Like:
+ *       type: object
+ *       properties:
+ *         id:
+ *           type: number
+ *           format: int64
+ *           example: 0
+ *         createdAt:
+ *           type: date-time
+ *           example: '2023-01-01T00:00:00.000Z'
+ *         profile:
+ *           $ref: '#/components/schemas/Profile'
+ *         resource:
+ *           $ref: '#/components/schemas/Resource'
+ *         comment:
+ *           $ref: '#/components/schemas/Comment'
+ */
+
 import express, { Request, Response } from 'express';
 import commentService from '../service/comment.service';
 import likeService from '../service/like.service';
@@ -134,3 +156,5 @@ likeRouter.delete('/:profileId/:likeId', async (req: Request, res: Response) => 
         res.status(400).json({ status: 'error', errorMessage: error.message });
     }
 });
+
+export { likeRouter };
