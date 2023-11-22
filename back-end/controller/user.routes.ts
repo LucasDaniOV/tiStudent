@@ -41,9 +41,10 @@ const userRouter = express.Router();
  *             schema:
  *               $ref: '#/components/schemas/User'
  */
-userRouter.get('/', async (req: Request, res: Response) => {
+userRouter.get('/', async (req: Request & { auth: any }, res: Response, next: NextFunction) => {
     try {
-        const users = await userService.getAllUsers();
+        const { role } = req.auth;
+        const users = await userService.getAllUsers(role);
         res.status(200).json(users);
     } catch (error) {
         res.status(400).json({ status: 'error', errorMessage: error.message });

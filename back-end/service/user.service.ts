@@ -1,10 +1,16 @@
 import bcrypt from 'bcrypt';
 import userDb from '../domain/data-access/user.db';
 import { User } from '../domain/model/user';
-import { AuthenticationResponse, UserInput } from '../types';
+import { AuthenticationResponse, Role, UserInput } from '../types';
 import { generateJwtToken } from '../util/jwt';
+import { UnauthorizedError } from 'express-jwt';
 
-const getAllUsers = async (): Promise<User[]> => userDb.getAllUsers();
+const getAllUsers = async (role: Role): Promise<User[]> => {
+    if (role !== 'admin') throw new UnauthorizedError('credentials_required', {
+        message: 'Only admins can get all users'
+    });
+    return userDb.getAllUsers();
+};
 
 const getUserById = async (id: number): Promise<User> => {
     const u: User = await userDb.getUserById(id);

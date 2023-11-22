@@ -52,7 +52,7 @@ test(`given: existing Users, when: requesting all users, then: all users are ret
     userDb.getAllUsers = mockUserDbGetAllUsers.mockReturnValue(users);
 
     // when
-    const sut = await userService.getAllUsers();
+    const sut = await userService.getAllUsers('admin');
 
     // then
     expect(mockUserDbGetAllUsers).toHaveBeenCalledTimes(1);
@@ -64,7 +64,7 @@ test(`given: no Users, when: requesting all users, then: empty array is returned
     userDb.getAllUsers = mockUserDbGetAllUsers.mockResolvedValue([]);
 
     // when
-    const sut = await userService.getAllUsers();
+    const sut = await userService.getAllUsers('admin');
 
     // then
     expect(mockUserDbGetAllUsers).toHaveBeenCalledTimes(1);
@@ -188,4 +188,15 @@ test(`given: invalid role, when: creating user, then: user is not created and er
     expect(sut).rejects.toThrowError('role must be one of admin, user, or guest');
 
     console.log(sut)
+});
+
+test(`given: unauthorized role, when: requesting all users, then: Error is thrown`, () => {
+    // given
+    const unauthorizedRole = 'user';
+
+    // when
+    const sut = async () => await userService.getAllUsers(unauthorizedRole);
+
+    // then
+    expect(sut).rejects.toThrowError('Only admins can get all users');
 });
