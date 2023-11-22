@@ -25,4 +25,9 @@ type ProfileInput = {
     bio?: string;
 };
 
-export { UserInput, ResourceInput, ProfileInput };
+type AuthenticationResponse = {
+    token: string;
+    email: string;
+};
+
+export { UserInput, ResourceInput, ProfileInput, AuthenticationResponse };
