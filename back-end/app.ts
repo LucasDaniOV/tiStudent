@@ -9,8 +9,12 @@ import { profileRouter } from './controller/profile.routes';
 import { resourceRouter } from './controller/resource.routes';
 import { userRouter } from './controller/user.routes';
 import { version } from './package.json';
+import helmet from 'helmet';
 
 const app = express();
+
+app.use(helmet());
+
 dotenv.config();
 const port = process.env.APP_PORT || 3000;
 
