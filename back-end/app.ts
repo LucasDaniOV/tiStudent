@@ -25,14 +25,6 @@ app.use('/users', userRouter);
 app.use('/resources', resourceRouter);
 app.use('/profiles', profileRouter);
 
-app.use((err: Error, req: Request, res: Response, next: NextFunction) => {
-    if (err.name === 'UnauthorizedError') {
-        res.status(401).json({ status: 'unauthorized', message: err.message });
-    } else {
-        res.status(400).json({ status: 'application error', message: err.message });
-    }
-});
-
 const swaggerOpts = {
     definition: {
         openapi: '3.0.0',
@@ -45,6 +37,14 @@ const swaggerOpts = {
 };
 const swaggerSpec = swaggerJSDoc(swaggerOpts);
 app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec));
+
+app.use((err: Error, req: Request, res: Response, next: NextFunction) => {
+    if (err.name === 'UnauthorizedError') {
+        res.status(401).json({ status: 'unauthorized', message: err.message });
+    } else {
+        res.status(400).json({ status: 'application error', message: err.message });
+    }
+});
 
 app.listen(port || 3000, () => {
     console.log(`Back-end is running on port ${port}.`);
