@@ -1,4 +1,4 @@
-import express, { Request, Response } from 'express';
+import express, { NextFunction, Request, Response } from 'express';
 import userService from '../service/user.service';
 import { UserInput } from '../types';
 
@@ -116,7 +116,7 @@ userRouter.get('/email/:email', async (req: Request, res: Response) => {
 
 /**
  * @swagger
- * /users:
+ * /users/signup:
  *   post:
  *     tags:
  *       - users
@@ -156,13 +156,13 @@ userRouter.get('/email/:email', async (req: Request, res: Response) => {
  *                   format: password
  *                   example: Str0ngPW!!!2
  */
-userRouter.post('/', async (req: Request, res: Response) => {
+userRouter.post('/signup', async (req: Request, res: Response, next: NextFunction) => {
     try {
         const userInput = req.body as UserInput;
         const user = await userService.createUser(userInput);
         res.status(200).json({ status: 'success', message: 'User created', user });
     } catch (error) {
-        res.status(400).json({ status: 'error', message: error.message });
+        next(error);
     }
 });
 
