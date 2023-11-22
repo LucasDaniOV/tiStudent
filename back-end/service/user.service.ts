@@ -88,9 +88,16 @@ const getGithubUser = async (access_token: string): Promise<any> => {
 
 const authenticate = async ({ email, password }: UserInput): Promise<AuthenticationResponse> => {
     const user = await getUserByEmail(email);
+
     const isValidPassword = await bcrypt.compare(password, user.password);
+    
     if (!isValidPassword) throw new Error('Invalid password');
-    return { token: generateJwtToken({ email }), email: email };
+    
+    return {
+        token: generateJwtToken({ email, role: user.role }),
+        email,
+        role: user.role,
+    };
 };
 
 export default {
