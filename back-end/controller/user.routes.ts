@@ -28,6 +28,8 @@ const userRouter = express.Router();
  * @swagger
  * /users:
  *   get:
+ *     security:
+ *       - bearerAuth: []
  *     tags:
  *       - users
  *     summary: Get all users
@@ -52,6 +54,8 @@ userRouter.get('/', async (req: Request, res: Response) => {
  * @swagger
  * /users/{id}:
  *   get:
+ *     security:
+ *       - bearerAuth: []
  *     tags:
  *       - users
  *     summary: Get user by id
@@ -85,6 +89,8 @@ userRouter.get('/:id', async (req: Request, res: Response) => {
  * @swagger
  * /users/email/{email}:
  *   get:
+ *     security:
+ *       - bearerAuth: []
  *     tags:
  *       - users
  *     summary: Get user by email
@@ -170,6 +176,8 @@ userRouter.post('/signup', async (req: Request, res: Response, next: NextFunctio
  * @swagger
  * /users/{id}:
  *   delete:
+ *     security:
+ *       - bearerAuth: []
  *     tags:
  *       - users
  *     summary: Remove user by id
@@ -202,6 +210,8 @@ userRouter.delete('/:id', async (req: Request, res: Response) => {
  * @swagger
  * /users/{id}/email:
  *   put:
+ *     security:
+ *       - bearerAuth: []
  *     tags:
  *       - users
  *     summary: Update user email
@@ -260,6 +270,8 @@ userRouter.put('/:id/email', async (req: Request, res: Response) => {
  * @swagger
  * /users/{id}/password:
  *   put:
+ *     security:
+ *       - bearerAuth: []
  *     tags:
  *       - users
  *     summary: Update user password
