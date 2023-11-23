@@ -1,3 +1,4 @@
+import { UnauthorizedError } from 'express-jwt';
 import commentDb from '../domain/data-access/comment.db';
 import likeDb from '../domain/data-access/like.db';
 import profileDb from '../domain/data-access/profile.db';
@@ -8,10 +9,16 @@ import { Like } from '../domain/model/like';
 import { Profile } from '../domain/model/profile';
 import { Resource } from '../domain/model/resource';
 import { Subject } from '../domain/model/subject';
-import { ResourceInput } from '../types';
+import { ResourceInput, Role } from '../types';
 
 // get all resources
-const getAllResources = async (): Promise<Resource[]> => await resourceDb.getAllResources();
+const getAllResources = async (role: Role): Promise<Resource[]> => {
+    if (role !== 'admin' && role !== 'user')
+        throw new UnauthorizedError('credentials_required', {
+            message: 'Only admins and users can get all resources',
+        });
+    return await resourceDb.getAllResources();
+};
 
 // get resource by id
 const getResourceById = async (id: number): Promise<Resource> => {

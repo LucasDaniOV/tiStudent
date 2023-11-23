@@ -1,26 +1,11 @@
+import { getAll, getById } from "@/util/get";
 import { Profile } from "../types";
 
 const baseUrl = process.env.NEXT_PUBLIC_API_URL + "/profiles";
+const type = "profiles";
+const getAllProfiles = async () => getAll(type);
 
-const getAllProfiles = async (): Promise<Profile[]> => {
-  const res = await fetch(baseUrl, {
-    method: "GET",
-    headers: {
-      "Content-Type": "application/json",
-    },
-  });
-  return res.json();
-};
-
-const getProfileById = async (profileId: string) => {
-  const res = await fetch(baseUrl + `/${profileId}`, {
-    method: "GET",
-    headers: {
-      "Content-Type": "application/json",
-    },
-  });
-  return res.json();
-};
+const getProfileById = async (profileId: string) => getById(type, profileId);
 
 const getProfileByEmail = async (email: string): Promise<Profile> => {
   const res = await fetch(baseUrl + `/user/${email}`, {

@@ -1,11 +1,18 @@
+import { UnauthorizedError } from 'express-jwt';
 import likeDb from '../domain/data-access/like.db';
 import profileDb from '../domain/data-access/profile.db';
 import userDb from '../domain/data-access/user.db';
 import { Like } from '../domain/model/like';
 import { Profile } from '../domain/model/profile';
-import { ProfileInput } from '../types';
+import { ProfileInput, Role } from '../types';
 
-const getAllProfiles = async () => await profileDb.getAllProfiles();
+const getAllProfiles = async (role: Role) => {
+    if (role !== 'admin' && role !== 'user')
+        throw new UnauthorizedError('credentials_required', {
+            message: 'Only admins can get all users',
+        });
+    return await profileDb.getAllProfiles();
+};
 
 const getProfileById = async (id: number): Promise<Profile> => {
     const profile = await profileDb.getProfileById(id);

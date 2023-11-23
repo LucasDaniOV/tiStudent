@@ -6,10 +6,11 @@ import { generateJwtToken } from '../util/jwt';
 import { UnauthorizedError } from 'express-jwt';
 
 const getAllUsers = async (role: Role): Promise<User[]> => {
-    if (role !== 'admin') throw new UnauthorizedError('credentials_required', {
-        message: 'Only admins can get all users'
-    });
-    return userDb.getAllUsers();
+    if (role !== 'admin')
+        throw new UnauthorizedError('credentials_required', {
+            message: 'Only admins can get all users',
+        });
+    return await userDb.getAllUsers();
 };
 
 const getUserById = async (id: number): Promise<User> => {
@@ -25,11 +26,11 @@ const getUserByEmail = async (email: string): Promise<User> => {
     return u;
 };
 
-const createUser = async ({ email, password, role }: UserInput): Promise<User> => {  
+const createUser = async ({ email, password, role }: UserInput): Promise<User> => {
     // check if email is already taken
     if (await userDb.getUserByEmail(email)) throw new Error(`User with email ${email} already exists`);
     User.validateRole(role);
-    
+
     // create user
     const hashedPassword = await bcrypt.hash(password, 12);
     return await userDb.createUser(email, hashedPassword, role);
@@ -48,7 +49,8 @@ const updateEmailById = async (id: number, email: string): Promise<User> => {
 
 const updatePasswordById = async (id: number, password: string): Promise<User> => {
     User.validatePassword(password);
-    if ((await getUserById(id)).password === password) throw new Error(`New password must be different from old password`);
+    if ((await getUserById(id)).password === password)
+        throw new Error(`New password must be different from old password`);
     return await userDb.updatePassword(id, password);
 };
 
@@ -96,9 +98,9 @@ const authenticate = async ({ email, password }: UserInput): Promise<Authenticat
     const user = await getUserByEmail(email);
 
     const isValidPassword = await bcrypt.compare(password, user.password);
-    
+
     if (!isValidPassword) throw new Error('Invalid password');
-    
+
     return {
         token: generateJwtToken({ email, role: user.role }),
         email,

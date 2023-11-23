@@ -10,10 +10,16 @@ import useInterval from "use-interval";
 import useSWR, { mutate } from "swr";
 
 const Resources: React.FC = () => {
+  const [authorized, setAuthorized] = useState<boolean>(false);
+
   const getResources = async () => {
     const response = await ResourceService.getAllResources();
-    const fetchedResources = await response.json();
-    return fetchedResources;
+    if (response.status === "unauthorized" || response.status === "error") {
+      setAuthorized(false);
+      return;
+    }
+    setAuthorized(true);
+    return response;
   };
 
   const { data, isLoading, error } = useSWR("resources", getResources);
@@ -33,7 +39,11 @@ const Resources: React.FC = () => {
           <h1 style={{ margin: "auto" }}>Resources</h1>
           {error && <div>{error}</div>}
           {isLoading && <div>Loading...</div>}
-          {data && <ResourcesOverviewTable resources={data} />}
+          {authorized ? (
+            data && <ResourcesOverviewTable resources={data} />
+          ) : (
+            <p>You are not authorized to view this page. Please login first.</p>
+          )}
         </section>
         <aside>
           {/* {sessionStorage.getItem("loggedInUser")} */}

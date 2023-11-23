@@ -56,9 +56,10 @@ const resourceRouter = express.Router();
  *               items:
  *                 $ref: '#/components/schemas/Resource'
  */
-resourceRouter.get('/', async (req: Request, res: Response) => {
+resourceRouter.get('/', async (req: Request & { auth: any }, res: Response) => {
     try {
-        const resources = await resourceService.getAllResources();
+        const { role } = req.auth;
+        const resources = await resourceService.getAllResources(role);
         res.status(200).json(resources);
     } catch (error) {
         res.status(400).json({ status: 'error', errorMessage: error.message });

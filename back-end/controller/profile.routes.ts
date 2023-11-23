@@ -66,9 +66,10 @@ const profileRouter = express.Router();
  *               items:
  *                 $ref: '#/components/schemas/Profile'
  */
-profileRouter.get('/', async (req: Request, res: Response) => {
+profileRouter.get('/', async (req: Request & { auth: any }, res: Response) => {
     try {
-        const profiles = await profileService.getAllProfiles();
+        const { role } = req.auth;
+        const profiles = await profileService.getAllProfiles(role);
         res.status(200).json(profiles);
     } catch (error) {
         res.status(400).json({ status: 'error', errorMessage: error.message });
@@ -402,4 +403,3 @@ profileRouter.delete('/:id', async (req: Request, res: Response) => {
 });
 
 export { profileRouter };
-
