@@ -11,7 +11,7 @@ const Users: React.FC = () => {
 
   const getUsers = async () => {
     const res = await UserService.getAllUsers();
-    if (res.status === "unauthorized") {
+    if (res.status === "unauthorized" || res.status === "error") {
       setAuthorized(false);
       return;
     }
