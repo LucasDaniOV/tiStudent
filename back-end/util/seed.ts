@@ -7,12 +7,14 @@ async function main() {
         data: {
             email: 'alice12@prisma.io',
             password: 'Str0ngPW!!!',
+            role: 'admin',
         },
     });
     const bob = await prisma.user.create({
         data: {
             email: 'bob9@prisma.io',
             password: 'passWord123!$',
+            role: 'admin',
         },
     });
     console.log({ alice, bob });
