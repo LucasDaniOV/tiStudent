@@ -1,4 +1,4 @@
-import { getAll } from "@/util/get";
+import { getAll, getById } from "@/util/get";
 import { getToken } from "@/util/token";
 
 const baseUrl = process.env.NEXT_PUBLIC_API_URL + "/users";
@@ -6,23 +6,22 @@ const type = "users";
 
 const getAllUsers = async () => getAll(type);
 
-const getUserById = async (userId: string) => {
-  const token = getToken();
+const getUserById = async (userId: string) => getById(type, userId);
+// const token = getToken();
 
-  const res = await fetch(
-    process.env.NEXT_PUBLIC_API_URL + `/users/${userId}`,
-    {
-      method: "GET",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${token}`,
-      },
-    }
-  );
+// const res = await fetch(
+//   process.env.NEXT_PUBLIC_API_URL + `/users/${userId}`,
+//   {
+//     method: "GET",
+//     headers: {
+//       "Content-Type": "application/json",
+//       Authorization: `Bearer ${token}`,
+//     },
+//   }
+// );
 
-  const user = await res.json();
-  return user;
-};
+// const user = await res.json();
+// return user;
 
 const getUserByEmail = async (email: string) => {
   const res = await fetch(
@@ -85,7 +84,7 @@ const loginUser = async (email: string, password: string) => {
     },
     body: JSON.stringify({ email, password }),
   });
-}
+};
 
 const UserService = {
   getAllUsers,
