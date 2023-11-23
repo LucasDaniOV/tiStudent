@@ -1,4 +1,5 @@
 import Header from "@/components/header";
+import ResourceCreateForm from "@/components/resources/ResourceCreateForm";
 import Head from "next/head";
 import React, { FormEvent, useEffect, useRef, useState } from "react";
 import { Subject } from "../../../back-end/domain/model/subject";
@@ -87,7 +88,7 @@ const CreateResourceForm: React.FC = () => {
   return (
     <>
       <Head>
-        <title>Resources</title>
+        <title>Create Resource</title>
       </Head>
       <Header />
       <main>
@@ -186,4 +187,4 @@ const CreateResourceForm: React.FC = () => {
   );
 };
 
-export default CreateResourceForm;
+export default CreateResource;

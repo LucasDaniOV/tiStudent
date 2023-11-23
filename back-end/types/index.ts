@@ -6,6 +6,7 @@ type UserInput = {
     id?: number;
     email?: string;
     password?: string;
+    role?: Role;
 };
 
 type ResourceInput = {
@@ -25,4 +26,12 @@ type ProfileInput = {
     bio?: string;
 };
 
-export { UserInput, ResourceInput, ProfileInput };
+type AuthenticationResponse = {
+    token: string;
+    email: string;
+    role: Role;
+};
+
+type Role = 'admin' | 'user' | 'guest';
+
+export { UserInput, ResourceInput, ProfileInput, AuthenticationResponse, Role };

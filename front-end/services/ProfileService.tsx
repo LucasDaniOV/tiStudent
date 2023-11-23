@@ -12,7 +12,7 @@ const getAllProfiles = async (): Promise<Profile[]> => {
   return res.json();
 };
 
-const getProfileById = async (profileId: string): Promise<Profile> => {
+const getProfileById = async (profileId: string) => {
   const res = await fetch(baseUrl + `/${profileId}`, {
     method: "GET",
     headers: {
@@ -41,7 +41,6 @@ const deleteProfileById = async (profileId: number): Promise<Boolean> => {
   });
   return res.json();
 };
-
 
 const createProfile = async (username: string, bio: string, userId: number) => {
   const res = await fetch(baseUrl, {

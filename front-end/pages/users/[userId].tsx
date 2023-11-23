@@ -16,7 +16,7 @@ const ReadUserById = () => {
     const [userResponse] = await Promise.all([
       UserService.getUserById(userId as string),
     ]);
-    const [user] = await Promise.all([userResponse.json()]);
+    const [user] = await Promise.all([userResponse]);
     setUser(user);
   };
 

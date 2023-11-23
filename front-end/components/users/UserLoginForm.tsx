@@ -14,19 +14,23 @@ const UserLoginForm: React.FC = () => {
   const router = useRouter();
   const clearErrors = () => {
     setEmailError("");
+    setPasswordError("");
     setStatusMessages([]);
   };
 
   const validate = () => {
     let isValid = true;
+
     if (!email.trim()) {
       setEmailError("email is required");
       isValid = false;
     }
+
     if (!password.trim()) {
-      setPasswordError("Password is required");
+      setPasswordError("password is required");
       isValid = false;
     }
+
     return isValid;
   };
 
@@ -34,22 +38,31 @@ const UserLoginForm: React.FC = () => {
     e.preventDefault();
     clearErrors();
     if (!validate()) return;
-    const profile = await ProfileService.getProfileByEmail(email);
-    const profileResponse = JSON.stringify(profile);
-    if (
-      profileResponse ===
-      `{"status":"error","errorMessage":"No user with email ${email} found"}`
-    ) {
-      setStatusMessages([{ message: "Invalid email", type: "error" }]);
-    } else {
-      if (password === profile.user.password) {
-        sessionStorage.setItem("loggedInProfile", profileResponse);
-        setStatusMessages([{ message: `Welcome, ${email}`, type: "success" }]);
-        router.reload();
-      } else {
-        setStatusMessages([{ message: "Invalid password", type: "error" }]);
-      }
+
+    const res = await UserService.loginUser(email, password);
+
+    if (res.status === 401) {
+      const { errorMessage } = await res.json();
+      setStatusMessages([{ message: errorMessage, type: "error" }]);
+      return;
     }
+
+    if (res.status !== 200) {
+      setStatusMessages([
+        {
+          message: "An error has occurred. Please try again later.",
+          type: "error",
+        },
+      ]);
+      return;
+    }
+
+    const user = await res.json();
+    sessionStorage.setItem("loggedInUser", JSON.stringify(user));
+    setStatusMessages([{ message: "Login successful!", type: "success" }]);
+    setTimeout(() => {
+      router.push("/");
+    }, 2000);
   };
 
   return (
@@ -63,25 +76,25 @@ const UserLoginForm: React.FC = () => {
           ))}
         </ul>
       )}
+
       <form onSubmit={(e) => handleSubmit(e)}>
         <label htmlFor="emailInput">Email</label>
-        <br />
         <input
           id="emailInput"
           type="email"
           value={email}
           onChange={(e) => setEmail(e.target.value)}
         />
-        <br />
-        <label htmlFor="password">Password</label>
+        {emailError && <div>{emailError}</div>}
+
+        <label htmlFor="passwordInput">Password</label>
         <input
-          id="password"
+          id="passwordInput"
           type="password"
-          value={password}
           onChange={(e) => setPassword(e.target.value)}
         />
-        {emailError && <div>{emailError}</div>}
         {passwordError && <div>{passwordError}</div>}
+
         <button type="submit">Login</button>
       </form>
     </>

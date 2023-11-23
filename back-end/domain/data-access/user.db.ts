@@ -1,3 +1,4 @@
+import { Role } from '../../types';
 import database from '../../util/database';
 import { User } from '../model/user';
 
@@ -39,19 +40,19 @@ const getUserByEmail = async (email: string): Promise<User> => {
     }
 };
 
-const createUser = async (email: string, password: string): Promise<User> => {
+const createUser = async (email: string, password: string, role?: Role): Promise<User> => {
     try {
-        const user = new User({ email, password });
+        const user = new User({ email, password, role });
         const userPrisma = await database.user.create({
             data: {
                 email: user.email,
                 password: user.password,
+                role: user.role,
             },
         });
         if (userPrisma) return User.from(userPrisma);
     } catch (error) {
-        console.error(error);
-        throw new Error('Database error. See server log for details.');
+        throw new Error(error.message);
     }
 };
 

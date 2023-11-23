@@ -6,18 +6,21 @@ import Header from "@/components/header";
 import ResourceService from "../../services/ResourceService";
 import React from "react";
 import Link from "next/link";
+import useInterval from "use-interval";
+import useSWR, { mutate } from "swr";
 
 const Resources: React.FC = () => {
-  const [resources, setResources] = useState<Array<Resource>>();
-
   const getResources = async () => {
-    const fetchedResources = await ResourceService.getAllResources();
-    return setResources(fetchedResources);
+    const response = await ResourceService.getAllResources();
+    const fetchedResources = await response.json();
+    return fetchedResources;
   };
 
-  useEffect(() => {
-    getResources();
-  }, []);
+  const { data, isLoading, error } = useSWR("resources", getResources);
+
+  useInterval(() => {
+    mutate("resources", getResources());
+  }, 5000);
 
   return (
     <>
@@ -28,7 +31,9 @@ const Resources: React.FC = () => {
       <main className="resourceOverview">
         <section style={{ alignItems: "center" }}>
           <h1 style={{ margin: "auto" }}>Resources</h1>
-          {resources && <ResourcesOverviewTable resources={resources} />}
+          {error && <div>{error}</div>}
+          {isLoading && <div>Loading...</div>}
+          {data && <ResourcesOverviewTable resources={data} />}
         </section>
         <aside>
           {/* {sessionStorage.getItem("loggedInUser")} */}

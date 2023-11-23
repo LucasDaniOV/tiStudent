@@ -15,7 +15,7 @@ const DeleteUserById = () => {
     const [returnedUser] = await Promise.all([
       UserService.getUserById(userId as string),
     ]);
-    const [user] = await Promise.all([returnedUser.json()]);
+    const [user] = await Promise.all([returnedUser]);
     setUser(user);
     await UserService.deleteUserById(userId as string);
   };

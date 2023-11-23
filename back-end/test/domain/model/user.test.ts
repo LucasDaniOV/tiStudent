@@ -1,7 +1,9 @@
 import { User } from '../../../domain/model/user';
+import { Role } from '../../../types';
 
 const validEmail = 'test@ucll.be';
 const validPassword = 'Password!123';
+const validRole = 'user';
 
 test(`given: valid values for User, when: User is created, then: User is created with those values`, () => {
     // when
@@ -89,4 +91,26 @@ test(`given: user, when: getting password, then: password is returned`, () => {
 
     // then
     expect(password).toEqual(validPassword);
+});
+
+test(`given valid role, when: creating user, then: user is created with that role`, () => {
+    // given
+    const user = new User({ email: validEmail, password: validPassword, role: validRole });
+
+    // when
+    const role = user.role;
+
+    // then
+    expect(role).toEqual(validRole);
+});
+
+test(`given invalid role, when: creating user, then: user is not created and error is thrown`, () => {
+    // given
+    const invalidRole = 'invalid';
+
+    // when
+    const createUserInvalidRole = () => new User({ email: validEmail, password: validPassword, role: invalidRole as Role });
+
+    // then
+    expect(createUserInvalidRole).toThrow('role must be one of admin, user, or guest');
 });
