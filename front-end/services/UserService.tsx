@@ -1,31 +1,25 @@
+import { getAll } from "@/util/get";
+import { getToken } from "@/util/token";
+
 const baseUrl = process.env.NEXT_PUBLIC_API_URL + "/users";
+const type = "users";
 
-const getAllUsers = async () => {
-  const loggedInUser = sessionStorage.getItem("loggedInUser");
-  const token = loggedInUser ? JSON.parse(loggedInUser).token : "";
-
-  const res = await fetch(process.env.NEXT_PUBLIC_API_URL + "/users", {
-    method: "GET",
-    headers: {
-      "Content-Type": "application/json",
-      Authorization: `Bearer ${token}`,
-    },
-  });
-
-  const users = await res.json();
-  return users;
-};
+const getAllUsers = async () => getAll(type);
 
 const getUserById = async (userId: string) => {
+  const token = getToken();
+
   const res = await fetch(
     process.env.NEXT_PUBLIC_API_URL + `/users/${userId}`,
     {
       method: "GET",
       headers: {
         "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
       },
     }
   );
+
   const user = await res.json();
   return user;
 };
