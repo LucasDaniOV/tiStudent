@@ -1,9 +1,10 @@
+import { Type } from "@/types";
 import { getToken } from "./token";
-
-const getAll = async (type: "users" | "profiles" | "resources") => {
+const base = process.env.NEXT_PUBLIC_API_URL + "/";
+const getAll = async (type: Type) => {
   const token = getToken();
 
-  const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/${type}`, {
+  const res = await fetch(base + type, {
     method: "GET",
     headers: {
       "Content-Type": "application/json",
@@ -14,4 +15,18 @@ const getAll = async (type: "users" | "profiles" | "resources") => {
   return await res.json();
 };
 
-export { getAll };
+const getById = async (type: Type, id: string) => {
+  const token = getToken();
+  const res = await fetch(base + type + `/${id}`, {
+    method: "GET",
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${token}`,
+    },
+  });
+
+  const user = await res.json();
+  return user;
+};
+
+export { getAll, getById };
