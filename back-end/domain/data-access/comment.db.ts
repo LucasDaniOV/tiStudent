@@ -168,11 +168,7 @@ const createComment = async (profile: Profile, resource: Resource, message: stri
                     },
                 },
                 createdAt: new Date(),
-                parent: {
-                    connect: {
-                        id: comment.parentId,
-                    },
-                },
+                parentId: comment.parentId,
                 message: comment.message,
                 edited: false,
             },
