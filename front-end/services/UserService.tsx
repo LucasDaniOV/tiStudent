@@ -1,3 +1,4 @@
+import { User } from "@/types";
 import { getAll, getById } from "@/util/get";
 import { getToken } from "@/util/token";
 
@@ -23,13 +24,14 @@ const getUserById = async (userId: string) => getById(type, userId);
 // const user = await res.json();
 // return user;
 
-const getUserByEmail = async (email: string) => {
+const getUserByEmail = async (email: string, token: string): Promise<User> => {
   const res = await fetch(
     process.env.NEXT_PUBLIC_API_URL + `/users/email/` + email,
     {
       method: "GET",
       headers: {
         "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
       },
     }
   );
@@ -37,13 +39,14 @@ const getUserByEmail = async (email: string) => {
   return user;
 };
 
-const deleteUserById = async (userId: string) => {
+const deleteUserById = async (userId: string, token: string) => {
   const res = await fetch(
     process.env.NEXT_PUBLIC_API_URL + `/users/${userId}`,
     {
       method: "DELETE",
       headers: {
         "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
       },
     }
   );
@@ -51,11 +54,12 @@ const deleteUserById = async (userId: string) => {
   return user;
 };
 
-const createUser = async (email: string, password: string) => {
+const createUser = async (email: string, password: string, token: string) => {
   const res = await fetch(baseUrl, {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
+      Authorization: `Bearer ${token}`,
     },
     body: JSON.stringify({ email, password }),
   });

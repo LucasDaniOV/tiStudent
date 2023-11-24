@@ -1,7 +1,11 @@
 import Link from "next/link";
-import React from "react";
+import React, { useEffect, useState } from "react";
 
 const Header: React.FC = () => {
+  const [user, setUser] = useState<string | null>(null);
+  useEffect(() => {
+    setUser(sessionStorage.getItem("loggedInUser"));
+  }, [user]);
   return (
     <header role="heading">
       <a> tiStudent App</a>
@@ -10,7 +14,7 @@ const Header: React.FC = () => {
         <Link href="/users">Users</Link>
         <Link href="/resources">Resources</Link>
         <Link href="/profiles">Profiles</Link>
-        <Link href="/login">Login</Link>
+        <Link href="/login">{user ? "Logout" : "Login"}</Link>
       </nav>
     </header>
   );

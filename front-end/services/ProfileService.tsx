@@ -3,15 +3,20 @@ import { Profile } from "../types";
 
 const baseUrl = process.env.NEXT_PUBLIC_API_URL + "/profiles";
 const type = "profiles";
+
 const getAllProfiles = async () => getAll(type);
 
 const getProfileById = async (profileId: string) => getById(type, profileId);
 
-const getProfileByEmail = async (email: string): Promise<Profile> => {
+const getProfileByEmail = async (
+  email: string,
+  token: string
+): Promise<Profile> => {
   const res = await fetch(baseUrl + `/user/${email}`, {
     method: "GET",
     headers: {
       "Content-Type": "application/json",
+      Authorization: `Bearer ${token}`,
     },
   });
   return res.json();

@@ -4,6 +4,7 @@ import Head from "next/head";
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
 import { User } from "@/types";
+import { getToken } from "@/util/token";
 
 const DeleteUserById = () => {
   const [user, setUser] = useState<User>();
@@ -17,7 +18,8 @@ const DeleteUserById = () => {
     ]);
     const [user] = await Promise.all([returnedUser]);
     setUser(user);
-    await UserService.deleteUserById(userId as string);
+    const token = getToken();
+    await UserService.deleteUserById(userId as string, token);
   };
 
   useEffect(() => {

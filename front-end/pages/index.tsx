@@ -2,16 +2,26 @@ import Header from "@/components/header";
 import Head from "next/head";
 import Image from "next/image";
 import styles from "@/styles/Home.module.css";
-import React from "react";
+import React, { useEffect, useState } from "react";
+import UserService from "@/services/UserService";
+import ProfileService from "@/services/ProfileService";
+import { getToken } from "@/util/token";
 
 const Home: React.FC = () => {
   const [name, setName] = React.useState<string>("");
-  React.useEffect(() => {
-    const profile = sessionStorage.getItem("loggedInProfile");
-    if (profile) {
-      const username = JSON.parse(profile).username;
-      setName(username);
+  const getUser = async () => {
+    const user = sessionStorage.getItem("loggedInUser");
+    const token = getToken();
+    if (user) {
+      const profile = await ProfileService.getProfileByEmail(
+        JSON.parse(user).email,
+        token
+      );
+      setName(profile.username);
     }
+  };
+  useEffect(() => {
+    getUser();
   }, []);
 
   return (
