@@ -1,6 +1,7 @@
 import CommentService from "@/services/CommentService";
 import ResourceService from "@/services/ResourceService";
 import { Comment } from "@/types";
+import { getToken } from "@/util/token";
 import { useRouter } from "next/router";
 import React, { useEffect, useState } from "react";
 
@@ -10,9 +11,15 @@ type Props = {
 };
 
 const Comments: React.FC<Props> = ({ id, object }: Props) => {
+  const [profile, setProfile] = useState<any>();
   const [commentsOnResource, setComments] = useState<Array<Comment>>([]);
   const router = useRouter();
+  const token = getToken();
   useEffect(() => {
+    const profile = sessionStorage.getItem("loggedInUser");
+    if (profile) {
+      setProfile(JSON.parse(profile));
+    }
     const fetchComments = async () => {
       try {
         if (object === "resource") {
@@ -34,17 +41,14 @@ const Comments: React.FC<Props> = ({ id, object }: Props) => {
   ): Promise<void> => {
     e.stopPropagation();
     e.preventDefault();
-    const profileObject = sessionStorage.getItem("loggedInProfile");
-    if (!profileObject) return;
-    const profile = JSON.parse(profileObject);
-    if (profile.id === comment.profile.id) {
+    if (profile.email === comment.profile.user.email) {
       if (
         !confirm(
           `Are you sure you want to delete this comment? (${comment.message})`
         )
       )
         return;
-      await CommentService.deleteComment(comment);
+      await CommentService.deleteComment(comment, token);
       router.reload();
     } else {
       alert("You are not the creator of this comment");

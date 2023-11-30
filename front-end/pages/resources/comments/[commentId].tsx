@@ -2,13 +2,15 @@ import CommentInfo from "@/components/comments/CommentInfo";
 import Comments from "@/components/comments/Comments";
 import Header from "@/components/header";
 import CommentService from "@/services/CommentService";
+import ProfileService from "@/services/ProfileService";
 import { Comment, Profile, StatusMessage } from "@/types/index";
+import { getToken } from "@/util/token";
 import Head from "next/head";
 import { useRouter } from "next/router";
 import { FormEvent, useEffect, useState } from "react";
 
 const ReadCommentById = () => {
-  const [profile, setProfile] = useState<Profile>();
+  const [profile, setProfile] = useState<any>();
   const [parent, setParent] = useState<Comment>();
   const [comment, setComment] = useState<Comment>();
   const [commentMessage, setMessage] = useState<string>("");
@@ -24,14 +26,19 @@ const ReadCommentById = () => {
   };
 
   const createComment = async (commentMessage: string) => {
-    if (!parent || !comment || !profile) return false;
-    const res = await CommentService.writeComment(
-      String(profile.id),
-      String(comment.resource.id),
-      String(parent.id),
-      commentMessage
+    if (parent !== comment || !comment || !profile) return false;
+    const token = getToken();
+    const profileId = await ProfileService.getProfileByEmail(
+      profile.email,
+      token
     );
-    console.log(res);
+    const res = await CommentService.writeComment(
+      String(profileId.id),
+      String(comment.resource.id),
+      String(comment.id),
+      commentMessage,
+      token
+    );
 
     const message = res.message;
     const type = res.status;
@@ -39,13 +46,16 @@ const ReadCommentById = () => {
   };
 
   const getCommentById = async () => {
+    // const token = getToken();
     const commentResponse = await CommentService.getCommentById(
       String(commentId)
+      // token
     );
     setComment(commentResponse);
     if (commentResponse.parentId) {
       const parent = await CommentService.getCommentById(
         commentResponse.parentId
+        // token
       );
       setParent(parent);
     } else {
@@ -55,7 +65,7 @@ const ReadCommentById = () => {
 
   useEffect(() => {
     if (commentId) getCommentById();
-    const profile = sessionStorage.getItem("loggedInProfile");
+    const profile = sessionStorage.getItem("loggedInUser");
     if (profile) {
       setProfile(JSON.parse(profile));
     }
@@ -68,7 +78,6 @@ const ReadCommentById = () => {
     await createComment(commentMessage);
     router.reload();
   };
-
   return (
     <>
       <Head>
@@ -96,7 +105,7 @@ const ReadCommentById = () => {
               ))}
             </ul>
           )}
-          {profile && !parent?.parentId && (
+          {profile && !comment?.parentId && (
             <>
               <h3>Add a comment</h3>
               <form onSubmit={(e) => handleSubmit(e)}>
