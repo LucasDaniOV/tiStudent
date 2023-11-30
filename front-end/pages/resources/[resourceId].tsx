@@ -17,8 +17,7 @@ const ReadResourceById = () => {
     const [resourceResponse] = await Promise.all([
       ResourceService.getResourceById(resourceId as string),
     ]);
-    const [resource] = await Promise.all([resourceResponse.json()]);
-    setResource(resource);
+    setResource(resourceResponse);
   };
 
   useEffect(() => {
