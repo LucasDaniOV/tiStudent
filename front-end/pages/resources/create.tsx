@@ -8,6 +8,7 @@ import { useRouter } from "next/router";
 import Subjects from "@/components/Subjects";
 import { Profile, Resource, StatusMessage } from "@/types";
 import ProfileService from "@/services/ProfileService";
+import { getToken } from "@/util/token";
 
 const CreateResourceForm: React.FC = () => {
   const loggedInUser = sessionStorage.getItem("loggedInUser");
@@ -44,10 +45,11 @@ const CreateResourceForm: React.FC = () => {
   const createResource = async () => {
     if (loggedInUser) {
       const email = JSON.parse(loggedInUser).email;
-      const profile = await ProfileService.getProfileByEmail(email);
+      const token = getToken();
+      const profile = await ProfileService.getProfileByEmail(email, token);
 
       const result = await ResourceService.createResource(
-        profile,
+        profile.id,
         title,
         description,
         category,
@@ -187,4 +189,4 @@ const CreateResourceForm: React.FC = () => {
   );
 };
 
-export default CreateResource;
+export default CreateResourceForm;
