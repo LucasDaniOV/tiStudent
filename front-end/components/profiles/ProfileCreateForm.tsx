@@ -1,6 +1,7 @@
 import ProfileService from "@/services/ProfileService";
 import UserService from "@/services/UserService";
 import { StatusMessage } from "@/types";
+import { getToken } from "@/util/token";
 import { useRouter } from "next/router";
 import React, { FormEvent, useState } from "react";
 
@@ -49,7 +50,8 @@ const ProfileCreateForm: React.FC = () => {
   };
 
   const createProfile = async (email: string) => {
-    const user = JSON.stringify(await UserService.getUserByEmail(email));
+    const token = getToken();
+    const user = JSON.stringify(await UserService.getUserByEmail(email, token)); // kan ni me token
     console.log(user);
     const userObject = JSON.parse(user);
 
@@ -58,7 +60,7 @@ const ProfileCreateForm: React.FC = () => {
       bio,
       parseInt(userObject.id)
     );
-    const profileObject = await ProfileService.getProfileByEmail(email);
+    const profileObject = await ProfileService.getProfileByEmail(email, token); // kan ni me token
     const profile = JSON.stringify(profileObject);
     sessionStorage.setItem("loggedInProfile", profile);
     const message = res.message;
@@ -70,7 +72,8 @@ const ProfileCreateForm: React.FC = () => {
     e.preventDefault();
     clearErrors();
     if (!validate()) return;
-    await UserService.createUser(email, password);
+    const token = getToken();
+    await UserService.createUser(email, password, token); // kan ni me token
     await createProfile(email);
   };
 
@@ -129,7 +132,12 @@ const ProfileCreateForm: React.FC = () => {
         {bioError && <div>{bioError}</div>}
         {userIdError && <div>{userIdError}</div>}
 
-        <button type="submit">Create profile</button>
+        <button
+          type="submit"
+          className="bg-gray-500 hover:bg-gray-300 hover:text-black m-10"
+        >
+          Create profile
+        </button>
       </form>
     </>
   );
