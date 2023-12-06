@@ -12,47 +12,47 @@ const Login: React.FC = () => {
     setUser(sessionStorage.getItem("loggedInUser"));
   }, [user]);
 
-  //   let userObject = null;
-  //   if (user) userObject = JSON.parse(user);
+  // let userObject = null;
+  // if (user) userObject = JSON.parse(user);
   return (
     <>
       <Head>
         <title>{user ? "Logout" : "Login"}</title>
       </Head>
-      <Header />{" "}
-      {user ? (
-        <>
-          <main>
-            <h1>Are you sure you want to leave?</h1>
+      <Header current="login" />{" "}
+      <main className="flex flex-row align-middle items-center justify-center">
+        {user ? (
+          <section className="m-10 mt-0">
+            <h1 className="text-center text-xl">
+              Are you sure you want to leave?
+            </h1>
             <form
               onSubmit={() => {
                 sessionStorage.removeItem("loggedInUser");
               }}
             >
-              <button type="submit">Yes</button>
+              <button type="submit" className="text-center hover:bg-gray-500">
+                Yes
+              </button>
             </form>
-          </main>
-        </>
-      ) : (
-        <main className="login">
-          {}
+          </section>
+        ) : (
           <>
-            <section>
-              <h1>Login</h1>
-              <section>
-                <UserLoginForm />
-                <GithubLoginButton />
-              </section>
+            <section className="m-10 mt-0">
+              <h1 className="text-center text-xl">Login</h1>
+              <UserLoginForm />
             </section>
-            <section>
+
+            <section className="w-max">
+              <GithubLoginButton />
+            </section>
+            <section className="m-10 mt-0">
               <h1>Or create new profile</h1>
-              <section>
-                <ProfileCreateForm />
-              </section>
+              <ProfileCreateForm />
             </section>
           </>
-        </main>
-      )}
+        )}
+      </main>
     </>
   );
 };

@@ -32,8 +32,11 @@ const Home: React.FC = () => {
         <meta name="viewport" content="width=device-with, initial-scale=1" />
         <link rel="icon" href="/favicon.ico" />
       </Head>
-      <Header></Header>
-      <main className={styles.main}>
+      <main
+        // className={styles.main}
+        className="flex flex-col items-center justify-center w-max m-auto"
+      >
+        <Header current="home"></Header>
         <Image
           src="/images/logo.png"
           alt="tiStudent Logo"
@@ -42,7 +45,7 @@ const Home: React.FC = () => {
           style={{ padding: "1rem" }}
         />
         <span>
-          <h1>Welcome {name}!</h1>
+          <h1 className="text-3xl font-bold">Welcome {name}!</h1>
         </span>
         <div className={styles.description}>
           <p>

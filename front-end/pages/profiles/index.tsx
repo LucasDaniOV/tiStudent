@@ -36,7 +36,7 @@ const Profiles: React.FC = () => {
       <Head>
         <title>Profiles</title>
       </Head>
-      <Header />
+      <Header current="profiles" />
       <main>
         <h1>Profiles</h1>
         <section>

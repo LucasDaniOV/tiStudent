@@ -33,7 +33,7 @@ const Resources: React.FC = () => {
       <Head>
         <title>Resources</title>
       </Head>
-      <Header />
+      <Header current="resources"/>
       <main className="resourceOverview">
         <section style={{ alignItems: "center" }}>
           <h1 style={{ margin: "auto" }}>Resources</h1>

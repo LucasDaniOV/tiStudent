@@ -28,10 +28,14 @@ const Users: React.FC = () => {
       <Head>
         <title>Users</title>
       </Head>
-      <Header />
+      <Header current="users" />
       <main>
         <h1>Users</h1>
-        {authorized ? (<UsersOverviewTable users={users!}/>) : (<p>You are not authorized to view this page. Please login first.</p>)}
+        {authorized ? (
+          <UsersOverviewTable users={users!} />
+        ) : (
+          <p>You are not authorized to view this page. Please login first.</p>
+        )}
       </main>
     </>
   );
