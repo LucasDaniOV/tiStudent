@@ -59,7 +59,9 @@ const UserLoginForm: React.FC = () => {
 
     const user = await res.json();
     sessionStorage.setItem("loggedInUser", JSON.stringify(user));
-    setStatusMessages([{ message: "Login successful!", type: "success" }]);
+    setStatusMessages([
+      { message: "Login successful! Redirecting...", type: "success" },
+    ]);
     setTimeout(() => {
       router.push("/");
     }, 2000);
@@ -95,7 +97,12 @@ const UserLoginForm: React.FC = () => {
         />
         {passwordError && <div>{passwordError}</div>}
 
-        <button type="submit">Login</button>
+        <button
+          type="submit"
+          className="bg-gray-500 m-10 hover:bg-gray-300 hover:text-black"
+        >
+          Enter
+        </button>
       </form>
     </>
   );
