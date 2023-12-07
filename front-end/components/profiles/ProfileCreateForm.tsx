@@ -86,8 +86,10 @@ const ProfileCreateForm: React.FC = () => {
           ))}
         </ul>
       )}
-      <form onSubmit={(e) => handleSubmit(e)}>
-        <label htmlFor="usernameInput">Username:</label>
+      <form className="flex flex-col" onSubmit={(e) => handleSubmit(e)}>
+        <label className="mb-4" htmlFor="usernameInput">
+          Username:
+        </label>
         <br />
         <input
           id="usernameInput"
@@ -97,7 +99,9 @@ const ProfileCreateForm: React.FC = () => {
         />
         <br />
 
-        <label htmlFor="bioInput">Bio:</label>
+        <label className="mb-4" htmlFor="bioInput">
+          Bio:
+        </label>
         <br />
         <input
           id="bioInput"
@@ -107,7 +111,9 @@ const ProfileCreateForm: React.FC = () => {
         />
         <br />
 
-        <label htmlFor="emailInput">Email</label>
+        <label className="mb-4" htmlFor="emailInput">
+          Email
+        </label>
         <br />
         <input
           id="emailInput"
@@ -118,7 +124,9 @@ const ProfileCreateForm: React.FC = () => {
         <br />
         {emailError && <div>{emailError}</div>}
 
-        <label htmlFor="passwordInput">Password</label>
+        <label className="mb-4" htmlFor="passwordInput">
+          Password
+        </label>
         <br />
         <input
           id="passwordInput"

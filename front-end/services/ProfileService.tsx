@@ -1,17 +1,16 @@
 import { getAll, getById } from "@/util/get";
 import { Profile } from "../types";
+import { getToken } from "@/util/token";
 
 const baseUrl = process.env.NEXT_PUBLIC_API_URL + "/profiles";
 const type = "profiles";
 
-const getAllProfiles = async () => getAll(type);
+const getAllProfiles = async () => await getAll(type);
 
 const getProfileById = async (profileId: string) => getById(type, profileId);
 
-const getProfileByEmail = async (
-  email: string,
-  token: string
-): Promise<Profile> => {
+const getProfileByEmail = async (email: string) => {
+  const token = getToken();
   const res = await fetch(baseUrl + `/user/${email}`, {
     method: "GET",
     headers: {
@@ -19,7 +18,7 @@ const getProfileByEmail = async (
       Authorization: `Bearer ${token}`,
     },
   });
-  return res.json();
+  return await res.json();
 };
 
 const deleteProfileById = async (profileId: number): Promise<Boolean> => {

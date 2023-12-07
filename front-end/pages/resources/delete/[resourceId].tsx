@@ -29,7 +29,7 @@ const DeleteResourceById = () => {
       <Head>
         <title>Resource info</title>
       </Head>
-      <Header />
+      <Header current="resources" />
       <main>
         <h1>Resource with id {resource && resourceId} was removed</h1>
         {!resourceId && <p>Loading</p>}

@@ -1,5 +1,5 @@
-import Subjects from "@/components/resources/Subjects";
-import subjects from "@/components/resources/subjects";
+import Subjects from "@/components/Subjects";
+import subjects from "./subjects";
 import ResourceService from "@/services/ResourceService";
 import { StatusMessage } from "@/types";
 import { useRouter } from "next/router";
@@ -156,35 +156,44 @@ const ResourceCreateForm: React.FC = () => {
           }}
         ></textarea>
         <label>Category</label>
-        <div className="radio-option">
+        <div className="flex items-center">
           <input
             type="radio"
             id="summary"
             name="category"
             value={"Summary"}
+            className="mb-2"
             onChange={(e) => setCategory(e.target.value)}
           />
-          <label htmlFor="summary">Summary</label>
+          <label htmlFor="summary" className="ml-2 bg-white">
+            Summary
+          </label>
         </div>
-        <div className="radio-option">
+        <div className="flex items-center">
           <input
             type="radio"
             id="cheat-sheet"
             name="category"
             value={"Cheat Sheet"}
+            className="mb-2"
             onChange={(e) => setCategory(e.target.value)}
           />
-          <label htmlFor="cheat-sheet">Cheat Sheet</label>
+          <label htmlFor="cheat-sheet" className="mr-4">
+            Cheat Sheet
+          </label>
         </div>
-        <div className="radio-option">
+        <div className="flex items-center">
           <input
             type="radio"
             id="lecture-notes"
             name="category"
             value={"Lecture Notes"}
+            className="mb-2"
             onChange={(e) => setCategory(e.target.value)}
           />
-          <label htmlFor="lecture-notes">Lecture Notes</label>
+          <label htmlFor="lecture-notes" className="mr-4">
+            Lecture Notes
+          </label>
         </div>
         <label htmlFor="subject">Subject</label>
         <input

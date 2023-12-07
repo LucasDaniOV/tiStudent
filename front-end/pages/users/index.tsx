@@ -30,7 +30,7 @@ const Users: React.FC = () => {
       </Head>
       <Header current="users" />
       <main>
-        <h1>Users</h1>
+        <h1 className="text-4xl p-1">Users</h1>
         {authorized ? (
           <UsersOverviewTable users={users!} />
         ) : (

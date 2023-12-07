@@ -79,27 +79,33 @@ const UserLoginForm: React.FC = () => {
         </ul>
       )}
 
-      <form onSubmit={(e) => handleSubmit(e)}>
-        <label htmlFor="emailInput">Email</label>
+      <form className="flex flex-col" onSubmit={(e) => handleSubmit(e)}>
+        <label htmlFor="emailInput" className="mb-1">
+          Email
+        </label>
         <input
           id="emailInput"
           type="email"
           value={email}
+          className="mb-1"
           onChange={(e) => setEmail(e.target.value)}
         />
         {emailError && <div>{emailError}</div>}
 
-        <label htmlFor="passwordInput">Password</label>
+        <label htmlFor="passwordInput" className="mb-1">
+          Password
+        </label>
         <input
           id="passwordInput"
           type="password"
+          className="mb-1"
           onChange={(e) => setPassword(e.target.value)}
         />
         {passwordError && <div>{passwordError}</div>}
 
         <button
           type="submit"
-          className="bg-gray-500 m-10 hover:bg-gray-300 hover:text-black"
+          className="bg-gray-500 m-5 hover:bg-gray-300 hover:text-black"
         >
           Enter
         </button>

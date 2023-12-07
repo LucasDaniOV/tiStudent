@@ -33,10 +33,10 @@ const Resources: React.FC = () => {
       <Head>
         <title>Resources</title>
       </Head>
-      <Header current="resources"/>
-      <main className="resourceOverview">
-        <section style={{ alignItems: "center" }}>
-          <h1 style={{ margin: "auto" }}>Resources</h1>
+      <Header current="resources" />
+      <main className="grid grid-cols-4">
+        <section className="col-span-3 items-center">
+          <h1 className="m-auto text-3xl">Resources</h1>
           {error && <div>{error}</div>}
           {isLoading && <div>Loading...</div>}
           {authorized ? (
@@ -45,12 +45,14 @@ const Resources: React.FC = () => {
             <p>You are not authorized to view this page. Please login first.</p>
           )}
         </section>
-        <aside>
-          {/* {sessionStorage.getItem("loggedInUser")} */}
-          <section id="addResource">
-            <Link href="/resources/create">Add a Resource</Link>
-          </section>
-        </aside>
+        <section id="addResource" className="col-span-1 m-auto">
+          <Link
+            href="/resources/create"
+            className=" bg-gray-400 p-8 hover:bg-gray-200 hover:text-black text-xl"
+          >
+            Add a Resource
+          </Link>
+        </section>
       </main>
     </>
   );

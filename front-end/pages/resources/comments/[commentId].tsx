@@ -83,7 +83,7 @@ const ReadCommentById = () => {
       <Head>
         <title>comment info</title>
       </Head>
-      <Header />
+      <Header current="resources" />
       <main>
         {!commentId && <p>Loading</p>}
 

@@ -22,7 +22,7 @@ const Login: React.FC = () => {
       <Header current="login" />{" "}
       <main className="flex flex-row align-middle items-center justify-center">
         {user ? (
-          <section className="m-10 mt-0">
+          <section className="m-10 mt-0 text-center">
             <h1 className="text-center text-xl">
               Are you sure you want to leave?
             </h1>
