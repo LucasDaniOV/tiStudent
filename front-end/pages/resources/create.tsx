@@ -1,18 +1,14 @@
-import Header from "@/components/header";
-import ResourceCreateForm from "@/components/resources/ResourceCreateForm";
-import Head from "next/head";
-import React, { FormEvent, useEffect, useRef, useState } from "react";
-import { Subject } from "../../../back-end/domain/model/subject";
-import ResourceService from "@/services/ResourceService";
-import { useRouter } from "next/router";
 import Subjects from "@/components/Subjects";
-import { Profile, Resource, StatusMessage } from "@/types";
+import Header from "@/components/header";
 import ProfileService from "@/services/ProfileService";
+import ResourceService from "@/services/ResourceService";
+import { StatusMessage } from "@/types";
 import { getToken } from "@/util/token";
+import Head from "next/head";
+import { useRouter } from "next/router";
+import React, { FormEvent, useEffect, useRef, useState } from "react";
 
 const CreateResourceForm: React.FC = () => {
-  const loggedInUser = sessionStorage.getItem("loggedInUser");
-
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
   const [category, setCategory] = useState("");
@@ -43,13 +39,9 @@ const CreateResourceForm: React.FC = () => {
   // const validate = () => {}
 
   const createResource = async () => {
-    if (loggedInUser) {
-      const email = JSON.parse(loggedInUser).email;
-      const token = getToken();
-      const profile = await ProfileService.getProfileByEmail(email, token);
-
+    if (profileId) {
       const result = await ResourceService.createResource(
-        profile.id,
+        profileId,
         title,
         description,
         category,
@@ -80,21 +72,34 @@ const CreateResourceForm: React.FC = () => {
     }
   };
 
+  const setUser = async () => {
+    const user = sessionStorage.getItem("loggedInUser");
+    if (!user) return;
+    const token = getToken();
+    const profile = await ProfileService.getProfileByEmail(
+      JSON.parse(user).email,
+      token
+    );
+    if (!profile) return;
+    setProfileId(profile.id);
+  };
+
   useEffect(() => {
     document.addEventListener("click", handleOutsideClicks);
-    return () => {
+    () => {
       document.removeEventListener("click", handleOutsideClicks);
     };
-  }, []);
+    setUser();
+  }, [profileId]);
 
   return (
     <>
       <Head>
         <title>Create Resource</title>
       </Head>
-      <Header />
-      <main>
-        {loggedInUser ? (
+      <Header current="resources" />
+      <main className="flex flex-row align-middle items-center justify-center">
+        {profileId ? (
           <>
             {statusMessages && (
               <ul>
@@ -104,8 +109,10 @@ const CreateResourceForm: React.FC = () => {
               </ul>
             )}
             <section>
-              <form onSubmit={(e) => handleSubmit(e)}>
-                <label htmlFor="title">Title: </label>
+              <form className="flex flex-col" onSubmit={(e) => handleSubmit(e)}>
+                <label className="mt-2 mb-2" htmlFor="title">
+                  Title:{" "}
+                </label>
                 <input
                   type="text"
                   id="title"
@@ -113,7 +120,9 @@ const CreateResourceForm: React.FC = () => {
                     setTitle(e.target.value);
                   }}
                 />
-                <label htmlFor="description">Description: </label>
+                <label className="mt-2 mb-2" htmlFor="description">
+                  Description:{" "}
+                </label>
                 <textarea
                   id="description"
                   cols={30}
@@ -122,44 +131,56 @@ const CreateResourceForm: React.FC = () => {
                     setDescription(e.target.value);
                   }}
                 ></textarea>
-                <label>Category</label>
-                <div className="radio-option">
+                <label className="mt-2 mb-2">Category</label>
+                <div>
                   <input
                     type="radio"
                     id="summary"
                     name="category"
                     value={"Summary"}
+                    className="mr-2"
                     onChange={(e) => setCategory(e.target.value)}
                   />
-                  <label htmlFor="summary">Summary</label>
+                  <label className="mt-2 mb-2" htmlFor="summary">
+                    Summary
+                  </label>
                 </div>
-                <div className="radio-option">
+                <div>
                   <input
                     type="radio"
                     id="cheat-sheet"
                     name="category"
                     value={"Cheat Sheet"}
+                    className="mr-2"
                     onChange={(e) => setCategory(e.target.value)}
                   />
-                  <label htmlFor="cheat-sheet">Cheat Sheet</label>
+                  <label className="mt-2 mb-2" htmlFor="cheat-sheet">
+                    Cheat Sheet
+                  </label>
                 </div>
-                <div className="radio-option">
+                <div>
                   <input
                     type="radio"
                     id="lecture-notes"
                     name="category"
                     value={"Lecture Notes"}
+                    className="mr-2"
                     onChange={(e) => setCategory(e.target.value)}
                   />
-                  <label htmlFor="lecture-notes">Lecture Notes</label>
+                  <label className="mt-2 mb-2" htmlFor="lecture-notes">
+                    Lecture Notes
+                  </label>
                 </div>
-                <label htmlFor="subject">Subject</label>
+                <label className="mt-2 mb-2" htmlFor="subject">
+                  Subject
+                </label>
                 <input
                   type="search"
                   id="subject"
                   onFocus={() => setVisible(true)}
                   ref={subjectsInputRef}
                   value={subject}
+                  className="pl-2"
                   placeholder="Subject..."
                   onChange={(e) => setSubject(e.target.value)}
                 />
@@ -170,14 +191,17 @@ const CreateResourceForm: React.FC = () => {
                     filter={subject}
                   />
                 )}
-                <br />
                 {profileIdError && <div>{profileIdError}</div>}
                 {titleError && <div>{titleError}</div>}
                 {descriptionError && <div>{descriptionError}</div>}
                 {categoryError && <div>{categoryError}</div>}
                 {subjectError && <div>{subjectError}</div>}
-                <button type="submit">Submit</button>
-                <br />
+                <button
+                  className="mt-10 mb-10 p-10 bg-gray-700 hover:bg-gray-500"
+                  type="submit"
+                >
+                  Submit
+                </button>
               </form>
             </section>
           </>
