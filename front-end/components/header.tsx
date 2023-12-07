@@ -10,10 +10,8 @@ const Header: React.FC<Props> = ({ current }: Props) => {
   useEffect(() => {
     setUser(sessionStorage.getItem("loggedInUser"));
   }, [user]);
-  const selected =
-    "text-white text-opacity-50 no-underline text-center text-xl bg-gray-700 hover:text-opacity-100 ";
-  const notSelected =
-    "text-white text-opacity-50 no-underline text-center text-xl hover:text-opacity-100 ";
+  const basic =
+    "text-white text-opacity-50 no-underline text-center text-xl hover:text-opacity-100";
   return (
     <header
       role="heading"
@@ -24,30 +22,33 @@ const Header: React.FC<Props> = ({ current }: Props) => {
           {" "}
           tiStudent App
         </a>
-        <Link href="/" className={current == "home" ? selected : notSelected}>
+        <Link
+          href="/"
+          className={current == "home" ? basic + " bg-gray-700" : basic}
+        >
           Home
         </Link>
         <Link
           href="/users"
-          className={current == "users" ? selected : notSelected}
+          className={current == "users" ? basic + " bg-gray-700" : basic}
         >
           Users
         </Link>
         <Link
           href="/resources"
-          className={current == "resources" ? selected : notSelected}
+          className={current == "resources" ? basic + " bg-gray-700" : basic}
         >
           Resources
         </Link>
         <Link
           href="/profiles"
-          className={current == "profiles" ? selected : notSelected}
+          className={current == "profiles" ? basic + " bg-gray-700" : basic}
         >
           Profiles
         </Link>
         <Link
           href="/login"
-          className={current == "login" ? selected : notSelected}
+          className={current == "login" ? basic + " bg-gray-700" : basic}
         >
           {user ? "Logout" : "Login"}
         </Link>
