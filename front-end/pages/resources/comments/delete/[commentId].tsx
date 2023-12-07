@@ -6,6 +6,8 @@ import { useEffect, useState } from "react";
 import { Comment } from "@/types/index";
 import Link from "next/link";
 import ProfileService from "@/services/ProfileService";
+import CommentService from "@/services/CommentService";
+import { getToken } from "@/util/token";
 
 const DeleteCommentById = () => {
   const [Comment, setComment] = useState<Comment>();
@@ -14,8 +16,9 @@ const DeleteCommentById = () => {
   const { CommentId } = router.query;
 
   const deleteCommentById = async () => {
-    const comment = await ProfileService.getCommentById(String(CommentId));
-    await Promise.all([ProfileService.deleteComment(comment)]);
+    const token = getToken();
+    const comment = await CommentService.getCommentById(String(CommentId));
+    await Promise.all([CommentService.deleteComment(comment, token)]);
     setComment(comment);
   };
 
@@ -28,7 +31,7 @@ const DeleteCommentById = () => {
       <Head>
         <title>Comment info</title>
       </Head>
-      <Header />
+      <Header current="resources" />
       <main>
         <h1>Comment with id {Comment && CommentId} was removed</h1>
         {!CommentId && <p>Loading</p>}

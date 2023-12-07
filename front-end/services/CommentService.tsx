@@ -33,7 +33,7 @@ const getCommentById = async (
   return await comment.json();
 };
 
-const writeComment = async (
+const writeCommentOnComment = async (
   profileId: string,
   resourceId: string,
   commentId: string,
@@ -42,6 +42,25 @@ const writeComment = async (
 ) => {
   const comment = await fetch(
     baseUrl + `/${profileId}/${resourceId}/${commentId}?message=${message}`,
+    {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+    }
+  );
+  return await comment.json();
+};
+
+const writeCommentOnResource = async (
+  profileId: string,
+  resourceId: string,
+  message: string
+) => {
+  const token = getToken();
+  const comment = await fetch(
+    baseUrl + `/${profileId}/${resourceId}?message=${message}`,
     {
       method: "POST",
       headers: {
@@ -70,7 +89,8 @@ const deleteComment = async (
 const CommentService = {
   getCommentsOnComment,
   getCommentById,
-  writeComment,
+  writeCommentOnComment,
+  writeCommentOnResource,
   deleteComment,
 };
 
