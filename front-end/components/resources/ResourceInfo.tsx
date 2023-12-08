@@ -17,7 +17,7 @@ const ResourceInfo: React.FC<Props> = ({ resource }: Props) => {
             <br />
             <strong>{resource.description}</strong>
           </h1>
-          <ul>
+          <ul className="items-end m-auto">
             <li>
               <strong>Category:</strong> {resource.category}
             </li>
@@ -30,9 +30,6 @@ const ResourceInfo: React.FC<Props> = ({ resource }: Props) => {
             </li>
             <li>
               <strong>Creator ID:</strong> {resource.creator.id}
-            </li>
-            <li>
-              <strong>Likes:</strong> 
             </li>
           </ul>
           <br />

@@ -1,10 +1,12 @@
 import Comments from "@/components/comments/Comments";
 import Header from "@/components/header";
+import Likes from "@/components/likes/likes";
 import ResourceInfo from "@/components/resources/ResourceInfo";
 import CommentService from "@/services/CommentService";
+import LikeService from "@/services/LikeService";
 import ProfileService from "@/services/ProfileService";
 import ResourceService from "@/services/ResourceService";
-import { Profile, Resource } from "@/types/index";
+import { Like, Profile, Resource } from "@/types/index";
 import { getToken } from "@/util/token";
 import Head from "next/head";
 import { useRouter } from "next/router";
@@ -34,7 +36,7 @@ const ReadResourceById = () => {
     e.preventDefault();
     if (!profile) return;
     if (!resource) return;
-    const com = await CommentService.writeCommentOnResource(
+    await CommentService.writeCommentOnResource(
       profile.id,
       resource.id,
       commentMessage
@@ -43,7 +45,9 @@ const ReadResourceById = () => {
   };
 
   useEffect(() => {
-    if (resourceId) getResourceById();
+    if (resourceId) {
+      getResourceById();
+    }
   }, [resourceId]);
 
   return (
@@ -54,9 +58,12 @@ const ReadResourceById = () => {
       <Header current="resources" />
       <main>
         {!resourceId && <p>Loading</p>}
-        <section className="w-1/2 m-auto">
-          <ResourceInfo resource={resource as Resource}></ResourceInfo>
-        </section>
+        <div className="flex flex-row">
+          <section className="flex flex-row w-screen m-auto">
+            {resource && <Likes id={String(resource.id)} object="resource" />}
+            <ResourceInfo resource={resource as Resource}></ResourceInfo>
+          </section>
+        </div>
         <section className="mt-10">
           {resource && <Comments id={resource.id} object="resource"></Comments>}
         </section>

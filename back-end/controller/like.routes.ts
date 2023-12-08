@@ -113,6 +113,78 @@ likeRouter.post('/:profileId/comment/:commentId', async (req: Request, res: Resp
 
 /**
  * @swagger
+ * /like/comment/{commentId}:
+ *   get:
+ *     tags:
+ *       - likes
+ *     summary: Get the number of likes on a Comment
+ *     parameters:
+ *       - name: commentId
+ *         in: path
+ *         required: true
+ *         description: The ID of the comment
+ *         schema:
+ *           type: integer
+ *           example: 1
+ *     responses:
+ *       200:
+ *         description: The number of likes on the comment
+ *         content:
+ *           application/json:
+ *             example:
+ *               status: 'success'
+ *               message: 'Like count retrieved'
+ *               data: 5
+ */
+
+likeRouter.get('/comment/:commentId', async (req: Request, res: Response) => {
+    try {
+        const commentId = parseInt(req.params.commentId);
+        const likes = await likeService.getAllLikesOnComment(commentId);
+        res.status(200).json({ status: 'success', message: 'Like created ', data: likes.length });
+    } catch (error) {
+        res.status(400).json({ status: 'error', errorMessage: error.message });
+    }
+});
+
+/**
+ * @swagger
+ * /like/resource/{resourceId}:
+ *   get:
+ *     tags:
+ *       - likes
+ *     summary: Get the number of likes on a Resource
+ *     parameters:
+ *       - name: resourceId
+ *         in: path
+ *         required: true
+ *         description: The ID of the Resource
+ *         schema:
+ *           type: integer
+ *           example: 1
+ *     responses:
+ *       200:
+ *         description: The number of likes on the resource
+ *         content:
+ *           application/json:
+ *             example:
+ *               status: 'success'
+ *               message: 'Like count retrieved'
+ *               data: 5
+ */
+
+likeRouter.get('/resource/:resourceId', async (req: Request, res: Response) => {
+    try {
+        const resourceId = parseInt(req.params.resourceId);
+        const likes = await likeService.getAllLikesOnResource(resourceId);
+        res.status(200).json({ status: 'success', message: 'Like created ', data: likes.length });
+    } catch (error) {
+        res.status(400).json({ status: 'error', errorMessage: error.message });
+    }
+});
+
+/**
+ * @swagger
  * /like/{profileId}/{resourceId}   :
  *   delete:
  *     tags:

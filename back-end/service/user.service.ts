@@ -4,6 +4,7 @@ import { User } from '../domain/model/user';
 import { AuthenticationResponse, Role, UserInput } from '../types';
 import { generateJwtToken } from '../util/jwt';
 import { UnauthorizedError } from 'express-jwt';
+import profileService from './profile.service';
 
 const getAllUsers = async (role: Role): Promise<User[]> => {
     if (role !== 'admin')
@@ -96,6 +97,7 @@ const getGithubUser = async (access_token: string): Promise<any> => {
 
 const authenticate = async ({ email, password }: UserInput): Promise<AuthenticationResponse> => {
     const user = await getUserByEmail(email);
+    const profile = await profileService.getProfileByEmail(email);
 
     const isValidPassword = await bcrypt.compare(password, user.password);
 
@@ -104,6 +106,7 @@ const authenticate = async ({ email, password }: UserInput): Promise<Authenticat
     return {
         token: generateJwtToken({ email, role: user.role }),
         email,
+        id: String(profile.id),
         role: user.role,
     };
 };

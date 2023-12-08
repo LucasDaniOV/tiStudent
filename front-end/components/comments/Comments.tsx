@@ -7,6 +7,8 @@ import React, { useEffect, useState } from "react";
 import CommentInfo from "./CommentInfo";
 import Link from "next/link";
 import ProfileService from "@/services/ProfileService";
+import LikeService from "@/services/LikeService";
+import Likes from "../likes/likes";
 
 type Props = {
   id: string;
@@ -101,27 +103,35 @@ const Comments: React.FC<Props> = ({ id, object }: Props) => {
       message,
       token
     );
-    setComments((prevComments) => [...prevComments, comment.data]);
     // router.reload(); // current solution to render newly created comment
   };
 
   return (
     <>
       {commentsOnResource.length > 0 && profile ? (
-        <ul className={object == "comment" ? "bg-gray-500" : "bg-gray-400"}>
+        <ul
+          className={
+            object == "comment"
+              ? "bg-gray-500 pb-10 pt-10"
+              : "bg-gray-400 pb-10 pt-10"
+          }
+        >
           {commentsOnResource.map((com, index) => {
             return (
               <li key={index}>
                 <div
                   className={
-                    "grid grid-cols-4 justify-between w-1/2 m-auto text-center"
+                    object == "comment"
+                      ? "grid-cols-4 grid justify-between w-10/12 m-auto text-center"
+                      : "grid-cols-5 grid justify-between w-10/12 m-auto text-center"
                   }
                 >
+                  <Likes id={com.id} object="comment" />
                   <span
                     className={
                       object == "comment"
-                        ? "p-1 bg-gray-400 text-gray-700"
-                        : "p-1 bg-gray-200 text-gray-700"
+                        ? "p-1 bg-gray-400 text-gray-700 flex items-center justify-center"
+                        : "p-1 bg-gray-200 text-gray-700 flex items-center justify-center"
                     }
                   >
                     {com.message}
@@ -129,8 +139,8 @@ const Comments: React.FC<Props> = ({ id, object }: Props) => {
                   <span
                     className={
                       object == "comment"
-                        ? "p-1 bg-gray-400 text-gray-700"
-                        : "p-1 bg-gray-200 text-gray-700"
+                        ? "p-1 bg-gray-400 text-gray-700 flex items-center justify-center"
+                        : "p-1 bg-gray-200 text-gray-700 flex items-center justify-center"
                     }
                   >
                     - {com.profile.username}
@@ -148,7 +158,7 @@ const Comments: React.FC<Props> = ({ id, object }: Props) => {
                   {(profile.id == com.profile.id || role == "admin") &&
                   !optionsVisibility[com.id] ? (
                     <a
-                      className="float-right cursor-pointer p-1 pr-2 text-gray-600 hover:bg-gray-700 hover:text-white"
+                      className="float-right cursor-pointer p-1 pr-2 text-gray-600 hover:bg-gray-700 hover:text-white  flex items-center justify-center"
                       onClick={() => toggleOptionsVisibility(com.id)}
                     >
                       &#8942;
@@ -184,8 +194,8 @@ const Comments: React.FC<Props> = ({ id, object }: Props) => {
                       }}
                       className={
                         subcommentsVisibility[com.id]
-                          ? "bg-gray-500 col-span-4 text-gray-700 hover:text-gray-300"
-                          : "hover:bg-gray-500 col-span-4 text-gray-700 hover:text-gray-300"
+                          ? "bg-gray-500 col-span-5 text-gray-700 hover:text-gray-300 pb-5"
+                          : "hover:bg-gray-500 col-span-5 text-gray-700 hover:text-gray-300 pb-5"
                       }
                     >
                       {subcommentsVisibility[com.id] ? "Hide" : "Show"} replies

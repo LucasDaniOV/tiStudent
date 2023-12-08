@@ -23,8 +23,6 @@ const writeComment = async (
 ): Promise<Comment> => {
     if (parentId) {
         const parentComments = await commentDb.getAllCommentsOnResource(resource.id);
-        console.log(parentComments);
-
         if (parentComments.findIndex((c) => c.id == parentId) !== -1) {
             return await commentDb.createCommentOnComment(profile, resource, message, parentId);
         } else {

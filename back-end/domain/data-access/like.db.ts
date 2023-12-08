@@ -261,7 +261,64 @@ const deleteLike = async (likeId: number): Promise<Boolean> => {
     }
 };
 
-const createLike = async (profile: Profile, resource: Resource | null, comment: Comment | null) => {
+const createLikeOnResource = async (profile: Profile, resource: Resource | null, comment: Comment | null) => {
+    try {
+        const like = new Like({ profile, resource, comment });
+        const likeData = {
+            createdAt: new Date(),
+            upvoter: {
+                connect: {
+                    id: like.profile.id,
+                },
+            },
+        };
+        console.log(likeData);
+
+        const likePrisma = await database.like.create({
+            data: likeData,
+            include: {
+                upvoter: {
+                    include: {
+                        user: true,
+                    },
+                },
+                resource: {
+                    include: {
+                        creator: {
+                            include: {
+                                user: true,
+                            },
+                        },
+                    },
+                },
+                comment: {
+                    include: {
+                        profile: {
+                            include: {
+                                user: true,
+                            },
+                        },
+                        resource: {
+                            include: {
+                                creator: {
+                                    include: {
+                                        user: true,
+                                    },
+                                },
+                            },
+                        },
+                    },
+                },
+            },
+        });
+        if (likePrisma) return Like.from(likePrisma);
+    } catch (error) {
+        console.error(error);
+        throw new Error('Database error. See server log for details.');
+    }
+};
+
+const createLikeOnComment = async (profile: Profile, resource: Resource | null, comment: Comment | null) => {
     try {
         const like = new Like({ profile, resource, comment });
         const likeData = {
@@ -336,5 +393,6 @@ export default {
     getLikesOnComment,
     getLikesByProfile,
     deleteLike,
-    createLike,
+    createLikeOnResource,
+    createLikeOnComment,
 };
