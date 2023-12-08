@@ -1,19 +1,21 @@
 import { PrismaClient } from '@prisma/client';
 import { Subject } from '../domain/model/subject';
 import { Category } from '../domain/model/category';
+import bcrypt from 'bcrypt';
+
 const prisma = new PrismaClient();
 async function main() {
     const alice = await prisma.user.create({
         data: {
             email: 'alice12@prisma.io',
-            password: 'Str0ngPW!!!',
+            password: await bcrypt.hash('Str0ngPW!!!', 12),
             role: 'admin',
         },
     });
     const bob = await prisma.user.create({
         data: {
             email: 'bob9@prisma.io',
-            password: 'passWord123!$',
+            password: await bcrypt.hash('passWord123!$', 12),
             role: 'admin',
         },
     });
