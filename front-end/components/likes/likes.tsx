@@ -57,7 +57,7 @@ const Likes: React.FC<Props> = ({ id, object }: Props) => {
   };
 
   return (
-    <div className="w-1/4">
+    <div className="w-1/4 flex justify-center">
       <a
         className={
           clicked == "up"
@@ -66,7 +66,7 @@ const Likes: React.FC<Props> = ({ id, object }: Props) => {
         }
         onClick={(e) => updateLikes(e)}
       >
-        &#x1F44D;<span>Likes: {likes}</span>
+        &#x1F44D;<span>{likes}</span>
       </a>
     </div>
   );
