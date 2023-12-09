@@ -103,7 +103,7 @@ const Comments: React.FC<Props> = ({ id, object }: Props) => {
       message,
       token
     );
-    // router.reload(); // current solution to render newly created comment
+    router.reload(); // current solution to render newly created comment
   };
 
   return (

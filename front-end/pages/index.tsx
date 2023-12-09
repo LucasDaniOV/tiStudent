@@ -11,11 +11,9 @@ const Home: React.FC = () => {
   const [name, setName] = React.useState<string>("");
   const getUser = async () => {
     const user = sessionStorage.getItem("loggedInUser");
-    const token = getToken();
     if (user) {
       const profile = await ProfileService.getProfileByEmail(
         JSON.parse(user).email,
-        token
       );
       setName(profile.username);
     }
