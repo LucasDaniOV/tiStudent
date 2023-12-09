@@ -36,9 +36,17 @@ export type Comment = {
   parentId: string;
 };
 
+export type Like = {
+  id: string;
+  createdAt: Date;
+  profile: Profile;
+  resource: Resource;
+  parentId: string;
+};
+
 export type StatusMessage = {
   message: string;
   type: "error" | "success";
 };
 
-export type Type = "users" | "resources" | "profiles";
+export type Type = "users" | "resources" | "profiles" | "likes";

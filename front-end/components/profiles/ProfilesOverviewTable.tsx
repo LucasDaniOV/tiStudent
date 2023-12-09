@@ -36,32 +36,57 @@ const ProfilesOverviewTable: React.FC<Props> = ({ profiles }: Props) => {
   return (
     <>
       {profiles && (
-        <table>
+        <table className="border-collapse w-full">
           <thead>
             <tr>
-              <th scope="col">id</th>
-              <th scope="col">username</th>
-              <th scope="col">bio</th>
-              <th scope="col">createdAt</th>
-              <th scope="col">latestActivity</th>
-              <th scope="col">user id</th>
+              <th scope="col" className="border p-4 text-left">
+                id
+              </th>
+              <th scope="col" className="border p-4 text-left">
+                username
+              </th>
+              <th scope="col" className="border p-4 text-left">
+                bio
+              </th>
+              <th scope="col" className="border p-4 text-left">
+                createdAt
+              </th>
+              <th scope="col" className="border p-4 text-left">
+                latestActivity
+              </th>
+              <th scope="col" className="border p-4 text-left">
+                user id
+              </th>
             </tr>
           </thead>
           <tbody>
             {profiles.map((profile, index) => (
               <tr
+                className="hover:text-white hover:bg-gray-600"
                 key={index}
                 onClick={(e) => getProfile(e, parseInt(profile.id))}
               >
-                <td>{profile.id}</td>
-                <td>{profile.username}</td>
-                <td>{profile.bio}</td>
-                <td>{String(profile.createdAt)}</td>
-                <td>{String(profile.latestActivity)}</td>
-                <td onClick={(e) => getProfileUser(e, profile.user.id)}>
+                <td className="border p-4 text-left">{profile.id}</td>
+                <td className="border p-4 text-left">{profile.username}</td>
+                <td className="border p-4 text-left">{profile.bio}</td>
+                <td className="border p-4 text-left">
+                  {String(profile.createdAt)}
+                </td>
+                <td className="border p-4 text-left">
+                  {String(profile.latestActivity)}
+                </td>
+                <td
+                  className="border p-4 text-left"
+                  onClick={(e) => getProfileUser(e, profile.user.id)}
+                >
                   {profile.user.id}
                 </td>
-                <td onClick={(e) => deleteProfile(e, profile)}>delete</td>
+                <td
+                  className="border p-4 text-left"
+                  onClick={(e) => deleteProfile(e, profile)}
+                >
+                  delete
+                </td>
               </tr>
             ))}
           </tbody>

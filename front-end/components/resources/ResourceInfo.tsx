@@ -9,26 +9,28 @@ const ResourceInfo: React.FC<Props> = ({ resource }: Props) => {
   return (
     <>
       {resource && (
-        <div className="resourceInfo" role="resourceInfo">
-          <h1>
-            <strong>Title:</strong> {resource.title}
+        <div className="grid grid-cols-2" role="resourceInfo">
+          <h1 className="text-lg">
+            <span className="text-2xl">
+              <strong>{resource.title}</strong>
+            </span>
+            <br />
+            <strong>{resource.description}</strong>
           </h1>
-          <h3>
-            <strong>Description:</strong> {resource.description}
-          </h3>
-          <ul>
-            <p>
+          <ul className="items-end m-auto">
+            <li>
               <strong>Category:</strong> {resource.category}
-            </p>
-            <p>
-              <strong>Created at:</strong> {String(resource.createdAt)}
-            </p>
-            <p>
+            </li>
+            <li>
+              <strong>Created at:</strong>{" "}
+              {String(resource.createdAt).split("T")[0] /* DISPLAY ONLY DATE */}
+            </li>
+            <li>
               <strong>Subject:</strong> {resource.subject}
-            </p>
-            <p>
+            </li>
+            <li>
               <strong>Creator ID:</strong> {resource.creator.id}
-            </p>
+            </li>
           </ul>
           <br />
         </div>

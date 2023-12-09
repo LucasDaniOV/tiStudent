@@ -22,6 +22,7 @@ const Subjects: React.FC<Props> = ({
     >
       {showing.map((sub, index) => (
         <li
+          className="ml-2"
           key={index}
           onClick={() => func(sub)}
           tabIndex={0}

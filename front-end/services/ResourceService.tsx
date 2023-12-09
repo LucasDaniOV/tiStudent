@@ -1,4 +1,4 @@
-import { Profile, Comment } from "@/types";
+import { Profile, Comment, Resource } from "@/types";
 import ProfileService from "./ProfileService";
 import { getAll, getById } from "@/util/get";
 import { getToken } from "@/util/token";

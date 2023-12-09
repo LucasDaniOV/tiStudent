@@ -29,6 +29,7 @@ type ProfileInput = {
 type AuthenticationResponse = {
     token: string;
     email: string;
+    id: string;
     role: Role;
 };
 

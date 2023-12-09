@@ -31,7 +31,7 @@ const DeleteUserById = () => {
       <Head>
         <title>User deleted</title>
       </Head>
-      <Header />
+      <Header current="users"/>
       <main>
         <h1>Deleted user with ID: {user && userId}</h1>
         {!userId && <p>Loading</p>}

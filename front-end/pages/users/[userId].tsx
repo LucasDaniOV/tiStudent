@@ -29,9 +29,9 @@ const ReadUserById = () => {
       <Head>
         <title>User info</title>
       </Head>
-      <Header />
-      <main>
-        <h1>Info about user {user && user.id}</h1>
+      <Header current="users" />
+      <main className="flex flex-col justify-center items-center">
+        <h1 className="text-xl">Info about user {user && user.id}</h1>
         {!userId && <p>Loading</p>}
         <section>
           <UserInfo user={user as User}></UserInfo>

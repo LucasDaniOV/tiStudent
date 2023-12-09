@@ -1,7 +1,9 @@
 import ProfileService from "@/services/ProfileService";
 import UserService from "@/services/UserService";
 import { StatusMessage } from "@/types";
+import { getToken } from "@/util/token";
 import { useRouter } from "next/router";
+import { UseTranslation, useTranslation } from "next-i18next";
 import React, { FormEvent, useState } from "react";
 
 const ProfileCreateForm: React.FC = () => {
@@ -9,7 +11,7 @@ const ProfileCreateForm: React.FC = () => {
   const [bio, setBio] = useState("");
   const [usernameError, setUsernameError] = useState<string>("");
   const [bioError, setBioError] = useState<string>("");
-  const [userIdError, setUserIdError] = useState<string>("");
+  // const [userIdError, setUserIdError] = useState<string>(""); // NOT SURE IF REQUIRED
   const [email, setEmail] = useState("");
   const [emailError, setEmailError] = useState("");
   const [password, setPassword] = useState("");
@@ -17,11 +19,11 @@ const ProfileCreateForm: React.FC = () => {
   const [statusMessages, setStatusMessages] = useState<StatusMessage[]>([]);
 
   const router = useRouter();
-
+  const { t } = useTranslation();
   const clearErrors = () => {
     setUsernameError("");
     setBioError("");
-    setUserIdError("");
+    // setUserIdError("");
     setEmailError("");
     setPasswordError("");
     setStatusMessages([]);
@@ -30,26 +32,28 @@ const ProfileCreateForm: React.FC = () => {
   const validate = () => {
     let isValid = true;
     if (!email.trim()) {
-      setEmailError("email is required");
+      setEmailError(t("login.profile.form.error.email"));
       isValid = false;
     }
     if (!username.trim()) {
-      setUsernameError("username is required");
+      setUsernameError(t("login.profile.form.error.username"));
       isValid = false;
     }
     if (username.length > 30) {
-      setUsernameError("username cannot be longer than 30 characters");
+      setUsernameError(t("login.profile.form.error.username.length"));
       isValid = false;
     }
     if (bio.trim() && bio.length > 200) {
-      setBioError("bio cannot be longer than 200 characters");
+      setBioError(t("login.profile.form.error.bio"));
       isValid = false;
     }
+    //add password validation
     return isValid;
   };
 
   const createProfile = async (email: string) => {
-    const user = JSON.stringify(await UserService.getUserByEmail(email));
+    const token = getToken();
+    const user = JSON.stringify(await UserService.getUserByEmail(email, token)); // kan ni me token
     console.log(user);
     const userObject = JSON.parse(user);
 
@@ -58,7 +62,7 @@ const ProfileCreateForm: React.FC = () => {
       bio,
       parseInt(userObject.id)
     );
-    const profileObject = await ProfileService.getProfileByEmail(email);
+    const profileObject = await ProfileService.getProfileByEmail(email); // kan ni me token
     const profile = JSON.stringify(profileObject);
     sessionStorage.setItem("loggedInProfile", profile);
     const message = res.message;
@@ -70,7 +74,8 @@ const ProfileCreateForm: React.FC = () => {
     e.preventDefault();
     clearErrors();
     if (!validate()) return;
-    await UserService.createUser(email, password);
+    const token = getToken();
+    await UserService.createUser(email, password, token); // kan ni me token
     await createProfile(email);
   };
 
@@ -83,8 +88,10 @@ const ProfileCreateForm: React.FC = () => {
           ))}
         </ul>
       )}
-      <form onSubmit={(e) => handleSubmit(e)}>
-        <label htmlFor="usernameInput">Username:</label>
+      <form className="flex flex-col" onSubmit={(e) => handleSubmit(e)}>
+        <label className="mb-4" htmlFor="usernameInput">
+          {t("login.profile.form.username")}:
+        </label>
         <br />
         <input
           id="usernameInput"
@@ -92,9 +99,12 @@ const ProfileCreateForm: React.FC = () => {
           value={username}
           onChange={(e) => setUsername(e.target.value)}
         />
+        {usernameError && <div>{usernameError}</div>}
         <br />
 
-        <label htmlFor="bioInput">Bio:</label>
+        <label className="mb-4" htmlFor="bioInput">
+          {t("login.profile.form.bio")}:
+        </label>
         <br />
         <input
           id="bioInput"
@@ -102,9 +112,12 @@ const ProfileCreateForm: React.FC = () => {
           value={bio}
           onChange={(e) => setBio(e.target.value)}
         />
+        {bioError && <div>{bioError}</div>}
         <br />
 
-        <label htmlFor="emailInput">Email</label>
+        <label className="mb-4" htmlFor="emailInput">
+          {t("login.profile.form.email")}:
+        </label>
         <br />
         <input
           id="emailInput"
@@ -115,7 +128,9 @@ const ProfileCreateForm: React.FC = () => {
         <br />
         {emailError && <div>{emailError}</div>}
 
-        <label htmlFor="passwordInput">Password</label>
+        <label className="mb-4" htmlFor="passwordInput">
+          {t("login.profile.form.password")}:
+        </label>
         <br />
         <input
           id="passwordInput"
@@ -125,11 +140,14 @@ const ProfileCreateForm: React.FC = () => {
         />
         <br />
         {passwordError && <div>{passwordError}</div>}
-        {usernameError && <div>{usernameError}</div>}
-        {bioError && <div>{bioError}</div>}
-        {userIdError && <div>{userIdError}</div>}
+        {/* {userIdError && <div>{userIdError}</div>} */}
 
-        <button type="submit">Create profile</button>
+        <button
+          type="submit"
+          className="bg-gray-500 hover:bg-gray-300 hover:text-black m-10"
+        >
+          {t("login.profile.form.create.profile")}:
+        </button>
       </form>
     </>
   );

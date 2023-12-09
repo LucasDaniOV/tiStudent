@@ -20,21 +20,36 @@ const ResourceOverviewTable: React.FC<Props> = ({ resources }: Props) => {
   return (
     <>
       {resources && (
-        <table>
+        <table className="border-collapse w-full">
           <thead>
             <tr>
-              <th scope="col">ID</th>
-              <th scope="col">User ID</th>
-              <th scope="col">Created at</th>
-              <th scope="col">Title</th>
-              <th scope="col">Description</th>
-              <th scope="col">Category</th>
-              <th scope="col">Subject</th>
+              <th scope="col" className="border p-4 text-left">
+                ID
+              </th>
+              <th scope="col" className="border p-4 text-left">
+                User ID
+              </th>
+              <th scope="col" className="border p-4 text-left">
+                Created at
+              </th>
+              <th scope="col" className="border p-4 text-left">
+                Title
+              </th>
+              <th scope="col" className="border p-4 text-left">
+                Description
+              </th>
+              <th scope="col" className="border p-4 text-left">
+                Category
+              </th>
+              <th scope="col" className="border p-4 text-left">
+                Subject
+              </th>
             </tr>
           </thead>
           <tbody>
             {resources.map((resource, index) => (
               <tr
+                className="hover:text-white hover:bg-gray-600"
                 key={index}
                 onDoubleClick={() => {
                   router.push("/resources/delete/" + resource.id);
@@ -43,14 +58,19 @@ const ResourceOverviewTable: React.FC<Props> = ({ resources }: Props) => {
                   router.push("/resources/" + resource.id);
                 }}
               >
-                <td>{resource.id}</td>
-                <td>{resource.creator.id}</td>
-                <td>{String(resource.createdAt)}</td>
-                <td>{resource.title}</td>
-                <td>{resource.description}</td>
-                <td>{resource.category}</td>
-                <td>{resource.subject}</td>
-                <td onClick={(e) => deleteResource(e, resource)}>delete</td>
+                <td className="border p-4">{resource.id}</td>
+                <td className="border p-4">{resource.creator.id}</td>
+                <td className="border p-4">{String(resource.createdAt)}</td>
+                <td className="border p-4">{resource.title}</td>
+                <td className="border p-4">{resource.description}</td>
+                <td className="border p-4">{resource.category}</td>
+                <td className="border p-4">{resource.subject}</td>
+                <td
+                  className="border p-4"
+                  onClick={(e) => deleteResource(e, resource)}
+                >
+                  delete
+                </td>
               </tr>
             ))}
           </tbody>

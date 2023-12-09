@@ -23,14 +23,12 @@ const writeComment = async (
 ): Promise<Comment> => {
     if (parentId) {
         const parentComments = await commentDb.getAllCommentsOnResource(resource.id);
-        console.log(parentComments);
-
         if (parentComments.findIndex((c) => c.id == parentId) !== -1) {
-            return await commentDb.createComment(profile, resource, message, parentId);
+            return await commentDb.createCommentOnComment(profile, resource, message, parentId);
         } else {
             throw new Error(`Parent Comment with id ${parentId} is not present on Resource with id ${resource.id}`);
         }
-    } else return await commentDb.createComment(profile, resource, message);
+    } else return await commentDb.createCommentOnResource(profile, resource, message);
 };
 
 const getAllCommentsByProfile = async (profileId: number): Promise<Comment[]> => {

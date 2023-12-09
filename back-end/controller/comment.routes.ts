@@ -213,7 +213,7 @@ commentRouter.post('/:profileId/:resourceId/:commentId', async (req: Request, re
 
 /**
  * @swagger
- * /profiles/comment/{profileId}/{resourceId}:
+ * /comments/{profileId}/{resourceId}:
  *   post:
  *     tags:
  *       - profiles
@@ -249,7 +249,7 @@ commentRouter.post('/:profileId/:resourceId/:commentId', async (req: Request, re
  *               $ref: '#/components/schemas/Comment'
  */
 
-commentRouter.post('/comment/:profileId/:resourceId', async (req: Request, res: Response) => {
+commentRouter.post('/:profileId/:resourceId', async (req: Request, res: Response) => {
     try {
         const profileId = parseInt(req.params.profileId);
         const resourceId = parseInt(req.params.resourceId);
