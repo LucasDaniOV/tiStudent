@@ -19,6 +19,13 @@ async function main() {
             role: 'admin',
         },
     });
+    const satoshi = await prisma.user.create({
+        data: {
+            email: 'satoshi2.nakamoto@gmail.com',
+            password: await bcrypt.hash('Str0ngPW!!!2', 12),
+            role: 'admin',
+        },
+    });
     console.log({ alice, bob });
     const aliceProfile = await prisma.profile.upsert({
         where: { userId: 1 },
@@ -51,6 +58,21 @@ async function main() {
         },
     });
     console.log(bobProfile);
+    const satoshiProfile = await prisma.profile.upsert({
+        where: { userId: 3 },
+        update: {},
+        create: {
+            username: 'JJ',
+            createdAt: new Date(),
+            latestActivity: new Date(),
+            user: {
+                connect: {
+                    email: 'satoshi2.nakamoto@gmail.com',
+                },
+            },
+        },
+    });
+    console.log(satoshiProfile);
     const aliceResource1 = await prisma.resource.upsert({
         where: { id: 1 },
         update: {},
