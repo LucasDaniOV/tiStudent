@@ -22,21 +22,19 @@ const getLikeById = async (likeId: number): Promise<Like> => {
     return like;
 };
 
-const likeResource = async (profileId: number, resourceId: number): Promise<Like> => {
+const like = async (profileId: number, resourceId: number, commentId: number | null): Promise<Like> => {
     const profile = await profileService.getProfileById(profileId);
     if (!profileId) throw new Error(`Profile with id ${profileId} is required`);
     const resource = await resourceService.getResourceById(resourceId);
     if (!resource) throw new Error(`Resource with id ${resourceId} does not exist`);
-    const likeResource = await likeDb.createLikeOnResource(profile, resource, null);
+    if (commentId !== null){
+        const comment = await commentService.getCommentById(commentId);
+        if (!comment) throw new Error(`Comment with id ${commentId} does not exist`);
+        const likeResource = await likeDb.createLike(profile, resource, comment);
+        return likeResource;
+    }
+    const likeResource = await likeDb.createLike(profile, resource, null);
     return likeResource;
-};
-
-const likeComment = async (profileId: number, commentId: number) => {
-    const profile = await profileService.getProfileById(profileId);
-    const comment = await commentService.getCommentById(commentId);
-    if (!comment) throw new Error(`Comment with id ${commentId} does not exist`);
-    const likeComment = await likeDb.createLikeOnComment(profile, null, comment);
-    return likeComment;
 };
 
 const unlikeResource = async (profileId: number, resourceId: number): Promise<Boolean> => {
@@ -58,8 +56,7 @@ export default {
     getLikeById,
     getAllLikesOnComment,
     getAllLikesOnResource,
-    likeResource,
-    likeComment,
+    like,
     unlikeResource,
     unlikeComment,
 };

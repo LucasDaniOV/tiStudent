@@ -1,3 +1,4 @@
+import CommentService from "@/services/CommentService";
 import LikeService from "@/services/LikeService";
 import ProfileService from "@/services/ProfileService";
 import ResourceService from "@/services/ResourceService";
@@ -51,7 +52,10 @@ const Likes: React.FC<Props> = ({ id, object }: Props) => {
       if (object == "resource") {
         await LikeService.likeResource(profileId, id);
       } else {
-        await LikeService.likeComment(profileId, id);
+        const comment = await CommentService.getCommentById(id);
+        const resourceId = comment.resource.id;
+        console.log(resourceId);
+        await LikeService.likeComment(profileId, resourceId, id);
       }
     }
   };

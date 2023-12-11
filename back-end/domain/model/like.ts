@@ -27,27 +27,32 @@ export class Like {
 
     validate(like: { id?: number; profile: Profile; resource?: Resource; comment?: Comment }) {
         if (!like.profile) throw new Error('Profile is required.');
-        if ((!like.resource && !like.comment) || (like.resource && like.comment)) {
-            throw new Error('Object of EITHER: type Resource or type Comment is required.');
+        console.log(like.resource);
+        console.log(like.comment);
+
+        if (!like.resource && !like.comment) {
+            throw new Error('Object of either type Resource or type Comment is required.');
         }
     }
 
     static from({
         id,
         upvoter,
-        resource,
-        comment,
+        resource = null,
+        comment = null,
     }: LikePrisma & { upvoter: ProfilePrisma & { user: UserPrisma } } & {
-        resource: ResourcePrisma & { creator: ProfilePrisma & { user: UserPrisma } };
+        resource: (ResourcePrisma & { creator: ProfilePrisma & { user: UserPrisma } }) | null;
     } & {
-        comment: CommentPrisma & { profile: ProfilePrisma & { user: UserPrisma } } & {
-            resource: ResourcePrisma & { creator: ProfilePrisma & { user: UserPrisma } };
-        };
+        comment?:
+            | (CommentPrisma & { profile: ProfilePrisma & { user: UserPrisma } } & {
+                  resource: ResourcePrisma & { creator: ProfilePrisma & { user: UserPrisma } };
+              })
+            | null;
     }) {
         return new Like({
             id,
             profile: Profile.from(upvoter),
-            resource: resource ? Resource.from(resource) : null,
+            resource: Resource.from(resource),
             comment: comment ? Comment.from(comment) : null,
         });
     }

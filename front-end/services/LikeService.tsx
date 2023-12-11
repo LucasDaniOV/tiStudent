@@ -46,11 +46,11 @@ const likeResource = async (profileId: string, resourceId: string) => {
   );
   return await res.json();
 };
-const likeComment = async (profileId: string, commentId: string) => {
+const likeComment = async (profileId: string, resourceId: string, commentId: string) => {
   const token = getToken();
   const res = await fetch(
     process.env.NEXT_PUBLIC_API_URL +
-      `/like/${profileId}/resource/${commentId}`,
+      `/like/${profileId}/resource/${resourceId}/comment/${commentId}`,
     {
       method: "POST",
       headers: {
