@@ -11,8 +11,11 @@ import { getToken } from "@/util/token";
 import Head from "next/head";
 import { useRouter } from "next/router";
 import { FormEvent, useEffect, useState } from "react";
+import { serverSideTranslations } from "next-i18next/serverSideTranslations";
+import { useTranslation } from "next-i18next";
 
 const ReadResourceById = () => {
+  const { t } = useTranslation();
   const [resource, setResource] = useState<Resource>();
   const [profile, setProfile] = useState<Profile>();
   const [commentMessage, setMessage] = useState<string>("");
@@ -51,11 +54,11 @@ const ReadResourceById = () => {
   return (
     <>
       <Head>
-        <title>Resource info</title>
+        <title>{t("resources.info.title")}</title>
       </Head>
       <Header current="resources" />
       <main>
-        {!resourceId && <p>Loading</p>}
+        {!resourceId && <p>{t("loading")}</p>}
         <div className="flex flex-row">
           <section className="flex flex-row w-screen m-auto">
             {resource && <Likes id={String(resource.id)} object="resource" />}
@@ -68,12 +71,14 @@ const ReadResourceById = () => {
         <section>
           {resource && (
             <section className="w-1/4 m-auto flex ">
-              <h3 className="mt-10 mr-10">Add a comment</h3>
+              <h3 className="mt-10 mr-10">{t("resources.comment.add")}</h3>
               <form
                 onSubmit={(e) => handleSubmit(e)}
                 className="flex flex-col mt-10"
               >
-                <label htmlFor="message">Message</label>
+                <label htmlFor="message">
+                  {t("resources.comment.message")}
+                </label>
                 <input
                   type="text"
                   id="message"
@@ -83,7 +88,7 @@ const ReadResourceById = () => {
                   type="submit"
                   className="m-10 bg-gray-700 hover:bg-gray-400"
                 >
-                  Submit
+                  {t("resources.comment.submit")}
                 </button>
               </form>
             </section>
@@ -92,6 +97,15 @@ const ReadResourceById = () => {
       </main>
     </>
   );
+};
+
+export const getServerSideProps = async (context: any) => {
+  const { locale } = context;
+  return {
+    props: {
+      ...(await serverSideTranslations(locale ?? "en", ["common"])),
+    },
+  };
 };
 
 export default ReadResourceById;

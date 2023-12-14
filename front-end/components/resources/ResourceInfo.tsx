@@ -1,11 +1,13 @@
 import { Resource } from "@/types";
 import React from "react";
+import { useTranslation } from "next-i18next";
 
 type Props = {
   resource: Resource;
 };
 
 const ResourceInfo: React.FC<Props> = ({ resource }: Props) => {
+  const { t } = useTranslation();
   return (
     <>
       {resource && (
@@ -19,17 +21,20 @@ const ResourceInfo: React.FC<Props> = ({ resource }: Props) => {
           </h1>
           <ul className="items-end m-auto">
             <li>
-              <strong>Category:</strong> {resource.category}
+              <strong>{t("resources.fields.category")}:</strong>{" "}
+              {resource.category}
             </li>
             <li>
-              <strong>Created at:</strong>{" "}
+              <strong>{t("resources.fields.created.at")}</strong>{" "}
               {String(resource.createdAt).split("T")[0] /* DISPLAY ONLY DATE */}
             </li>
             <li>
-              <strong>Subject:</strong> {resource.subject}
+              <strong>{t("resources.fields.subject")}</strong>{" "}
+              {resource.subject}
             </li>
             <li>
-              <strong>Creator ID:</strong> {resource.creator.id}
+              <strong>{t("resources.fields.user.id")}</strong>{" "}
+              {resource.creator.id}
             </li>
           </ul>
           <br />

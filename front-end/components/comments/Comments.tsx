@@ -1,14 +1,12 @@
 import CommentService from "@/services/CommentService";
+import ProfileService from "@/services/ProfileService";
 import ResourceService from "@/services/ResourceService";
 import { Comment, Profile } from "@/types";
 import { getToken } from "@/util/token";
 import { useRouter } from "next/router";
 import React, { useEffect, useState } from "react";
-import CommentInfo from "./CommentInfo";
-import Link from "next/link";
-import ProfileService from "@/services/ProfileService";
-import LikeService from "@/services/LikeService";
 import Likes from "../likes/likes";
+import { useTranslation } from "next-i18next";
 
 type Props = {
   id: string;
@@ -16,6 +14,7 @@ type Props = {
 };
 
 const Comments: React.FC<Props> = ({ id, object }: Props) => {
+  const { t } = useTranslation();
   const [profile, setProfile] = useState<Profile>();
   const [role, setRole] = useState<string>("");
   const [commentsOnResource, setComments] = useState<Array<Comment>>([]);
@@ -75,14 +74,14 @@ const Comments: React.FC<Props> = ({ id, object }: Props) => {
     if (profile?.id === commentProfile.id || role == "admin") {
       if (
         !confirm(
-          `Are you sure you want to delete this comment? (${comment.message})`
+          `${t("resources.comment.options.delete.message")}(${comment.message})`
         )
       )
         return;
       await CommentService.deleteComment(comment, token);
       router.reload();
     } else {
-      alert("You are not the creator of this comment");
+      alert(t("resources.comment.option.delete.error"));
     }
   };
 
@@ -92,7 +91,7 @@ const Comments: React.FC<Props> = ({ id, object }: Props) => {
   ) => {
     e.stopPropagation();
     e.preventDefault();
-    const message = prompt("Your message:");
+    const message = prompt(t("resources.comment.prompt"));
     if (!message) return;
     const token = getToken();
     if (!profile) return;
@@ -152,7 +151,7 @@ const Comments: React.FC<Props> = ({ id, object }: Props) => {
                         handleComment(e, com);
                       }}
                     >
-                      Reply
+                      {t("resources.comment.options.reply")}
                     </a>
                   )}
                   {(profile.id == com.profile.id || role == "admin") &&
@@ -167,23 +166,25 @@ const Comments: React.FC<Props> = ({ id, object }: Props) => {
                     <div className="flex items-center bg-gray-600 m-auto">
                       <a
                         className="p-1 cursor-pointer border-2 border-transparent hover:border-2 hover:border-white"
-                        onClick={() => alert("not yet implemented")}
+                        onClick={() =>
+                          alert(t("resources.comment.options.edit.message"))
+                        }
                       >
-                        Edit
+                        {t("resources.comment.options.edit.title")}
                       </a>
 
                       <a
                         className="p-1 cursor-pointer border-2 border-transparent hover:border-2 hover:border-white"
                         onClick={(e) => handleDelete(e, com)}
                       >
-                        Delete
+                        {t("resources.comment.options.delete.title")}
                       </a>
 
                       <a
                         onClick={() => toggleOptionsVisibility(com.id)}
                         className="cursor-pointer hover:bg-red-600 p-1 border-transparent border-2 hover:border-red-600 hover:border-2"
                       >
-                        Close
+                        {t("resources.comment.options.close")}
                       </a>
                     </div>
                   )}
@@ -198,7 +199,10 @@ const Comments: React.FC<Props> = ({ id, object }: Props) => {
                           : "hover:bg-gray-500 col-span-5 text-gray-700 hover:text-gray-300 pb-5"
                       }
                     >
-                      {subcommentsVisibility[com.id] ? "Hide" : "Show"} replies
+                      {subcommentsVisibility[com.id]
+                        ? t("resources.comment.hide")
+                        : t("resources.comment.show")}{" "}
+                      {t("resources.comment.replies")}
                     </button>
                   )}
                 </div>
@@ -210,7 +214,9 @@ const Comments: React.FC<Props> = ({ id, object }: Props) => {
           })}
         </ul>
       ) : (
-        <h1 className="w-1/2 m-auto text-center">There are no comments</h1>
+        <h1 className="w-1/2 m-auto text-center">
+          {t("resources.comment.none")}
+        </h1>
       )}
     </>
   );
