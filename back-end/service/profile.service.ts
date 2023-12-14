@@ -60,7 +60,7 @@ const updateField = async (profile: Profile, field: string, value: string): Prom
     else if (field == 'likes') {
         const likeId = parseInt(value);
         const likes = await likeDb.getLikesByProfile(profile.id);
-        const like = likes.findIndex((l) => l.id == likeId);
+        const like = likes.find((l) => l.id == likeId);
         if (like) {
             const removed = await likeDb.deleteLike(likeId);
             if (removed) return await likeDb.getLikesByProfile(profile.id);

@@ -136,14 +136,14 @@ likeRouter.post('/:profileId/resource/:resourceId/comment/:commentId', async (re
  *             example:
  *               status: 'success'
  *               message: 'Like count retrieved'
- *               data: 5
+ *               data: [{id: 5}, {id: 6}]
  */
 
 likeRouter.get('/comment/:commentId', async (req: Request, res: Response) => {
     try {
         const commentId = parseInt(req.params.commentId);
         const likes = await likeService.getAllLikesOnComment(commentId);
-        res.status(200).json({ status: 'success', message: 'Like created ', data: likes.length });
+        res.status(200).json({ status: 'success', message: 'Here are your likes', data: likes });
     } catch (error) {
         res.status(400).json({ status: 'error', errorMessage: error.message });
     }
@@ -172,14 +172,14 @@ likeRouter.get('/comment/:commentId', async (req: Request, res: Response) => {
  *             example:
  *               status: 'success'
  *               message: 'Like count retrieved'
- *               data: 5
+ *               data: [{id: 1}, {id: 2}]
  */
 
 likeRouter.get('/resource/:resourceId', async (req: Request, res: Response) => {
     try {
         const resourceId = parseInt(req.params.resourceId);
         const likes = await likeService.getAllLikesOnResource(resourceId);
-        res.status(200).json({ status: 'success', message: 'Like created ', data: likes.length });
+        res.status(200).json({ status: 'success', message: 'Here are your likes', data: likes });
     } catch (error) {
         res.status(400).json({ status: 'error', errorMessage: error.message });
     }
@@ -187,7 +187,7 @@ likeRouter.get('/resource/:resourceId', async (req: Request, res: Response) => {
 
 /**
  * @swagger
- * /like/{profileId}/{resourceId}   :
+ * /like/{profileId}/{likeId}   :
  *   delete:
  *     tags:
  *       - profiles
