@@ -42,6 +42,7 @@ export type Like = {
   profile: Profile;
   resource: Resource;
   parentId: string;
+  comment?: Comment;
 };
 
 export type StatusMessage = {
