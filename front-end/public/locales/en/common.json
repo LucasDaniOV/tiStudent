@@ -2,6 +2,8 @@
   "app.title": "tiStudent App",
   "general.error": "An error has occurred. Please try again later.",
   "authorization.error": "You are not authorized to view this page. Please login first.",
+  "loading": "Loading...",
+  "delete": "Delete",
   "header": {
     "nav": {
       "home": "Home",
@@ -28,8 +30,7 @@
     "fields": {
       "id": "ID",
       "email": "Email",
-      "password": "Password",
-      "delete": "Delete"
+      "password": "Password"
     }
   },
   "resources": {
@@ -40,10 +41,10 @@
       "title": "Title",
       "description": "Description",
       "category": "Category",
-      "subject": "Subject",
-      "delete": "Delete"
+      "subject": "Subject"
     },
     "info": {
+      "title": "Resource Info",
       "message": "Add a Resource",
       "reply": "Reply",
       "show": "Show replies"
@@ -72,8 +73,7 @@
       "bio": "Bio",
       "created.at": "Created At",
       "latest.activity": "Latest Activity",
-      "user.id": "User ID",
-      "delete": "Delete"
+      "user.id": "User ID"
     },
     "info": "Info about Profile"
   },

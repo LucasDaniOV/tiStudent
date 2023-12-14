@@ -37,7 +37,7 @@ const ReadUserById = () => {
         <h1 className="text-xl">
           {t("users.about")} {user && user.id}
         </h1>
-        {!userId && <p>{t("users.loading")}</p>}
+        {!userId && <p>{t("loading")}</p>}
         <section>
           <UserInfo user={user as User}></UserInfo>
         </section>

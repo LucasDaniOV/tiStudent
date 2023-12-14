@@ -51,7 +51,7 @@ const UsersOverviewTable: React.FC<Props> = ({ users }: Props) => {
                       router.push("/users/delete/" + user.id);
                   }}
                 >
-                  {t("resources.fields.delete")}
+                  {t("delete")}
                 </td>
               </tr>
             ))}
