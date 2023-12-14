@@ -1,12 +1,14 @@
 import { useRouter } from "next/router";
 import React from "react";
 import { User } from "../../types";
+import { useTranslation } from "next-i18next";
 
 type Props = {
   users: Array<User>;
 };
 
 const UsersOverviewTable: React.FC<Props> = ({ users }: Props) => {
+  const { t } = useTranslation();
   const router = useRouter();
   return (
     <>
@@ -15,13 +17,13 @@ const UsersOverviewTable: React.FC<Props> = ({ users }: Props) => {
           <thead>
             <tr>
               <th scope="col" className="border p-8 text-left">
-                Id
+                {t("users.fields.id")}
               </th>
               <th scope="col" className="border p-8 text-left">
-                Email
+                {t("users.fields.email")}
               </th>
               <th scope="col" className="border p-8 text-left">
-                Password
+                {t("users.fields.password")}
               </th>
             </tr>
           </thead>
@@ -41,11 +43,15 @@ const UsersOverviewTable: React.FC<Props> = ({ users }: Props) => {
                   className="border p-8"
                   onClick={(e) => {
                     e.stopPropagation();
-                    if (confirm(`Are you sure you want to delete ${user.id}?`))
+                    if (
+                      confirm(
+                        `Are you sure you want to delete user with email ${user.email}?`
+                      )
+                    )
                       router.push("/users/delete/" + user.id);
                   }}
                 >
-                  delete
+                  {t("resources.fields.delete")}
                 </td>
               </tr>
             ))}

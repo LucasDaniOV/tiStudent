@@ -1,6 +1,7 @@
 {
   "app.title": "tiStudent App",
   "general.error": "An error has occurred. Please try again later.",
+  "authorization.error": "You are not authorized to view this page. Please login first.",
   "header": {
     "nav": {
       "home": "Home",
@@ -17,6 +18,9 @@
   },
   "users": {
     "message": "Users",
+    "info": "User Info",
+    "about": "Info about user with ID: ",
+    "loading": "Loading...",
     "fields": {
       "id": "ID",
       "email": "Email",

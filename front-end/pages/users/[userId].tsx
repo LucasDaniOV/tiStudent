@@ -5,8 +5,11 @@ import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
 import { User } from "@/types";
 import UserInfo from "@/components/users/UserInfo";
+import { useTranslation } from "next-i18next";
+import { serverSideTranslations } from "next-i18next/serverSideTranslations";
 
 const ReadUserById = () => {
+  const { t } = useTranslation();
   const [user, setUser] = useState<User>();
 
   const router = useRouter();
@@ -27,18 +30,29 @@ const ReadUserById = () => {
   return (
     <>
       <Head>
-        <title>User info</title>
+        <title>{t("users.info")}</title>
       </Head>
       <Header current="users" />
       <main className="flex flex-col justify-center items-center">
-        <h1 className="text-xl">Info about user {user && user.id}</h1>
-        {!userId && <p>Loading</p>}
+        <h1 className="text-xl">
+          {t("users.about")} {user && user.id}
+        </h1>
+        {!userId && <p>{t("users.loading")}</p>}
         <section>
           <UserInfo user={user as User}></UserInfo>
         </section>
       </main>
     </>
   );
+};
+
+export const getServerSideProps = async (context: any) => {
+  const { locale } = context;
+  return {
+    props: {
+      ...(await serverSideTranslations(locale ?? "en", ["common"])),
+    },
+  };
 };
 
 export default ReadUserById;
