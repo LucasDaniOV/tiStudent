@@ -13,7 +13,7 @@
   },
   "home": {
     "welcome": "Welcome",
-    "message": "tiStudent is a platform where you can share academic resources. As a user you are able to upload resources of your own, and like and comment on resources from other people. You can view your liked resources and get an overview of all the resources you have shared."
+    "message": "tiStudent is a platform where you can share academic resources. As a user you can upload resources of your own, and like and comment on resources from other people. You can view your liked resources and get an overview of all the resources you have shared."
   },
   "users": {
     "message": "Users",
@@ -70,6 +70,7 @@
     "info": "Info about Profile"
   },
   "login": {
+    "enter": "Enter",
     "message": "Login",
     "github": {
       "message": "Sign in with GitHub"
@@ -85,8 +86,15 @@
         "error": {
           "email": "Email is required",
           "username": "Username is required",
-          "username.length": "Username cannot be longer than 30 characters",
-          "bio": "Bio cannot be longer than 200 characters"
+          "username.length": "Username can't be longer than 30 characters",
+          "bio": "Bio can't be longer than 200 characters",
+          "password": {
+            "exists": "Password is required",
+            "length": "Password must be at least 8 characters long",
+            "number": "Password must contain at least 1 number",
+            "capital": "Password must contain at least 1 capital letter",
+            "special": "Password must contain at least 1 special character (!@#$%^&*()_+-=[]{};':\"|,.<>/?)"
+          }
         }
       }
     },
