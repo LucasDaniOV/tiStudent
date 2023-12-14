@@ -48,8 +48,6 @@ const UserLoginForm: React.FC = () => {
     }
 
     if (res.status !== 200) {
-      console.log(res);
-
       setStatusMessages([
         {
           message: "An error has occurred. Please try again later.",

@@ -27,9 +27,6 @@ export class Like {
 
     validate(like: { id?: number; profile: Profile; resource?: Resource; comment?: Comment }) {
         if (!like.profile) throw new Error('Profile is required.');
-        console.log(like.resource);
-        console.log(like.comment);
-
         if (!like.resource && !like.comment) {
             throw new Error('Object of either type Resource or type Comment is required.');
         }
