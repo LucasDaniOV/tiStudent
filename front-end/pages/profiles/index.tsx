@@ -13,8 +13,6 @@ const Profiles: React.FC = () => {
 
   const getProfiles = async () => {
     const response = await ProfileService.getAllProfiles();
-    console.log(response);
-
     if (response.status === "unauthorized" || response.status === "error") {
       setAuthorized(false);
       return;

@@ -31,8 +31,6 @@ const ReadResourceById = () => {
   };
 
   const handleSubmit = async (e: FormEvent): Promise<void> => {
-    console.log(profile);
-
     e.preventDefault();
     if (!profile) return;
     if (!resource) return;

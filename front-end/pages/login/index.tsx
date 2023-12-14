@@ -1,12 +1,11 @@
-import Head from "next/head";
 import Header from "@/components/header";
-import UserLoginForm from "@/components/users/UserLoginForm";
-import GithubLoginButton from "@/components/users/GithubLoginButton";
-import { useEffect, useState } from "react";
 import ProfileCreateForm from "@/components/profiles/ProfileCreateForm";
-import { useRouter } from "next/router";
+import GithubLoginButton from "@/components/users/GithubLoginButton";
+import UserLoginForm from "@/components/users/UserLoginForm";
 import { useTranslation } from "next-i18next";
 import { serverSideTranslations } from "next-i18next/serverSideTranslations";
+import Head from "next/head";
+import { useEffect, useState } from "react";
 
 const Login: React.FC = () => {
   const [user, setUser] = useState<string | null>(null);

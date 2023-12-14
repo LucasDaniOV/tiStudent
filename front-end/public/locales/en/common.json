@@ -35,10 +35,10 @@
       "subject": "Subject",
       "delete": "Delete"
     },
-    "add.a.resource": "Add a Resource",
-    "resource.info": {
+    "info": {
+      "message": "Add a Resource",
       "reply": "Reply",
-      "show.replies": "Show replies"
+      "show": "Show replies"
     },
     "comment": {
       "add": "Add a comment",
@@ -72,9 +72,7 @@
   "login": {
     "enter": "Enter",
     "message": "Login",
-    "github": {
-      "message": "Sign in with GitHub"
-    },
+    "github": "Sign in with GitHub",
     "profile": {
       "message": "Or create a new profile",
       "form": {
