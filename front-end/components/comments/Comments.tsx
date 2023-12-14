@@ -118,94 +118,101 @@ const Comments: React.FC<Props> = ({ id, object }: Props) => {
         >
           {commentsOnResource.map((com, index) => {
             return (
-              <li key={index}>
-                <div
-                  className={
-                    object == "comment"
-                      ? "grid-cols-4 grid justify-between w-10/12 m-auto text-center"
-                      : "grid-cols-5 grid justify-between w-10/12 m-auto text-center"
-                  }
-                >
-                  <Likes id={com.id} object="comment" />
-                  <span
+              profile && (
+                <li key={index}>
+                  <div
                     className={
                       object == "comment"
-                        ? "p-1 bg-gray-400 text-gray-700 flex items-center justify-center"
-                        : "p-1 bg-gray-200 text-gray-700 flex items-center justify-center"
+                        ? "grid-cols-4 grid justify-between w-10/12 m-auto text-center"
+                        : "grid-cols-5 grid justify-between w-10/12 m-auto text-center"
                     }
                   >
-                    {com.message}
-                  </span>
-                  <span
-                    className={
-                      object == "comment"
-                        ? "p-1 bg-gray-400 text-gray-700 flex items-center justify-center"
-                        : "p-1 bg-gray-200 text-gray-700 flex items-center justify-center"
-                    }
-                  >
-                    - {com.profile.username}
-                  </span>
-                  {!com.parentId && (
-                    <a
-                      className="flex items-center justify-center hover:bg-gray-600"
-                      onClick={(e) => {
-                        handleComment(e, com);
-                      }}
-                    >
-                      Reply
-                    </a>
-                  )}
-                  {(profile.id == com.profile.id || role == "admin") &&
-                  !optionsVisibility[com.id] ? (
-                    <a
-                      className="float-right cursor-pointer p-1 pr-2 text-gray-600 hover:bg-gray-700 hover:text-white  flex items-center justify-center"
-                      onClick={() => toggleOptionsVisibility(com.id)}
-                    >
-                      &#8942;
-                    </a>
-                  ) : (
-                    <div className="flex items-center bg-gray-600 m-auto">
-                      <a
-                        className="p-1 cursor-pointer border-2 border-transparent hover:border-2 hover:border-white"
-                        onClick={() => alert("not yet implemented")}
-                      >
-                        Edit
-                      </a>
-
-                      <a
-                        className="p-1 cursor-pointer border-2 border-transparent hover:border-2 hover:border-white"
-                        onClick={(e) => handleDelete(e, com)}
-                      >
-                        Delete
-                      </a>
-
-                      <a
-                        onClick={() => toggleOptionsVisibility(com.id)}
-                        className="cursor-pointer hover:bg-red-600 p-1 border-transparent border-2 hover:border-red-600 hover:border-2"
-                      >
-                        Close
-                      </a>
-                    </div>
-                  )}
-                  {!com.parentId && (
-                    <button
-                      onClick={() => {
-                        toggleVisibility(com.id);
-                      }}
+                    <Likes
+                      profileId={profile.id}
+                      id={com.id}
+                      object="comment"
+                    />
+                    <span
                       className={
-                        subcommentsVisibility[com.id]
-                          ? "bg-gray-500 col-span-5 text-gray-700 hover:text-gray-300 pb-5"
-                          : "hover:bg-gray-500 col-span-5 text-gray-700 hover:text-gray-300 pb-5"
+                        object == "comment"
+                          ? "p-1 bg-gray-400 text-gray-700 flex items-center justify-center"
+                          : "p-1 bg-gray-200 text-gray-700 flex items-center justify-center"
                       }
                     >
-                      {subcommentsVisibility[com.id] ? "Hide" : "Show"} replies
-                    </button>
+                      {com.message}
+                    </span>
+                    <span
+                      className={
+                        object == "comment"
+                          ? "p-1 bg-gray-400 text-gray-700 flex items-center justify-center"
+                          : "p-1 bg-gray-200 text-gray-700 flex items-center justify-center"
+                      }
+                    >
+                      - {com.profile.username}
+                    </span>
+                    {!com.parentId && (
+                      <a
+                        className="flex items-center justify-center hover:bg-gray-600"
+                        onClick={(e) => {
+                          handleComment(e, com);
+                        }}
+                      >
+                        Reply
+                      </a>
+                    )}
+                    {(profile.id == com.profile.id || role == "admin") &&
+                    !optionsVisibility[com.id] ? (
+                      <a
+                        className="float-right cursor-pointer p-1 pr-2 text-gray-600 hover:bg-gray-700 hover:text-white  flex items-center justify-center"
+                        onClick={() => toggleOptionsVisibility(com.id)}
+                      >
+                        &#8942;
+                      </a>
+                    ) : (
+                      <div className="flex items-center bg-gray-600 m-auto">
+                        <a
+                          className="p-1 cursor-pointer border-2 border-transparent hover:border-2 hover:border-white"
+                          onClick={() => alert("not yet implemented")}
+                        >
+                          Edit
+                        </a>
+
+                        <a
+                          className="p-1 cursor-pointer border-2 border-transparent hover:border-2 hover:border-white"
+                          onClick={(e) => handleDelete(e, com)}
+                        >
+                          Delete
+                        </a>
+
+                        <a
+                          onClick={() => toggleOptionsVisibility(com.id)}
+                          className="cursor-pointer hover:bg-red-600 p-1 border-transparent border-2 hover:border-red-600 hover:border-2"
+                        >
+                          Close
+                        </a>
+                      </div>
+                    )}
+                    {!com.parentId && (
+                      <button
+                        onClick={() => {
+                          toggleVisibility(com.id);
+                        }}
+                        className={
+                          subcommentsVisibility[com.id]
+                            ? "bg-gray-500 col-span-5 text-gray-700 hover:text-gray-300 pb-5"
+                            : "hover:bg-gray-500 col-span-5 text-gray-700 hover:text-gray-300 pb-5"
+                        }
+                      >
+                        {subcommentsVisibility[com.id] ? "Hide" : "Show"}{" "}
+                        replies
+                      </button>
+                    )}
+                  </div>
+                  {!com.parentId && subcommentsVisibility[com.id] && (
+                    <Comments id={com.id} object="comment" />
                   )}
-                </div>
-                {!com.parentId && subcommentsVisibility[com.id] && (
-                  <Comments id={com.id} object="comment" />
-                )}
-              </li>
+                </li>
+              )
             );
           })}
         </ul>
