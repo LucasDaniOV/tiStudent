@@ -17,15 +17,15 @@
   },
   "home": {
     "welcome": "Welkom",
-    "message": "tiStudent is een platform waar je academische bronnen kunt delen. Als gebruiker kun je je eigen bronnen uploaden en bronnen van anderen leuk vinden en erop reageren. Je kunt je gelikete bronnen bekijken en een overzicht krijgen van alle bronnen die je hebt gedeeld."
+    "message": "tiStudent is een platform waar je academische bronnen kunt delen. Als gebruiker kun je je eigen bronnen uploaden en bronnen van andere mensen leuk vinden en erop reageren. Je kunt je leuk gevonden bronnen bekijken en een overzicht krijgen van alle bronnen die je hebt gedeeld."
   },
   "users": {
     "message": "Gebruikers",
     "info": "Gebruikersinformatie",
-    "about": "Informatie over gebruiker met ID:",
+    "about": "Informatie over gebruiker met ID: ",
     "loading": "Laden...",
     "deleted": {
-      "title": "Gebruiker Verwijderd",
+      "title": "Gebruiker verwijderd",
       "message": "Gebruiker met ID verwijderd:"
     },
     "fields": {
@@ -38,7 +38,7 @@
     "title": "Bronnen",
     "fields": {
       "id": "ID",
-      "user.id": "Gebruiker ID",
+      "user.id": "Gebruikers-ID",
       "created.at": "Aangemaakt op",
       "title": "Titel",
       "description": "Omschrijving",
@@ -47,7 +47,7 @@
       "cheat.sheet": "Spiekbriefje",
       "lecture.notes": "Collegeaantekeningen",
       "subject": "Onderwerp",
-      "profileId": "ProfielID"
+      "profileId": "Profiel-ID"
     },
     "error": {
       "title": "Titel is verplicht",
@@ -58,23 +58,23 @@
       "category.invalid": "Ongeldige categorie",
       "subject": "Onderwerp is verplicht",
       "subject.invalid": "Ongeldig onderwerp",
-      "profileId": "ProfielID is verplicht"
+      "profileId": "Profiel-ID is verplicht"
     },
-    "create": "Bron Creëren",
+    "create": "Bron creëren",
     "info": {
       "title": "Broninformatie",
       "message": "Voeg een bron toe"
     },
     "delete": "Bron verwijderd met ID ",
     "comment": {
-      "reply": "Antwoord",
+      "reply": "Antwoorden",
       "hide": "Verbergen",
       "show": "Tonen",
       "replies": " antwoorden",
       "add": "Voeg een opmerking toe",
       "prompt": "Jouw bericht:",
       "message": "Bericht",
-      "submit": "Versturen",
+      "submit": "Verzenden",
       "none": "Er zijn geen opmerkingen",
       "options": {
         "edit": {
@@ -91,15 +91,18 @@
     }
   },
   "profiles": {
+    "index.title": "Profielen",
+    "title": "Profielinformatie",
     "fields": {
       "id": "ID",
       "username": "Gebruikersnaam",
       "bio": "Biografie",
       "created.at": "Aangemaakt op",
-      "latest.activity": "Laatste Activiteit",
-      "user.id": "Gebruiker ID"
+      "latest.activity": "Laatste activiteit",
+      "user.id": "Gebruikers-ID"
     },
-    "info": "Informatie over Profiel"
+    "info": "Informatie over ",
+    "delete": "Weet je zeker dat je wilt verwijderen"
   },
   "login": {
     "enter": "Invoeren",
@@ -120,15 +123,15 @@
           "bio": "Biografie mag niet langer zijn dan 200 tekens",
           "password": {
             "exists": "Wachtwoord is verplicht",
-            "length": "Wachtwoord moet minstens 8 tekens lang zijn",
-            "number": "Wachtwoord moet minstens 1 cijfer bevatten",
-            "capital": "Wachtwoord moet minstens 1 hoofdletter bevatten",
-            "special": "Wachtwoord moet minstens 1 speciaal karakter bevatten (!@#$%^&*()_+-=[]{};':\"|,.<>/?)"
+            "length": "Wachtwoord moet minimaal 8 tekens lang zijn",
+            "number": "Wachtwoord moet minimaal 1 cijfer bevatten",
+            "capital": "Wachtwoord moet minimaal 1 hoofdletter bevatten",
+            "special": "Wachtwoord moet minimaal 1 speciaal teken bevatten (!@#$%^&*()_+-=[]{};':\"|,.<>/?)"
           }
         }
       }
     },
-    "succes": "Inloggen succesvol! Doorverwijzen...",
+    "succes": "Inloggen gelukt! Doorsturen...",
     "error": "Er is een fout opgetreden. Probeer het later opnieuw."
   },
   "logout": {

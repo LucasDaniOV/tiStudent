@@ -1,7 +1,7 @@
 {
   "app.title": "Aplicación tiStudent",
-  "general.error": "Se ha producido un error. Por favor, inténtelo de nuevo más tarde.",
-  "authorization.error": "No está autorizado para ver esta página. Por favor, inicie sesión primero.",
+  "general.error": "Se ha producido un error. Inténtalo de nuevo más tarde.",
+  "authorization.error": "No estás autorizado para ver esta página. Por favor, inicia sesión primero.",
   "loading": "Cargando...",
   "delete": "Eliminar",
   "back": "Volver",
@@ -17,7 +17,7 @@
   },
   "home": {
     "welcome": "Bienvenido",
-    "message": "tiStudent es una plataforma donde puedes compartir recursos académicos. Como usuario, puedes cargar tus propios recursos, dar me gusta y comentar recursos de otras personas. Puedes ver tus recursos favoritos y obtener una visión general de todos los recursos que has compartido."
+    "message": "tiStudent es una plataforma donde puedes compartir recursos académicos. Como usuario, puedes cargar tus propios recursos, dar like y comentar en los recursos de otras personas. Puedes ver tus recursos favoritos y obtener una visión general de todos los recursos que has compartido."
   },
   "users": {
     "message": "Usuarios",
@@ -25,7 +25,7 @@
     "about": "Información sobre el usuario con ID:",
     "loading": "Cargando...",
     "deleted": {
-      "title": "Usuario eliminado",
+      "title": "Usuario Eliminado",
       "message": "Usuario eliminado con ID:"
     },
     "fields": {
@@ -45,22 +45,22 @@
       "category": "Categoría",
       "summary": "Resumen",
       "cheat.sheet": "Hoja de trucos",
-      "lecture.notes": "Notas de la conferencia",
+      "lecture.notes": "Notas de conferencia",
       "subject": "Asunto",
       "profileId": "ID de perfil"
     },
     "error": {
-      "title": "Se requiere título",
+      "title": "Se requiere un título",
       "title.length": "El título no puede tener más de 60 caracteres",
-      "description": "Se requiere descripción",
+      "description": "Se requiere una descripción",
       "description.length": "La descripción no puede tener más de 500 caracteres",
-      "category": "Se requiere categoría",
+      "category": "Se requiere una categoría",
       "category.invalid": "Categoría no válida",
-      "subject": "Se requiere asunto",
+      "subject": "Se requiere un asunto",
       "subject.invalid": "Asunto no válido",
       "profileId": "Se requiere ID de perfil"
     },
-    "create": "Crear recurso",
+    "create": "Crear Recurso",
     "info": {
       "title": "Información del recurso",
       "message": "Agregar un recurso"
@@ -91,6 +91,8 @@
     }
   },
   "profiles": {
+    "index.title": "Perfiles",
+    "title": "Información del perfil",
     "fields": {
       "id": "ID",
       "username": "Nombre de usuario",
@@ -99,11 +101,12 @@
       "latest.activity": "Última actividad",
       "user.id": "ID de usuario"
     },
-    "info": "Información sobre el perfil"
+    "info": "Información sobre",
+    "delete": "¿Estás seguro de que quieres eliminar"
   },
   "login": {
     "enter": "Ingresar",
-    "message": "Inicio de sesión",
+    "message": "Iniciar sesión",
     "github": "Iniciar sesión con GitHub",
     "profile": {
       "message": "O crea un nuevo perfil",
@@ -128,8 +131,8 @@
         }
       }
     },
-    "succes": "¡Inicio de sesión exitoso! Redirigiendo...",
-    "error": "Se ha producido un error. Por favor, inténtelo de nuevo más tarde."
+    "succes": "¡Inicio de sesión exitoso! Redireccionando...",
+    "error": "Se ha producido un error. Inténtalo de nuevo más tarde."
   },
   "logout": {
     "message": "¿Estás seguro de que quieres salir?",

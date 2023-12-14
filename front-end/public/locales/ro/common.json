@@ -2,7 +2,7 @@
   "app.title": "Aplicația tiStudent",
   "general.error": "A intervenit o eroare. Vă rugăm să încercați din nou mai târziu.",
   "authorization.error": "Nu aveți permisiunea de a vizualiza această pagină. Vă rugăm să vă autentificați mai întâi.",
-  "loading": "Se încarcă...",
+  "loading": "Încărcare...",
   "delete": "Șterge",
   "back": "Înapoi",
   "header": {
@@ -16,14 +16,14 @@
     }
   },
   "home": {
-    "welcome": "Bine ați venit",
-    "message": "tiStudent este o platformă unde puteți partaja resurse academice. Ca utilizator, puteți încărca propriile resurse, puteți aprecia și comenta resursele altor persoane. Puteți vizualiza resursele pe care le-ați apreciat și obține o privire de ansamblu asupra tuturor resurselor pe care le-ați partajat."
+    "welcome": "Bun venit",
+    "message": "tiStudent este o platformă unde poți partaja resurse academice. Ca utilizator, poți încărca propriile resurse, aprecia și comenta resursele altor persoane. Poți vizualiza resursele apreciate și obține o prezentare generală a tuturor resurselor pe care le-ai partajat."
   },
   "users": {
     "message": "Utilizatori",
     "info": "Informații despre utilizator",
-    "about": "Informații despre utilizatorul cu ID-ul:",
-    "loading": "Se încarcă...",
+    "about": "Informații despre utilizatorul cu ID-ul: ",
+    "loading": "Încărcare...",
     "deleted": {
       "title": "Utilizator șters",
       "message": "Utilizator șters cu ID-ul:"
@@ -43,10 +43,10 @@
       "title": "Titlu",
       "description": "Descriere",
       "category": "Categorie",
-      "summary": "Rezumat",
-      "cheat.sheet": "Cheat Sheet",
+      "summary": "Sumar",
+      "cheat.sheet": "Fișă de ajutor",
       "lecture.notes": "Note de curs",
-      "subject": "Materie",
+      "subject": "Subiect",
       "profileId": "ID profil"
     },
     "error": {
@@ -56,16 +56,16 @@
       "description.length": "Descrierea nu poate avea mai mult de 500 de caractere",
       "category": "Categoria este obligatorie",
       "category.invalid": "Categorie invalidă",
-      "subject": "Materia este obligatorie",
-      "subject.invalid": "Materie invalidă",
-      "profileId": "ID profil este obligatoriu"
+      "subject": "Subiectul este obligatoriu",
+      "subject.invalid": "Subiect invalid",
+      "profileId": "ID profil obligatoriu"
     },
     "create": "Creează resursă",
     "info": {
       "title": "Informații despre resursă",
-      "message": "Adăugați o resursă"
+      "message": "Adaugă o resursă"
     },
-    "delete": "Resursa cu ID-ul a fost eliminată",
+    "delete": "Resursa cu ID-ul ",
     "comment": {
       "reply": "Răspunde",
       "hide": "Ascunde",
@@ -79,11 +79,11 @@
       "options": {
         "edit": {
           "title": "Editează",
-          "message": "Încă neimplementat"
+          "message": "Nu a fost încă implementat"
         },
         "delete": {
           "title": "Șterge",
-          "message": "Sigur doriți să ștergeți acest comentariu?",
+          "message": "Sunteți sigur că doriți să ștergeți acest comentariu? ",
           "error": "Nu sunteți creatorul acestui comentariu"
         },
         "close": "Închide"
@@ -91,6 +91,8 @@
     }
   },
   "profiles": {
+    "index.title": "Profile",
+    "title": "Informații despre profil",
     "fields": {
       "id": "ID",
       "username": "Nume de utilizator",
@@ -99,14 +101,15 @@
       "latest.activity": "Ultima activitate",
       "user.id": "ID utilizator"
     },
-    "info": "Informații despre profil"
+    "info": "Informații despre ",
+    "delete": "Sigur doriți să ștergeți"
   },
   "login": {
     "enter": "Intră",
     "message": "Autentificare",
     "github": "Autentificare cu GitHub",
     "profile": {
-      "message": "Sau creați un profil nou",
+      "message": "Sau creează un profil nou",
       "form": {
         "username": "Nume de utilizator",
         "bio": "Biografie",
@@ -128,11 +131,11 @@
         }
       }
     },
-    "succes": "Autentificarea a fost reușită! Se redirecționează...",
+    "succes": "Autentificare reușită! Redirecționare...",
     "error": "A intervenit o eroare. Vă rugăm să încercați din nou mai târziu."
   },
   "logout": {
-    "message": "Sunteți sigur că doriți să ieșiți?",
+    "message": "Sunteți sigur că doriți să părăsiți?",
     "button": "Da"
   }
 }

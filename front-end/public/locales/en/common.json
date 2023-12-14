@@ -91,6 +91,8 @@
     }
   },
   "profiles": {
+    "index.title": "Profiles",
+    "title": "Profile Info",
     "fields": {
       "id": "ID",
       "username": "Username",
@@ -99,7 +101,8 @@
       "latest.activity": "Latest Activity",
       "user.id": "User ID"
     },
-    "info": "Info about Profile"
+    "info": "Info about ",
+    "delete": "Are you sure you want to delete"
   },
   "login": {
     "enter": "Enter",
