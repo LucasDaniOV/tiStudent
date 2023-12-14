@@ -1,4 +1,5 @@
 import { Resource } from "@/types";
+import { Router, useRouter } from "next/router";
 import React from "react";
 
 type Props = {
@@ -6,6 +7,7 @@ type Props = {
 };
 
 const ResourceInfo: React.FC<Props> = ({ resource }: Props) => {
+  const router = useRouter();
   return (
     <>
       {resource && (
@@ -16,6 +18,16 @@ const ResourceInfo: React.FC<Props> = ({ resource }: Props) => {
             </span>
             <br />
             <strong>{resource.description}</strong>
+            <br />
+            <span>Creator:</span> {/* LATER VERVANGEN MET ICON VAN PROFILE */}
+            <span
+              className="hover:cursor-pointer hover:text-red-600 m-1"
+              onClick={() =>
+                router.push("../../profiles/" + resource.creator.id)
+              }
+            >
+              {resource.creator.username}
+            </span>
           </h1>
           <ul className="items-end m-auto">
             <li>
@@ -27,9 +39,6 @@ const ResourceInfo: React.FC<Props> = ({ resource }: Props) => {
             </li>
             <li>
               <strong>Subject:</strong> {resource.subject}
-            </li>
-            <li>
-              <strong>Creator ID:</strong> {resource.creator.id}
             </li>
           </ul>
           <br />
