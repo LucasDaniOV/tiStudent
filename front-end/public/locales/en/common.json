@@ -21,6 +21,10 @@
     "info": "User Info",
     "about": "Info about user with ID: ",
     "loading": "Loading...",
+    "deleted": {
+      "title": "User Deleted",
+      "message": "Deleted user with ID:"
+    },
     "fields": {
       "id": "ID",
       "email": "Email",
