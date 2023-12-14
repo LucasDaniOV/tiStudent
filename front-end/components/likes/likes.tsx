@@ -1,52 +1,55 @@
 import CommentService from "@/services/CommentService";
 import LikeService from "@/services/LikeService";
-import ProfileService from "@/services/ProfileService";
-import ResourceService from "@/services/ResourceService";
+import { Like } from "@/types";
 import { useEffect, useState } from "react";
 
 type Props = {
+  profileId: string;
   id: string;
   object: "resource" | "comment";
 };
 
-const Likes: React.FC<Props> = ({ id, object }: Props) => {
-  const [likes, setLikes] = useState<number>(0);
+const Likes: React.FC<Props> = ({ profileId, id, object }: Props) => {
   const [clicked, setClicked] = useState<"up" | undefined>(undefined);
-  const [profileId, setProfileId] = useState<string>();
-
-  const getProfileId = () => {
-    const logged = sessionStorage.getItem("loggedInUser");
-    if (logged) {
-      setProfileId(JSON.parse(logged).id);
-    }
-  };
-  const getLikesOnResource = async () => {
-    const likes = await LikeService.getAllLikesOnResource(id);
-    setLikes(likes.data);
-  };
-  const getLikesOnComment = async () => {
-    const likes = await LikeService.getAllLikesOnComment(id);
-    setLikes(likes.data);
-  };
-  useEffect(() => {
+  const [likes, setLikes] = useState<number>(0);
+  const getLikes = async () => {
     if (object == "resource") {
-      getLikesOnResource();
+      const resourceLikes = await LikeService.getAllLikesOnResource(id);
+      setLikes(resourceLikes.data.length);
+      const likers = resourceLikes.data.map((l: Like) => l.profile.id);
+      if (likers.includes(profileId)) {
+        setClicked("up");
+      }
     } else {
-      getLikesOnComment();
+      const commentLikes = await LikeService.getAllLikesOnComment(id);
+      setLikes(commentLikes.data.length);
+      const likers = commentLikes.data.map((l: Like) => l.profile.id);
+      if (likers.includes(profileId)) {
+        setClicked("up");
+      }
     }
-    getProfileId();
-  }, []);
+  };
+
+  useEffect(() => {
+    getLikes();
+  }, [profileId]);
 
   const updateLikes = async (
     e: React.MouseEvent<HTMLAnchorElement, MouseEvent>
   ) => {
     e.stopPropagation();
     e.preventDefault();
-    if (!profileId) return;
     if (clicked == "up") {
       setLikes(likes - 1);
+      if (object == "resource") {
+        await LikeService.unLike("resource", id, profileId);
+      } else {
+        await LikeService.unLike("comment", id, profileId);
+      }
       setClicked(undefined);
+      //remove like
     } else {
+      console.log("up");
       setLikes(likes + 1);
       setClicked("up");
       if (object == "resource") {
@@ -54,14 +57,12 @@ const Likes: React.FC<Props> = ({ id, object }: Props) => {
       } else {
         const comment = await CommentService.getCommentById(id);
         const resourceId = comment.resource.id;
-        console.log(resourceId);
         await LikeService.likeComment(profileId, resourceId, id);
       }
     }
   };
-
   return (
-    <div className="w-1/4">
+    <div className="w-1/4 flex justify-center">
       <a
         className={
           clicked == "up"
@@ -70,7 +71,7 @@ const Likes: React.FC<Props> = ({ id, object }: Props) => {
         }
         onClick={(e) => updateLikes(e)}
       >
-        &#x1F44D;<span>Likes: {likes}</span>
+        &#x1F44D;<span>{likes}</span>
       </a>
     </div>
   );
