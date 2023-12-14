@@ -318,7 +318,6 @@ profileRouter.get('/:id/likedResources', async (req: Request & { auth: any }, re
         const profileId = parseInt(req.params.id);
         const profile = await profileService.getProfileById(profileId);
         const likedResources = await profileService.getProfileField(profile, 'likedResources');
-        console.log(likedResources);
         res.status(200).json(likedResources);
     } catch (error) {
         res.status(400).json({ status: 'error', errorMessage: error.message });
