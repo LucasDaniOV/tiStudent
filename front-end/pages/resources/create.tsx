@@ -77,8 +77,7 @@ const CreateResourceForm: React.FC = () => {
     if (!user) return;
     const token = getToken();
     const profile = await ProfileService.getProfileByEmail(
-      JSON.parse(user).email,
-      token
+      JSON.parse(user).email
     );
     if (!profile) return;
     setProfileId(profile.id);
