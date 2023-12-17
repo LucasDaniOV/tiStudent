@@ -2,8 +2,11 @@ import { Category } from '../domain/model/category';
 import { Profile } from '../domain/model/profile';
 import { Subject } from '../domain/model/subject';
 
-type UserInput = {
+type ProfileInput = {
     id?: number;
+    userId?: number;
+    username?: string;
+    bio?: string;
     email?: string;
     password?: string;
     role?: Role;
@@ -19,13 +22,6 @@ type ResourceInput = {
     subject?: Subject;
 };
 
-type ProfileInput = {
-    id?: number;
-    userId?: number;
-    username?: string;
-    bio?: string;
-};
-
 type AuthenticationResponse = {
     token: string;
     email: string;
@@ -35,4 +31,4 @@ type AuthenticationResponse = {
 
 type Role = 'admin' | 'user' | 'guest';
 
-export { UserInput, ResourceInput, ProfileInput, AuthenticationResponse, Role };
+export { ResourceInput, ProfileInput, AuthenticationResponse, Role };
