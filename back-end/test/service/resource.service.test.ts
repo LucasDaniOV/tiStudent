@@ -126,7 +126,7 @@ test(`given: available Resources, when: all Resources are requested, then: all R
     resourceDb.getAllResources = mockResourceDbGetAllResources.mockResolvedValue(resources);
 
     // when
-    const returnedResources = await resourceService.getAllResources();
+    const returnedResources = await resourceService.getAllResources('admin');
 
     // then
     expect(mockResourceDbGetAllResources).toHaveBeenCalledTimes(1);
