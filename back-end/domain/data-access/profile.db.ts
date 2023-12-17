@@ -97,6 +97,30 @@ const updateProfileBio = async (id: number, newBio: string): Promise<Profile> =>
         throw new Error('Database error. See server log for details.');
     }
 };
+const updateEmail = async (id: number, newEmail: string): Promise<Profile> => {
+    try {
+        const updatedProfile = await database.profile.update({
+            where: { id: id },
+            data: { email: newEmail, latestActivity: new Date() },
+        });
+        return Profile.from(updatedProfile);
+    } catch (error) {
+        console.error(error);
+        throw new Error('Database error. See server log for details.');
+    }
+};
+const updatePassword = async (id: number, newPassword: string): Promise<Profile> => {
+    try {
+        const updatedProfile = await database.profile.update({
+            where: { id: id },
+            data: { password: newPassword, latestActivity: new Date() },
+        });
+        return Profile.from(updatedProfile);
+    } catch (error) {
+        console.error(error);
+        throw new Error('Database error. See server log for details.');
+    }
+};
 
 const getProfilesWithLikeOnResource = async (resource: Resource): Promise<Profile[]> => {
     const profiles = await getAllProfiles();
@@ -111,5 +135,7 @@ export default {
     getProfileByUsername,
     deleteProfile,
     updateProfileBio,
+    updateEmail,
+    updatePassword,
     getProfilesWithLikeOnResource,
 };
