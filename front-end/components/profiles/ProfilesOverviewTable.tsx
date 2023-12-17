@@ -2,6 +2,7 @@ import ProfileService from "@/services/ProfileService";
 import { Profile } from "@/types";
 import { useRouter } from "next/router";
 import { MouseEvent } from "react";
+import { useTranslation } from "next-i18next";
 
 type Props = {
   profiles: Array<Profile>;
@@ -9,7 +10,7 @@ type Props = {
 
 const ProfilesOverviewTable: React.FC<Props> = ({ profiles }: Props) => {
   const router = useRouter();
-
+  const { t } = useTranslation();
   const stopPropagationAndPreventDefault = (e: MouseEvent): void => {
     e.stopPropagation();
     e.preventDefault();
@@ -27,8 +28,7 @@ const ProfilesOverviewTable: React.FC<Props> = ({ profiles }: Props) => {
 
   const deleteProfile = async (e: MouseEvent, profile: Profile) => {
     stopPropagationAndPreventDefault(e);
-    if (!confirm(`Are you sure you want to delete ${profile.username}?`))
-      return;
+    if (!confirm(`${t("profiles.delete")} ${profile.username}?`)) return;
     await ProfileService.deleteProfileById(parseInt(profile.id));
     router.reload();
   };
@@ -40,22 +40,22 @@ const ProfilesOverviewTable: React.FC<Props> = ({ profiles }: Props) => {
           <thead>
             <tr>
               <th scope="col" className="border p-4 text-left">
-                id
+                {t("profiles.fields.id")}
               </th>
               <th scope="col" className="border p-4 text-left">
-                username
+                {t("profiles.fields.username")}
               </th>
               <th scope="col" className="border p-4 text-left">
-                bio
+                {t("profiles.fields.bio")}
               </th>
               <th scope="col" className="border p-4 text-left">
-                createdAt
+                {t("profiles.fields.created.at")}
               </th>
               <th scope="col" className="border p-4 text-left">
-                latestActivity
+                {t("profiles.fields.latest.activity")}
               </th>
               <th scope="col" className="border p-4 text-left">
-                user id
+                {t("profiles.fields.user.id")}
               </th>
             </tr>
           </thead>
@@ -85,7 +85,7 @@ const ProfilesOverviewTable: React.FC<Props> = ({ profiles }: Props) => {
                   className="border p-4 text-left"
                   onClick={(e) => deleteProfile(e, profile)}
                 >
-                  delete
+                  {t("delete")}
                 </td>
               </tr>
             ))}

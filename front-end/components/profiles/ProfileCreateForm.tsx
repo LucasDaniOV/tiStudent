@@ -2,8 +2,8 @@ import ProfileService from "@/services/ProfileService";
 import UserService from "@/services/UserService";
 import { StatusMessage } from "@/types";
 import { getToken } from "@/util/token";
+import { useTranslation } from "next-i18next";
 import { useRouter } from "next/router";
-import { UseTranslation, useTranslation } from "next-i18next";
 import React, { FormEvent, useState } from "react";
 
 const ProfileCreateForm: React.FC = () => {
@@ -11,19 +11,15 @@ const ProfileCreateForm: React.FC = () => {
   const [bio, setBio] = useState("");
   const [usernameError, setUsernameError] = useState<string>("");
   const [bioError, setBioError] = useState<string>("");
-  // const [userIdError, setUserIdError] = useState<string>(""); // NOT SURE IF REQUIRED
   const [email, setEmail] = useState("");
   const [emailError, setEmailError] = useState("");
   const [password, setPassword] = useState("");
   const [passwordError, setPasswordError] = useState("");
   const [statusMessages, setStatusMessages] = useState<StatusMessage[]>([]);
-
-  const router = useRouter();
   const { t } = useTranslation();
   const clearErrors = () => {
     setUsernameError("");
     setBioError("");
-    // setUserIdError("");
     setEmailError("");
     setPasswordError("");
     setStatusMessages([]);
@@ -47,14 +43,28 @@ const ProfileCreateForm: React.FC = () => {
       setBioError(t("login.profile.form.error.bio"));
       isValid = false;
     }
-    //add password validation
+    if (!password.trim()) {
+      setPasswordError(t("login.profile.form.error.password.exists"));
+      isValid = false;
+    } else if (password.length < 8) {
+      setPasswordError(t("login.profile.form.error.password.length"));
+      isValid = false;
+    } else if (!password.match(/\d/)) {
+      setPasswordError(t("login.profile.form.error.password.number"));
+      isValid = false;
+    } else if (!password.match(/[A-Z]/)) {
+      setPasswordError(t("login.profile.form.error.password.capital"));
+      isValid = false;
+    } else if (!password.match(/[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]/)) {
+      setPasswordError(t("login.profile.form.error.password.special"));
+      isValid = false;
+    }
     return isValid;
   };
 
   const createProfile = async (email: string) => {
     const token = getToken();
     const user = JSON.stringify(await UserService.getUserByEmail(email, token)); // kan ni me token
-    console.log(user);
     const userObject = JSON.parse(user);
 
     const res = await ProfileService.createProfile(
@@ -140,13 +150,11 @@ const ProfileCreateForm: React.FC = () => {
         />
         <br />
         {passwordError && <div>{passwordError}</div>}
-        {/* {userIdError && <div>{userIdError}</div>} */}
-
         <button
           type="submit"
           className="bg-gray-500 hover:bg-gray-300 hover:text-black m-10"
         >
-          {t("login.profile.form.create.profile")}:
+          {t("login.enter")}
         </button>
       </form>
     </>

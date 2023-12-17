@@ -1,6 +1,4 @@
 import LikeService from "@/services/LikeService";
-import ProfileService from "@/services/ProfileService";
-import ResourceService from "@/services/ResourceService";
 import { useEffect, useState } from "react";
 
 type Props = {

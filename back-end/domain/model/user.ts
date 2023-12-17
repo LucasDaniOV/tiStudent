@@ -31,19 +31,19 @@ export class User {
     };
 
     static validatePassword = (password: string): void => {
-        if (!password?.trim()) throw new Error('password is required');
-        if (password.length < 8) throw new Error('password must be at least 8 characters long');
-        if (!password.match(/\d/)) throw new Error('password must contain at least 1 number');
-        if (!password.match(/[A-Z]/)) throw new Error('password must contain at least 1 capital letter');
+        if (!password?.trim()) throw new Error('Password is required');
+        if (password.length < 8) throw new Error('Password must be at least 8 characters long');
+        if (!password.match(/\d/)) throw new Error('Password must contain at least 1 number');
+        if (!password.match(/[A-Z]/)) throw new Error('Password must contain at least 1 capital letter');
         if (!password.match(/[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]/)) {
-            throw new Error(`password must contain at least 1 special character (!@#$%^&*()_+-=\[\]{};':"\\|,.<>\/?)`);
+            throw new Error(`Password must contain at least 1 special character (!@#$%^&*()_+-=\[\]{};':"\\|,.<>\/?)`);
         }
     };
 
     static validateRole = (role: Role): void => {
         if (role == null) return;
         if (!['admin', 'user', 'guest'].includes(role)) throw new Error('role must be one of admin, user, or guest');
-    }
+    };
 
     static from({ id, email, password, role }: UserPrisma): User {
         return new User({

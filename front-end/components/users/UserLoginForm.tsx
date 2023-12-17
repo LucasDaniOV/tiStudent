@@ -1,6 +1,6 @@
-import ProfileService from "@/services/ProfileService";
 import UserService from "@/services/UserService";
 import { StatusMessage } from "@/types";
+import { useTranslation } from "next-i18next";
 import { useRouter } from "next/router";
 import { FormEvent, useState } from "react";
 
@@ -10,7 +10,7 @@ const UserLoginForm: React.FC = () => {
   const [password, setPassword] = useState("");
   const [passwordError, setPasswordError] = useState("");
   const [statusMessages, setStatusMessages] = useState<StatusMessage[]>([]);
-
+  const { t } = useTranslation();
   const router = useRouter();
   const clearErrors = () => {
     setEmailError("");
@@ -22,12 +22,12 @@ const UserLoginForm: React.FC = () => {
     let isValid = true;
 
     if (!email.trim()) {
-      setEmailError("email is required");
+      setEmailError(t("login.profile.form.error.email"));
       isValid = false;
     }
 
     if (!password.trim()) {
-      setPasswordError("password is required");
+      setPasswordError(t("login.profile.form.error.password.exists"));
       isValid = false;
     }
 
@@ -46,10 +46,13 @@ const UserLoginForm: React.FC = () => {
       setStatusMessages([{ message: errorMessage, type: "error" }]);
       return;
     }
+    if (res.status === 400) {
+      const errorMessage = await res.json();
+      setPasswordError(errorMessage.message);
+      return;
+    }
 
     if (res.status !== 200) {
-      console.log(res);
-
       setStatusMessages([
         {
           message: "An error has occurred. Please try again later.",
@@ -83,7 +86,7 @@ const UserLoginForm: React.FC = () => {
 
       <form className="flex flex-col" onSubmit={(e) => handleSubmit(e)}>
         <label htmlFor="emailInput" className="mb-1">
-          Email
+          {t("login.profile.form.email")}
         </label>
         <input
           id="emailInput"
@@ -95,7 +98,7 @@ const UserLoginForm: React.FC = () => {
         {emailError && <div>{emailError}</div>}
 
         <label htmlFor="passwordInput" className="mb-1">
-          Password
+          {t("login.profile.form.password")}
         </label>
         <input
           id="passwordInput"
@@ -109,7 +112,7 @@ const UserLoginForm: React.FC = () => {
           type="submit"
           className="bg-gray-500 m-5 hover:bg-gray-300 hover:text-black"
         >
-          Enter
+          {t("login.enter")}
         </button>
       </form>
     </>
