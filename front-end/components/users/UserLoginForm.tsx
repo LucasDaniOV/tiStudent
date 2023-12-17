@@ -46,16 +46,11 @@ const UserLoginForm: React.FC = () => {
       setStatusMessages([{ message: errorMessage, type: "error" }]);
       return;
     }
-    if (res.status === 400) {
-      const errorMessage = await res.json();
-      setPasswordError(errorMessage.message);
-      return;
-    }
 
     if (res.status !== 200) {
       setStatusMessages([
         {
-          message: "An error has occurred. Please try again later.",
+          message: t("login.error"),
           type: "error",
         },
       ]);
@@ -64,9 +59,7 @@ const UserLoginForm: React.FC = () => {
 
     const user = await res.json();
     sessionStorage.setItem("loggedInUser", JSON.stringify(user));
-    setStatusMessages([
-      { message: "Login successful! Redirecting...", type: "success" },
-    ]);
+    setStatusMessages([{ message: t("login.succes"), type: "success" }]);
     setTimeout(() => {
       router.push("/");
     }, 2000);
