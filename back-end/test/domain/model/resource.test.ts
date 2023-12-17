@@ -2,10 +2,14 @@ import { Category } from '../../../domain/model/category';
 import { Profile } from '../../../domain/model/profile';
 import { Resource } from '../../../domain/model/resource';
 import { Subject } from '../../../domain/model/subject';
-import { User } from '../../../domain/model/user';
+import { Role } from '../../../types';
 
-const validUser = new User({ email: 'resource-test@tistudent.be', password: '_R3sourceTe5t' });
-const validProfile = new Profile({ username: 'resource-test', user: validUser });
+const validProfile = new Profile({
+    email: 'resource-test@tistudent.be',
+    password: '_R3sourceTe5t',
+    role: 'admin',
+    username: 'resource-test',
+});
 const validCreatedAt = new Date();
 const validTitle = 'Hello World';
 const validDescription = 'This is a test resource';

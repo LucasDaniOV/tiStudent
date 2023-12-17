@@ -1,12 +1,9 @@
 import { Profile } from '../../../domain/model/profile';
-import { User } from '../../../domain/model/user';
 import { Role } from '../../../types';
 
 const validEmail = 'test@ucll.be';
 const validPassword = 'Password!123';
 const validRole = 'user';
-const user = new User({ email: 'sudo@tistudent.be', password: 'TopSecret007$' });
-const user2 = new User({ email: 'profile.test@tistudent.be', password: 'ProfileTest007$' });
 const username = 'sudo';
 const username2 = 'profileTest';
 const bio = 'The Terminator';
@@ -14,7 +11,7 @@ const bio2 = "I'll be back";
 
 test(`given: valid values for Profile, when: Profile is created, then: Profile is created`, () => {
     // when
-    const profile = new Profile({ validEmail, validPassword, validRole, username, bio });
+    const profile = new Profile({ email: validEmail, password: validPassword, role: validRole, username, bio });
     // then
     expect(profile instanceof Profile).toBeTruthy();
 });
@@ -88,14 +85,6 @@ test(`given: invalid password (no special sign) for Profile,  when: Profile is c
         `Password must contain at least 1 special character (!@#$%^&*()_+-=\[\]{};':"\\|,.<>\/?)`
     );
 });
-
-// test(`given: no user, when: Profile is created, then: error is thrown`, () => {
-//     // when
-//     const createProfile = () => new Profile({ user: undefined, username, bio });
-
-//     // then
-//     expect(createProfile).toThrowError('user is required');
-// });
 
 test(`given: no username, when: Profile is created, then: error is thrown`, () => {
     // when
@@ -176,7 +165,7 @@ test(`given: too long bio, when: Profile is created, then: error is thrown`, () 
         new Profile({ email: validEmail, password: validPassword, role: validRole, username: username, bio: longBio });
 
     // then
-    expect(createProfile).toThrowError('bio cannot be longer than 200 characters');
+    expect(createProfile).toThrowError('Bio cannot be longer than 200 characters');
 });
 
 test(`given: existing Profile, when: getLatestActivity is called, then: latestActivity is returned`, () => {
@@ -219,7 +208,13 @@ test(`given: existing Profile, when: getBio is called, then: bio is returned`, (
     const b = 'profileTest';
 
     // when
-    const sut = new Profile({ user, username, bio: b });
+    const sut = new Profile({
+        email: validEmail,
+        password: validPassword,
+        role: validRole,
+        username: username,
+        bio: b,
+    });
     new Profile({ email: validEmail, password: validPassword, role: validRole, username: username, bio: b });
 
     // then
@@ -285,7 +280,7 @@ test(`given: Profile, when: getting email, then: email is returned`, () => {
     });
 
     // when
-    const email = Profile.email;
+    const email = profile.email;
 
     // then
     expect(email).toEqual(validEmail);
@@ -302,7 +297,7 @@ test(`given: Profile, when: getting password, then: password is returned`, () =>
     });
 
     // when
-    const password = Profile.password;
+    const password = profile.password;
 
     // then
     expect(password).toEqual(validPassword);
@@ -318,7 +313,7 @@ test(`given valid role, when: creating Profile, then: Profile is created with th
         bio: bio2,
     });
     // when
-    const role = Profile.role;
+    const role = profile.role;
 
     // then
     expect(role).toEqual(validRole);

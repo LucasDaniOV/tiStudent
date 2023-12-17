@@ -28,24 +28,6 @@ const getProfileById = async (id: number): Promise<Profile> => {
     return;
 };
 
-// const getProfileByUserId = async (userId: number): Promise<Profile> => {
-//     try {
-//         const profilePrisma = await database.profile.findUnique({
-//             where: {
-//                 userId: userId,
-//             },
-//             include: {
-//                 user: true,
-//             },
-//         });
-//         if (profilePrisma) return Profile.from(profilePrisma);
-//     } catch (error) {
-//         console.log(error);
-//         throw new Error('Database error. See server log for details.');
-//     }
-//     return;
-// };
-
 const getProfileByUsername = async (username: string): Promise<Profile> => {
     try {
         const profilePrisma = await database.profile.findUnique({
@@ -126,7 +108,6 @@ export default {
     getAllProfiles,
     getProfileById,
     createProfile,
-    // getProfileByUserId,
     getProfileByUsername,
     deleteProfile,
     updateProfileBio,
