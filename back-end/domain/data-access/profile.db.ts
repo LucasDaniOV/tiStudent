@@ -1,16 +1,12 @@
+import { Role } from '../../types';
 import database from '../../util/database';
 import { Profile } from '../model/profile';
 import { Resource } from '../model/resource';
-import { User } from '../model/user';
 import likeDb from './like.db';
 
 const getAllProfiles = async (): Promise<Profile[]> => {
     try {
-        const profilesPrisma = await database.profile.findMany({
-            include: {
-                user: true,
-            },
-        });
+        const profilesPrisma = await database.profile.findMany();
         if (profilesPrisma) return profilesPrisma.map((profilePrisma) => Profile.from(profilePrisma));
     } catch (error) {
         console.log(error);
@@ -23,9 +19,6 @@ const getProfileById = async (id: number): Promise<Profile> => {
             where: {
                 id,
             },
-            include: {
-                user: true,
-            },
         });
         if (profilePrisma) return Profile.from(profilePrisma);
     } catch (error) {
@@ -35,32 +28,29 @@ const getProfileById = async (id: number): Promise<Profile> => {
     return;
 };
 
-const getProfileByUserId = async (userId: number): Promise<Profile> => {
-    try {
-        const profilePrisma = await database.profile.findUnique({
-            where: {
-                userId: userId,
-            },
-            include: {
-                user: true,
-            },
-        });
-        if (profilePrisma) return Profile.from(profilePrisma);
-    } catch (error) {
-        console.log(error);
-        throw new Error('Database error. See server log for details.');
-    }
-    return;
-};
+// const getProfileByUserId = async (userId: number): Promise<Profile> => {
+//     try {
+//         const profilePrisma = await database.profile.findUnique({
+//             where: {
+//                 userId: userId,
+//             },
+//             include: {
+//                 user: true,
+//             },
+//         });
+//         if (profilePrisma) return Profile.from(profilePrisma);
+//     } catch (error) {
+//         console.log(error);
+//         throw new Error('Database error. See server log for details.');
+//     }
+//     return;
+// };
 
 const getProfileByUsername = async (username: string): Promise<Profile> => {
     try {
         const profilePrisma = await database.profile.findUnique({
             where: {
-                username,
-            },
-            include: {
-                user: true,
+                username: username,
             },
         });
         if (profilePrisma) return Profile.from(profilePrisma);
@@ -71,23 +61,24 @@ const getProfileByUsername = async (username: string): Promise<Profile> => {
     return;
 };
 
-const createProfile = async (user: User, username: string, bio?: string): Promise<Profile> => {
+const createProfile = async (
+    email: string,
+    password: string,
+    username: string,
+    role?: Role,
+    bio?: string
+): Promise<Profile> => {
     try {
-        const profile = new Profile({ user, username, bio });
+        const profile = new Profile({ email, password, role, username, bio });
         const profilePrisma = await database.profile.create({
             data: {
-                user: {
-                    connect: {
-                        id: user.id,
-                    },
-                },
+                email: profile.email,
+                password: profile.password,
+                role: profile.role,
                 username: profile.username,
                 bio: profile.bio,
                 createdAt: new Date(),
                 latestActivity: new Date(),
-            },
-            include: {
-                user: true,
             },
         });
         if (profilePrisma) return Profile.from(profilePrisma);
@@ -115,9 +106,8 @@ const deleteProfile = async (id: number): Promise<Boolean> => {
 const updateProfileBio = async (id: number, newBio: string): Promise<Profile> => {
     try {
         const updatedProfile = await database.profile.update({
-            where: { id },
+            where: { id: id },
             data: { bio: newBio, latestActivity: new Date() },
-            include: { user: true },
         });
         return Profile.from(updatedProfile);
     } catch (error) {
@@ -136,7 +126,7 @@ export default {
     getAllProfiles,
     getProfileById,
     createProfile,
-    getProfileByUserId,
+    // getProfileByUserId,
     getProfileByUsername,
     deleteProfile,
     updateProfileBio,
