@@ -61,7 +61,13 @@ const ReadResourceById = () => {
         {!resourceId && <p>{t("loading")}</p>}
         <div className="flex flex-row">
           <section className="flex flex-row w-screen m-auto">
-            {resource && <Likes id={String(resource.id)} object="resource" />}
+            {resource && profile && (
+              <Likes
+                profileId={profile.id}
+                id={String(resource.id)}
+                object="resource"
+              />
+            )}
             <ResourceInfo resource={resource as Resource}></ResourceInfo>
           </section>
         </div>

@@ -312,8 +312,9 @@ profileRouter.get('/:id/latestActivity', async (req: Request, res: Response) => 
  *                 $ref: '#/components/schemas/Resource'
  */
 
-profileRouter.get('/:id/likedResources', async (req: Request, res: Response) => {
+profileRouter.get('/:id/likedResources', async (req: Request & { auth: any }, res: Response) => {
     try {
+        const { role } = req.auth.role;
         const profileId = parseInt(req.params.id);
         const profile = await profileService.getProfileById(profileId);
         const likedResources = await profileService.getProfileField(profile, 'likedResources');

@@ -125,7 +125,7 @@ const Comments: React.FC<Props> = ({ id, object }: Props) => {
                       : "grid-cols-5 grid justify-between w-10/12 m-auto text-center"
                   }
                 >
-                  <Likes id={com.id} object="comment" />
+                  <Likes id={com.id} object="comment" profileId={profile.id} />
                   <span
                     className={
                       object == "comment"

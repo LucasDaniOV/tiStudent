@@ -1,5 +1,5 @@
 import { getAll, getById } from "@/util/get";
-import { Profile } from "../types";
+import { Like, Profile } from "../types";
 import { getToken } from "@/util/token";
 
 const baseUrl = process.env.NEXT_PUBLIC_API_URL + "/profiles";
@@ -42,10 +42,23 @@ const createProfile = async (username: string, bio: string, userId: number) => {
   return res.json();
 };
 
+const getLikesByProfile = async (profileId: string): Promise<Array<Like>> => {
+  const token = getToken();
+  const res = await fetch(baseUrl + `/${profileId}/likedResources`, {
+    method: "GET",
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${token}`,
+    },
+  });
+  return await res.json();
+};
+
 export default {
   getAllProfiles,
   getProfileById,
   getProfileByEmail,
   deleteProfileById,
   createProfile,
+  getLikesByProfile,
 };

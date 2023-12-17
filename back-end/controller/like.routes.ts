@@ -24,6 +24,7 @@ import express, { Request, Response } from 'express';
 import commentService from '../service/comment.service';
 import likeService from '../service/like.service';
 import profileService from '../service/profile.service';
+import resourceService from '../service/resource.service';
 
 const likeRouter = express.Router();
 
@@ -62,7 +63,7 @@ likeRouter.post('/:profileId/resource/:resourceId', async (req: Request, res: Re
     try {
         const profileId = parseInt(req.params.profileId);
         const resourceId = parseInt(req.params.resourceId);
-        const like = await likeService.likeResource(profileId, resourceId);
+        const like = await likeService.like(profileId, resourceId, null);
         res.status(200).json({ status: 'success', message: 'Like created', data: like });
     } catch (error) {
         res.status(400).json({ status: 'error', errorMessage: error.message });
@@ -100,11 +101,12 @@ likeRouter.post('/:profileId/resource/:resourceId', async (req: Request, res: Re
  *               $ref: '#/components/schemas/Like'
  */
 
-likeRouter.post('/:profileId/comment/:commentId', async (req: Request, res: Response) => {
+likeRouter.post('/:profileId/resource/:resourceId/comment/:commentId', async (req: Request, res: Response) => {
     try {
         const profileId = parseInt(req.params.profileId);
+        const resourceId = parseInt(req.params.resourceId);
         const commentId = parseInt(req.params.commentId);
-        const like = await likeService.likeComment(profileId, commentId);
+        const like = await likeService.like(profileId, resourceId, commentId);
         res.status(200).json({ status: 'success', message: 'Like created ', data: like });
     } catch (error) {
         res.status(400).json({ status: 'error', errorMessage: error.message });
@@ -134,14 +136,14 @@ likeRouter.post('/:profileId/comment/:commentId', async (req: Request, res: Resp
  *             example:
  *               status: 'success'
  *               message: 'Like count retrieved'
- *               data: 5
+ *               data: [{id: 5}, {id: 6}]
  */
 
 likeRouter.get('/comment/:commentId', async (req: Request, res: Response) => {
     try {
         const commentId = parseInt(req.params.commentId);
         const likes = await likeService.getAllLikesOnComment(commentId);
-        res.status(200).json({ status: 'success', message: 'Like created ', data: likes.length });
+        res.status(200).json({ status: 'success', message: 'Here are your likes', data: likes });
     } catch (error) {
         res.status(400).json({ status: 'error', errorMessage: error.message });
     }
@@ -170,14 +172,14 @@ likeRouter.get('/comment/:commentId', async (req: Request, res: Response) => {
  *             example:
  *               status: 'success'
  *               message: 'Like count retrieved'
- *               data: 5
+ *               data: [{id: 1}, {id: 2}]
  */
 
 likeRouter.get('/resource/:resourceId', async (req: Request, res: Response) => {
     try {
         const resourceId = parseInt(req.params.resourceId);
         const likes = await likeService.getAllLikesOnResource(resourceId);
-        res.status(200).json({ status: 'success', message: 'Like created ', data: likes.length });
+        res.status(200).json({ status: 'success', message: 'Here are your likes', data: likes });
     } catch (error) {
         res.status(400).json({ status: 'error', errorMessage: error.message });
     }
@@ -185,7 +187,7 @@ likeRouter.get('/resource/:resourceId', async (req: Request, res: Response) => {
 
 /**
  * @swagger
- * /like/{profileId}/{resourceId}   :
+ * /like/{profileId}/{likeId}   :
  *   delete:
  *     tags:
  *       - profiles
