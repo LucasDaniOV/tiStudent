@@ -1,21 +1,20 @@
 import Header from "@/components/header";
+import ProfileService from "@/services/ProfileService";
+import styles from "@/styles/Home.module.css";
+import { useTranslation } from "next-i18next";
+import { serverSideTranslations } from "next-i18next/serverSideTranslations";
 import Head from "next/head";
 import Image from "next/image";
-import styles from "@/styles/Home.module.css";
-import React, { useEffect, useState } from "react";
-import UserService from "@/services/UserService";
-import ProfileService from "@/services/ProfileService";
-import { getToken } from "@/util/token";
+import React, { useEffect } from "react";
 
 const Home: React.FC = () => {
+  const { t } = useTranslation();
   const [name, setName] = React.useState<string>("");
   const getUser = async () => {
     const user = sessionStorage.getItem("loggedInUser");
-    const token = getToken();
     if (user) {
       const profile = await ProfileService.getProfileByEmail(
-        JSON.parse(user).email,
-        token
+        JSON.parse(user).email
       );
       setName(profile.username);
     }
@@ -27,15 +26,12 @@ const Home: React.FC = () => {
   return (
     <>
       <Head>
-        <title>tiStudent</title>
+        <title>{t("app.title")}</title>
         <meta name="description" content="tiStudent app" />
         <meta name="viewport" content="width=device-with, initial-scale=1" />
         <link rel="icon" href="/favicon.ico" />
       </Head>
-      <main
-        // className={styles.main}
-        className="flex flex-col items-center justify-center w-max m-auto"
-      >
+      <main className="flex flex-col items-center justify-center w-max m-auto">
         <Header current="home"></Header>
         <Image
           src="/images/logo.png"
@@ -45,20 +41,25 @@ const Home: React.FC = () => {
           style={{ padding: "1rem" }}
         />
         <span>
-          <h1 className="text-3xl font-bold">Welcome {name}!</h1>
+          <h1 className="text-3xl font-bold">
+            {t("home.welcome")} {name}!
+          </h1>
         </span>
         <div className={styles.description}>
-          <p>
-            tiStudent is a platform where you can share academic resources. As a
-            user you are able to upload resources of your own, and like and
-            comment on resources from other people. <br />
-            You can view your liked resources and get an overview of all the
-            resources you have shared.
-          </p>
+          <p>{t("home.message")}</p>
         </div>
       </main>
     </>
   );
+};
+
+export const getServerSideProps = async (context: any) => {
+  const { locale } = context;
+  return {
+    props: {
+      ...(await serverSideTranslations(locale ?? "en", ["common"])),
+    },
+  };
 };
 
 export default Home;

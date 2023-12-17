@@ -1,14 +1,12 @@
 import CommentService from "@/services/CommentService";
+import ProfileService from "@/services/ProfileService";
 import ResourceService from "@/services/ResourceService";
 import { Comment, Profile } from "@/types";
 import { getToken } from "@/util/token";
 import { useRouter } from "next/router";
 import React, { useEffect, useState } from "react";
-import CommentInfo from "./CommentInfo";
-import Link from "next/link";
-import ProfileService from "@/services/ProfileService";
-import LikeService from "@/services/LikeService";
 import Likes from "../likes/likes";
+import { useTranslation } from "next-i18next";
 
 type Props = {
   id: string;
@@ -16,6 +14,7 @@ type Props = {
 };
 
 const Comments: React.FC<Props> = ({ id, object }: Props) => {
+  const { t } = useTranslation();
   const [profile, setProfile] = useState<Profile>();
   const [role, setRole] = useState<string>("");
   const [commentsOnResource, setComments] = useState<Array<Comment>>([]);
@@ -75,14 +74,14 @@ const Comments: React.FC<Props> = ({ id, object }: Props) => {
     if (profile?.id === commentProfile.id || role == "admin") {
       if (
         !confirm(
-          `Are you sure you want to delete this comment? (${comment.message})`
+          `${t("resources.comment.options.delete.message")}(${comment.message})`
         )
       )
         return;
       await CommentService.deleteComment(comment, token);
       router.reload();
     } else {
-      alert("You are not the creator of this comment");
+      alert(t("resources.comment.option.delete.error"));
     }
   };
 
@@ -92,7 +91,7 @@ const Comments: React.FC<Props> = ({ id, object }: Props) => {
   ) => {
     e.stopPropagation();
     e.preventDefault();
-    const message = prompt("Your message:");
+    const message = prompt(t("resources.comment.prompt"));
     if (!message) return;
     const token = getToken();
     if (!profile) return;
@@ -103,7 +102,7 @@ const Comments: React.FC<Props> = ({ id, object }: Props) => {
       message,
       token
     );
-    // router.reload(); // current solution to render newly created comment
+    router.reload(); // current solution to render newly created comment
   };
 
   return (
@@ -118,106 +117,106 @@ const Comments: React.FC<Props> = ({ id, object }: Props) => {
         >
           {commentsOnResource.map((com, index) => {
             return (
-              profile && (
-                <li key={index}>
-                  <div
+              <li key={index}>
+                <div
+                  className={
+                    object == "comment"
+                      ? "grid-cols-4 grid justify-between w-10/12 m-auto text-center"
+                      : "grid-cols-5 grid justify-between w-10/12 m-auto text-center"
+                  }
+                >
+                  <Likes id={com.id} object="comment" profileId={profile.id} />
+                  <span
                     className={
                       object == "comment"
-                        ? "grid-cols-4 grid justify-between w-10/12 m-auto text-center"
-                        : "grid-cols-5 grid justify-between w-10/12 m-auto text-center"
+                        ? "p-1 bg-gray-400 text-gray-700 flex items-center justify-center"
+                        : "p-1 bg-gray-200 text-gray-700 flex items-center justify-center"
                     }
                   >
-                    <Likes
-                      profileId={profile.id}
-                      id={com.id}
-                      object="comment"
-                    />
-                    <span
-                      className={
-                        object == "comment"
-                          ? "p-1 bg-gray-400 text-gray-700 flex items-center justify-center"
-                          : "p-1 bg-gray-200 text-gray-700 flex items-center justify-center"
-                      }
+                    {com.message}
+                  </span>
+                  <span
+                    className={
+                      object == "comment"
+                        ? "p-1 bg-gray-400 text-gray-700 flex items-center justify-center"
+                        : "p-1 bg-gray-200 text-gray-700 flex items-center justify-center"
+                    }
+                  >
+                    - {com.profile.username}
+                  </span>
+                  {!com.parentId && (
+                    <a
+                      className="flex items-center justify-center hover:bg-gray-600"
+                      onClick={(e) => {
+                        handleComment(e, com);
+                      }}
                     >
-                      {com.message}
-                    </span>
-                    <span
-                      className={
-                        object == "comment"
-                          ? "p-1 bg-gray-400 text-gray-700 flex items-center justify-center"
-                          : "p-1 bg-gray-200 text-gray-700 flex items-center justify-center"
-                      }
+                      {t("resources.comment.reply")}
+                    </a>
+                  )}
+                  {(profile.id == com.profile.id || role == "admin") &&
+                  !optionsVisibility[com.id] ? (
+                    <a
+                      className="float-right cursor-pointer p-1 pr-2 text-gray-600 hover:bg-gray-700 hover:text-white  flex items-center justify-center"
+                      onClick={() => toggleOptionsVisibility(com.id)}
                     >
-                      - {com.profile.username}
-                    </span>
-                    {!com.parentId && (
+                      &#8942;
+                    </a>
+                  ) : (
+                    <div className="flex items-center bg-gray-600 m-auto">
                       <a
-                        className="flex items-center justify-center hover:bg-gray-600"
-                        onClick={(e) => {
-                          handleComment(e, com);
-                        }}
-                      >
-                        Reply
-                      </a>
-                    )}
-                    {(profile.id == com.profile.id || role == "admin") &&
-                    !optionsVisibility[com.id] ? (
-                      <a
-                        className="float-right cursor-pointer p-1 pr-2 text-gray-600 hover:bg-gray-700 hover:text-white  flex items-center justify-center"
-                        onClick={() => toggleOptionsVisibility(com.id)}
-                      >
-                        &#8942;
-                      </a>
-                    ) : (
-                      <div className="flex items-center bg-gray-600 m-auto">
-                        <a
-                          className="p-1 cursor-pointer border-2 border-transparent hover:border-2 hover:border-white"
-                          onClick={() => alert("not yet implemented")}
-                        >
-                          Edit
-                        </a>
-
-                        <a
-                          className="p-1 cursor-pointer border-2 border-transparent hover:border-2 hover:border-white"
-                          onClick={(e) => handleDelete(e, com)}
-                        >
-                          Delete
-                        </a>
-
-                        <a
-                          onClick={() => toggleOptionsVisibility(com.id)}
-                          className="cursor-pointer hover:bg-red-600 p-1 border-transparent border-2 hover:border-red-600 hover:border-2"
-                        >
-                          Close
-                        </a>
-                      </div>
-                    )}
-                    {!com.parentId && (
-                      <button
-                        onClick={() => {
-                          toggleVisibility(com.id);
-                        }}
-                        className={
-                          subcommentsVisibility[com.id]
-                            ? "bg-gray-500 col-span-5 text-gray-700 hover:text-gray-300 pb-5"
-                            : "hover:bg-gray-500 col-span-5 text-gray-700 hover:text-gray-300 pb-5"
+                        className="p-1 cursor-pointer border-2 border-transparent hover:border-2 hover:border-white"
+                        onClick={() =>
+                          alert(t("resources.comment.options.edit.message"))
                         }
                       >
-                        {subcommentsVisibility[com.id] ? "Hide" : "Show"}{" "}
-                        replies
-                      </button>
-                    )}
-                  </div>
-                  {!com.parentId && subcommentsVisibility[com.id] && (
-                    <Comments id={com.id} object="comment" />
+                        {t("resources.comment.options.edit.title")}
+                      </a>
+
+                      <a
+                        className="p-1 cursor-pointer border-2 border-transparent hover:border-2 hover:border-white"
+                        onClick={(e) => handleDelete(e, com)}
+                      >
+                        {t("resources.comment.options.delete.title")}
+                      </a>
+
+                      <a
+                        onClick={() => toggleOptionsVisibility(com.id)}
+                        className="cursor-pointer hover:bg-red-600 p-1 border-transparent border-2 hover:border-red-600 hover:border-2"
+                      >
+                        {t("resources.comment.options.close")}
+                      </a>
+                    </div>
                   )}
-                </li>
-              )
+                  {!com.parentId && (
+                    <button
+                      onClick={() => {
+                        toggleVisibility(com.id);
+                      }}
+                      className={
+                        subcommentsVisibility[com.id]
+                          ? "bg-gray-500 col-span-5 text-gray-700 hover:text-gray-300 pb-5"
+                          : "hover:bg-gray-500 col-span-5 text-gray-700 hover:text-gray-300 pb-5"
+                      }
+                    >
+                      {subcommentsVisibility[com.id]
+                        ? t("resources.comment.hide")
+                        : t("resources.comment.show")}{" "}
+                      {t("resources.comment.replies")}
+                    </button>
+                  )}
+                </div>
+                {!com.parentId && subcommentsVisibility[com.id] && (
+                  <Comments id={com.id} object="comment" />
+                )}
+              </li>
             );
           })}
         </ul>
       ) : (
-        <h1 className="w-1/2 m-auto text-center">There are no comments</h1>
+        <h1 className="w-1/2 m-auto text-center">
+          {t("resources.comment.none")}
+        </h1>
       )}
     </>
   );

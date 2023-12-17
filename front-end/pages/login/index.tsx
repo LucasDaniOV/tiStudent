@@ -1,13 +1,15 @@
-import Head from "next/head";
 import Header from "@/components/header";
-import UserLoginForm from "@/components/users/UserLoginForm";
-import GithubLoginButton from "@/components/users/GithubLoginButton";
-import { useEffect, useState } from "react";
 import ProfileCreateForm from "@/components/profiles/ProfileCreateForm";
-import { useRouter } from "next/router";
+import GithubLoginButton from "@/components/users/GithubLoginButton";
+import UserLoginForm from "@/components/users/UserLoginForm";
+import { useTranslation } from "next-i18next";
+import { serverSideTranslations } from "next-i18next/serverSideTranslations";
+import Head from "next/head";
+import { useEffect, useState } from "react";
 
 const Login: React.FC = () => {
   const [user, setUser] = useState<string | null>(null);
+  const { t } = useTranslation();
   useEffect(() => {
     setUser(sessionStorage.getItem("loggedInUser"));
   }, [user]);
@@ -17,29 +19,30 @@ const Login: React.FC = () => {
   return (
     <>
       <Head>
-        <title>{user ? "Logout" : "Login"}</title>
+        <title>{user ? t("header.nav.logout") : t("header.nav.login")}</title>
       </Head>
       <Header current="login" />{" "}
       <main className="flex flex-row align-middle items-center justify-center">
         {user ? (
           <section className="m-10 mt-0 text-center">
-            <h1 className="text-center text-xl">
-              Are you sure you want to leave?
-            </h1>
+            <h1 className="text-center text-xl">{t("logout.message")}</h1>
             <form
               onSubmit={() => {
                 sessionStorage.removeItem("loggedInUser");
               }}
             >
-              <button type="submit" className="text-center hover:bg-gray-500">
-                Yes
+              <button
+                type="submit"
+                className="text-center hover:bg-gray-500 p-1 text-xl"
+              >
+                {t("logout.button")}
               </button>
             </form>
           </section>
         ) : (
           <>
             <section className="m-10 mt-0">
-              <h1 className="text-center text-xl">Login</h1>
+              <h1 className="text-center text-xl">{t("login.message")}</h1>
               <UserLoginForm />
             </section>
 
@@ -47,7 +50,7 @@ const Login: React.FC = () => {
               <GithubLoginButton />
             </section>
             <section className="m-10 mt-0">
-              <h1>Or create new profile</h1>
+              <h1>{t("login.profile.message")}</h1>
               <ProfileCreateForm />
             </section>
           </>
@@ -55,6 +58,15 @@ const Login: React.FC = () => {
       </main>
     </>
   );
+};
+
+export const getServerSideProps = async (context: any) => {
+  const { locale } = context;
+  return {
+    props: {
+      ...(await serverSideTranslations(locale ?? "en", ["common"])),
+    },
+  };
 };
 
 export default Login;

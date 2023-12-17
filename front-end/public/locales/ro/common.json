@@ -1,0 +1,141 @@
+{
+  "app.title": "Aplicația tiStudent",
+  "general.error": "A intervenit o eroare. Vă rugăm să încercați din nou mai târziu.",
+  "authorization.error": "Nu aveți permisiunea de a vizualiza această pagină. Vă rugăm să vă autentificați mai întâi.",
+  "loading": "Încărcare...",
+  "delete": "Șterge",
+  "back": "Înapoi",
+  "header": {
+    "nav": {
+      "home": "Acasă",
+      "users": "Utilizatori",
+      "resources": "Resurse",
+      "profiles": "Profile",
+      "login": "Autentificare",
+      "logout": "Deconectare"
+    }
+  },
+  "home": {
+    "welcome": "Bun venit",
+    "message": "tiStudent este o platformă unde poți partaja resurse academice. Ca utilizator, poți încărca propriile resurse, aprecia și comenta resursele altor persoane. Poți vizualiza resursele apreciate și obține o prezentare generală a tuturor resurselor pe care le-ai partajat."
+  },
+  "users": {
+    "message": "Utilizatori",
+    "info": "Informații despre utilizator",
+    "about": "Informații despre utilizatorul cu ID-ul: ",
+    "loading": "Încărcare...",
+    "deleted": {
+      "title": "Utilizator șters",
+      "message": "Utilizator șters cu ID-ul:"
+    },
+    "fields": {
+      "id": "ID",
+      "email": "Email",
+      "password": "Parolă"
+    }
+  },
+  "resources": {
+    "title": "Resurse",
+    "fields": {
+      "id": "ID",
+      "user.id": "ID utilizator",
+      "created.at": "Creat la",
+      "title": "Titlu",
+      "description": "Descriere",
+      "category": "Categorie",
+      "summary": "Sumar",
+      "cheat.sheet": "Fișă de ajutor",
+      "lecture.notes": "Note de curs",
+      "subject": "Subiect",
+      "profileId": "ID profil"
+    },
+    "error": {
+      "title": "Titlul este obligatoriu",
+      "title.length": "Titlul nu poate avea mai mult de 60 de caractere",
+      "description": "Descrierea este obligatorie",
+      "description.length": "Descrierea nu poate avea mai mult de 500 de caractere",
+      "category": "Categoria este obligatorie",
+      "category.invalid": "Categorie invalidă",
+      "subject": "Subiectul este obligatoriu",
+      "subject.invalid": "Subiect invalid",
+      "profileId": "ID profil obligatoriu"
+    },
+    "create": "Creează resursă",
+    "info": {
+      "title": "Informații despre resursă",
+      "message": "Adaugă o resursă"
+    },
+    "delete": "Resursa cu ID-ul ",
+    "comment": {
+      "reply": "Răspunde",
+      "hide": "Ascunde",
+      "show": "Afișează",
+      "replies": " răspunsuri",
+      "add": "Adaugă un comentariu",
+      "prompt": "Mesajul tău:",
+      "message": "Mesaj",
+      "submit": "Trimite",
+      "none": "Nu există comentarii",
+      "options": {
+        "edit": {
+          "title": "Editează",
+          "message": "Nu a fost încă implementat"
+        },
+        "delete": {
+          "title": "Șterge",
+          "message": "Sunteți sigur că doriți să ștergeți acest comentariu? ",
+          "error": "Nu sunteți creatorul acestui comentariu"
+        },
+        "close": "Închide"
+      }
+    }
+  },
+  "profiles": {
+    "index.title": "Profile",
+    "title": "Informații despre profil",
+    "fields": {
+      "id": "ID",
+      "username": "Nume de utilizator",
+      "bio": "Biografie",
+      "created.at": "Creat la",
+      "latest.activity": "Ultima activitate",
+      "user.id": "ID utilizator"
+    },
+    "info": "Informații despre ",
+    "delete": "Sigur doriți să ștergeți"
+  },
+  "login": {
+    "enter": "Intră",
+    "message": "Autentificare",
+    "github": "Autentificare cu GitHub",
+    "profile": {
+      "message": "Sau creează un profil nou",
+      "form": {
+        "username": "Nume de utilizator",
+        "bio": "Biografie",
+        "email": "Email",
+        "password": "Parolă",
+        "create.profile": "Creează profil",
+        "error": {
+          "email": "Emailul este obligatoriu",
+          "username": "Numele de utilizator este obligatoriu",
+          "username.length": "Numele de utilizator nu poate avea mai mult de 30 de caractere",
+          "bio": "Biografia nu poate avea mai mult de 200 de caractere",
+          "password": {
+            "exists": "Parola este obligatorie",
+            "length": "Parola trebuie să aibă cel puțin 8 caractere",
+            "number": "Parola trebuie să conțină cel puțin 1 cifră",
+            "capital": "Parola trebuie să conțină cel puțin 1 literă mare",
+            "special": "Parola trebuie să conțină cel puțin 1 caracter special (!@#$%^&*()_+-=[]{};':\"|,.<>/?)"
+          }
+        }
+      }
+    },
+    "succes": "Autentificare reușită! Redirecționare...",
+    "error": "A intervenit o eroare. Vă rugăm să încercați din nou mai târziu."
+  },
+  "logout": {
+    "message": "Sunteți sigur că doriți să părăsiți?",
+    "button": "Da"
+  }
+}

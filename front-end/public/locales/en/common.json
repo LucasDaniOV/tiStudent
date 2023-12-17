@@ -1,0 +1,141 @@
+{
+  "app.title": "tiStudent App",
+  "general.error": "An error has occurred. Please try again later.",
+  "authorization.error": "You are not authorized to view this page. Please login first.",
+  "loading": "Loading...",
+  "delete": "Delete",
+  "back": "Go back",
+  "header": {
+    "nav": {
+      "home": "Home",
+      "users": "Users",
+      "resources": "Resources",
+      "profiles": "Profiles",
+      "login": "Login",
+      "logout": "Logout"
+    }
+  },
+  "home": {
+    "welcome": "Welcome",
+    "message": "tiStudent is a platform where you can share academic resources. As a user you can upload resources of your own, and like and comment on resources from other people. You can view your liked resources and get an overview of all the resources you have shared."
+  },
+  "users": {
+    "message": "Users",
+    "info": "User Info",
+    "about": "Info about user with ID: ",
+    "loading": "Loading...",
+    "deleted": {
+      "title": "User Deleted",
+      "message": "Deleted user with ID:"
+    },
+    "fields": {
+      "id": "ID",
+      "email": "Email",
+      "password": "Password"
+    }
+  },
+  "resources": {
+    "title": "Resources",
+    "fields": {
+      "id": "ID",
+      "user.id": "User ID",
+      "created.at": "Created At",
+      "title": "Title",
+      "description": "Description",
+      "category": "Category",
+      "summary": "Summary",
+      "cheat.sheet": "Cheat Sheet",
+      "lecture.notes": "Lecture Notes",
+      "subject": "Subject",
+      "profileId": "ProfileID"
+    },
+    "error": {
+      "title": "Title is required",
+      "title.length": "title cannot be longer than 60 characters",
+      "description": "Description is required",
+      "description.length": "Description cannot be longer than 500 characters",
+      "category": "Category is required",
+      "category.invalid": "Invalid category",
+      "subject": "Subject is required",
+      "subject.invalid": "Invalid subject",
+      "profileId": "ProfileID is required"
+    },
+    "create": "Create Resource",
+    "info": {
+      "title": "Resource Info",
+      "message": "Add a Resource"
+    },
+    "delete": "Removed resource with id ",
+    "comment": {
+      "reply": "Reply",
+      "hide": "Hide",
+      "show": "Show",
+      "replies": " replies",
+      "add": "Add a comment",
+      "prompt": "Your message:",
+      "message": "Message",
+      "submit": "Submit",
+      "none": "There are no comments",
+      "options": {
+        "edit": {
+          "title": "Edit",
+          "message": "Not yet implemented"
+        },
+        "delete": {
+          "title": "Delete",
+          "message": "Are you sure you want to delete this comment? ",
+          "error": "You are not the creator of this comment"
+        },
+        "close": "Close"
+      }
+    }
+  },
+  "profiles": {
+    "index.title": "Profiles",
+    "title": "Profile Info",
+    "fields": {
+      "id": "ID",
+      "username": "Username",
+      "bio": "Bio",
+      "created.at": "Created At",
+      "latest.activity": "Latest Activity",
+      "user.id": "User ID"
+    },
+    "info": "Info about ",
+    "delete": "Are you sure you want to delete"
+  },
+  "login": {
+    "enter": "Enter",
+    "message": "Login",
+    "github": "Sign in with GitHub",
+    "profile": {
+      "message": "Or create a new profile",
+      "form": {
+        "username": "Username",
+        "bio": "Bio",
+        "email": "Email",
+        "password": "Password",
+        "create.profile": "Create profile",
+        "error": {
+          "email": "Email is required",
+          "username": "Username is required",
+          "username.length": "Username can't be longer than 30 characters",
+          "bio": "Bio can't be longer than 200 characters",
+          "password": {
+            "exists": "Password is required",
+            "length": "Password must be at least 8 characters long",
+            "number": "Password must contain at least 1 number",
+            "capital": "Password must contain at least 1 capital letter",
+            "special": "Password must contain at least 1 special character (!@#$%^&*()_+-=[]{};':\"|,.<>/?)"
+          }
+        }
+      }
+    },
+    "succes": "Login successful! Redirecting...",
+    "error": "An error has occurred. Please try again later."
+  },
+  "logout": {
+    "message": "Are you sure you want to leave?",
+    "button": "Yes"
+  }
+}

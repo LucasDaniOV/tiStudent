@@ -3,12 +3,14 @@ import Header from "@/components/header";
 import ProfileService from "@/services/ProfileService";
 import ResourceService from "@/services/ResourceService";
 import { StatusMessage } from "@/types";
-import { getToken } from "@/util/token";
+import { useTranslation } from "next-i18next";
+import { serverSideTranslations } from "next-i18next/serverSideTranslations";
 import Head from "next/head";
 import { useRouter } from "next/router";
 import React, { FormEvent, useEffect, useRef, useState } from "react";
 
 const CreateResourceForm: React.FC = () => {
+  const { t } = useTranslation();
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
   const [category, setCategory] = useState("");
@@ -75,7 +77,6 @@ const CreateResourceForm: React.FC = () => {
   const setUser = async () => {
     const user = sessionStorage.getItem("loggedInUser");
     if (!user) return;
-    const token = getToken();
     const profile = await ProfileService.getProfileByEmail(
       JSON.parse(user).email
     );
@@ -94,7 +95,7 @@ const CreateResourceForm: React.FC = () => {
   return (
     <>
       <Head>
-        <title>Create Resource</title>
+        <title>{t("resources.create")}</title>
       </Head>
       <Header current="resources" />
       <main className="flex flex-row align-middle items-center justify-center">
@@ -110,7 +111,7 @@ const CreateResourceForm: React.FC = () => {
             <section>
               <form className="flex flex-col" onSubmit={(e) => handleSubmit(e)}>
                 <label className="mt-2 mb-2" htmlFor="title">
-                  Title:{" "}
+                  {t("resources.fields.title")}:{" "}
                 </label>
                 <input
                   type="text"
@@ -120,7 +121,7 @@ const CreateResourceForm: React.FC = () => {
                   }}
                 />
                 <label className="mt-2 mb-2" htmlFor="description">
-                  Description:{" "}
+                  {t("resources.fields.description")}:{" "}
                 </label>
                 <textarea
                   id="description"
@@ -130,7 +131,9 @@ const CreateResourceForm: React.FC = () => {
                     setDescription(e.target.value);
                   }}
                 ></textarea>
-                <label className="mt-2 mb-2">Category</label>
+                <label className="mt-2 mb-2">
+                  {t("resources.fields.category")}:
+                </label>
                 <div>
                   <input
                     type="radio"
@@ -141,7 +144,7 @@ const CreateResourceForm: React.FC = () => {
                     onChange={(e) => setCategory(e.target.value)}
                   />
                   <label className="mt-2 mb-2" htmlFor="summary">
-                    Summary
+                    {t("resources.fields.summary")}
                   </label>
                 </div>
                 <div>
@@ -154,7 +157,7 @@ const CreateResourceForm: React.FC = () => {
                     onChange={(e) => setCategory(e.target.value)}
                   />
                   <label className="mt-2 mb-2" htmlFor="cheat-sheet">
-                    Cheat Sheet
+                    {t("resources.fields.cheat.sheet")}
                   </label>
                 </div>
                 <div>
@@ -167,11 +170,11 @@ const CreateResourceForm: React.FC = () => {
                     onChange={(e) => setCategory(e.target.value)}
                   />
                   <label className="mt-2 mb-2" htmlFor="lecture-notes">
-                    Lecture Notes
+                    {t("resources.fields.lecture.notes")}
                   </label>
                 </div>
                 <label className="mt-2 mb-2" htmlFor="subject">
-                  Subject
+                  {t("resources.fields.subject")}
                 </label>
                 <input
                   type="search"
@@ -199,17 +202,26 @@ const CreateResourceForm: React.FC = () => {
                   className="mt-10 mb-10 p-10 bg-gray-700 hover:bg-gray-500"
                   type="submit"
                 >
-                  Submit
+                  {t("resources.comment.submit")}
                 </button>
               </form>
             </section>
           </>
         ) : (
-          <h2>You need to be logged in to create a resource</h2>
+          <h2>{t("authorization.error")}</h2>
         )}
       </main>
     </>
   );
+};
+
+export const getServerSideProps = async (context: any) => {
+  const { locale } = context;
+  return {
+    props: {
+      ...(await serverSideTranslations(locale ?? "en", ["common"])),
+    },
+  };
 };
 
 export default CreateResourceForm;

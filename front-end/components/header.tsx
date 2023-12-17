@@ -1,11 +1,14 @@
 import Link from "next/link";
 import React, { useEffect, useState } from "react";
+import Language from "./Language";
+import { useTranslation } from "next-i18next";
 
 type Props = {
   current: string;
 };
 
 const Header: React.FC<Props> = ({ current }: Props) => {
+  const { t } = useTranslation();
   const [user, setUser] = useState<string | null>(null);
   useEffect(() => {
     setUser(sessionStorage.getItem("loggedInUser"));
@@ -20,38 +23,39 @@ const Header: React.FC<Props> = ({ current }: Props) => {
       <nav className="flex flex-col">
         <a className="text-white text-opacity-100 text-center underline text-xl">
           {" "}
-          tiStudent App
+          {t("app.title")}
         </a>
         <Link
           href="/"
           className={current == "home" ? basic + " bg-gray-700" : basic}
         >
-          Home
+          {t("header.nav.home")}
         </Link>
         <Link
           href="/users"
           className={current == "users" ? basic + " bg-gray-700" : basic}
         >
-          Users
+          {t("header.nav.users")}
         </Link>
         <Link
           href="/resources"
           className={current == "resources" ? basic + " bg-gray-700" : basic}
         >
-          Resources
+          {t("header.nav.resources")}
         </Link>
         <Link
           href="/profiles"
           className={current == "profiles" ? basic + " bg-gray-700" : basic}
         >
-          Profiles
+          {t("header.nav.profiles")}
         </Link>
         <Link
           href="/login"
           className={current == "login" ? basic + " bg-gray-700" : basic}
         >
-          {user ? "Logout" : "Login"}
+          {user ? t("header.nav.logout") : t("header.nav.login")}
         </Link>
+        <Language />
       </nav>
     </header>
   );

@@ -2,6 +2,7 @@ import ResourceService from "@/services/ResourceService";
 import { useRouter } from "next/router";
 import React, { MouseEvent } from "react";
 import { Resource } from "../../types";
+import { useTranslation } from "next-i18next";
 
 type Props = {
   resources: Array<Resource>;
@@ -9,7 +10,7 @@ type Props = {
 
 const ResourceOverviewTable: React.FC<Props> = ({ resources }: Props) => {
   const router = useRouter();
-
+  const { t } = useTranslation();
   const deleteResource = async (e: MouseEvent, resource: Resource) => {
     e.stopPropagation();
     e.preventDefault();
@@ -24,25 +25,25 @@ const ResourceOverviewTable: React.FC<Props> = ({ resources }: Props) => {
           <thead>
             <tr>
               <th scope="col" className="border p-4 text-left">
-                ID
+                {t("resources.fields.id")}
               </th>
               <th scope="col" className="border p-4 text-left">
-                User ID
+                {t("resources.fields.user.id")}
               </th>
               <th scope="col" className="border p-4 text-left">
-                Created at
+                {t("resources.fields.created.at")}
               </th>
               <th scope="col" className="border p-4 text-left">
-                Title
+                {t("resources.fields.title")}
               </th>
               <th scope="col" className="border p-4 text-left">
-                Description
+                {t("resources.fields.description")}
               </th>
               <th scope="col" className="border p-4 text-left">
-                Category
+                {t("resources.fields.category")}
               </th>
               <th scope="col" className="border p-4 text-left">
-                Subject
+                {t("resources.fields.subject")}
               </th>
             </tr>
           </thead>
@@ -69,7 +70,7 @@ const ResourceOverviewTable: React.FC<Props> = ({ resources }: Props) => {
                   className="border p-4"
                   onClick={(e) => deleteResource(e, resource)}
                 >
-                  delete
+                  {t("delete")}
                 </td>
               </tr>
             ))}
