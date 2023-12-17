@@ -151,7 +151,7 @@ const Comments: React.FC<Props> = ({ id, object }: Props) => {
                         handleComment(e, com);
                       }}
                     >
-                      {t("resources.comment.options.reply")}
+                      {t("resources.comment.reply")}
                     </a>
                   )}
                   {(profile.id == com.profile.id || role == "admin") &&
