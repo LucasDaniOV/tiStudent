@@ -1,17 +1,24 @@
+import { UnauthorizedError } from 'express-jwt';
+import commentDb from '../domain/data-access/comment.db';
+import likeDb from '../domain/data-access/like.db';
 import profileDb from '../domain/data-access/profile.db';
 import resourceDb from '../domain/data-access/resource.db';
 import { Category } from '../domain/model/category';
+import { Comment } from '../domain/model/comment';
+import { Like } from '../domain/model/like';
 import { Profile } from '../domain/model/profile';
 import { Resource } from '../domain/model/resource';
 import { Subject } from '../domain/model/subject';
-import { ResourceInput } from '../types';
-import { Comment } from '../domain/model/comment';
-import commentDb from '../domain/data-access/comment.db';
-import likeDb from '../domain/data-access/like.db';
-import { Like } from '../domain/model/like';
+import { ResourceInput, Role } from '../types';
 
 // get all resources
-const getAllResources = async (): Promise<Resource[]> => await resourceDb.getAllResources();
+const getAllResources = async (role: Role): Promise<Resource[]> => {
+    if (role !== 'admin' && role !== 'user')
+        throw new UnauthorizedError('credentials_required', {
+            message: 'Only admins and users can get all resources',
+        });
+    return await resourceDb.getAllResources();
+};
 
 // get resource by id
 const getResourceById = async (id: number): Promise<Resource> => {
@@ -23,10 +30,8 @@ const getResourceById = async (id: number): Promise<Resource> => {
 // create resource
 const createResource = async ({ creator, title, description, category, subject }: ResourceInput): Promise<Resource> => {
     if (!creator) throw new Error('creator Profile is required');
-    // check that userID is a number
-    if (typeof creator.id !== 'number') throw new Error('userId must be a number');
-    const profile = await profileDb.getProfileById(Number(creator.id));
-    if (!profile) throw new Error(`Profile with id ${creator.id} does not exist`);
+    if (!(await profileDb.getProfileById(Number(creator.id))))
+        throw new Error(`Profile with id ${creator.id} does not exist`);
     if (!Object.values(Category).includes(category)) throw new Error('Invalid Category');
     if (!Object.values(Subject).includes(subject)) throw new Error('Invalid Subject');
     const resource = new Resource({ creator, title, description, category, subject });
@@ -87,12 +92,6 @@ const deleteResource = async (resourceId: number) => {
     return await resourceDb.deleteResource(resourceId);
 };
 
-const getCommentsOnComment = async (commentId: number) => {
-    const comments = await resourceDb.getCommentsOnComment(commentId);
-    if (comments) return comments;
-    else throw new Error('This comment has no subcomments');
-};
-
 export default {
     getAllResources,
     getResourceById,
@@ -100,5 +99,4 @@ export default {
     getField,
     updateField,
     deleteResource,
-    getCommentsOnComment,
 };

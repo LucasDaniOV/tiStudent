@@ -1,18 +1,29 @@
 import { PrismaClient } from '@prisma/client';
 import { Subject } from '../domain/model/subject';
 import { Category } from '../domain/model/category';
+import bcrypt from 'bcrypt';
+
 const prisma = new PrismaClient();
 async function main() {
     const alice = await prisma.user.create({
         data: {
             email: 'alice12@prisma.io',
-            password: 'Str0ngPW!!!',
+            password: await bcrypt.hash('Str0ngPW!!!', 12),
+            role: 'admin',
         },
     });
     const bob = await prisma.user.create({
         data: {
             email: 'bob9@prisma.io',
-            password: 'passWord123!$',
+            password: await bcrypt.hash('passWord123!$', 12),
+            role: 'admin',
+        },
+    });
+    const satoshi = await prisma.user.create({
+        data: {
+            email: 'satoshi2.nakamoto@gmail.com',
+            password: await bcrypt.hash('Str0ngPW!!!2', 12),
+            role: 'admin',
         },
     });
     console.log({ alice, bob });
@@ -47,6 +58,21 @@ async function main() {
         },
     });
     console.log(bobProfile);
+    const satoshiProfile = await prisma.profile.upsert({
+        where: { userId: 3 },
+        update: {},
+        create: {
+            username: 'JJ',
+            createdAt: new Date(),
+            latestActivity: new Date(),
+            user: {
+                connect: {
+                    email: 'satoshi2.nakamoto@gmail.com',
+                },
+            },
+        },
+    });
+    console.log(satoshiProfile);
     const aliceResource1 = await prisma.resource.upsert({
         where: { id: 1 },
         update: {},
@@ -113,7 +139,11 @@ async function main() {
             message: 'Thanks Bob',
             createdAt: new Date(),
             edited: false,
-            parentId: 1,
+            parent: {
+                connect: {
+                    id: bobComment.id,
+                },
+            },
         },
     });
     console.log(aliceComment);
@@ -149,7 +179,11 @@ async function main() {
             message: "You're welcome Alice",
             createdAt: new Date(),
             edited: false,
-            parentId: 1,
+            parent: {
+                connect: {
+                    id: bobComment.id,
+                },
+            },
         },
     });
     console.log(bobComment2);
@@ -169,7 +203,11 @@ async function main() {
             message: 'Love you too',
             createdAt: new Date(),
             edited: false,
-            parentId: 1,
+            parent: {
+                connect: {
+                    id: bobComment.id,
+                },
+            },
         },
     });
     console.log(bobComment3);

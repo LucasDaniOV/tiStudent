@@ -1,37 +1,37 @@
+import { User } from "@/types";
+import { getAll, getById } from "@/util/get";
+import { getToken } from "@/util/token";
+
 const baseUrl = process.env.NEXT_PUBLIC_API_URL + "/users";
+const type = "users";
 
-const getAllUsers = async () => {
-  const res = await fetch(process.env.NEXT_PUBLIC_API_URL + "/users", {
-    method: "GET",
-    headers: {
-      "Content-Type": "application/json",
-    },
-  });
-  const users = await res.json();
-  return users;
-};
+const getAllUsers = async () => getAll(type);
 
-const getUserById = async (userId: string) => {
-  const res = await fetch(
-    process.env.NEXT_PUBLIC_API_URL + `/users/${userId}`,
-    {
-      method: "GET",
-      headers: {
-        "Content-Type": "application/json",
-      },
-    }
-  );
-  const user = await res.json();
-  return user;
-};
+const getUserById = async (userId: string) => getById(type, userId);
+// const token = getToken();
 
-const getUserByEmail = async (email: string) => {
+// const res = await fetch(
+//   process.env.NEXT_PUBLIC_API_URL + `/users/${userId}`,
+//   {
+//     method: "GET",
+//     headers: {
+//       "Content-Type": "application/json",
+//       Authorization: `Bearer ${token}`,
+//     },
+//   }
+// );
+
+// const user = await res.json();
+// return user;
+
+const getUserByEmail = async (email: string, token: string): Promise<User> => {
   const res = await fetch(
     process.env.NEXT_PUBLIC_API_URL + `/users/email/` + email,
     {
       method: "GET",
       headers: {
         "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
       },
     }
   );
@@ -39,13 +39,14 @@ const getUserByEmail = async (email: string) => {
   return user;
 };
 
-const deleteUserById = async (userId: string) => {
+const deleteUserById = async (userId: string, token: string) => {
   const res = await fetch(
     process.env.NEXT_PUBLIC_API_URL + `/users/${userId}`,
     {
       method: "DELETE",
       headers: {
         "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
       },
     }
   );
@@ -53,11 +54,12 @@ const deleteUserById = async (userId: string) => {
   return user;
 };
 
-const createUser = async (email: string, password: string) => {
+const createUser = async (email: string, password: string, token: string) => {
   const res = await fetch(baseUrl, {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
+      Authorization: `Bearer ${token}`,
     },
     body: JSON.stringify({ email, password }),
   });
@@ -77,6 +79,17 @@ const getGithubUser = async (code: string) => {
   return user;
 };
 
+const loginUser = async (email: string, password: string) => {
+  const url = `${baseUrl}/login`;
+  return await fetch(url, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({ email, password }),
+  });
+};
+
 const UserService = {
   getAllUsers,
   getUserById,
@@ -84,6 +97,7 @@ const UserService = {
   deleteUserById,
   createUser,
   getGithubUser,
+  loginUser,
 };
 
 export default UserService;

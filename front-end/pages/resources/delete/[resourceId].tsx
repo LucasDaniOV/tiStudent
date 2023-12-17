@@ -1,3 +1,4 @@
+import { serverSideTranslations } from "next-i18next/serverSideTranslations";
 import Header from "@/components/header";
 import ResourceService from "@/services/ResourceService";
 import Head from "next/head";
@@ -5,6 +6,7 @@ import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
 import { Resource } from "@/types/index";
 import Link from "next/link";
+import { useTranslation } from "next-i18next";
 
 const DeleteResourceById = () => {
   const [resource, setResource] = useState<Resource>();
@@ -23,20 +25,32 @@ const DeleteResourceById = () => {
   useEffect(() => {
     if (resourceId) deleteResourceById();
   }, []);
-
+  const { t } = useTranslation();
   return (
     <>
       <Head>
-        <title>Resource info</title>
+        <title>{t("resources.info.title")}</title>
       </Head>
-      <Header />
+      <Header current="resources" />
       <main>
-        <h1>Resource with id {resource && resourceId} was removed</h1>
-        {!resourceId && <p>Loading</p>}
-        <Link href="/resources">Go back</Link>
+        <h1>
+          {t("resources.delete")}
+          {resource && resourceId}
+        </h1>
+        {!resourceId && <p>{t("loading")}</p>}
+        <Link href="/resources">{t("back")}</Link>
       </main>
     </>
   );
+};
+
+export const getServerSideProps = async (context: any) => {
+  const { locale } = context;
+  return {
+    props: {
+      ...(await serverSideTranslations(locale ?? "en", ["common"])),
+    },
+  };
 };
 
 export default DeleteResourceById;

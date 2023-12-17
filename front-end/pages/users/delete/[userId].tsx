@@ -4,8 +4,12 @@ import Head from "next/head";
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
 import { User } from "@/types";
+import { getToken } from "@/util/token";
+import { serverSideTranslations } from "next-i18next/serverSideTranslations";
+import { useTranslation } from "next-i18next";
 
 const DeleteUserById = () => {
+  const { t } = useTranslation();
   const [user, setUser] = useState<User>();
 
   const router = useRouter();
@@ -17,7 +21,8 @@ const DeleteUserById = () => {
     ]);
     const [user] = await Promise.all([returnedUser]);
     setUser(user);
-    await UserService.deleteUserById(userId as string);
+    const token = getToken();
+    await UserService.deleteUserById(userId as string, token);
   };
 
   useEffect(() => {
@@ -27,15 +32,26 @@ const DeleteUserById = () => {
   return (
     <>
       <Head>
-        <title>User deleted</title>
+        <title>{t("users.deleted.title")}</title>
       </Head>
-      <Header />
+      <Header current="users" />
       <main>
-        <h1>Deleted user with ID: {user && userId}</h1>
-        {!userId && <p>Loading</p>}
+        <h1>
+          {t("users.deleted.message")} {user && userId}
+        </h1>
+        {!userId && <p>{t("users.loading")}</p>}
       </main>
     </>
   );
+};
+
+export const getServerSideProps = async (context: any) => {
+  const { locale } = context;
+  return {
+    props: {
+      ...(await serverSideTranslations(locale ?? "en", ["common"])),
+    },
+  };
 };
 
 export default DeleteUserById;

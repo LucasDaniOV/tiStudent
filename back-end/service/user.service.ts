@@ -1,8 +1,18 @@
+import bcrypt from 'bcrypt';
 import userDb from '../domain/data-access/user.db';
 import { User } from '../domain/model/user';
-import { UserInput } from '../types';
+import { AuthenticationResponse, Role, UserInput } from '../types';
+import { generateJwtToken } from '../util/jwt';
+import { UnauthorizedError } from 'express-jwt';
+import profileService from './profile.service';
 
-const getAllUsers = async (): Promise<User[]> => userDb.getAllUsers();
+const getAllUsers = async (role: Role): Promise<User[]> => {
+    if (role !== 'admin')
+        throw new UnauthorizedError('credentials_required', {
+            message: 'Only admins can get all users',
+        });
+    return await userDb.getAllUsers();
+};
 
 const getUserById = async (id: number): Promise<User> => {
     const u: User = await userDb.getUserById(id);
@@ -17,11 +27,14 @@ const getUserByEmail = async (email: string): Promise<User> => {
     return u;
 };
 
-const createUser = async ({ email, password }: UserInput): Promise<User> => {
-    User.validateEmail(email);
-    User.validatePassword(password);
+const createUser = async ({ email, password, role }: UserInput): Promise<User> => {
+    // check if email is already taken
     if (await userDb.getUserByEmail(email)) throw new Error(`User with email ${email} already exists`);
-    return await userDb.createUser(email, password);
+    User.validateRole(role);
+
+    // create user
+    const hashedPassword = await bcrypt.hash(password, 12);
+    return await userDb.createUser(email, hashedPassword, role);
 };
 
 const removeUserById = async (id: number): Promise<Boolean> => {
@@ -37,7 +50,8 @@ const updateEmailById = async (id: number, email: string): Promise<User> => {
 
 const updatePasswordById = async (id: number, password: string): Promise<User> => {
     User.validatePassword(password);
-    if ((await getUserById(id)).password === password) throw new Error(`New password must be different from old password`);
+    if ((await getUserById(id)).password === password)
+        throw new Error(`New password must be different from old password`);
     return await userDb.updatePassword(id, password);
 };
 
@@ -81,6 +95,22 @@ const getGithubUser = async (access_token: string): Promise<any> => {
     }
 };
 
+const authenticate = async ({ email, password }: UserInput): Promise<AuthenticationResponse> => {
+    const user = await getUserByEmail(email);
+    const profile = await profileService.getProfileByEmail(email);
+
+    const isValidPassword = await bcrypt.compare(password, user.password);
+
+    if (!isValidPassword) throw new Error('Invalid password');
+
+    return {
+        token: generateJwtToken({ email, role: user.role }),
+        email,
+        id: String(profile.id),
+        role: user.role,
+    };
+};
+
 export default {
     getAllUsers,
     getUserById,
@@ -91,4 +121,5 @@ export default {
     updatePasswordById,
     getGithubAccessToken,
     getGithubUser,
+    authenticate,
 };

@@ -1,11 +1,13 @@
-import Subjects from "@/components/resources/Subjects";
-import subjects from "@/components/resources/subjects";
+import Subjects from "@/components/Subjects";
+import subjects from "./subjects";
 import ResourceService from "@/services/ResourceService";
 import { StatusMessage } from "@/types";
 import { useRouter } from "next/router";
 import React, { FormEvent, useEffect, useRef, useState } from "react";
+import { useTranslation } from "next-i18next";
 
 const ResourceCreateForm: React.FC = () => {
+  const { t } = useTranslation();
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
   const [category, setCategory] = useState("");
@@ -36,47 +38,47 @@ const ResourceCreateForm: React.FC = () => {
     let isValid = true;
 
     if (!title.trim()) {
-      setTitleError("title is required");
+      setTitleError(t("resources.error.title"));
       isValid = false;
     }
 
     if (title.length > 60) {
-      setTitleError("title cannot be longer than 60 characters");
+      setTitleError(t("resources.error.title.length"));
       isValid = false;
     }
 
     if (!description.trim()) {
-      setDescriptionError("description is required");
+      setDescriptionError(t("resources.error.description"));
       isValid = false;
     }
 
     if (description.length > 500) {
-      setDescriptionError("description cannot be longer than 500 characters");
+      setDescriptionError(t("resources.error.description.length"));
       isValid = false;
     }
 
     if (!category.trim()) {
-      setCategoryError("category is required");
+      setCategoryError(t("resources.error.category"));
       isValid = false;
     }
 
     if (!["Summary", "Cheat Sheet", "Lecture Notes"].includes(category)) {
-      setCategoryError("Invalid category");
+      setCategoryError(t("resources.error.category.invalid"));
       isValid = false;
     }
 
     if (!subject.trim()) {
-      setSubjectError("subject is required");
+      setSubjectError(t("resources.error.subject"));
       isValid = false;
     }
 
     if (!subjects.includes(subject)) {
-      setSubjectError("Invalid subject");
+      setSubjectError(t("resources.error.subject.invalid"));
       isValid = false;
     }
 
     if (!profileId.trim()) {
-      setProfileIdError("profileId is required");
+      setProfileIdError(t("resources.error.profileId"));
       isValid = false;
     }
 
@@ -131,14 +133,14 @@ const ResourceCreateForm: React.FC = () => {
         </ul>
       )}
       <form onSubmit={(e) => handleSubmit(e)}>
-        <label htmlFor="profileId">ProfileID</label>
+        <label htmlFor="profileId">{t("resources.fields.profileId")}</label>
         <input
           type="text"
           id="profileId"
           value={profileId}
           onChange={(e) => setProfileId(e.target.value)}
         />
-        <label htmlFor="title">Title: </label>
+        <label htmlFor="title">{t("resources.fields.title")}:</label>
         <input
           type="text"
           id="title"
@@ -146,7 +148,9 @@ const ResourceCreateForm: React.FC = () => {
             setTitle(e.target.value);
           }}
         />
-        <label htmlFor="description">Description: </label>
+        <label htmlFor="description">
+          {t("resources.fields.description")}:{" "}
+        </label>
         <textarea
           id="description"
           cols={30}
@@ -155,45 +159,54 @@ const ResourceCreateForm: React.FC = () => {
             setDescription(e.target.value);
           }}
         ></textarea>
-        <label>Category</label>
-        <div className="radio-option">
+        <label>{t("resources.fields.category")}</label>
+        <div className="flex items-center">
           <input
             type="radio"
             id="summary"
             name="category"
             value={"Summary"}
+            className="mb-2"
             onChange={(e) => setCategory(e.target.value)}
           />
-          <label htmlFor="summary">Summary</label>
+          <label htmlFor="summary" className="ml-2 bg-white">
+            {t("resources.fields.summary")}
+          </label>
         </div>
-        <div className="radio-option">
+        <div className="flex items-center">
           <input
             type="radio"
             id="cheat-sheet"
             name="category"
             value={"Cheat Sheet"}
+            className="mb-2"
             onChange={(e) => setCategory(e.target.value)}
           />
-          <label htmlFor="cheat-sheet">Cheat Sheet</label>
+          <label htmlFor="cheat-sheet" className="mr-4">
+            {t("resources.fields.cheat.sheet")}
+          </label>
         </div>
-        <div className="radio-option">
+        <div className="flex items-center">
           <input
             type="radio"
             id="lecture-notes"
             name="category"
             value={"Lecture Notes"}
+            className="mb-2"
             onChange={(e) => setCategory(e.target.value)}
           />
-          <label htmlFor="lecture-notes">Lecture Notes</label>
+          <label htmlFor="lecture-notes" className="mr-4">
+            {t("resources.fields.lecture.notes")}
+          </label>
         </div>
-        <label htmlFor="subject">Subject</label>
+        <label htmlFor="subject">{t("resources.fields.subject")}</label>
         <input
           type="search"
           id="subject"
           onFocus={() => setVisible(true)}
           ref={subjectsInputRef}
           value={subject}
-          placeholder="Subject..."
+          placeholder={String(t("resources.fields.subject") + "...")}
           onChange={(e) => setSubject(e.target.value)}
         />
         {isVisible && (
@@ -205,7 +218,7 @@ const ResourceCreateForm: React.FC = () => {
         {descriptionError && <div>{descriptionError}</div>}
         {categoryError && <div>{categoryError}</div>}
         {subjectError && <div>{subjectError}</div>}
-        <button type="submit">Submit</button>
+        <button type="submit">{t("resources.comment.submit")}</button>
         <br />
       </form>
     </>

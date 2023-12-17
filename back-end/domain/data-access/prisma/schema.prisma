@@ -11,6 +11,7 @@ model User {
     id       Int      @id @default(autoincrement())
     email    String   @unique
     password String
+    role     String?
     profile  Profile?
 }
 
@@ -51,6 +52,8 @@ model Comment {
     resource   Resource? @relation("commentsOnResource", fields: [resourceId], references: [id], onDelete: Cascade)
     likers     Like[]
     parentId   Int?
+    parent     Comment? @relation("parentComment", fields: [parentId], references: [id], onDelete: Cascade)
+    childComments Comment[] @relation("parentComment")
 }
 
 model Like {

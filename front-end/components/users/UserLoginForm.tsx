@@ -1,23 +1,36 @@
 import UserService from "@/services/UserService";
 import { StatusMessage } from "@/types";
+import { useTranslation } from "next-i18next";
+import { useRouter } from "next/router";
 import { FormEvent, useState } from "react";
 
 const UserLoginForm: React.FC = () => {
   const [email, setEmail] = useState("");
   const [emailError, setEmailError] = useState("");
+  const [password, setPassword] = useState("");
+  const [passwordError, setPasswordError] = useState("");
   const [statusMessages, setStatusMessages] = useState<StatusMessage[]>([]);
-
+  const { t } = useTranslation();
+  const router = useRouter();
   const clearErrors = () => {
     setEmailError("");
+    setPasswordError("");
     setStatusMessages([]);
   };
 
   const validate = () => {
     let isValid = true;
+
     if (!email.trim()) {
-      setEmailError("email is required");
+      setEmailError(t("login.profile.form.error.email"));
       isValid = false;
     }
+
+    if (!password.trim()) {
+      setPasswordError(t("login.profile.form.error.password.exists"));
+      isValid = false;
+    }
+
     return isValid;
   };
 
@@ -25,9 +38,38 @@ const UserLoginForm: React.FC = () => {
     e.preventDefault();
     clearErrors();
     if (!validate()) return;
-    const user = await UserService.getUserByEmail(email);
+
+    const res = await UserService.loginUser(email, password);
+
+    if (res.status === 401) {
+      const { errorMessage } = await res.json();
+      setStatusMessages([{ message: errorMessage, type: "error" }]);
+      return;
+    }
+    if (res.status === 400) {
+      const errorMessage = await res.json();
+      setPasswordError(errorMessage.message);
+      return;
+    }
+
+    if (res.status !== 200) {
+      setStatusMessages([
+        {
+          message: "An error has occurred. Please try again later.",
+          type: "error",
+        },
+      ]);
+      return;
+    }
+
+    const user = await res.json();
     sessionStorage.setItem("loggedInUser", JSON.stringify(user));
-    setStatusMessages([{ message: `Welcome, ${email}`, type: "success" }]);
+    setStatusMessages([
+      { message: "Login successful! Redirecting...", type: "success" },
+    ]);
+    setTimeout(() => {
+      router.push("/");
+    }, 2000);
   };
 
   return (
@@ -41,18 +83,37 @@ const UserLoginForm: React.FC = () => {
           ))}
         </ul>
       )}
-      <form onSubmit={(e) => handleSubmit(e)}>
-        <label htmlFor="emailInput">Email</label>
-        <br />
+
+      <form className="flex flex-col" onSubmit={(e) => handleSubmit(e)}>
+        <label htmlFor="emailInput" className="mb-1">
+          {t("login.profile.form.email")}
+        </label>
         <input
           id="emailInput"
           type="email"
           value={email}
+          className="mb-1"
           onChange={(e) => setEmail(e.target.value)}
         />
-        <br />
         {emailError && <div>{emailError}</div>}
-        <button type="submit">Login</button>
+
+        <label htmlFor="passwordInput" className="mb-1">
+          {t("login.profile.form.password")}
+        </label>
+        <input
+          id="passwordInput"
+          type="password"
+          className="mb-1"
+          onChange={(e) => setPassword(e.target.value)}
+        />
+        {passwordError && <div>{passwordError}</div>}
+
+        <button
+          type="submit"
+          className="bg-gray-500 m-5 hover:bg-gray-300 hover:text-black"
+        >
+          {t("login.enter")}
+        </button>
       </form>
     </>
   );

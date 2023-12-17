@@ -1,9 +1,7 @@
 import database from '../../util/database';
 import { Category } from '../model/category';
-import { Profile } from '../model/profile';
 import { Resource } from '../model/resource';
 import { Subject } from '../model/subject';
-import commentDb from './comment.db';
 
 const getAllResources = async (): Promise<Resource[]> => {
     try {
@@ -209,11 +207,6 @@ const updateFieldOfResource = async (
     }
 };
 
-const getCommentsOnComment = async (commentId: number) => {
-    const commentsPrisma = await commentDb.getAllComments();
-    return commentsPrisma.filter((comment) => comment.parentId == commentId);
-};
-
 export default {
     getAllResources,
     getResourceById,
@@ -221,5 +214,4 @@ export default {
     getResourceByContent,
     deleteResource,
     updateFieldOfResource,
-    getCommentsOnComment,
 };

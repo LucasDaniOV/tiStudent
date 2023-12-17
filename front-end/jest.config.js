@@ -1,6 +1,6 @@
 module.exports = {
-  testEnvironment: 'jsdom',
+  testEnvironment: "jsdom",
   transform: {
-    '\\.[jt]sx?$': 'esbuild-jest',
+    "\\.[jt]sx?$": "esbuild-jest",
   },
-}
+};

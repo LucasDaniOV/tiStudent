@@ -1,8 +1,7 @@
-import { Profile } from '../model/profile';
-import { ProfileInput } from '../../types';
-import { User } from '../model/user';
-import { Resource } from '../model/resource';
 import database from '../../util/database';
+import { Profile } from '../model/profile';
+import { Resource } from '../model/resource';
+import { User } from '../model/user';
 import likeDb from './like.db';
 
 const getAllProfiles = async (): Promise<Profile[]> => {
@@ -72,11 +71,7 @@ const getProfileByUsername = async (username: string): Promise<Profile> => {
     return;
 };
 
-const createProfile = async (
-    user: User,
-    username: string,
-    bio?: string,
-): Promise<Profile> => {
+const createProfile = async (user: User, username: string, bio?: string): Promise<Profile> => {
     try {
         const profile = new Profile({ user, username, bio });
         const profilePrisma = await database.profile.create({

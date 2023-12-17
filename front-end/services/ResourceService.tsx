@@ -1,31 +1,21 @@
-import { Profile, Resource } from "@/types";
+import { Profile, Comment, Resource } from "@/types";
 import ProfileService from "./ProfileService";
+import { getAll, getById } from "@/util/get";
+import { getToken } from "@/util/token";
 
 const baseUrl = process.env.NEXT_PUBLIC_API_URL + "/resources";
+const type = "resources";
 
-const getAllResources = () => {
-  return fetch(baseUrl, {
-    method: "GET",
-    headers: {
-      "Content-Type": "application/json",
-    },
-  });
-};
+const getAllResources = async () => getAll(type);
+const getResourceById = async (resourceId: string) => getById(type, resourceId);
 
-const getResourceById = (resourceId: string) => {
-  return fetch(baseUrl + "/" + resourceId, {
-    method: "GET",
-    headers: {
-      "Content-Type": "application/json",
-    },
-  });
-};
-
-const deleteResourceById = (resourceId: string) => {
-  return fetch(baseUrl + "/" + parseInt(resourceId), {
+const deleteResourceById = async (resourceId: string) => {
+  const token = getToken();
+  return await fetch(baseUrl + "/" + parseInt(resourceId), {
     method: "DELETE",
     headers: {
       "Content-Type": "application/json",
+      Authorization: `Bearer ${token}`,
     },
   });
 };
@@ -37,6 +27,7 @@ const createResource = async (
   category: string,
   subject: string
 ) => {
+  const token = getToken();
   const res1 = await ProfileService.getProfileById(profileId);
 
   if (res1.status === "error") {
@@ -52,6 +43,7 @@ const createResource = async (
     method: "POST",
     headers: {
       "Content-Type": "application/json",
+      Authorization: `Bearer ${token}`,
     },
     body: JSON.stringify({
       creator,
@@ -67,11 +59,23 @@ const createResource = async (
   if (res2Json.status === "error") {
     return {
       status: "error",
-      message: res2Json.message
+      message: res2Json.message,
     };
   }
 
   return res2Json;
+};
+
+const getCommentsOnResource = async (id: string): Promise<Comment[]> => {
+  const token = getToken();
+  const comments = await fetch(baseUrl + `/${id}/comments`, {
+    method: "GET",
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${token}`,
+    },
+  });
+  return comments.json();
 };
 
 const ResourceService = {
@@ -79,6 +83,7 @@ const ResourceService = {
   getResourceById,
   deleteResourceById,
   createResource,
+  getCommentsOnResource,
 };
 
 export default ResourceService;

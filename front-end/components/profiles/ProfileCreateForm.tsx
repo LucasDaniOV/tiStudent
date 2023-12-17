@@ -1,58 +1,92 @@
 import ProfileService from "@/services/ProfileService";
+import UserService from "@/services/UserService";
 import { StatusMessage } from "@/types";
+import { getToken } from "@/util/token";
+import { useTranslation } from "next-i18next";
 import { useRouter } from "next/router";
 import React, { FormEvent, useState } from "react";
 
 const ProfileCreateForm: React.FC = () => {
   const [username, setUsername] = useState("");
   const [bio, setBio] = useState("");
-  const [userId, setUserId] = useState("");
   const [usernameError, setUsernameError] = useState<string>("");
   const [bioError, setBioError] = useState<string>("");
-  const [userIdError, setUserIdError] = useState<string>("");
+  const [email, setEmail] = useState("");
+  const [emailError, setEmailError] = useState("");
+  const [password, setPassword] = useState("");
+  const [passwordError, setPasswordError] = useState("");
   const [statusMessages, setStatusMessages] = useState<StatusMessage[]>([]);
-  const router = useRouter();
-
+  const { t } = useTranslation();
   const clearErrors = () => {
     setUsernameError("");
     setBioError("");
-    setUserIdError("");
+    setEmailError("");
+    setPasswordError("");
     setStatusMessages([]);
   };
 
   const validate = () => {
     let isValid = true;
+    if (!email.trim()) {
+      setEmailError(t("login.profile.form.error.email"));
+      isValid = false;
+    }
     if (!username.trim()) {
-      setUsernameError("username is required");
+      setUsernameError(t("login.profile.form.error.username"));
       isValid = false;
     }
     if (username.length > 30) {
-      setUsernameError("username cannot be longer than 30 characters");
+      setUsernameError(t("login.profile.form.error.username.length"));
       isValid = false;
     }
     if (bio.trim() && bio.length > 200) {
-      setBioError("bio cannot be longer than 200 characters");
+      setBioError(t("login.profile.form.error.bio"));
       isValid = false;
     }
-    if (!userId.trim()) {
-      setUserIdError("user id is required");
+    if (!password.trim()) {
+      setPasswordError(t("login.profile.form.error.password.exists"));
+      isValid = false;
+    } else if (password.length < 8) {
+      setPasswordError(t("login.profile.form.error.password.length"));
+      isValid = false;
+    } else if (!password.match(/\d/)) {
+      setPasswordError(t("login.profile.form.error.password.number"));
+      isValid = false;
+    } else if (!password.match(/[A-Z]/)) {
+      setPasswordError(t("login.profile.form.error.password.capital"));
+      isValid = false;
+    } else if (!password.match(/[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]/)) {
+      setPasswordError(t("login.profile.form.error.password.special"));
       isValid = false;
     }
     return isValid;
   };
 
-  const createProfile = async () => {
-    const res = await ProfileService.createProfile(username, bio, userId);
+  const createProfile = async (email: string) => {
+    const token = getToken();
+    const user = JSON.stringify(await UserService.getUserByEmail(email, token)); // kan ni me token
+    const userObject = JSON.parse(user);
+
+    const res = await ProfileService.createProfile(
+      username,
+      bio,
+      parseInt(userObject.id)
+    );
+    const profileObject = await ProfileService.getProfileByEmail(email); // kan ni me token
+    const profile = JSON.stringify(profileObject);
+    sessionStorage.setItem("loggedInProfile", profile);
     const message = res.message;
     const type = res.status;
     setStatusMessages([{ message, type }]);
   };
 
-  const handleSubmit = (e: FormEvent) => {
+  const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
     clearErrors();
     if (!validate()) return;
-    createProfile();
+    const token = getToken();
+    await UserService.createUser(email, password, token); // kan ni me token
+    await createProfile(email);
   };
 
   return (
@@ -64,8 +98,10 @@ const ProfileCreateForm: React.FC = () => {
           ))}
         </ul>
       )}
-      <form onSubmit={(e) => handleSubmit(e)}>
-        <label htmlFor="usernameInput">Username:</label>
+      <form className="flex flex-col" onSubmit={(e) => handleSubmit(e)}>
+        <label className="mb-4" htmlFor="usernameInput">
+          {t("login.profile.form.username")}:
+        </label>
         <br />
         <input
           id="usernameInput"
@@ -73,9 +109,12 @@ const ProfileCreateForm: React.FC = () => {
           value={username}
           onChange={(e) => setUsername(e.target.value)}
         />
+        {usernameError && <div>{usernameError}</div>}
         <br />
 
-        <label htmlFor="bioInput">Bio:</label>
+        <label className="mb-4" htmlFor="bioInput">
+          {t("login.profile.form.bio")}:
+        </label>
         <br />
         <input
           id="bioInput"
@@ -83,23 +122,40 @@ const ProfileCreateForm: React.FC = () => {
           value={bio}
           onChange={(e) => setBio(e.target.value)}
         />
+        {bioError && <div>{bioError}</div>}
         <br />
 
-        <label htmlFor="userIdInput">User ID:</label>
+        <label className="mb-4" htmlFor="emailInput">
+          {t("login.profile.form.email")}:
+        </label>
         <br />
         <input
-          id="userIdInput"
-          type="number"
-          value={userId}
-          onChange={(e) => setUserId(e.target.value)}
+          id="emailInput"
+          type="email"
+          value={email}
+          onChange={(e) => setEmail(e.target.value)}
         />
         <br />
+        {emailError && <div>{emailError}</div>}
 
-        {usernameError && <div>{usernameError}</div>}
-        {bioError && <div>{bioError}</div>}
-        {userIdError && <div>{userIdError}</div>}
-
-        <button type="submit">Create profile</button>
+        <label className="mb-4" htmlFor="passwordInput">
+          {t("login.profile.form.password")}:
+        </label>
+        <br />
+        <input
+          id="passwordInput"
+          type="password"
+          value={password}
+          onChange={(e) => setPassword(e.target.value)}
+        />
+        <br />
+        {passwordError && <div>{passwordError}</div>}
+        <button
+          type="submit"
+          className="bg-gray-500 hover:bg-gray-300 hover:text-black m-10"
+        >
+          {t("login.enter")}
+        </button>
       </form>
     </>
   );

@@ -57,7 +57,6 @@ const getCommentById = async (commentId: number): Promise<Comment> => {
 
         return;
     } catch (error) {
-        console.error(error);
         throw new Error('Database error. See server log for details.');
     }
 };
@@ -67,6 +66,7 @@ const getAllCommentsOnResource = async (resourceId: number): Promise<Comment[]> 
         const commentsPrisma = await database.comment.findMany({
             where: {
                 resourceId: resourceId,
+                parentId: null,
             },
             include: {
                 profile: {
@@ -152,7 +152,7 @@ const getAllCommentsByProfileOnResource = async (profileId: number, resourceId: 
     }
 };
 
-const createComment = async (profile: Profile, resource: Resource, message: string, parentId: number | null = null) => {
+const createCommentOnComment = async (profile: Profile, resource: Resource, message: string, parentId: number) => {
     try {
         const comment = new Comment({ profile, resource, message, parentId });
         const commentPrisma = await database.comment.create({
@@ -168,7 +168,54 @@ const createComment = async (profile: Profile, resource: Resource, message: stri
                     },
                 },
                 createdAt: new Date(),
-                parentId: parentId ? parentId : null,
+                parent: {
+                    connect: {
+                        id: comment.parentId,
+                    },
+                },
+                message: comment.message,
+                edited: false,
+            },
+            include: {
+                profile: {
+                    include: {
+                        user: true,
+                    },
+                },
+                resource: {
+                    include: {
+                        creator: {
+                            include: {
+                                user: true,
+                            },
+                        },
+                    },
+                },
+            },
+        });
+        if (commentPrisma) return Comment.from(commentPrisma);
+    } catch (error) {
+        console.error(error);
+        throw new Error('Database error. See server log for details.');
+    }
+};
+
+const createCommentOnResource = async (profile: Profile, resource: Resource, message: string) => {
+    try {
+        const comment = new Comment({ profile, resource, message, parentId: null });
+        const commentPrisma = await database.comment.create({
+            data: {
+                profile: {
+                    connect: {
+                        id: comment.profile.id,
+                    },
+                },
+                resource: {
+                    connect: {
+                        id: comment.resource.id,
+                    },
+                },
+                createdAt: new Date(),
                 message: comment.message,
                 edited: false,
             },
@@ -244,13 +291,20 @@ const deleteComment = async (commentId: number): Promise<Boolean> => {
     }
 };
 
+const getCommentsOnComment = async (commentId: number) => {
+    const commentsPrisma = await getAllComments();
+    return commentsPrisma.filter((comment) => comment.parentId === commentId);
+};
+
 export default {
     getAllComments,
     getAllCommentsOnResource,
     getAllCommentsByProfile,
     getAllCommentsByProfileOnResource,
     getCommentById,
-    createComment,
+    createCommentOnComment,
+    createCommentOnResource,
     updateMessageOnComment,
     deleteComment,
+    getCommentsOnComment,
 };

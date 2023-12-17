@@ -18,7 +18,7 @@ export type Resource = {
 };
 
 export type Profile = {
-  id: number;
+  id: string;
   username: string;
   bio?: string;
   createdAt: Date;
@@ -26,7 +26,28 @@ export type Profile = {
   user: User;
 };
 
+export type Comment = {
+  id: string;
+  message: string;
+  createdAt: Date;
+  edited: boolean;
+  profile: Profile;
+  resource: Resource;
+  parentId: string;
+};
+
+export type Like = {
+  id: string;
+  createdAt: Date;
+  profile: Profile;
+  resource: Resource;
+  parentId: string;
+  comment?: Comment;
+};
+
 export type StatusMessage = {
   message: string;
   type: "error" | "success";
 };
+
+export type Type = "users" | "resources" | "profiles" | "likes";

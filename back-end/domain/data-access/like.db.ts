@@ -105,6 +105,7 @@ const getLikesOnResource = async (resourceId: number): Promise<Like[]> => {
                 resource: {
                     id: resourceId,
                 },
+                commentId: null,
             },
             include: {
                 upvoter: {
@@ -261,7 +262,7 @@ const deleteLike = async (likeId: number): Promise<Boolean> => {
     }
 };
 
-const createLike = async (profile: Profile, resource: Resource | null, comment: Comment | null) => {
+const createLike = async (profile: Profile, resource: Resource | null, comment: Comment | null): Promise<Like> => {
     try {
         const like = new Like({ profile, resource, comment });
         const likeData = {
@@ -271,56 +272,56 @@ const createLike = async (profile: Profile, resource: Resource | null, comment: 
                     id: like.profile.id,
                 },
             },
-        };
-        if (resource == null) {
-            likeData['resource'] = {
+            resource: {
                 connect: {
                     id: like.resource.id,
                 },
-            };
-        } else if (comment == null) {
+            },
+        };
+        const includeData = {
+            upvoter: {
+                include: {
+                    user: true,
+                },
+            },
+            resource: {
+                include: {
+                    creator: {
+                        include: {
+                            user: true,
+                        },
+                    },
+                },
+            },
+        };
+        if (comment !== null) {
             likeData['comment'] = {
-                connect: like.comment.id,
+                connect: {
+                    id: like.comment.id,
+                },
             };
-        }
-        console.log(likeData);
-
-        const likePrisma = await database.like.create({
-            data: likeData,
-            include: {
-                upvoter: {
-                    include: {
-                        user: true,
-                    },
-                },
-                resource: {
-                    include: {
-                        creator: {
-                            include: {
-                                user: true,
-                            },
+            includeData['comment'] = {
+                include: {
+                    profile: {
+                        include: {
+                            user: true,
                         },
                     },
-                },
-                comment: {
-                    include: {
-                        profile: {
-                            include: {
-                                user: true,
-                            },
-                        },
-                        resource: {
-                            include: {
-                                creator: {
-                                    include: {
-                                        user: true,
-                                    },
+                    resource: {
+                        include: {
+                            creator: {
+                                include: {
+                                    user: true,
                                 },
                             },
                         },
                     },
                 },
-            },
+            };
+        }
+        const likePrisma = await database.like.create({
+            data: likeData,
+            include: includeData,
         });
         if (likePrisma) return Like.from(likePrisma);
     } catch (error) {

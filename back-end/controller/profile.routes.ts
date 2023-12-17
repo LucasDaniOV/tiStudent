@@ -42,47 +42,10 @@
  *         username:
  *           type: string
  *           example: 'johndoe'
- *     Comment:
- *       type: object
- *       properties:
- *         id:
- *           type: number
- *           format: int64
- *           example: 0
- *         message:
- *           type: string
- *           example: Great summary!!
- *         createdAt:
- *           type: date-time
- *           example: '2023-01-01T00:00:00.000Z'
- *         profile:
- *           $ref: '#/components/schemas/Profile'
- *         resource:
- *           $ref: '#/components/schemas/Resource'
- *         edited:
- *           type: boolean
- *           example: false
- *     Like:
- *       type: object
- *       properties:
- *         id:
- *           type: number
- *           format: int64
- *           example: 0
- *         createdAt:
- *           type: date-time
- *           example: '2023-01-01T00:00:00.000Z'
- *         profile:
- *           $ref: '#/components/schemas/Profile'
- *         resource:
- *           $ref: '#/components/schemas/Resource'
- *         comment:
- *           $ref: '#/components/schemas/Comment'
  */
 import express, { Request, Response } from 'express';
 import profileService from '../service/profile.service';
 import { ProfileInput } from '../types';
-import resourceService from '../service/resource.service';
 
 const profileRouter = express.Router();
 
@@ -103,9 +66,10 @@ const profileRouter = express.Router();
  *               items:
  *                 $ref: '#/components/schemas/Profile'
  */
-profileRouter.get('/', async (req: Request, res: Response) => {
+profileRouter.get('/', async (req: Request & { auth: any }, res: Response) => {
     try {
-        const profiles = await profileService.getAllProfiles();
+        const { role } = req.auth;
+        const profiles = await profileService.getAllProfiles(role);
         res.status(200).json(profiles);
     } catch (error) {
         res.status(400).json({ status: 'error', errorMessage: error.message });
@@ -144,6 +108,38 @@ profileRouter.get('/:id', async (req: Request, res: Response) => {
         res.status(400).json({ status: 'error', errorMessage: error.message });
     }
 });
+/**
+ * @swagger
+ * /profiles/user/{email}:
+ *   get:
+ *     tags:
+ *       - profiles
+ *     summary: Get a profile by user email
+ *     parameters:
+ *       - in: path
+ *         name: email
+ *         schema:
+ *           type: string
+ *           required: true
+ *           description: The email of the user that this Profile belongs to
+ *           example: alice12@prisma.io
+ *     responses:
+ *       200:
+ *         description: A profile object
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/Profile'
+ */
+profileRouter.get('/user/:email', async (req: Request, res: Response) => {
+    try {
+        const email = req.params.email;
+        const profile = await profileService.getProfileByEmail(email);
+        res.status(200).json(profile);
+    } catch (error) {
+        res.status(400).json({ status: 'error', errorMessage: error.message });
+    }
+});
 
 /**
  * @swagger
@@ -174,56 +170,6 @@ profileRouter.post('/', async (req: Request, res: Response) => {
         res.status(200).json({ status: 'success', message: 'Profile created', data: profile });
     } catch (error) {
         res.status(400).json({ status: 'error', message: error.message });
-    }
-});
-
-/**
- * @swagger
- * /profiles/like/{profileId}/{objectId}?object:
- *   post:
- *     tags:
- *       - profiles
- *     summary: Like an object (resource or comment)
- *     parameters:
- *       - name: profileId
- *         in: path
- *         required: true
- *         description: The ID of the Profile.
- *         schema:
- *           type: number
- *           example: 0
- *       - name: objectId
- *         in: path
- *         required: true
- *         description: The ID of the object
- *         schema:
- *           type: number
- *           example: 0
- *       - name: object
- *         in: query
- *         required: true
- *         description: The name of what object you want to like
- *         schema:
- *           type: string
- *           example: comment
- *     responses:
- *       200:
- *         description: The liked object
- *         content:
- *           application/json:
- *             schema:
- *               $ref: '#/components/schemas/Like'
- */
-
-profileRouter.post('/like/:profileId/:objectId', async (req: Request, res: Response) => {
-    try {
-        const profileId = parseInt(req.params.profileId);
-        const resourceId = parseInt(req.params.resourceId);
-        const object = String(req.query.object);
-        const resource = await profileService.likeObject(profileId, object, resourceId);
-        res.status(200).json(resource);
-    } catch (error) {
-        res.status(400).json({ status: 'error', errorMessage: error.message });
     }
 });
 
@@ -366,143 +312,13 @@ profileRouter.get('/:id/latestActivity', async (req: Request, res: Response) => 
  *                 $ref: '#/components/schemas/Resource'
  */
 
-profileRouter.get('/:id/likedResources', async (req: Request, res: Response) => {
+profileRouter.get('/:id/likedResources', async (req: Request & { auth: any }, res: Response) => {
     try {
+        const { role } = req.auth.role;
         const profileId = parseInt(req.params.id);
         const profile = await profileService.getProfileById(profileId);
         const likedResources = await profileService.getProfileField(profile, 'likedResources');
         res.status(200).json(likedResources);
-    } catch (error) {
-        res.status(400).json({ status: 'error', errorMessage: error.message });
-    }
-});
-
-/**
- * @swagger
- * /profiles/{profileId}/comments:
- *   get:
- *     tags:
- *       - profiles
- *     summary: give an overview of a Profiles' comments
- *     parameters:
- *       - name: profileId
- *         in: path
- *         required: true
- *         description: The ID of the Profile.
- *         schema:
- *           type: number
- *           example: 0
- *
- *     responses:
- *       200:
- *         description: The comments a Profile has written
- *         content:
- *           application/json:
- *             schema:
- *               type: array
- *               items:
- *                 $ref: '#/components/schemas/Comment'
- */
-
-profileRouter.get('/:id/comments', async (req: Request, res: Response) => {
-    try {
-        const profileId = parseInt(req.params.id);
-        const profile = await profileService.getProfileById(profileId);
-        const comments = await profileService.getAllCommentsByProfile(profile.id);
-        res.status(200).json(comments);
-    } catch (error) {
-        res.status(400).json({ status: 'error', errorMessage: error.message });
-    }
-});
-
-/**
- * @swagger
- * /profiles/{profileId}/{resourceId}/comments:
- *   get:
- *     tags:
- *       - profiles
- *     summary: give an overview of a Profiles' comments on a Resource
- *     parameters:
- *       - name: profileId
- *         in: path
- *         required: true
- *         description: The ID of the Profile.
- *         schema:
- *           type: number
- *           example: 0
- *       - name: resourceId
- *         in: path
- *         required: true
- *         description: The ID of the Resource.
- *         schema:
- *           type: number
- *           example: 0
- *
- *     responses:
- *       200:
- *         description: The comments a Profile has written on a Resource
- *         content:
- *           application/json:
- *             schema:
- *               type: array
- *               items:
- *                 $ref: '#/components/schemas/Comment'
- */
-
-profileRouter.get('/:profileId/:resourceId/comments', async (req: Request, res: Response) => {
-    try {
-        const profileId = parseInt(req.params.profileId);
-        const resourceId = parseInt(req.params.resourceId);
-        const profile = await profileService.getProfileById(profileId);
-        const resource = await resourceService.getResourceById(resourceId);
-        const comments = await profileService.getAllCommentsByProfileOnResource(profile.id, resource.id);
-        res.status(200).json(comments);
-    } catch (error) {
-        res.status(400).json({ status: 'error', errorMessage: error.message });
-    }
-});
-
-/**
- * @swagger
- * /profiles/{profileId}/comment/{commentId}:
- *   delete:
- *     tags:
- *       - profiles
- *     summary: delete a Comment written by a Profile
- *     parameters:
- *       - name: profileId
- *         in: path
- *         required: true
- *         description: The ID of the Profile.
- *         schema:
- *           type: number
- *           example: 0
- *       - name: commentId
- *         in: path
- *         required: true
- *         description: The ID of the Comment.
- *         schema:
- *           type: number
- *           example: 0
- *
- *     responses:
- *       200:
- *         description: the removed Comment
- *         content:
- *           application/json:
- *             schema:
- *               type: array
- *               items:
- *                 $ref: '#/components/schemas/Comment'
- */
-
-profileRouter.delete('/:profileId/comment/:commentId', async (req: Request, res: Response) => {
-    try {
-        const profileId = parseInt(req.params.profileId);
-        const commentId = parseInt(req.params.commentId);
-        const profile = await profileService.getProfileById(profileId);
-        const comment = await profileService.getCommentById(commentId);
-        res.status(200).json(await profileService.deleteComment(profile, comment.id));
     } catch (error) {
         res.status(400).json({ status: 'error', errorMessage: error.message });
     }
@@ -554,164 +370,6 @@ profileRouter.put('/:id/bio', async (req: Request, res: Response) => {
 
 /**
  * @swagger
- * /profiles/{profileId}/like/{likeId}:
- *   delete:
- *     tags:
- *       - profiles
- *     summary: Remove a like on some object (a comment or a resource)
- *     parameters:
- *       - name: profileId
- *         in: path
- *         required: true
- *         description: The ID of the Profile.
- *         schema:
- *           type: number
- *           example: 0
- *       - name: likeId
- *         in: path
- *         required: true
- *         description: The ID of Like
- *         schema:
- *           type: number
- *           example: 0
- *
- *     responses:
- *       200:
- *         description: The updated list of likes
- *         content:
- *           application/json:
- *             schema:
- *               type: array
- *               items:
- *                 $ref: '#/components/schemas/Like'
- */
-
-profileRouter.delete('/:profileId/like/:likeId', async (req: Request, res: Response) => {
-    try {
-        const profileId = parseInt(req.params.profileId);
-        const likeId = String(req.params.likeId);
-        const profile = await profileService.getProfileById(profileId);
-        const likedResources = await profileService.updateField(profile, 'likes', likeId);
-        res.status(200).json(likedResources);
-    } catch (error) {
-        res.status(400).json({ status: 'error', errorMessage: error.message });
-    }
-});
-
-/**
- * @swagger
- * /profiles/comment-on-comment/{profileId}/{resourceId}/{commentId}:
- *   post:
- *     tags:
- *       - profiles
- *     summary: Comment on a Comment on a Resource
- *     parameters:
- *       - name: profileId
- *         in: path
- *         required: true
- *         description: The ID of the Profile.
- *         schema:
- *           type: number
- *           example: 0
- *       - name: resourceId
- *         in: path
- *         required: true
- *         description: The ID of the Resource.
- *         schema:
- *           type: number
- *           example: 0
- *       - name: commentId
- *         in: path
- *         required: true
- *         description: The ID of the Comment.
- *         schema:
- *           type: number
- *           example: 0
- *       - name: message
- *         in: query
- *         required: true
- *         description: The message you want to comment on the Comment
- *         schema:
- *           type: string
- *           example: Great summary!
- *     responses:
- *       200:
- *         description: The Comment
- *         content:
- *           application/json:
- *             schema:
- *               $ref: '#/components/schemas/Comment'
- */
-
-profileRouter.post('/comment-on-comment/:profileId/:resourceId/:commentId', async (req: Request, res: Response) => {
-    try {
-        const profileId = parseInt(req.params.profileId);
-        const resourceId = parseInt(req.params.resourceId);
-        const commentId = parseInt(req.params.commentId);
-        const message = String(req.query.message);
-        const profile = await profileService.getProfileById(profileId);
-        const resource = await resourceService.getResourceById(resourceId);
-        const newComment = await profileService.writeComment(profile, resource, message, commentId);
-        res.status(200).json(newComment);
-    } catch (error) {
-        res.status(400).json({ status: 'error', errorMessage: error.message });
-    }
-});
-
-/**
- * @swagger
- * /profiles/comment/{profileId}/{resourceId}:
- *   post:
- *     tags:
- *       - profiles
- *     summary: Comment on a Resource
- *     parameters:
- *       - name: profileId
- *         in: path
- *         required: true
- *         description: The ID of the Profile.
- *         schema:
- *           type: number
- *           example: 0
- *       - name: resourceId
- *         in: path
- *         required: true
- *         description: The ID of the Resource.
- *         schema:
- *           type: number
- *           example: 0
- *       - name: message
- *         in: query
- *         required: true
- *         description: The message you want to comment on the Resource
- *         schema:
- *           type: string
- *           example: Great summary!
- *     responses:
- *       200:
- *         description: The Comment
- *         content:
- *           application/json:
- *             schema:
- *               $ref: '#/components/schemas/Comment'
- */
-
-profileRouter.post('/comment/:profileId/:resourceId', async (req: Request, res: Response) => {
-    try {
-        const profileId = parseInt(req.params.profileId);
-        const resourceId = parseInt(req.params.resourceId);
-        const message = String(req.query.message);
-        const profile = await profileService.getProfileById(profileId);
-        const resource = await resourceService.getResourceById(resourceId);
-        const comment = await profileService.writeComment(profile, resource, message);
-        res.status(200).json(comment);
-    } catch (error) {
-        res.status(400).json({ status: 'error', errorMessage: error.message });
-    }
-});
-
-/**
- * @swagger
  * /profiles/{profileId}:
  *   delete:
  *     tags:
@@ -740,60 +398,6 @@ profileRouter.delete('/:id', async (req: Request, res: Response) => {
         const profileId = parseInt(req.params.id);
         const profile = await profileService.getProfileById(profileId);
         if (profile) res.status(200).json(profileService.deleteProfile(profileId));
-    } catch (error) {
-        res.status(400).json({ status: 'error', errorMessage: error.message });
-    }
-});
-
-/**
- * @swagger
- * /profiles/{profileId}/{commentId}?newMessage:
- *   put:
- *     tags:
- *       - profiles
- *     summary: Edit a Comment
- *     parameters:
- *       - name: profileId
- *         in: path
- *         required: true
- *         description: The ID of the Profile.
- *         schema:
- *           type: number
- *           example: 0
- *       - name: commentId
- *         in: path
- *         required: true
- *         description: The ID of the Comment to be edited
- *         schema:
- *           type: number
- *           example: 0
- *       - name: message
- *         in: query
- *         required: true
- *         description: The new message for the Comment
- *         schema:
- *           type: string
- *           example: "Nice!!"
- *
- *     responses:
- *       200:
- *         description: The updated Comment
- *         content:
- *           application/json:
- *             schema:
- *               $ref: '#/components/schemas/Comment'
- */
-profileRouter.put('/:profileId/:commentId', async (req: Request, res: Response) => {
-    try {
-        const profileId = parseInt(req.params.profileId);
-        const commentId = parseInt(req.params.commentId);
-        const profile = await profileService.getProfileById(profileId);
-        const comment = await profileService.getCommentById(commentId);
-        const message = String(req.query.message);
-        if (profile && comment) {
-            const updatedComment = await profileService.updateComment(profile, comment, message);
-            res.status(200).json(updatedComment);
-        }
     } catch (error) {
         res.status(400).json({ status: 'error', errorMessage: error.message });
     }

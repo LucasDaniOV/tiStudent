@@ -1,0 +1,141 @@
+{
+  "app.title": "tiStudent App",
+  "general.error": "Er is een fout opgetreden. Probeer het later opnieuw.",
+  "authorization.error": "Je bent niet gemachtigd om deze pagina te bekijken. Log eerst in.",
+  "loading": "Laden...",
+  "delete": "Verwijderen",
+  "back": "Terug",
+  "header": {
+    "nav": {
+      "home": "Home",
+      "users": "Gebruikers",
+      "resources": "Bronnen",
+      "profiles": "Profielen",
+      "login": "Inloggen",
+      "logout": "Uitloggen"
+    }
+  },
+  "home": {
+    "welcome": "Welkom",
+    "message": "tiStudent is een platform waar je academische bronnen kunt delen. Als gebruiker kun je je eigen bronnen uploaden en bronnen van andere mensen leuk vinden en erop reageren. Je kunt je leuk gevonden bronnen bekijken en een overzicht krijgen van alle bronnen die je hebt gedeeld."
+  },
+  "users": {
+    "message": "Gebruikers",
+    "info": "Gebruikersinformatie",
+    "about": "Informatie over gebruiker met ID: ",
+    "loading": "Laden...",
+    "deleted": {
+      "title": "Gebruiker verwijderd",
+      "message": "Gebruiker met ID verwijderd:"
+    },
+    "fields": {
+      "id": "ID",
+      "email": "E-mail",
+      "password": "Wachtwoord"
+    }
+  },
+  "resources": {
+    "title": "Bronnen",
+    "fields": {
+      "id": "ID",
+      "user.id": "Gebruikers-ID",
+      "created.at": "Aangemaakt op",
+      "title": "Titel",
+      "description": "Omschrijving",
+      "category": "Categorie",
+      "summary": "Samenvatting",
+      "cheat.sheet": "Spiekbriefje",
+      "lecture.notes": "Collegeaantekeningen",
+      "subject": "Onderwerp",
+      "profileId": "Profiel-ID"
+    },
+    "error": {
+      "title": "Titel is verplicht",
+      "title.length": "Titel mag niet langer zijn dan 60 tekens",
+      "description": "Omschrijving is verplicht",
+      "description.length": "Omschrijving mag niet langer zijn dan 500 tekens",
+      "category": "Categorie is verplicht",
+      "category.invalid": "Ongeldige categorie",
+      "subject": "Onderwerp is verplicht",
+      "subject.invalid": "Ongeldig onderwerp",
+      "profileId": "Profiel-ID is verplicht"
+    },
+    "create": "Bron creëren",
+    "info": {
+      "title": "Broninformatie",
+      "message": "Voeg een bron toe"
+    },
+    "delete": "Bron verwijderd met ID ",
+    "comment": {
+      "reply": "Antwoorden",
+      "hide": "Verbergen",
+      "show": "Tonen",
+      "replies": " antwoorden",
+      "add": "Voeg een opmerking toe",
+      "prompt": "Jouw bericht:",
+      "message": "Bericht",
+      "submit": "Verzenden",
+      "none": "Er zijn geen opmerkingen",
+      "options": {
+        "edit": {
+          "title": "Bewerken",
+          "message": "Nog niet geïmplementeerd"
+        },
+        "delete": {
+          "title": "Verwijderen",
+          "message": "Weet je zeker dat je deze opmerking wilt verwijderen? ",
+          "error": "Jij bent niet de maker van deze opmerking"
+        },
+        "close": "Sluiten"
+      }
+    }
+  },
+  "profiles": {
+    "index.title": "Profielen",
+    "title": "Profielinformatie",
+    "fields": {
+      "id": "ID",
+      "username": "Gebruikersnaam",
+      "bio": "Biografie",
+      "created.at": "Aangemaakt op",
+      "latest.activity": "Laatste activiteit",
+      "user.id": "Gebruikers-ID"
+    },
+    "info": "Informatie over ",
+    "delete": "Weet je zeker dat je wilt verwijderen"
+  },
+  "login": {
+    "enter": "Invoeren",
+    "message": "Inloggen",
+    "github": "Inloggen met GitHub",
+    "profile": {
+      "message": "Of maak een nieuw profiel aan",
+      "form": {
+        "username": "Gebruikersnaam",
+        "bio": "Biografie",
+        "email": "E-mail",
+        "password": "Wachtwoord",
+        "create.profile": "Profiel aanmaken",
+        "error": {
+          "email": "E-mail is verplicht",
+          "username": "Gebruikersnaam is verplicht",
+          "username.length": "Gebruikersnaam mag niet langer zijn dan 30 tekens",
+          "bio": "Biografie mag niet langer zijn dan 200 tekens",
+          "password": {
+            "exists": "Wachtwoord is verplicht",
+            "length": "Wachtwoord moet minimaal 8 tekens lang zijn",
+            "number": "Wachtwoord moet minimaal 1 cijfer bevatten",
+            "capital": "Wachtwoord moet minimaal 1 hoofdletter bevatten",
+            "special": "Wachtwoord moet minimaal 1 speciaal teken bevatten (!@#$%^&*()_+-=[]{};':\"|,.<>/?)"
+          }
+        }
+      }
+    },
+    "succes": "Inloggen gelukt! Doorsturen...",
+    "error": "Er is een fout opgetreden. Probeer het later opnieuw."
+  },
+  "logout": {
+    "message": "Weet je zeker dat je wilt vertrekken?",
+    "button": "Ja"
+  }
+}
