@@ -21,10 +21,10 @@ export class Profile {
         createdAt?: Date;
         latestActivity?: Date;
     }) {
+        Profile.validateUsername(profile.username);
         Profile.validateEmail(profile.email);
         Profile.validatePassword(profile.password);
         Profile.validateRole(profile.role);
-        Profile.validateUsername(profile.username);
         Profile.validateBio(profile.bio);
         this.id = profile.id;
         this.email = profile.email;

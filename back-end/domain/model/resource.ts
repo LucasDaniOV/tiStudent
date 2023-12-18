@@ -1,4 +1,4 @@
-import { Profile as ProfilePrisma, Resource as ResourcePrisma, User as UserPrisma } from '@prisma/client';
+import { Profile as ProfilePrisma, Resource as ResourcePrisma } from '@prisma/client';
 import { Category } from './category';
 import { Profile } from './profile';
 import { Subject } from './subject';
@@ -94,7 +94,7 @@ export class Resource {
         description,
         category,
         subject,
-    }: ResourcePrisma & { creator: ProfilePrisma & { user: UserPrisma } }) {
+    }: ResourcePrisma & { creator: ProfilePrisma }) {
         return new Resource({
             id,
             creator: Profile.from(creator),

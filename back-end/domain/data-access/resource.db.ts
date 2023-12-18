@@ -7,11 +7,7 @@ const getAllResources = async (): Promise<Resource[]> => {
     try {
         const resourcesPrisma = await database.resource.findMany({
             include: {
-                creator: {
-                    include: {
-                        user: true,
-                    },
-                },
+                creator: true,
             },
         });
         if (resourcesPrisma) return resourcesPrisma.map((resourcePrisma) => Resource.from(resourcePrisma));
@@ -28,11 +24,7 @@ const getResourceById = async (id: number): Promise<Resource> => {
                 id,
             },
             include: {
-                creator: {
-                    include: {
-                        user: true,
-                    },
-                },
+                creator: true,
             },
         });
         if (resourcePrisma) return Resource.from(resourcePrisma);
@@ -59,11 +51,7 @@ const createResource = async ({ creator, title, description, category, subject }
                 subject: resource.subject,
             },
             include: {
-                creator: {
-                    include: {
-                        user: true,
-                    },
-                },
+                creator: true,
             },
         });
         if (resourcePrisma) return Resource.from(resourcePrisma);
@@ -88,11 +76,7 @@ const getResourceByContent = async (
                 subject,
             },
             include: {
-                creator: {
-                    include: {
-                        user: true,
-                    },
-                },
+                creator: true,
             },
         });
         if (resourcePrisma) return Resource.from(resourcePrisma);
@@ -134,11 +118,7 @@ const updateFieldOfResource = async (
                             title: newValue,
                         },
                         include: {
-                            creator: {
-                                include: {
-                                    user: true,
-                                },
-                            },
+                            creator: true,
                         },
                     });
                     if (resourceTitlePrisma) return Resource.from(resourceTitlePrisma);
@@ -152,11 +132,7 @@ const updateFieldOfResource = async (
                             description: newValue,
                         },
                         include: {
-                            creator: {
-                                include: {
-                                    user: true,
-                                },
-                            },
+                            creator: true,
                         },
                     });
                     if (resourceDescriptionPrisma) return Resource.from(resourceDescriptionPrisma);
@@ -170,11 +146,7 @@ const updateFieldOfResource = async (
                             category: newValue as Category,
                         },
                         include: {
-                            creator: {
-                                include: {
-                                    user: true,
-                                },
-                            },
+                            creator: true,
                         },
                     });
                     if (resourceCategoryPrisma) return Resource.from(resourceCategoryPrisma);
@@ -188,11 +160,7 @@ const updateFieldOfResource = async (
                             subject: newValue as Subject,
                         },
                         include: {
-                            creator: {
-                                include: {
-                                    user: true,
-                                },
-                            },
+                            creator: true,
                         },
                     });
                     if (resourceSubjectPrisma) return Resource.from(resourceSubjectPrisma);

@@ -1,6 +1,5 @@
 import {
     Profile as ProfilePrisma,
-    User as UserPrisma,
     Resource as ResourcePrisma,
     Comment as CommentPrisma,
     Like as LikePrisma,
@@ -37,12 +36,12 @@ export class Like {
         upvoter,
         resource = null,
         comment = null,
-    }: LikePrisma & { upvoter: ProfilePrisma & { user: UserPrisma } } & {
-        resource: (ResourcePrisma & { creator: ProfilePrisma & { user: UserPrisma } }) | null;
+    }: LikePrisma & { upvoter: ProfilePrisma } & {
+        resource: (ResourcePrisma & { creator: ProfilePrisma }) | null;
     } & {
         comment?:
-            | (CommentPrisma & { profile: ProfilePrisma & { user: UserPrisma } } & {
-                  resource: ResourcePrisma & { creator: ProfilePrisma & { user: UserPrisma } };
+            | (CommentPrisma & { profile: ProfilePrisma } & {
+                  resource: ResourcePrisma & { creator: ProfilePrisma };
               })
             | null;
     }) {

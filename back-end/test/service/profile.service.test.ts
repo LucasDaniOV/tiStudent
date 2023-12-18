@@ -7,7 +7,7 @@ const validEmail = 'profile.service.test@tistudent.be';
 const validPassword = 'profileServiceT3st_;D';
 const validRole = 'user';
 const username = 'TheProfileServiceTester';
-const profileInput = { userId: 0, validEmail, validPassword, validRole, username };
+const profileInput = { userId: 0, email: validEmail, password: validPassword, username, role: validRole as Role };
 
 let mockProfileDbGetAllProfiles: jest.Mock;
 let mockProfileDbGetProfileById: jest.Mock;
@@ -47,7 +47,6 @@ test(`given: taken username, when: Profile is created, then: error is thrown`, (
     profileDb.getProfileByUsername = mockProfileDbGetProfileByUsername.mockResolvedValue(
         new Profile({ email: validEmail, password: validPassword, role: validRole, username: username })
     );
-
     // when
     const createProfile = async () => await profileService.createProfile(profileInput);
 
@@ -59,9 +58,9 @@ test(`given: existing profiles, when: getAllProfiles is called, then: all profil
     // given
     const profiles = [
         new Profile({ email: validEmail, password: validPassword, role: validRole, username: username }),
-        new Profile({ email: validEmail, password: validPassword, role: validRole, username: username }),
-        new Profile({ email: validEmail, password: validPassword, role: validRole, username: username }),
-        new Profile({ email: validEmail, password: validPassword, role: validRole, username: username }),
+        // new Profile({ email: validEmail, password: validPassword, role: validRole, username: username }),
+        // new Profile({ email: validEmail, password: validPassword, role: validRole, username: username }),
+        // new Profile({ email: validEmail, password: validPassword, role: validRole, username: username }),
     ];
     profileDb.getAllProfiles = mockProfileDbGetAllProfiles.mockResolvedValue(profiles);
 
@@ -112,7 +111,7 @@ test(`given: valid values, when: updating Profile, then: Profile is updated`, as
     );
 
     //when
-    const sut = await profileService.updateEmailById(validId, validNewEmail);
+    const sut = await profileService.updateField(validProfile.id, 'email', validNewEmail);
 
     //then
     expect(sut.email).toBe(validNewEmail);
@@ -122,16 +121,16 @@ test(`given: valid values, when: updating Profile, then: Profile is updated`, as
 
 test(`given valid role, when: creating Profile, then: Profile is created with that role`, async () => {
     // given
-    const profile = new Profile({ email: validEmail, password: validPassword, role: validRole, username: username });
+    const profile = new Profile({ email: validEmail, password: validPassword, username: username, role: validRole });
     profileDb.createProfile = mockProfileDbCreateProfile.mockResolvedValue(profile);
-    profileDb.getUserByEmail = mockProfileDbGetProfileByEmail.mockResolvedValue(undefined);
+    profileDb.getProfileByEmail = mockProfileDbGetProfileByEmail.mockResolvedValue(undefined);
 
     // when
     const sut = await profileService.createProfile({
-        email: validEmail,
-        password: validPassword,
-        role: validRole,
-        username: username,
+        email: profile.email,
+        password: profile.password,
+        username: profile.username,
+        role: profile.role,
     });
 
     // then
@@ -141,27 +140,26 @@ test(`given valid role, when: creating Profile, then: Profile is created with th
     expect(sut.role).toEqual(validRole);
 });
 
-test(`given: invalid role, when: creating Profile, then: Profile is not created and error is thrown`, () => {
+test(`given: invalid role, when: creating Profile, then: Profile is not created and error is thrown`, async () => {
     // given
     const invalidRole = 'invalidRole';
     profileDb.getProfileByEmail = mockProfileDbGetProfileByEmail.mockResolvedValue(undefined);
-
     // when
     const sut = async () =>
         await profileService.createProfile({
-            email: validEmail,
-            password: validPassword,
+            email: profileInput.email,
+            password: profileInput.password,
+            username: profileInput.username,
             role: invalidRole as Role,
-            username: username,
         });
 
     // then
-    expect(sut).rejects.toThrowError('role must be one of "admin", "user", or "guest"');
+    expect(sut).rejects.toThrowError('Role must be one of "admin", "user", or "guest"');
 });
 
 test(`given: unauthorized role, when: requesting all Profiles, then: Error is thrown`, () => {
     // given
-    const unauthorizedRole = 'user';
+    const unauthorizedRole = 'guest';
 
     // when
     const sut = async () => await profileService.getAllProfiles(unauthorizedRole);

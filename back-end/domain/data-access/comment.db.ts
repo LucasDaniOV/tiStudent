@@ -7,18 +7,10 @@ const getAllComments = async (): Promise<Comment[]> => {
     try {
         const commentsPrisma = await database.comment.findMany({
             include: {
-                profile: {
-                    include: {
-                        user: true,
-                    },
-                },
+                profile: true,
                 resource: {
                     include: {
-                        creator: {
-                            include: {
-                                user: true,
-                            },
-                        },
+                        creator: true,
                     },
                 },
             },
@@ -37,18 +29,10 @@ const getCommentById = async (commentId: number): Promise<Comment> => {
                 id: commentId,
             },
             include: {
-                profile: {
-                    include: {
-                        user: true,
-                    },
-                },
+                profile: true,
                 resource: {
                     include: {
-                        creator: {
-                            include: {
-                                user: true,
-                            },
-                        },
+                        creator: true,
                     },
                 },
             },
@@ -69,18 +53,10 @@ const getAllCommentsOnResource = async (resourceId: number): Promise<Comment[]> 
                 parentId: null,
             },
             include: {
-                profile: {
-                    include: {
-                        user: true,
-                    },
-                },
+                profile: true,
                 resource: {
                     include: {
-                        creator: {
-                            include: {
-                                user: true,
-                            },
-                        },
+                        creator: true,
                     },
                 },
             },
@@ -98,18 +74,10 @@ const getAllCommentsByProfile = async (profileId: number): Promise<Comment[]> =>
                 profileId: profileId,
             },
             include: {
-                profile: {
-                    include: {
-                        user: true,
-                    },
-                },
+                profile: true,
                 resource: {
                     include: {
-                        creator: {
-                            include: {
-                                user: true,
-                            },
-                        },
+                        creator: true,
                     },
                 },
             },
@@ -129,18 +97,10 @@ const getAllCommentsByProfileOnResource = async (profileId: number, resourceId: 
                 resourceId: resourceId,
             },
             include: {
-                profile: {
-                    include: {
-                        user: true,
-                    },
-                },
+                profile: true,
                 resource: {
                     include: {
-                        creator: {
-                            include: {
-                                user: true,
-                            },
-                        },
+                        creator: true,
                     },
                 },
             },
@@ -177,18 +137,10 @@ const createCommentOnComment = async (profile: Profile, resource: Resource, mess
                 edited: false,
             },
             include: {
-                profile: {
-                    include: {
-                        user: true,
-                    },
-                },
+                profile: true,
                 resource: {
                     include: {
-                        creator: {
-                            include: {
-                                user: true,
-                            },
-                        },
+                        creator: true,
                     },
                 },
             },
@@ -220,18 +172,10 @@ const createCommentOnResource = async (profile: Profile, resource: Resource, mes
                 edited: false,
             },
             include: {
-                profile: {
-                    include: {
-                        user: true,
-                    },
-                },
+                profile: true,
                 resource: {
                     include: {
-                        creator: {
-                            include: {
-                                user: true,
-                            },
-                        },
+                        creator: true,
                     },
                 },
             },
@@ -254,18 +198,10 @@ const updateMessageOnComment = async (commentId: number, newValue: string): Prom
                 message: newValue,
             },
             include: {
-                profile: {
-                    include: {
-                        user: true,
-                    },
-                },
+                profile: true,
                 resource: {
                     include: {
-                        creator: {
-                            include: {
-                                user: true,
-                            },
-                        },
+                        creator: true,
                     },
                 },
             },

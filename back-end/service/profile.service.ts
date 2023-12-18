@@ -10,7 +10,7 @@ import { generateJwtToken } from '../util/jwt';
 const getAllProfiles = async (role: Role) => {
     if (role !== 'admin' && role !== 'user')
         throw new UnauthorizedError('credentials_required', {
-            message: 'Only admins can get all users',
+            message: 'Only admins can get all Profiles',
         });
     return await profileDb.getAllProfiles();
 };
@@ -30,7 +30,7 @@ const getProfileByEmail = async (email: string): Promise<Profile> => {
 
 const createProfile = async ({ email, password, role, username, bio }: ProfileInput): Promise<Profile> => {
     // check if errors occur when creating profile object
-    const profile = new Profile({ email, password, role, username, bio });
+    const profile = new Profile({ email, password, username, role, bio });
 
     // check if username is already taken
     if (await profileDb.getProfileByUsername(username)) throw new Error(`Username already exists`);
@@ -46,28 +46,30 @@ const getProfileField = async (profile: Profile, field: string) => {
     else if (field == 'likedResources') return await likeDb.getLikesByProfile(profile.id);
 };
 
-const updateField = async (profile: Profile, field: string, value: string): Promise<Profile | Like[]> => {
-    if (field == 'bio') return await profileDb.updateProfileBio(profile.id, value);
+const updateField = async (id: number, field: string, value: string): Promise<any> => {
+    if (field == 'bio') return await profileDb.updateProfileBio(id, value);
     else if (field == 'likes') {
         const likeId = parseInt(value);
-        const likes = await likeDb.getLikesByProfile(profile.id);
+        const likes = await likeDb.getLikesByProfile(id);
         const like = likes.find((l) => l.id == likeId);
         if (like) {
             const removed = await likeDb.deleteLike(likeId);
-            if (removed) return await likeDb.getLikesByProfile(profile.id);
+            if (removed) return await likeDb.getLikesByProfile(id);
             else throw new Error('Something went wrong');
         } else {
             throw new Error('Profile has no like on this object');
         }
     } else if (field == 'email') {
         Profile.validateEmail(value);
+        const profile = await profileDb.getProfileById(id);
         if (profile.email === value) throw new Error(`New email must be different from old email`);
-        return await profileDb.updateEmail(profile.id, value);
+        return await profileDb.updateEmail(id, value);
     } else if (field == 'password') {
         Profile.validatePassword(value);
+        const profile = await profileDb.getProfileById(id);
         if (profile.password === value) throw new Error(`New password must be different from old password`);
-        return await profileDb.updatePassword(profile.id, value);
-        // }else if (field == "role"){  // Should it be possible to change roles? 
+        return await profileDb.updatePassword(id, value);
+        // }else if (field == "role"){  // Should it be possible to change roles?
     } else {
         throw new Error('Unsupported field');
     }

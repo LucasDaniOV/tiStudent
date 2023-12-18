@@ -29,10 +29,26 @@ const getProfileById = async (id: number): Promise<Profile> => {
 };
 
 const getProfileByUsername = async (username: string): Promise<Profile> => {
+    console.log('USERNAME IS', username);
     try {
         const profilePrisma = await database.profile.findUnique({
             where: {
                 username: username,
+            },
+        });
+        if (profilePrisma) return Profile.from(profilePrisma);
+    } catch (error) {
+        console.log(error);
+        throw new Error('Database error. See server log for details.');
+    }
+    return;
+};
+
+const getProfileByEmail = async (email: string): Promise<Profile> => {
+    try {
+        const profilePrisma = await database.profile.findUnique({
+            where: {
+                email: email,
             },
         });
         if (profilePrisma) return Profile.from(profilePrisma);
@@ -131,8 +147,9 @@ const getProfilesWithLikeOnResource = async (resource: Resource): Promise<Profil
 export default {
     getAllProfiles,
     getProfileById,
-    createProfile,
     getProfileByUsername,
+    getProfileByEmail,
+    createProfile,
     deleteProfile,
     updateProfileBio,
     updateEmail,

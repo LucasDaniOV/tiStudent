@@ -1,11 +1,6 @@
 import { Profile } from './profile';
 import { Resource } from './resource';
-import {
-    Profile as ProfilePrisma,
-    User as UserPrisma,
-    Resource as ResourcePrisma,
-    Comment as CommentPrisma,
-} from '@prisma/client';
+import { Profile as ProfilePrisma, Resource as ResourcePrisma, Comment as CommentPrisma } from '@prisma/client';
 
 export class Comment {
     readonly id?: number;
@@ -51,9 +46,9 @@ export class Comment {
         resource,
         parentId,
     }: CommentPrisma & {
-        profile: ProfilePrisma & { user: UserPrisma };
+        profile: ProfilePrisma;
     } & {
-        resource: ResourcePrisma & { creator: ProfilePrisma & { user: UserPrisma } };
+        resource: ResourcePrisma & { creator: ProfilePrisma };
     } & { parentId: number | null }) {
         return new Comment({
             id,
