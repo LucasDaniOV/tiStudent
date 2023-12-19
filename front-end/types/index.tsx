@@ -1,12 +1,6 @@
 import { Category } from "../../back-end/domain/model/category";
 import { Subject } from "../../back-end/domain/model/subject";
 
-export type User = {
-  id: string;
-  email: string;
-  password: string;
-};
-
 export type Resource = {
   id: string;
   creator: Profile;
@@ -17,13 +11,17 @@ export type Resource = {
   subject: Subject;
 };
 
+type Role = "admin" | "user" | "guest";
+
 export type Profile = {
   id: string;
+  email: string;
+  password: string;
+  role: Role;
   username: string;
   bio?: string;
   createdAt: Date;
   latestActivity: Date;
-  user: User;
 };
 
 export type Comment = {
