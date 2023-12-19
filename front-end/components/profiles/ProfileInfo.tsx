@@ -42,12 +42,6 @@ const ProfileInfo: React.FC<Props> = ({ profile }: Props) => {
             </td>
             <td>{String(profile.latestActivity)}</td>
           </tr>
-          <tr>
-            <td>
-              <strong>{t("profiles.fields.user.if")}</strong>
-            </td>
-            <td>{profile.user.id}</td>
-          </tr>
         </table>
       )}
     </>
