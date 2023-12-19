@@ -174,7 +174,7 @@ profileRouter.post('/', async (req: Request, res: Response, next: NextFunction) 
         const profile = await profileService.createProfile(profileInput);
         res.status(200).json({ status: 'success', message: 'Profile created', data: profile });
     } catch (error) {
-        res.status(400).json({ status: 'error', message: error.message });
+        next(error);
     }
 });
 
@@ -451,7 +451,7 @@ profileRouter.delete('/:id', async (req: Request, res: Response, next: NextFunct
  *             schema:
  *               $ref: '#/components/schemas/Profile'
  */
-profileRouter.post('/signup', async (req: Request, res: Response, next: NextFunction) => {
+profileRouter.post('/signup', async (req: Request & { auth: any }, res: Response, next: NextFunction) => {
     try {
         const profileInput = req.body as ProfileInput;
         const user = await profileService.createProfile(profileInput);
@@ -469,7 +469,7 @@ profileRouter.post('/signup', async (req: Request, res: Response, next: NextFunc
  *       - profiles
  *     summary: Get GitHub account
  */
-profileRouter.get('/login/github', async (req: Request, res: Response, next: NextFunction) => {
+profileRouter.get('/login/github', async (req: Request & { auth: any }, res: Response, next: NextFunction) => {
     try {
         const code = String(req.query.code);
         const access_token = await profileService.getGithubAccessToken(code);

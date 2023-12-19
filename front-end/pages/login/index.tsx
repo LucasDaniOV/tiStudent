@@ -1,7 +1,7 @@
 import Header from "@/components/header";
 import ProfileCreateForm from "@/components/profiles/ProfileCreateForm";
-import GithubLoginButton from "@/components/users/GithubLoginButton";
-import UserLoginForm from "@/components/users/UserLoginForm";
+import GithubLoginButton from "@/components/profiles/GithubLoginButton";
+import UserLoginForm from "@/components/profiles/ProfileLoginForm";
 import { useTranslation } from "next-i18next";
 import { serverSideTranslations } from "next-i18next/serverSideTranslations";
 import Head from "next/head";

@@ -116,6 +116,7 @@ const Comments: React.FC<Props> = ({ id, object }: Props) => {
           }
         >
           {commentsOnResource.map((com, index) => {
+            console.log(com);
             return (
               <li key={index}>
                 <div

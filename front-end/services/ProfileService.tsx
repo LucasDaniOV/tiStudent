@@ -28,18 +28,7 @@ const deleteProfileById = async (profileId: number): Promise<Boolean> => {
       "Content-Type": "application/json",
     },
   });
-  return res.json();
-};
-
-const createProfile = async (username: string, bio: string, userId: number) => {
-  const res = await fetch(baseUrl, {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify({ username, bio, userId }),
-  });
-  return res.json();
+  return await res.json();
 };
 
 const getLikesByProfile = async (profileId: string): Promise<Array<Like>> => {
@@ -54,6 +43,23 @@ const getLikesByProfile = async (profileId: string): Promise<Array<Like>> => {
   return await res.json();
 };
 
+const createProfile = async (
+  email: string,
+  password: string,
+  role: string,
+  username: string,
+  bio?: string
+) => {
+  const res = await fetch(baseUrl, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({ email, password, role, username, bio }),
+  });
+  return await res.json();
+};
+
 const getGithubUser = async (code: string) => {
   const url = `${baseUrl}/login/github?code=${code}`;
   const res = await fetch(url, {
@@ -62,12 +68,12 @@ const getGithubUser = async (code: string) => {
       "Content-Type": "application/json",
     },
   });
-  const user = await res.json();
-  return user;
+  return await res.json();
 };
 
 const loginUser = async (email: string, password: string) => {
   const url = `${baseUrl}/login`;
+  console.log("step 0");
   return await fetch(url, {
     method: "POST",
     headers: {

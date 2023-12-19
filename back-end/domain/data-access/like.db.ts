@@ -182,7 +182,7 @@ const deleteLike = async (likeId: number): Promise<Boolean> => {
     }
 };
 
-const createLike = async (profile: Profile, resource: Resource | null, comment: Comment | null): Promise<Like> => {
+const createLike = async (profile: Profile, resource: Resource, comment: Comment | null): Promise<Like> => {
     try {
         const like = new Like({ profile, resource, comment });
         const likeData = {
@@ -217,11 +217,7 @@ const createLike = async (profile: Profile, resource: Resource | null, comment: 
                     profile: true,
                     resource: {
                         include: {
-                            creator: {
-                                include: {
-                                    user: true,
-                                },
-                            },
+                            creator: true,
                         },
                     },
                 },
