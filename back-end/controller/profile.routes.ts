@@ -182,6 +182,8 @@ profileRouter.post('/', async (req: Request, res: Response, next: NextFunction) 
  * @swagger
  * /profiles/{profileId}/username:
  *   get:
+ *     security:
+ *       - bearerAuth: []
  *     tags:
  *       - profiles
  *     summary: return a Profiles' username
@@ -335,7 +337,7 @@ profileRouter.get('/:id/likedResources', async (req: Request & { auth: any }, re
  *   put:
  *     tags:
  *       - profiles
- *     summary: return a Profiles' bio
+ *     summary: update a Profiles' bio
  *     parameters:
  *       - name: profileId
  *         in: path
@@ -351,7 +353,6 @@ profileRouter.get('/:id/likedResources', async (req: Request & { auth: any }, re
  *         schema:
  *           type: string
  *           example: "CEO at Google"
- *
  *     responses:
  *       200:
  *         description: The updated Profile
