@@ -9,8 +9,6 @@
  *           type: number
  *           format: int64
  *           example: 0
- *         user:
- *           $ref: '#/components/schemas/User'
  *         username:
  *           type: string
  *           example: 'johndoe'
@@ -43,7 +41,7 @@
  *           type: string
  *           example: 'johndoe'
  */
-import express, { Request, Response } from 'express';
+import express, { NextFunction, Request, Response } from 'express';
 import profileService from '../service/profile.service';
 import { ProfileInput } from '../types';
 
@@ -53,12 +51,14 @@ const profileRouter = express.Router();
  * @swagger
  * /profiles:
  *   get:
+ *     security:
+ *       - bearerAuth: []
  *     tags:
  *       - profiles
  *     summary: Get all profiles
  *     responses:
  *       200:
- *         description: List of profiles
+ *         description: List of Profiles
  *         content:
  *           application/json:
  *             schema:
@@ -66,13 +66,13 @@ const profileRouter = express.Router();
  *               items:
  *                 $ref: '#/components/schemas/Profile'
  */
-profileRouter.get('/', async (req: Request & { auth: any }, res: Response) => {
+profileRouter.get('/', async (req: Request & { auth: any }, res: Response, next: NextFunction) => {
     try {
         const { role } = req.auth;
         const profiles = await profileService.getAllProfiles(role);
         res.status(200).json(profiles);
     } catch (error) {
-        res.status(400).json({ status: 'error', errorMessage: error.message });
+        next(error);
     }
 });
 
@@ -80,6 +80,8 @@ profileRouter.get('/', async (req: Request & { auth: any }, res: Response) => {
  * @swagger
  * /profiles/{id}:
  *   get:
+ *     security:
+ *       - bearerAuth: []
  *     tags:
  *       - profiles
  *     summary: Get a profile by id
@@ -99,19 +101,22 @@ profileRouter.get('/', async (req: Request & { auth: any }, res: Response) => {
  *             schema:
  *               $ref: '#/components/schemas/Profile'
  */
-profileRouter.get('/:id', async (req: Request, res: Response) => {
+profileRouter.get('/:id', async (req: Request, res: Response, next: NextFunction) => {
     try {
         const id = parseInt(req.params.id);
         const profile = await profileService.getProfileById(id);
         res.status(200).json({ status: 'success', message: 'Have fun with your profile', data: profile });
     } catch (error) {
-        res.status(400).json({ status: 'error', errorMessage: error.message });
+        next(error);
     }
 });
+
 /**
  * @swagger
  * /profiles/user/{email}:
  *   get:
+ *     security:
+ *       - bearerAuth: []
  *     tags:
  *       - profiles
  *     summary: Get a profile by user email
@@ -131,13 +136,13 @@ profileRouter.get('/:id', async (req: Request, res: Response) => {
  *             schema:
  *               $ref: '#/components/schemas/Profile'
  */
-profileRouter.get('/user/:email', async (req: Request, res: Response) => {
+profileRouter.get('/user/:email', async (req: Request, res: Response, next: NextFunction) => {
     try {
         const email = req.params.email;
         const profile = await profileService.getProfileByEmail(email);
         res.status(200).json(profile);
     } catch (error) {
-        res.status(400).json({ status: 'error', errorMessage: error.message });
+        next(error);
     }
 });
 
@@ -163,7 +168,7 @@ profileRouter.get('/user/:email', async (req: Request, res: Response) => {
  *             schema:
  *               $ref: '#/components/schemas/Profile'
  */
-profileRouter.post('/', async (req: Request, res: Response) => {
+profileRouter.post('/', async (req: Request, res: Response, next: NextFunction) => {
     try {
         const profileInput = req.body as ProfileInput;
         const profile = await profileService.createProfile(profileInput);
@@ -199,14 +204,14 @@ profileRouter.post('/', async (req: Request, res: Response) => {
  *               example: "johndoe"
  */
 
-profileRouter.get('/:id/username', async (req: Request, res: Response) => {
+profileRouter.get('/:id/username', async (req: Request, res: Response, next: NextFunction) => {
     try {
         const profileId = parseInt(req.params.id);
         const profile = await profileService.getProfileById(profileId);
         const username = await profileService.getProfileField(profile, 'username');
         res.status(200).json(username);
     } catch (error) {
-        res.status(400).json({ status: 'error', errorMessage: error.message });
+        next(error);
     }
 });
 
@@ -236,14 +241,14 @@ profileRouter.get('/:id/username', async (req: Request, res: Response) => {
  *               example: "Software Engineer at Google"
  */
 
-profileRouter.get('/:id/bio', async (req: Request, res: Response) => {
+profileRouter.get('/:id/bio', async (req: Request, res: Response, next: NextFunction) => {
     try {
         const profileId = parseInt(req.params.id);
         const profile = await profileService.getProfileById(profileId);
         const bio = await profileService.getProfileField(profile, 'bio');
         res.status(200).json(bio);
     } catch (error) {
-        res.status(400).json({ status: 'error', errorMessage: error.message });
+        next(error);
     }
 });
 
@@ -274,14 +279,14 @@ profileRouter.get('/:id/bio', async (req: Request, res: Response) => {
  *               example: '2023-10-03T19:27:40.812Z'
  */
 
-profileRouter.get('/:id/latestActivity', async (req: Request, res: Response) => {
+profileRouter.get('/:id/latestActivity', async (req: Request, res: Response, next: NextFunction) => {
     try {
         const profileId = parseInt(req.params.id);
         const profile = await profileService.getProfileById(profileId);
         const latestActivity = await profileService.getProfileField(profile, 'latestActivity');
         res.status(200).json(latestActivity);
     } catch (error) {
-        res.status(400).json({ status: 'error', errorMessage: error.message });
+        next(error);
     }
 });
 
@@ -312,7 +317,7 @@ profileRouter.get('/:id/latestActivity', async (req: Request, res: Response) => 
  *                 $ref: '#/components/schemas/Resource'
  */
 
-profileRouter.get('/:id/likedResources', async (req: Request & { auth: any }, res: Response) => {
+profileRouter.get('/:id/likedResources', async (req: Request & { auth: any }, res: Response, next: NextFunction) => {
     try {
         const { role } = req.auth.role;
         const profileId = parseInt(req.params.id);
@@ -320,7 +325,7 @@ profileRouter.get('/:id/likedResources', async (req: Request & { auth: any }, re
         const likedResources = await profileService.getProfileField(profile, 'likedResources');
         res.status(200).json(likedResources);
     } catch (error) {
-        res.status(400).json({ status: 'error', errorMessage: error.message });
+        next(error);
     }
 });
 
@@ -356,15 +361,15 @@ profileRouter.get('/:id/likedResources', async (req: Request & { auth: any }, re
  *               $ref: '#/components/schemas/Profile'
  */
 
-profileRouter.put('/:id/bio', async (req: Request, res: Response) => {
+profileRouter.put('/:id/bio', async (req: Request, res: Response, next: NextFunction) => {
     try {
         const profileId = parseInt(req.params.id);
         const newBio = String(req.query.newBio);
         const profile = await profileService.getProfileById(profileId);
-        const bio = await profileService.updateField(profile, 'bio', newBio);
+        const bio = await profileService.updateField(profile.id, 'bio', newBio);
         res.status(200).json(bio);
     } catch (error) {
-        res.status(400).json({ status: 'error', errorMessage: error.message });
+        next(error);
     }
 });
 
@@ -393,13 +398,102 @@ profileRouter.put('/:id/bio', async (req: Request, res: Response) => {
  *               type: string
  *               example: true
  */
-profileRouter.delete('/:id', async (req: Request, res: Response) => {
+profileRouter.delete('/:id', async (req: Request, res: Response, next: NextFunction) => {
     try {
         const profileId = parseInt(req.params.id);
         const profile = await profileService.getProfileById(profileId);
         if (profile) res.status(200).json(profileService.deleteProfile(profileId));
     } catch (error) {
-        res.status(400).json({ status: 'error', errorMessage: error.message });
+        next(error);
+    }
+});
+
+/**
+ * @swagger
+ * /profiles/signup:
+ *   post:
+ *     tags:
+ *       - profiles
+ *     summary: Create new Profile
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               email:
+ *                 type: string
+ *                 format: email
+ *                 example: satoshi.nakamoto@gmail.com
+ *               password:
+ *                 type: string
+ *                 format: password
+ *                 example: Str0ngPW!!!2
+ *               role:
+ *                 type: string
+ *                 format: text
+ *                 example: user
+ *               username:
+ *                 type: string
+ *                 format: text
+ *                 example: JohnathanDoesItAll
+ *               bio:
+ *                 type: string
+ *                 format: text
+ *                 example: Software Engineer at Google
+ *     responses:
+ *       200:
+ *         description: new Profile
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/Profile'
+ */
+profileRouter.post('/signup', async (req: Request, res: Response, next: NextFunction) => {
+    try {
+        const profileInput = req.body as ProfileInput;
+        const user = await profileService.createProfile(profileInput);
+        res.status(200).json({ status: 'success', message: 'Profile created', user });
+    } catch (error) {
+        next(error);
+    }
+});
+
+/**
+ * @swagger
+ * /profiles/github:
+ *   get:
+ *     tags:
+ *       - profiles
+ *     summary: Get GitHub account
+ */
+profileRouter.get('/login/github', async (req: Request, res: Response, next: NextFunction) => {
+    try {
+        const code = String(req.query.code);
+        const access_token = await profileService.getGithubAccessToken(code);
+        const githubUser = await profileService.getGithubUser(access_token);
+        res.status(200).json(githubUser);
+    } catch (error) {
+        next(error);
+    }
+});
+
+/**
+ * @swagger
+ * /profiles/login:
+ *   post:
+ *     tags:
+ *       - profiles
+ *     summary: Authenticate user
+ */
+profileRouter.post('/login', async (req: Request, res: Response, next: NextFunction) => {
+    try {
+        const profileInput: ProfileInput = req.body;
+        const response = await profileService.authenticate(profileInput);
+        res.status(200).json({ message: 'Authentication successful', ...response });
+    } catch (error) {
+        next(error);
     }
 });
 
