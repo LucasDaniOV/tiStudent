@@ -11,7 +11,7 @@ const getProfileById = async (profileId: string) => getById(type, profileId);
 
 const getProfileByEmail = async (email: string) => {
   const token = getToken();
-  const res = await fetch(baseUrl + `/user/${email}`, {
+  const res = await fetch(baseUrl + `/${email}`, {
     method: "GET",
     headers: {
       "Content-Type": "application/json",

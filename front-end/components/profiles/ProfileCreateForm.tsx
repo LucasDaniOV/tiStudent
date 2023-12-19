@@ -65,6 +65,7 @@ const ProfileCreateForm: React.FC = () => {
     const existingProfile = JSON.stringify(
       await ProfileService.getProfileByEmail(email)
     );
+    if (existingProfile.includes("unauthorized")) console.log("I KNOW");
     if (existingProfile) throw new Error("Email already linked to profile");
     const res = await ProfileService.createProfile(
       email,

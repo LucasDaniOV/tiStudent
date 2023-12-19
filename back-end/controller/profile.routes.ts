@@ -113,10 +113,8 @@ profileRouter.get('/:id', async (req: Request, res: Response, next: NextFunction
 
 /**
  * @swagger
- * /profiles/user/{email}:
+ * /profiles/{email}:
  *   get:
- *     security:
- *       - bearerAuth: []
  *     tags:
  *       - profiles
  *     summary: Get a profile by user email
@@ -136,7 +134,7 @@ profileRouter.get('/:id', async (req: Request, res: Response, next: NextFunction
  *             schema:
  *               $ref: '#/components/schemas/Profile'
  */
-profileRouter.get('/user/:email', async (req: Request, res: Response, next: NextFunction) => {
+profileRouter.get('/:email', async (req: Request, res: Response, next: NextFunction) => {
     try {
         const email = req.params.email;
         const profile = await profileService.getProfileByEmail(email);
