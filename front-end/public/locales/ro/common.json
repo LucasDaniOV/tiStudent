@@ -98,8 +98,7 @@
       "username": "Nume de utilizator",
       "bio": "Biografie",
       "created.at": "Creat la",
-      "latest.activity": "Ultima activitate",
-      "user.id": "ID utilizator"
+      "latest.activity": "Ultima activitate"
     },
     "info": "Informații despre ",
     "delete": "Sigur doriți să ștergeți"

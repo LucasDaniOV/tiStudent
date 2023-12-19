@@ -98,8 +98,7 @@
       "username": "Gebruikersnaam",
       "bio": "Biografie",
       "created.at": "Aangemaakt op",
-      "latest.activity": "Laatste activiteit",
-      "user.id": "Gebruikers-ID"
+      "latest.activity": "Laatste activiteit"
     },
     "info": "Informatie over ",
     "delete": "Weet je zeker dat je wilt verwijderen"
