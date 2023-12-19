@@ -54,6 +54,29 @@ const getLikesByProfile = async (profileId: string): Promise<Array<Like>> => {
   return await res.json();
 };
 
+const getGithubUser = async (code: string) => {
+  const url = `${baseUrl}/login/github?code=${code}`;
+  const res = await fetch(url, {
+    method: "GET",
+    headers: {
+      "Content-Type": "application/json",
+    },
+  });
+  const user = await res.json();
+  return user;
+};
+
+const loginUser = async (email: string, password: string) => {
+  const url = `${baseUrl}/login`;
+  return await fetch(url, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({ email, password }),
+  });
+};
+
 export default {
   getAllProfiles,
   getProfileById,
@@ -61,4 +84,6 @@ export default {
   deleteProfileById,
   createProfile,
   getLikesByProfile,
+  getGithubUser,
+  loginUser,
 };
