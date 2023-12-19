@@ -119,26 +119,28 @@ test(`given: valid values, when: updating Profile, then: Profile is updated`, as
     expect(mockProfileDbGetProfileById).toHaveBeenCalledWith(validId);
 });
 
-test(`given valid role, when: creating Profile, then: Profile is created with that role`, async () => {
-    // given
-    const profile = new Profile({ email: validEmail, password: validPassword, username: username, role: validRole });
-    profileDb.createProfile = mockProfileDbCreateProfile.mockResolvedValue(profile);
-    profileDb.getProfileByEmail = mockProfileDbGetProfileByEmail.mockResolvedValue(undefined);
+// ALREADY TESTED ABOVE IN FIRST TEST
 
-    // when
-    const sut = await profileService.createProfile({
-        email: profile.email,
-        password: profile.password,
-        username: profile.username,
-        role: profile.role,
-    });
+// test(`given valid role, when: creating Profile, then: Profile is created with that role`, async () => {
+//     // given
+//     const profile = new Profile({ email: validEmail, password: validPassword, username: username, role: validRole });
+//     profileDb.getProfileByEmail = mockProfileDbGetProfileByEmail.mockResolvedValue(undefined);
+//     profileDb.createProfile = mockProfileDbCreateProfile.mockResolvedValue(profile);
 
-    // then
-    expect(mockProfileDbCreateProfile).toHaveBeenCalledTimes(1);
-    expect(sut.email).toEqual(validEmail);
-    expect(sut.password).toEqual(validPassword);
-    expect(sut.role).toEqual(validRole);
-});
+//     // when
+//     const sut = await profileService.createProfile({
+//         email: validEmail,
+//         password: validPassword,
+//         username: username,
+//         role: validRole,
+//     });
+
+//     // then
+//     expect(mockProfileDbCreateProfile).toHaveBeenCalledTimes(1);
+//     expect(sut.email).toEqual(validEmail);
+//     expect(sut.password).toEqual(validPassword);
+//     expect(sut.role).toEqual(validRole);
+// });
 
 test(`given: invalid role, when: creating Profile, then: Profile is not created and error is thrown`, async () => {
     // given
