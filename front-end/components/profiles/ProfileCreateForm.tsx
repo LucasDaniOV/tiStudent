@@ -1,5 +1,4 @@
 import ProfileService from "@/services/ProfileService";
-import UserService from "@/services/UserService";
 import { StatusMessage } from "@/types";
 import { getToken } from "@/util/token";
 import { useTranslation } from "next-i18next";
@@ -62,17 +61,19 @@ const ProfileCreateForm: React.FC = () => {
     return isValid;
   };
 
-  const createProfile = async (email: string) => {
-    const token = getToken();
-    const user = JSON.stringify(await UserService.getUserByEmail(email, token)); // kan ni me token
-    const userObject = JSON.parse(user);
-
-    const res = await ProfileService.createProfile(
-      username,
-      bio,
-      parseInt(userObject.id)
+  const createProfile = async () => {
+    const existingProfile = JSON.stringify(
+      await ProfileService.getProfileByEmail(email)
     );
-    const profileObject = await ProfileService.getProfileByEmail(email); // kan ni me token
+    if (existingProfile) throw new Error("Email already linked to profile");
+    const res = await ProfileService.createProfile(
+      email,
+      password,
+      "user",
+      username,
+      bio
+    );
+    const profileObject = await ProfileService.getProfileByEmail(email);
     const profile = JSON.stringify(profileObject);
     sessionStorage.setItem("loggedInProfile", profile);
     const message = res.message;
@@ -84,9 +85,7 @@ const ProfileCreateForm: React.FC = () => {
     e.preventDefault();
     clearErrors();
     if (!validate()) return;
-    const token = getToken();
-    await UserService.createUser(email, password, token); // kan ni me token
-    await createProfile(email);
+    await createProfile();
   };
 
   return (

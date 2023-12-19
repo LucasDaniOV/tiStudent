@@ -1,4 +1,4 @@
-import UserService from "@/services/UserService";
+import ProfileService from "@/services/ProfileService";
 import { StatusMessage } from "@/types";
 import { useTranslation } from "next-i18next";
 import { useRouter } from "next/router";
@@ -39,7 +39,7 @@ const UserLoginForm: React.FC = () => {
     clearErrors();
     if (!validate()) return;
 
-    const res = await UserService.loginUser(email, password);
+    const res = await ProfileService.loginUser(email, password);
 
     if (res.status === 401) {
       const { errorMessage } = await res.json();
