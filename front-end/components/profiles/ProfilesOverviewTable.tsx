@@ -49,9 +49,6 @@ const ProfilesOverviewTable: React.FC<Props> = ({ profiles }: Props) => {
               <th scope="col" className="border p-4 text-left">
                 {t("profiles.fields.latest.activity")}
               </th>
-              <th scope="col" className="border p-4 text-left">
-                {t("profiles.fields.user.id")}
-              </th>
             </tr>
           </thead>
           <tbody>

@@ -17,7 +17,7 @@ const getProfileById = async (id: number): Promise<Profile> => {
     try {
         const profilePrisma = await database.profile.findUnique({
             where: {
-                id,
+                id: id,
             },
         });
         if (profilePrisma) return Profile.from(profilePrisma);
@@ -25,11 +25,9 @@ const getProfileById = async (id: number): Promise<Profile> => {
         console.log(error);
         throw new Error('Database error. See server log for details.');
     }
-    return;
 };
 
 const getProfileByUsername = async (username: string): Promise<Profile> => {
-    console.log('USERNAME IS', username);
     try {
         const profilePrisma = await database.profile.findUnique({
             where: {
@@ -41,7 +39,6 @@ const getProfileByUsername = async (username: string): Promise<Profile> => {
         console.log(error);
         throw new Error('Database error. See server log for details.');
     }
-    return;
 };
 
 const getProfileByEmail = async (email: string): Promise<Profile> => {
@@ -56,7 +53,6 @@ const getProfileByEmail = async (email: string): Promise<Profile> => {
         console.log(error);
         throw new Error('Database error. See server log for details.');
     }
-    return;
 };
 
 const createProfile = async (
@@ -84,7 +80,6 @@ const createProfile = async (
         console.log(error);
         throw new Error('Database error. See server log for details.');
     }
-    return;
 };
 
 const deleteProfile = async (id: number): Promise<Boolean> => {
