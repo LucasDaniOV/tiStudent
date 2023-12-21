@@ -1,16 +1,12 @@
+import { Role } from '../../types';
 import database from '../../util/database';
 import { Profile } from '../model/profile';
 import { Resource } from '../model/resource';
-import { User } from '../model/user';
 import likeDb from './like.db';
 
 const getAllProfiles = async (): Promise<Profile[]> => {
     try {
-        const profilesPrisma = await database.profile.findMany({
-            include: {
-                user: true,
-            },
-        });
+        const profilesPrisma = await database.profile.findMany();
         if (profilesPrisma) return profilesPrisma.map((profilePrisma) => Profile.from(profilePrisma));
     } catch (error) {
         console.log(error);
@@ -21,10 +17,7 @@ const getProfileById = async (id: number): Promise<Profile> => {
     try {
         const profilePrisma = await database.profile.findUnique({
             where: {
-                id,
-            },
-            include: {
-                user: true,
+                id: id,
             },
         });
         if (profilePrisma) return Profile.from(profilePrisma);
@@ -32,35 +25,13 @@ const getProfileById = async (id: number): Promise<Profile> => {
         console.log(error);
         throw new Error('Database error. See server log for details.');
     }
-    return;
-};
-
-const getProfileByUserId = async (userId: number): Promise<Profile> => {
-    try {
-        const profilePrisma = await database.profile.findUnique({
-            where: {
-                userId: userId,
-            },
-            include: {
-                user: true,
-            },
-        });
-        if (profilePrisma) return Profile.from(profilePrisma);
-    } catch (error) {
-        console.log(error);
-        throw new Error('Database error. See server log for details.');
-    }
-    return;
 };
 
 const getProfileByUsername = async (username: string): Promise<Profile> => {
     try {
         const profilePrisma = await database.profile.findUnique({
             where: {
-                username,
-            },
-            include: {
-                user: true,
+                username: username,
             },
         });
         if (profilePrisma) return Profile.from(profilePrisma);
@@ -68,34 +39,47 @@ const getProfileByUsername = async (username: string): Promise<Profile> => {
         console.log(error);
         throw new Error('Database error. See server log for details.');
     }
-    return;
 };
 
-const createProfile = async (user: User, username: string, bio?: string): Promise<Profile> => {
+const getProfileByEmail = async (email: string): Promise<Profile> => {
     try {
-        const profile = new Profile({ user, username, bio });
+        const profilePrisma = await database.profile.findUnique({
+            where: {
+                email: email,
+            },
+        });
+        if (profilePrisma) return Profile.from(profilePrisma);
+    } catch (error) {
+        console.log(error);
+        throw new Error('Database error. See server log for details.');
+    }
+};
+
+const createProfile = async (
+    email: string,
+    password: string,
+    username: string,
+    role?: Role,
+    bio?: string
+): Promise<Profile> => {
+    try {
+        const profile = new Profile({ email, password, role, username, bio });
         const profilePrisma = await database.profile.create({
             data: {
-                user: {
-                    connect: {
-                        id: user.id,
-                    },
-                },
+                email: profile.email,
+                password: profile.password,
+                role: profile.role,
                 username: profile.username,
                 bio: profile.bio,
                 createdAt: new Date(),
                 latestActivity: new Date(),
             },
-            include: {
-                user: true,
-            },
         });
         if (profilePrisma) return Profile.from(profilePrisma);
     } catch (error) {
         console.log(error);
         throw new Error('Database error. See server log for details.');
     }
-    return;
 };
 
 const deleteProfile = async (id: number): Promise<Boolean> => {
@@ -115,9 +99,32 @@ const deleteProfile = async (id: number): Promise<Boolean> => {
 const updateProfileBio = async (id: number, newBio: string): Promise<Profile> => {
     try {
         const updatedProfile = await database.profile.update({
-            where: { id },
+            where: { id: id },
             data: { bio: newBio, latestActivity: new Date() },
-            include: { user: true },
+        });
+        return Profile.from(updatedProfile);
+    } catch (error) {
+        console.error(error);
+        throw new Error('Database error. See server log for details.');
+    }
+};
+const updateEmail = async (id: number, newEmail: string): Promise<Profile> => {
+    try {
+        const updatedProfile = await database.profile.update({
+            where: { id: id },
+            data: { email: newEmail, latestActivity: new Date() },
+        });
+        return Profile.from(updatedProfile);
+    } catch (error) {
+        console.error(error);
+        throw new Error('Database error. See server log for details.');
+    }
+};
+const updatePassword = async (id: number, newPassword: string): Promise<Profile> => {
+    try {
+        const updatedProfile = await database.profile.update({
+            where: { id: id },
+            data: { password: newPassword, latestActivity: new Date() },
         });
         return Profile.from(updatedProfile);
     } catch (error) {
@@ -135,10 +142,12 @@ const getProfilesWithLikeOnResource = async (resource: Resource): Promise<Profil
 export default {
     getAllProfiles,
     getProfileById,
-    createProfile,
-    getProfileByUserId,
     getProfileByUsername,
+    getProfileByEmail,
+    createProfile,
     deleteProfile,
     updateProfileBio,
+    updateEmail,
+    updatePassword,
     getProfilesWithLikeOnResource,
 };

@@ -7,7 +7,6 @@ import swaggerJSDoc from 'swagger-jsdoc';
 import swaggerUi from 'swagger-ui-express';
 import { profileRouter } from './controller/profile.routes';
 import { resourceRouter } from './controller/resource.routes';
-import { userRouter } from './controller/user.routes';
 import { version } from './package.json';
 import helmet from 'helmet';
 import { commentRouter } from './controller/comment.routes';
@@ -28,7 +27,14 @@ app.use(
         secret: process.env.JWT_SECRET,
         algorithms: ['HS256'],
     }).unless({
-        path: ['/api-docs', /^\/api-docs\/.*/, '/users/login', '/users/signup', '/status'],
+        path: [
+            '/api-docs',
+            /^\/api-docs\/.*/,
+            '/profiles/login',
+            '/profiles/signup',
+            /\/profiles\/exists\/email*/,
+            '/status',
+        ],
     })
 );
 
@@ -36,7 +42,6 @@ app.get('/status', (req, res) => {
     res.json({ message: 'Back-end is running...' });
 });
 
-app.use('/users', userRouter);
 app.use('/resources', resourceRouter);
 app.use('/profiles', profileRouter);
 app.use('/comments', commentRouter);

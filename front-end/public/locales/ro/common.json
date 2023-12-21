@@ -5,6 +5,7 @@
   "loading": "Încărcare...",
   "delete": "Șterge",
   "back": "Înapoi",
+  "email.linked": "E-mail deja asociat unui profil",
   "header": {
     "nav": {
       "home": "Acasă",
@@ -98,8 +99,7 @@
       "username": "Nume de utilizator",
       "bio": "Biografie",
       "created.at": "Creat la",
-      "latest.activity": "Ultima activitate",
-      "user.id": "ID utilizator"
+      "latest.activity": "Ultima activitate"
     },
     "info": "Informații despre ",
     "delete": "Sigur doriți să ștergeți"

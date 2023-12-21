@@ -21,11 +21,6 @@ const ProfilesOverviewTable: React.FC<Props> = ({ profiles }: Props) => {
     router.push("/profiles/" + profileId);
   };
 
-  const getProfileUser = (e: MouseEvent, userId: string): void => {
-    stopPropagationAndPreventDefault(e);
-    router.push("/users/" + userId);
-  };
-
   const deleteProfile = async (e: MouseEvent, profile: Profile) => {
     stopPropagationAndPreventDefault(e);
     if (!confirm(`${t("profiles.delete")} ${profile.username}?`)) return;
@@ -54,9 +49,6 @@ const ProfilesOverviewTable: React.FC<Props> = ({ profiles }: Props) => {
               <th scope="col" className="border p-4 text-left">
                 {t("profiles.fields.latest.activity")}
               </th>
-              <th scope="col" className="border p-4 text-left">
-                {t("profiles.fields.user.id")}
-              </th>
             </tr>
           </thead>
           <tbody>
@@ -74,12 +66,6 @@ const ProfilesOverviewTable: React.FC<Props> = ({ profiles }: Props) => {
                 </td>
                 <td className="border p-4 text-left">
                   {String(profile.latestActivity)}
-                </td>
-                <td
-                  className="border p-4 text-left"
-                  onClick={(e) => getProfileUser(e, profile.user.id)}
-                >
-                  {profile.user.id}
                 </td>
                 <td
                   className="border p-4 text-left"

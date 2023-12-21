@@ -224,7 +224,7 @@ likeRouter.delete('/:profileId/:likeId', async (req: Request, res: Response) => 
         const profileId = parseInt(req.params.profileId);
         const likeId = String(req.params.likeId);
         const profile = await profileService.getProfileById(profileId);
-        const likedResources = await profileService.updateField(profile, 'likes', likeId);
+        const likedResources = await profileService.updateField(profile.id, 'likes', likeId);
         res.status(200).json(likedResources);
     } catch (error) {
         res.status(400).json({ status: 'error', errorMessage: error.message });

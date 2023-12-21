@@ -68,10 +68,7 @@ const Comments: React.FC<Props> = ({ id, object }: Props) => {
   ): Promise<void> => {
     e.stopPropagation();
     e.preventDefault();
-    const commentProfile = await ProfileService.getProfileById(
-      String(comment.profile.id)
-    );
-    if (profile?.id === commentProfile.id || role == "admin") {
+    if (profile?.id === comment.profile.id || role == "admin") {
       if (
         !confirm(
           `${t("resources.comment.options.delete.message")}(${comment.message})`
@@ -81,7 +78,7 @@ const Comments: React.FC<Props> = ({ id, object }: Props) => {
       await CommentService.deleteComment(comment, token);
       router.reload();
     } else {
-      alert(t("resources.comment.option.delete.error"));
+      alert(t("resources.comment.options.delete.error"));
     }
   };
 
@@ -155,39 +152,39 @@ const Comments: React.FC<Props> = ({ id, object }: Props) => {
                     </a>
                   )}
                   {(profile.id == com.profile.id || role == "admin") &&
-                  !optionsVisibility[com.id] ? (
-                    <a
-                      className="float-right cursor-pointer p-1 pr-2 text-gray-600 hover:bg-gray-700 hover:text-white  flex items-center justify-center"
-                      onClick={() => toggleOptionsVisibility(com.id)}
-                    >
-                      &#8942;
-                    </a>
-                  ) : (
-                    <div className="flex items-center bg-gray-600 m-auto">
+                    (!optionsVisibility[com.id] ? (
                       <a
-                        className="p-1 cursor-pointer border-2 border-transparent hover:border-2 hover:border-white"
-                        onClick={() =>
-                          alert(t("resources.comment.options.edit.message"))
-                        }
-                      >
-                        {t("resources.comment.options.edit.title")}
-                      </a>
-
-                      <a
-                        className="p-1 cursor-pointer border-2 border-transparent hover:border-2 hover:border-white"
-                        onClick={(e) => handleDelete(e, com)}
-                      >
-                        {t("resources.comment.options.delete.title")}
-                      </a>
-
-                      <a
+                        className="float-right cursor-pointer p-1 pr-2 text-gray-600 hover:bg-gray-700 hover:text-white  flex items-center justify-center"
                         onClick={() => toggleOptionsVisibility(com.id)}
-                        className="cursor-pointer hover:bg-red-600 p-1 border-transparent border-2 hover:border-red-600 hover:border-2"
                       >
-                        {t("resources.comment.options.close")}
+                        &#8942;
                       </a>
-                    </div>
-                  )}
+                    ) : (
+                      <div className="flex items-center bg-gray-600 m-auto">
+                        <a
+                          className="p-1 cursor-pointer border-2 border-transparent hover:border-2 hover:border-white"
+                          onClick={() =>
+                            alert(t("resources.comment.options.edit.message"))
+                          }
+                        >
+                          {t("resources.comment.options.edit.title")}
+                        </a>
+
+                        <a
+                          className="p-1 cursor-pointer border-2 border-transparent hover:border-2 hover:border-white "
+                          onClick={(e) => handleDelete(e, com)}
+                        >
+                          {t("resources.comment.options.delete.title")}
+                        </a>
+
+                        <a
+                          onClick={() => toggleOptionsVisibility(com.id)}
+                          className="cursor-pointer hover:bg-red-600 p-1 border-transparent border-2 hover:border-red-600 hover:border-2"
+                        >
+                          {t("resources.comment.options.close")}
+                        </a>
+                      </div>
+                    ))}
                   {!com.parentId && (
                     <button
                       onClick={() => {

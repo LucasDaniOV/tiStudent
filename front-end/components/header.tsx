@@ -32,12 +32,6 @@ const Header: React.FC<Props> = ({ current }: Props) => {
           {t("header.nav.home")}
         </Link>
         <Link
-          href="/users"
-          className={current == "users" ? basic + " bg-gray-700" : basic}
-        >
-          {t("header.nav.users")}
-        </Link>
-        <Link
           href="/resources"
           className={current == "resources" ? basic + " bg-gray-700" : basic}
         >

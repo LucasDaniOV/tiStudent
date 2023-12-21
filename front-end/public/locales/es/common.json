@@ -5,6 +5,7 @@
   "loading": "Cargando...",
   "delete": "Eliminar",
   "back": "Volver",
+  "email.linked": "Correo electrónico ya vinculado a un perfil",
   "header": {
     "nav": {
       "home": "Inicio",
@@ -98,8 +99,7 @@
       "username": "Nombre de usuario",
       "bio": "Biografía",
       "created.at": "Creado en",
-      "latest.activity": "Última actividad",
-      "user.id": "ID de usuario"
+      "latest.activity": "Última actividad"
     },
     "info": "Información sobre",
     "delete": "¿Estás seguro de que quieres eliminar"

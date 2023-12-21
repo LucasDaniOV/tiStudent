@@ -1,5 +1,4 @@
 import ProfileService from "@/services/ProfileService";
-import UserService from "@/services/UserService";
 import { StatusMessage } from "@/types";
 import { getToken } from "@/util/token";
 import { useTranslation } from "next-i18next";
@@ -24,6 +23,8 @@ const ProfileCreateForm: React.FC = () => {
     setPasswordError("");
     setStatusMessages([]);
   };
+
+  const router = useRouter();
 
   const validate = () => {
     let isValid = true;
@@ -62,31 +63,34 @@ const ProfileCreateForm: React.FC = () => {
     return isValid;
   };
 
-  const createProfile = async (email: string) => {
-    const token = getToken();
-    const user = JSON.stringify(await UserService.getUserByEmail(email, token)); // kan ni me token
-    const userObject = JSON.parse(user);
-
-    const res = await ProfileService.createProfile(
-      username,
-      bio,
-      parseInt(userObject.id)
-    );
-    const profileObject = await ProfileService.getProfileByEmail(email); // kan ni me token
-    const profile = JSON.stringify(profileObject);
-    sessionStorage.setItem("loggedInProfile", profile);
-    const message = res.message;
-    const type = res.status;
-    setStatusMessages([{ message, type }]);
+  const createProfile = async () => {
+    const existingProfile = await ProfileService.checkProfileExists(email);
+    if (existingProfile.status === true) {
+      setStatusMessages([{ message: t("email.linked"), type: "error" }]);
+    } else {
+      const res = await ProfileService.createProfile(
+        email,
+        password,
+        "user",
+        username,
+        bio
+      );
+      const profileObject = await ProfileService.loginUser(email, password);
+      const profile = await profileObject.json();
+      console.log(profile);
+      sessionStorage.setItem("loggedInUser", JSON.stringify(profile));
+      const message = res.message;
+      const type = res.status;
+      setStatusMessages([{ message, type }]);
+      router.push("/");
+    }
   };
 
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
     clearErrors();
     if (!validate()) return;
-    const token = getToken();
-    await UserService.createUser(email, password, token); // kan ni me token
-    await createProfile(email);
+    await createProfile();
   };
 
   return (

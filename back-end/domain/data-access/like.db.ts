@@ -8,34 +8,18 @@ const getAllLikes = async (): Promise<Like[]> => {
     try {
         const likesPrisma = await database.like.findMany({
             include: {
-                upvoter: {
-                    include: {
-                        user: true,
-                    },
-                },
+                upvoter: true,
                 resource: {
                     include: {
-                        creator: {
-                            include: {
-                                user: true,
-                            },
-                        },
+                        creator: true,
                     },
                 },
                 comment: {
                     include: {
-                        profile: {
-                            include: {
-                                user: true,
-                            },
-                        },
+                        profile: true,
                         resource: {
                             include: {
-                                creator: {
-                                    include: {
-                                        user: true,
-                                    },
-                                },
+                                creator: true,
                             },
                         },
                     },
@@ -57,34 +41,18 @@ const getLikeById = async (likeId: number): Promise<Like> => {
                 id: likeId,
             },
             include: {
-                upvoter: {
-                    include: {
-                        user: true,
-                    },
-                },
+                upvoter: true,
                 resource: {
                     include: {
-                        creator: {
-                            include: {
-                                user: true,
-                            },
-                        },
+                        creator: true,
                     },
                 },
                 comment: {
                     include: {
-                        profile: {
-                            include: {
-                                user: true,
-                            },
-                        },
+                        profile: true,
                         resource: {
                             include: {
-                                creator: {
-                                    include: {
-                                        user: true,
-                                    },
-                                },
+                                creator: true,
                             },
                         },
                     },
@@ -108,34 +76,18 @@ const getLikesOnResource = async (resourceId: number): Promise<Like[]> => {
                 commentId: null,
             },
             include: {
-                upvoter: {
-                    include: {
-                        user: true,
-                    },
-                },
+                upvoter: true,
                 resource: {
                     include: {
-                        creator: {
-                            include: {
-                                user: true,
-                            },
-                        },
+                        creator: true,
                     },
                 },
                 comment: {
                     include: {
-                        profile: {
-                            include: {
-                                user: true,
-                            },
-                        },
+                        profile: true,
                         resource: {
                             include: {
-                                creator: {
-                                    include: {
-                                        user: true,
-                                    },
-                                },
+                                creator: true,
                             },
                         },
                     },
@@ -158,34 +110,18 @@ const getLikesOnComment = async (commentId: number): Promise<Like[]> => {
                 },
             },
             include: {
-                upvoter: {
-                    include: {
-                        user: true,
-                    },
-                },
+                upvoter: true,
                 resource: {
                     include: {
-                        creator: {
-                            include: {
-                                user: true,
-                            },
-                        },
+                        creator: true,
                     },
                 },
                 comment: {
                     include: {
-                        profile: {
-                            include: {
-                                user: true,
-                            },
-                        },
+                        profile: true,
                         resource: {
                             include: {
-                                creator: {
-                                    include: {
-                                        user: true,
-                                    },
-                                },
+                                creator: true,
                             },
                         },
                     },
@@ -207,34 +143,18 @@ const getLikesByProfile = async (profileId: number): Promise<Like[]> => {
                 },
             },
             include: {
-                upvoter: {
-                    include: {
-                        user: true,
-                    },
-                },
+                upvoter: true,
                 resource: {
                     include: {
-                        creator: {
-                            include: {
-                                user: true,
-                            },
-                        },
+                        creator: true,
                     },
                 },
                 comment: {
                     include: {
-                        profile: {
-                            include: {
-                                user: true,
-                            },
-                        },
+                        profile: true,
                         resource: {
                             include: {
-                                creator: {
-                                    include: {
-                                        user: true,
-                                    },
-                                },
+                                creator: true,
                             },
                         },
                     },
@@ -262,7 +182,7 @@ const deleteLike = async (likeId: number): Promise<Boolean> => {
     }
 };
 
-const createLike = async (profile: Profile, resource: Resource | null, comment: Comment | null): Promise<Like> => {
+const createLike = async (profile: Profile, resource: Resource, comment: Comment | null): Promise<Like> => {
     try {
         const like = new Like({ profile, resource, comment });
         const likeData = {
@@ -279,18 +199,10 @@ const createLike = async (profile: Profile, resource: Resource | null, comment: 
             },
         };
         const includeData = {
-            upvoter: {
-                include: {
-                    user: true,
-                },
-            },
+            upvoter: true,
             resource: {
                 include: {
-                    creator: {
-                        include: {
-                            user: true,
-                        },
-                    },
+                    creator: true,
                 },
             },
         };
@@ -302,18 +214,10 @@ const createLike = async (profile: Profile, resource: Resource | null, comment: 
             };
             includeData['comment'] = {
                 include: {
-                    profile: {
-                        include: {
-                            user: true,
-                        },
-                    },
+                    profile: true,
                     resource: {
                         include: {
-                            creator: {
-                                include: {
-                                    user: true,
-                                },
-                            },
+                            creator: true,
                         },
                     },
                 },

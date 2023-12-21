@@ -5,6 +5,7 @@
   "loading": "Laden...",
   "delete": "Verwijderen",
   "back": "Terug",
+  "email.linked": "E-mail is al gekoppeld aan een profiel",
   "header": {
     "nav": {
       "home": "Home",
@@ -98,8 +99,7 @@
       "username": "Gebruikersnaam",
       "bio": "Biografie",
       "created.at": "Aangemaakt op",
-      "latest.activity": "Laatste activiteit",
-      "user.id": "Gebruikers-ID"
+      "latest.activity": "Laatste activiteit"
     },
     "info": "Informatie over ",
     "delete": "Weet je zeker dat je wilt verwijderen"

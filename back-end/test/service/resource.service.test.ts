@@ -4,11 +4,15 @@ import { Category } from '../../domain/model/category';
 import { Profile } from '../../domain/model/profile';
 import { Resource } from '../../domain/model/resource';
 import { Subject } from '../../domain/model/subject';
-import { User } from '../../domain/model/user';
 import resourceService from '../../service/resource.service';
 
-const user = new User({ email: 'resource.service.test@tistudent.be', password: '_r3sourceSe4viceTe5t' });
-const creator = new Profile({ id: 69420, username: 'resourceServiceTest', user });
+const creator = new Profile({
+    id: 69420,
+    email: 'resource.service.test@tistudent.be',
+    password: '_r3sourceSe4viceTe5t',
+    role: 'admin',
+    username: 'resourceServiceTest',
+});
 
 const title = 'Hello World';
 const description = 'This is a test resource';
@@ -17,14 +21,12 @@ const subject = Subject.FullStack_Software_Develoment;
 
 let mockResourceDbGetResourceByContent: jest.Mock;
 let mockResourceDbCreateResource: jest.Mock;
-let mockUserDbGetUserById: jest.Mock;
 let mockResourceDbGetResourceById: jest.Mock;
 let mockResourceDbGetAllResources: jest.Mock;
 let mockProfileDbGetProfileById: jest.Mock;
 
 beforeEach(() => {
     mockResourceDbCreateResource = jest.fn();
-    mockUserDbGetUserById = jest.fn();
     mockResourceDbGetResourceByContent = jest.fn();
     mockResourceDbGetResourceById = jest.fn();
     mockResourceDbGetAllResources = jest.fn();
@@ -124,7 +126,7 @@ test(`given: available Resources, when: all Resources are requested, then: all R
     resourceDb.getAllResources = mockResourceDbGetAllResources.mockResolvedValue(resources);
 
     // when
-    const returnedResources = await resourceService.getAllResources();
+    const returnedResources = await resourceService.getAllResources('admin');
 
     // then
     expect(mockResourceDbGetAllResources).toHaveBeenCalledTimes(1);

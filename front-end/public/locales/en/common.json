@@ -5,6 +5,7 @@
   "loading": "Loading...",
   "delete": "Delete",
   "back": "Go back",
+  "email.linked": "Email already linked to a profile",
   "header": {
     "nav": {
       "home": "Home",
@@ -98,8 +99,7 @@
       "username": "Username",
       "bio": "Bio",
       "created.at": "Created At",
-      "latest.activity": "Latest Activity",
-      "user.id": "User ID"
+      "latest.activity": "Latest Activity"
     },
     "info": "Info about ",
     "delete": "Are you sure you want to delete"
