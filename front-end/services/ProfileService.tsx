@@ -21,6 +21,16 @@ const getProfileByEmail = async (email: string) => {
   return await res.json();
 };
 
+const checkProfileExists = async (email: string) => {
+  const res = await fetch(baseUrl + `/exists/email?email=${email}`, {
+    method: "GET",
+    headers: {
+      "Content-Type": "boolean",
+    },
+  });
+  return await res.json();
+};
+
 const deleteProfileById = async (profileId: number): Promise<Boolean> => {
   const res = await fetch(baseUrl + `/${profileId}`, {
     method: "DELETE",
@@ -50,7 +60,7 @@ const createProfile = async (
   username: string,
   bio?: string
 ) => {
-  const res = await fetch(baseUrl, {
+  const res = await fetch(baseUrl + "/signup", {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
@@ -73,7 +83,6 @@ const getGithubUser = async (code: string) => {
 
 const loginUser = async (email: string, password: string) => {
   const url = `${baseUrl}/login`;
-  console.log("step 0");
   return await fetch(url, {
     method: "POST",
     headers: {
@@ -87,6 +96,7 @@ export default {
   getAllProfiles,
   getProfileById,
   getProfileByEmail,
+  checkProfileExists,
   deleteProfileById,
   createProfile,
   getLikesByProfile,

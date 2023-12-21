@@ -5,6 +5,7 @@
   "loading": "Cargando...",
   "delete": "Eliminar",
   "back": "Volver",
+  "email.linked": "Correo electrónico ya vinculado a un perfil",
   "header": {
     "nav": {
       "home": "Inicio",

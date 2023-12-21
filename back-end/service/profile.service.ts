@@ -36,7 +36,13 @@ const createProfile = async ({ email, password, role, username, bio }: ProfileIn
     if (await profileDb.getProfileByUsername(username)) throw new Error(`Username already exists`);
 
     // create profile
-    return await profileDb.createProfile(profile.email, profile.password, profile.username, profile.role, profile.bio);
+    return await profileDb.createProfile(
+        profile.email,
+        await bcrypt.hash(profile.password, 12),
+        profile.username,
+        profile.role,
+        profile.bio
+    );
 };
 
 const getProfileField = async (profile: Profile, field: string) => {

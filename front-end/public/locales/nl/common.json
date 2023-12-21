@@ -5,6 +5,7 @@
   "loading": "Laden...",
   "delete": "Verwijderen",
   "back": "Terug",
+  "email.linked": "E-mail is al gekoppeld aan een profiel",
   "header": {
     "nav": {
       "home": "Home",

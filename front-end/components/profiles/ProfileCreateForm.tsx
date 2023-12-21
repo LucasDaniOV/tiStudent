@@ -24,6 +24,8 @@ const ProfileCreateForm: React.FC = () => {
     setStatusMessages([]);
   };
 
+  const router = useRouter();
+
   const validate = () => {
     let isValid = true;
     if (!email.trim()) {
@@ -62,24 +64,26 @@ const ProfileCreateForm: React.FC = () => {
   };
 
   const createProfile = async () => {
-    const existingProfile = JSON.stringify(
-      await ProfileService.getProfileByEmail(email)
-    );
-    if (existingProfile.includes("unauthorized")) console.log("I KNOW");
-    if (existingProfile) throw new Error("Email already linked to profile");
-    const res = await ProfileService.createProfile(
-      email,
-      password,
-      "user",
-      username,
-      bio
-    );
-    const profileObject = await ProfileService.getProfileByEmail(email);
-    const profile = JSON.stringify(profileObject);
-    sessionStorage.setItem("loggedInProfile", profile);
-    const message = res.message;
-    const type = res.status;
-    setStatusMessages([{ message, type }]);
+    const existingProfile = await ProfileService.checkProfileExists(email);
+    if (existingProfile.status === true) {
+      setStatusMessages([{ message: t("email.linked"), type: "error" }]);
+    } else {
+      const res = await ProfileService.createProfile(
+        email,
+        password,
+        "user",
+        username,
+        bio
+      );
+      const profileObject = await ProfileService.loginUser(email, password);
+      const profile = await profileObject.json();
+      console.log(profile);
+      sessionStorage.setItem("loggedInUser", JSON.stringify(profile));
+      const message = res.message;
+      const type = res.status;
+      setStatusMessages([{ message, type }]);
+      router.push("/");
+    }
   };
 
   const handleSubmit = async (e: FormEvent) => {

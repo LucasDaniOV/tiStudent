@@ -5,6 +5,7 @@
   "loading": "Loading...",
   "delete": "Delete",
   "back": "Go back",
+  "email.linked": "Email already linked to a profile",
   "header": {
     "nav": {
       "home": "Home",

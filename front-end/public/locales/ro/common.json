@@ -5,6 +5,7 @@
   "loading": "Încărcare...",
   "delete": "Șterge",
   "back": "Înapoi",
+  "email.linked": "E-mail deja asociat unui profil",
   "header": {
     "nav": {
       "home": "Acasă",

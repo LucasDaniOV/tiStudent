@@ -488,9 +488,50 @@ profileRouter.get('/login/github', async (req: Request & { auth: any }, res: Res
  */
 profileRouter.post('/login', async (req: Request, res: Response, next: NextFunction) => {
     try {
+        console.log(req.body);
         const profileInput: ProfileInput = req.body;
         const response = await profileService.authenticate(profileInput);
         res.status(200).json({ message: 'Authentication successful', ...response });
+    } catch (error) {
+        next(error);
+    }
+});
+
+/**
+ * @swagger
+ * /profiles/exists/email?email:
+ *   get:
+ *     security:
+ *       - bearerAuth: []
+ *     tags:
+ *       - profiles
+ *     summary: Get a profile by id
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         schema:
+ *           type: number
+ *           format: int64
+ *           required: true
+ *           description: The profile id
+ *     responses:
+ *       200:
+ *         description: A profile object
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/Profile'
+ */
+
+profileRouter.get('/exists/email', async (req: Request, res: Response, next: NextFunction) => {
+    try {
+        const email = String(req.query.email);
+        try {
+            await profileService.getProfileByEmail(email);
+            res.status(200).json({ status: true }); // If profile is returned then return status: true
+        } catch (error) {
+            res.status(200).json({ status: false }); // If profile is not returned and error is thrown then return status: false
+        }
     } catch (error) {
         next(error);
     }
