@@ -8,7 +8,7 @@ import { AuthenticationResponse, ProfileInput, Role } from '../types';
 import { generateJwtToken } from '../util/jwt';
 
 const getAllProfiles = async (role: Role) => {
-    if (role !== 'admin' && role !== 'user')
+    if (role !== 'admin')
         throw new UnauthorizedError('credentials_required', {
             message: 'Only admins can get all Profiles',
         });
