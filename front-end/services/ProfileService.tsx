@@ -32,10 +32,12 @@ const checkProfileExists = async (email: string) => {
 };
 
 const deleteProfileById = async (profileId: number): Promise<Boolean> => {
+  const token = getToken();
   const res = await fetch(baseUrl + `/${profileId}`, {
     method: "DELETE",
     headers: {
       "Content-Type": "application/json",
+      Authorization: `Bearer ${token}`,
     },
   });
   return await res.json();
