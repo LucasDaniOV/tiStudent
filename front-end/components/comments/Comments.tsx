@@ -68,10 +68,7 @@ const Comments: React.FC<Props> = ({ id, object }: Props) => {
   ): Promise<void> => {
     e.stopPropagation();
     e.preventDefault();
-    const commentProfile = await ProfileService.getProfileById(
-      String(comment.profile.id)
-    );
-    if (profile?.id === commentProfile.id || role == "admin") {
+    if (profile?.id === comment.profile.id || role == "admin") {
       if (
         !confirm(
           `${t("resources.comment.options.delete.message")}(${comment.message})`
@@ -81,7 +78,7 @@ const Comments: React.FC<Props> = ({ id, object }: Props) => {
       await CommentService.deleteComment(comment, token);
       router.reload();
     } else {
-      alert(t("resources.comment.option.delete.error"));
+      alert(t("resources.comment.options.delete.error"));
     }
   };
 
@@ -116,7 +113,6 @@ const Comments: React.FC<Props> = ({ id, object }: Props) => {
           }
         >
           {commentsOnResource.map((com, index) => {
-            console.log(com);
             return (
               <li key={index}>
                 <div
