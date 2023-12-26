@@ -92,6 +92,17 @@ test(`given: taken email, when: Profile is created, then: error is thrown`, () =
     expect(createProfile).rejects.toThrowError('Email already exists');
 });
 
+test(`hash password`, async () =>  {
+    // given
+    const password = 'password';
+
+    // when
+    const hashedPassword = await profileService.hashPassword(password);
+    
+    // then
+    expect(hashedPassword).not.toEqual(password);
+});
+
 test(`given: existing profiles, when: getAllProfiles is called, then: all profiles are returned`, async () => {
     // given
     const profiles = [

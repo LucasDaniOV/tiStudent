@@ -33,6 +33,10 @@ const getProfileByUsername = async (username: string): Promise<Profile> => {
     return profile;
 }
 
+const hashPassword = async (password: string): Promise<string> => {
+    return await bcrypt.hash(password, 12);
+}
+
 const createProfile = async ({ email, password, role, username, bio }: ProfileInput): Promise<Profile> => {
     // check if errors occur when creating profile object
     const profile = new Profile({ email, password, username, role, bio });
@@ -43,10 +47,11 @@ const createProfile = async ({ email, password, role, username, bio }: ProfileIn
     // check if email is already taken
     if (await profileDb.getProfileByEmail(email)) throw new Error(`Email already exists`);
 
-    // create profile
+    const hashedPassword = await hashPassword(password);
+
     return await profileDb.createProfile(
         profile.email,
-        await bcrypt.hash(profile.password, 12),
+        hashedPassword,
         profile.username,
         profile.role,
         profile.bio
@@ -160,4 +165,5 @@ export default {
     getGithubAccessToken,
     getGithubUser,
     authenticate,
+    hashPassword,
 };
