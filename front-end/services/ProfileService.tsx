@@ -1,5 +1,5 @@
 import { getAll, getById } from "@/util/get";
-import { Like, Profile } from "../types";
+import { Like, Profile, Resource } from "../types";
 import { getToken } from "@/util/token";
 
 const baseUrl = process.env.NEXT_PUBLIC_API_URL + "/profiles";
@@ -94,6 +94,34 @@ const loginUser = async (email: string, password: string) => {
   });
 };
 
+const getResourcesByProfile = async (
+  profileId: string
+): Promise<Array<Resource>> => {
+  const token = getToken();
+  const res = await fetch(baseUrl + `/${profileId}/sharedResources`, {
+    method: "GET",
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${token}`,
+    },
+  });
+  return await res.json();
+};
+
+const getLeaderboard = async (): Promise<
+  Array<{ profile: Profile; resourceCount: number }>
+> => {
+  const token = getToken();
+  const res = await fetch(baseUrl + `/leaderboard/10`, {
+    method: "GET",
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${token}`,
+    },
+  });
+  return await res.json();
+};
+
 export default {
   getAllProfiles,
   getProfileById,
@@ -104,4 +132,6 @@ export default {
   getLikesByProfile,
   getGithubUser,
   loginUser,
+  getResourcesByProfile,
+  getLeaderboard,
 };

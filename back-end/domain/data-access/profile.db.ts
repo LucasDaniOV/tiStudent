@@ -3,6 +3,7 @@ import database from '../../util/database';
 import { Profile } from '../model/profile';
 import { Resource } from '../model/resource';
 import likeDb from './like.db';
+import resourceDb from './resource.db';
 
 const getAllProfiles = async (): Promise<Profile[]> => {
     try {
@@ -139,6 +140,24 @@ const getProfilesWithLikeOnResource = async (resource: Resource): Promise<Profil
     return profiles.filter((p) => likes.filter((like) => like.profile.id == p.id));
 };
 
+const getLeaderboard = async () => {
+    try {
+        const profiles = await getAllProfiles();
+
+        const ordered = await Promise.all(
+            profiles.map(async (profile) => {
+                const resourceCount = (await resourceDb.getResourcesByProfile(profile.id)).length;
+                return { profile, resourceCount };
+            })
+        );
+        ordered.sort((a, b) => b.resourceCount - a.resourceCount);
+        return ordered.slice(0, 10);
+    } catch (error) {
+        console.error(error);
+        throw new Error('Database error. See server log for details.');
+    }
+};
+
 export default {
     getAllProfiles,
     getProfileById,
@@ -150,4 +169,5 @@ export default {
     updateEmail,
     updatePassword,
     getProfilesWithLikeOnResource,
+    getLeaderboard,
 };

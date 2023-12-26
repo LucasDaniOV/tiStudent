@@ -6,6 +6,7 @@ import { Like } from '../domain/model/like';
 import { Profile } from '../domain/model/profile';
 import { AuthenticationResponse, ProfileInput, Role } from '../types';
 import { generateJwtToken } from '../util/jwt';
+import resourceDb from '../domain/data-access/resource.db';
 
 const getAllProfiles = async (role: Role) => {
     if (role !== 'admin')
@@ -63,6 +64,8 @@ const getProfileField = async (profile: Profile, field: string) => {
     else if (field == 'bio') return profile.bio;
     else if (field == 'latestActivity') return profile.latestActivity;
     else if (field == 'likedResources') return await likeDb.getLikesByProfile(profile.id);
+    else if (field == 'sharedResources') return resourceDb.getResourcesByProfile(profile.id);
+    else throw new Error('Unsupported field');
 };
 
 const updateField = async (id: number, field: string, value: string): Promise<any> => {
@@ -154,6 +157,14 @@ const authenticate = async ({ email, password }: ProfileInput): Promise<Authenti
     };
 };
 
+const getLeaderBoard = async () => {
+    try {
+        return await profileDb.getLeaderboard();
+    } catch (error) {
+        console.log('Error fetching leaderboard.');
+    }
+};
+
 export default {
     getAllProfiles,
     getProfileById,
@@ -166,5 +177,6 @@ export default {
     getGithubAccessToken,
     getGithubUser,
     authenticate,
+    getLeaderBoard,
     hashPassword,
 };
