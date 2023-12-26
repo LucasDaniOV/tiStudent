@@ -146,38 +146,6 @@ profileRouter.get('/:email', async (req: Request, res: Response, next: NextFunct
 
 /**
  * @swagger
- * /profiles:
- *   post:
- *     tags:
- *       - profiles
- *     summary: Create a profile
- *     requestBody:
- *       description: Profile object to be created
- *       required: true
- *       content:
- *         application/json:
- *           schema:
- *             $ref: '#/components/schemas/ProfileInput'
- *     responses:
- *       200:
- *         description: The created profile
- *         content:
- *           application/json:
- *             schema:
- *               $ref: '#/components/schemas/Profile'
- */
-profileRouter.post('/', async (req: Request, res: Response, next: NextFunction) => {
-    try {
-        const profileInput = req.body as ProfileInput;
-        const profile = await profileService.createProfile(profileInput);
-        res.status(200).json({ status: 'success', message: 'Profile created', data: profile });
-    } catch (error) {
-        next(error);
-    }
-});
-
-/**
- * @swagger
  * /profiles/{profileId}/username:
  *   get:
  *     security:
