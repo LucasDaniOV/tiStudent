@@ -495,7 +495,6 @@ profileRouter.get('/login/github', async (req: Request & { auth: any }, res: Res
  */
 profileRouter.post('/login', async (req: Request, res: Response, next: NextFunction) => {
     try {
-        console.log(req.body);
         const profileInput: ProfileInput = req.body;
         const response = await profileService.authenticate(profileInput);
         res.status(200).json({ message: 'Authentication successful', ...response });
