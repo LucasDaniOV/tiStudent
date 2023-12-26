@@ -77,11 +77,7 @@ const CreateResourceForm: React.FC = () => {
   const setUser = async () => {
     const user = sessionStorage.getItem("loggedInUser");
     if (!user) return;
-    const profile = await ProfileService.getProfileByEmail(
-      JSON.parse(user).email
-    );
-    if (!profile) return;
-    setProfileId(profile.id);
+    setProfileId(JSON.parse(user).id);
   };
 
   useEffect(() => {
@@ -91,7 +87,6 @@ const CreateResourceForm: React.FC = () => {
     };
     setUser();
   }, [profileId]);
-
   return (
     <>
       <Head>
@@ -101,13 +96,6 @@ const CreateResourceForm: React.FC = () => {
       <main className="flex flex-row align-middle items-center justify-center">
         {profileId ? (
           <>
-            {statusMessages && (
-              <ul>
-                {statusMessages.map((statusMessage, index) => (
-                  <li key={index}>{statusMessage.message}</li>
-                ))}
-              </ul>
-            )}
             <section>
               <form className="flex flex-col" onSubmit={(e) => handleSubmit(e)}>
                 <label className="mt-2 mb-2" htmlFor="title">
@@ -206,6 +194,13 @@ const CreateResourceForm: React.FC = () => {
                 </button>
               </form>
             </section>
+            {statusMessages && (
+              <ul>
+                {statusMessages.map((statusMessage, index) => (
+                  <li key={index}>{statusMessage.message}</li>
+                ))}
+              </ul>
+            )}
           </>
         ) : (
           <h2>{t("authorization.error")}</h2>
