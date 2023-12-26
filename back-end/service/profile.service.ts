@@ -86,8 +86,9 @@ const updateField = async (id: number, field: string, value: string): Promise<an
     } else if (field == 'password') {
         Profile.validatePassword(value);
         const profile = await profileDb.getProfileById(id);
-        if (profile.password === value) throw new Error(`New password must be different from old password`);
-        return await profileDb.updatePassword(id, value);
+        const hashedPassword = await hashPassword(value);
+        if (profile.password === hashedPassword) throw new Error(`New password must be different from old password`);
+        return await profileDb.updatePassword(id, hashedPassword);
         // }else if (field == "role"){  // Should it be possible to change roles?
     } else {
         throw new Error('Unsupported field');
