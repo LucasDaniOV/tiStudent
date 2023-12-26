@@ -78,6 +78,19 @@ const getCommentsOnResource = async (id: string): Promise<Comment[]> => {
   return comments.json();
 };
 
+const getResourcesByProfile = async (profileId: number) => {
+  const token = getToken();
+  const comments = await fetch(baseUrl + `/${profileId}/resources`, {
+    method: "GET",
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${token}`,
+    },
+  });
+  return comments.json();
+
+}
+
 const ResourceService = {
   getAllResources,
   getResourceById,
