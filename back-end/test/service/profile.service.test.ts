@@ -168,29 +168,6 @@ test(`given: valid values, when: updating Profile, then: Profile is updated`, as
     expect(mockProfileDbGetProfileById).toHaveBeenCalledWith(validId);
 });
 
-// ALREADY TESTED ABOVE IN FIRST TEST
-
-// test(`given valid role, when: creating Profile, then: Profile is created with that role`, async () => {
-//     // given
-//     const profile = new Profile({ email: validEmail, password: validPassword, username: username, role: validRole });
-//     profileDb.getProfileByEmail = mockProfileDbGetProfileByEmail.mockResolvedValue(undefined);
-//     profileDb.createProfile = mockProfileDbCreateProfile.mockResolvedValue(profile);
-
-//     // when
-//     const sut = await profileService.createProfile({
-//         email: validEmail,
-//         password: validPassword,
-//         username: username,
-//         role: validRole,
-//     });
-
-//     // then
-//     expect(mockProfileDbCreateProfile).toHaveBeenCalledTimes(1);
-//     expect(sut.email).toEqual(validEmail);
-//     expect(sut.password).toEqual(validPassword);
-//     expect(sut.role).toEqual(validRole);
-// });
-
 test(`given: invalid role, when: creating Profile, then: Profile is not created and error is thrown`, async () => {
     // given
     const invalidRole = 'invalidRole';
