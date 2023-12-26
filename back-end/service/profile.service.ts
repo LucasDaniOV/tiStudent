@@ -27,6 +27,12 @@ const getProfileByEmail = async (email: string): Promise<Profile> => {
     return profile;
 };
 
+const getProfileByUsername = async (username: string): Promise<Profile> => {
+    const profile = await profileDb.getProfileByUsername(username);
+    if (!profile) throw new Error(`Profile with username "${username}" does not exist`);
+    return profile;
+}
+
 const createProfile = async ({ email, password, role, username, bio }: ProfileInput): Promise<Profile> => {
     // check if errors occur when creating profile object
     const profile = new Profile({ email, password, username, role, bio });
@@ -143,6 +149,7 @@ export default {
     getAllProfiles,
     getProfileById,
     getProfileByEmail,
+    getProfileByUsername,
     createProfile,
     getProfileField,
     updateField,

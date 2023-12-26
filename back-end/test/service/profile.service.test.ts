@@ -29,6 +29,29 @@ afterEach(() => {
     jest.clearAllMocks();
 });
 
+test(`given: existing Profile, when: getProfileByUsername is called, then: existing Profile is returned`, async () => {
+    // given
+    const profile = new Profile({ email: validEmail, password: validPassword, role: validRole, username: username });
+    profileDb.getProfileByUsername = mockProfileDbGetProfileByUsername.mockResolvedValue(profile);
+
+    // when
+    const sut = await profileService.getProfileByUsername(username);
+
+    // then
+    expect(sut).toEqual(profile);
+});
+
+test(`given: non-existing Profile, when: getProfileByUsername is called, then: error is thrown`, () => {
+    // given
+    profileDb.getProfileByUsername = mockProfileDbGetProfileByUsername.mockResolvedValue(undefined);
+
+    // when
+    const sut = async () => await profileService.getProfileByUsername(username);
+
+    // then
+    expect(sut).rejects.toThrowError(`Profile with username "${username}" does not exist`);
+})
+
 test(`given: valid values for Profile, when: Profile is created, then: Profile is created with those values`, async () => {
     // given
     const profile = new Profile({ email: validEmail, password: validPassword, role: validRole, username: username });
