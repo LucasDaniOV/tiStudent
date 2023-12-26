@@ -8,9 +8,12 @@ import { mutate } from "swr";
 import useInterval from "use-interval";
 import ProfileService from "../../services/ProfileService";
 import { useTranslation } from "next-i18next";
+import LeaderBoard from "@/components/profiles/LeaderBoard";
 
 const Profiles: React.FC = () => {
   const [profiles, setProfiles] = useState<Array<Profile>>();
+  const [topTen, setTopTen] =
+    useState<Array<{ profile: Profile; resourceCount: number }>>();
   const [authorized, setAuthorized] = useState<boolean>(false);
   const { t } = useTranslation();
   const getProfiles = async () => {
@@ -22,13 +25,20 @@ const Profiles: React.FC = () => {
     setAuthorized(true);
     return setProfiles(response);
   };
+  const getTopTen = async () => {
+    const response = await ProfileService.getLeaderboard();
+    setAuthorized(true);
+    return setTopTen(response);
+  };
 
   useInterval(() => {
     mutate("profiles", getProfiles());
+    mutate("topTen", getTopTen());
   }, 5000);
 
   useEffect(() => {
     getProfiles();
+    getTopTen();
   }, []);
 
   return (
@@ -38,10 +48,15 @@ const Profiles: React.FC = () => {
       </Head>
       <Header current="profiles" />
       <main>
-        <h1>{t("profiles.index.title")}</h1>
+        <h1 className="text-3xl">{t("profiles.index.title")}</h1>
         <section>
           {authorized ? (
-            profiles && <ProfilesOverviewTable profiles={profiles} />
+            <>
+              <div className="m-12">
+                {topTen && <LeaderBoard profiles={topTen} />}
+              </div>
+              {profiles && <ProfilesOverviewTable profiles={profiles} />}
+            </>
           ) : (
             <p>{t("authorization.error")}</p>
           )}
