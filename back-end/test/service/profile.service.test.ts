@@ -169,3 +169,26 @@ test(`given: unauthorized role, when: requesting all Profiles, then: Error is th
     // then
     expect(sut).rejects.toThrowError('Only admins can get all Profiles');
 });
+
+test(`given: existing Profile, when: getProfileByEmail, then: existing Profile is returned`, async () => {
+    // given
+    const profile = new Profile({ email: validEmail, password: validPassword, role: validRole, username: username });
+    profileDb.getProfileByEmail = mockProfileDbGetProfileByEmail.mockResolvedValue(profile);
+
+    // when
+    const sut = await profileService.getProfileByEmail(validEmail);
+
+    // then
+    expect(sut).toEqual(profile);
+});
+
+test(`given: non-existing Profile, when: getProfileByEmail, then: error is thrown`, () => {
+    // given
+    profileDb.getProfileByEmail = mockProfileDbGetProfileByEmail.mockResolvedValue(undefined);
+
+    // when
+    const sut = async () => await profileService.getProfileByEmail(validEmail);
+
+    // then
+    expect(sut).rejects.toThrowError(`Profile with email "${validEmail}" does not exist`);
+});
