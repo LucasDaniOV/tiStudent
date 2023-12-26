@@ -56,7 +56,9 @@ test(`given: valid values for Profile, when: Profile is created, then: Profile i
     // given
     const profile = new Profile({ email: validEmail, password: validPassword, role: validRole, username: username });
     profileDb.getProfileByUsername = mockProfileDbGetProfileByUsername.mockResolvedValue(undefined);
+    profileDb.getProfileByEmail = mockProfileDbGetProfileByEmail.mockResolvedValue(undefined);
     profileDb.createProfile = mockProfileDbCreateProfile.mockResolvedValue(profile);
+
     // when
     const sut = await profileService.createProfile(profileInput);
 
@@ -75,6 +77,19 @@ test(`given: taken username, when: Profile is created, then: error is thrown`, (
 
     // then
     expect(createProfile).rejects.toThrowError('Username already exists');
+});
+
+test(`given: taken email, when: Profile is created, then: error is thrown`, () => {
+    // given
+    const profile = new Profile({ email: validEmail, password: validPassword, role: validRole, username: username });
+    profileDb.getProfileByUsername = mockProfileDbGetProfileByUsername.mockResolvedValue(undefined);
+    profileDb.getProfileByEmail = mockProfileDbGetProfileByEmail.mockResolvedValue(profile);
+
+    // when
+    const createProfile = async () => await profileService.createProfile(profileInput);
+
+    // then
+    expect(createProfile).rejects.toThrowError('Email already exists');
 });
 
 test(`given: existing profiles, when: getAllProfiles is called, then: all profiles are returned`, async () => {

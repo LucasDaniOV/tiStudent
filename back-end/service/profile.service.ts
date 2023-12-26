@@ -40,6 +40,9 @@ const createProfile = async ({ email, password, role, username, bio }: ProfileIn
     // check if username is already taken
     if (await profileDb.getProfileByUsername(username)) throw new Error(`Username already exists`);
 
+    // check if email is already taken
+    if (await profileDb.getProfileByEmail(email)) throw new Error(`Email already exists`);
+
     // create profile
     return await profileDb.createProfile(
         profile.email,
