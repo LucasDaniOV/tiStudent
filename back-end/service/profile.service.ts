@@ -1,4 +1,3 @@
-import bcrypt from 'bcrypt';
 import { UnauthorizedError } from 'express-jwt';
 import likeDb from '../domain/data-access/like.db';
 import profileDb from '../domain/data-access/profile.db';
@@ -6,6 +5,7 @@ import { Like } from '../domain/model/like';
 import { Profile } from '../domain/model/profile';
 import { AuthenticationResponse, ProfileInput, Role } from '../types';
 import { generateJwtToken } from '../util/jwt';
+import { comparePasswordWithHash, hashPassword } from '../util/password';
 
 const getAllProfiles = async (role: Role) => {
     if (role !== 'admin')
@@ -31,11 +31,7 @@ const getProfileByUsername = async (username: string): Promise<Profile> => {
     const profile = await profileDb.getProfileByUsername(username);
     if (!profile) throw new Error(`Profile with username "${username}" does not exist`);
     return profile;
-}
-
-const hashPassword = async (password: string): Promise<string> => {
-    return await bcrypt.hash(password, 12);
-}
+};
 
 const createProfile = async ({ email, password, role, username, bio }: ProfileInput): Promise<Profile> => {
     // check if errors occur when creating profile object
@@ -49,13 +45,7 @@ const createProfile = async ({ email, password, role, username, bio }: ProfileIn
 
     const hashedPassword = await hashPassword(password);
 
-    return await profileDb.createProfile(
-        profile.email,
-        hashedPassword,
-        profile.username,
-        profile.role,
-        profile.bio
-    );
+    return await profileDb.createProfile(profile.email, hashedPassword, profile.username, profile.role, profile.bio);
 };
 
 const getProfileField = async (profile: Profile, field: string) => {
@@ -86,9 +76,8 @@ const updateField = async (id: number, field: string, value: string): Promise<an
     } else if (field == 'password') {
         Profile.validatePassword(value);
         const profile = await profileDb.getProfileById(id);
-        const hashedPassword = await hashPassword(value);
-        if (profile.password === hashedPassword) throw new Error(`New password must be different from old password`);
-        return await profileDb.updatePassword(id, hashedPassword);
+        if (await comparePasswordWithHash(value, profile.password)) throw new Error(`New password must be different from old password`);
+        return await profileDb.updatePassword(id, value);
         // }else if (field == "role"){  // Should it be possible to change roles?
     } else {
         throw new Error('Unsupported field');
@@ -142,7 +131,7 @@ const getGithubUser = async (access_token: string): Promise<any> => {
 const authenticate = async ({ email, password }: ProfileInput): Promise<AuthenticationResponse> => {
     const profile = await getProfileByEmail(email);
 
-    const isValidPassword = await bcrypt.compare(password, profile.password);
+    const isValidPassword = await comparePasswordWithHash(password, profile.password);
 
     if (!isValidPassword) throw new Error('Invalid password');
 
@@ -166,5 +155,4 @@ export default {
     getGithubAccessToken,
     getGithubUser,
     authenticate,
-    hashPassword,
 };
