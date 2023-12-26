@@ -407,8 +407,8 @@ profileRouter.put('/:id/bio', async (req: Request, res: Response, next: NextFunc
 profileRouter.delete('/:id', async (req: Request, res: Response, next: NextFunction) => {
     try {
         const profileId = parseInt(req.params.id);
-        const profile = await profileService.getProfileById(profileId);
-        if (profile) res.status(200).json(profileService.deleteProfile(profileId));
+        const deleted = await profileService.deleteProfile(profileId);
+        res.status(200).json({ status: 'success', message: 'Profile deleted', deleted });
     } catch (error) {
         next(error);
     }
