@@ -1,8 +1,8 @@
 {
-    "name": "full-stack-project",
+    "name": "tistudent",
     "version": "1.0.0",
-    "description": "Full-stack project.",
-    "author": "student_names_here",
+    "description": "A platform where students can share, like, comment and publish academic resources.",
+    "author": "Gamudi",
     "license": "ISC",
     "main": "app.ts",
     "prisma": {
