@@ -4,14 +4,14 @@
     "description": "A platform where students can share, like, comment and publish academic resources.",
     "author": "Gamudi",
     "license": "ISC",
-    "main": "app.ts",
+    "main": "main.ts",
     "prisma": {
         "schema": "domain/data-access/prisma/schema.prisma",
         "seed": "ts-node util/seed.ts"
     },
     "scripts": {
         "test": "jest",
-        "start": "nodemon -L app.ts --delay 3"
+        "start": "nodemon -L main.ts --delay 3"
     },
     "nodemonConfig": {
         "ext": "ts",

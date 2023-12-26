@@ -1,6 +1,5 @@
 import * as bodyParser from 'body-parser';
 import cors from 'cors';
-import * as dotenv from 'dotenv';
 import express, { NextFunction, Request, Response } from 'express';
 import { expressjwt } from 'express-jwt';
 import swaggerJSDoc from 'swagger-jsdoc';
@@ -15,9 +14,6 @@ import { likeRouter } from './controller/like.routes';
 const app = express();
 
 app.use(helmet());
-
-dotenv.config();
-const port = process.env.APP_PORT || 3000;
 
 app.use(cors());
 app.use(bodyParser.json());
@@ -68,6 +64,4 @@ app.use((err: Error, req: Request, res: Response, next: NextFunction) => {
     }
 });
 
-app.listen(port || 3000, () => {
-    console.log(`Back-end is running on port ${port}.`);
-});
+export default app;
