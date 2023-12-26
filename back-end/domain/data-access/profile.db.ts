@@ -11,7 +11,7 @@ const getAllProfiles = async (): Promise<Profile[]> => {
         if (profilesPrisma) return profilesPrisma.map((profilePrisma) => Profile.from(profilePrisma));
     } catch (error) {
         console.log(error);
-        throw new Error('Database error. See server log for details.');
+        throw new Error('Database error when getting all profiles. See server log for details.');
     }
 };
 const getProfileById = async (id: number): Promise<Profile> => {
@@ -24,7 +24,7 @@ const getProfileById = async (id: number): Promise<Profile> => {
         if (profilePrisma) return Profile.from(profilePrisma);
     } catch (error) {
         console.log(error);
-        throw new Error('Database error. See server log for details.');
+        throw new Error('Database error when getting profile by id. See server log for details.');
     }
 };
 
@@ -38,7 +38,7 @@ const getProfileByUsername = async (username: string): Promise<Profile> => {
         if (profilePrisma) return Profile.from(profilePrisma);
     } catch (error) {
         console.log(error);
-        throw new Error('Database error. See server log for details.');
+        throw new Error('Database error when getting profile by username. See server log for details.');
     }
 };
 
@@ -52,7 +52,7 @@ const getProfileByEmail = async (email: string): Promise<Profile> => {
         if (profilePrisma) return Profile.from(profilePrisma);
     } catch (error) {
         console.log(error);
-        throw new Error('Database error. See server log for details.');
+        throw new Error('Database error when getting profile by email. See server log for details.');
     }
 };
 
@@ -79,7 +79,7 @@ const createProfile = async (
         if (profilePrisma) return Profile.from(profilePrisma);
     } catch (error) {
         console.log(error);
-        throw new Error('Database error. See server log for details.');
+        throw new Error('Database error when creating profile. See server log for details.');
     }
 };
 
@@ -93,7 +93,7 @@ const deleteProfile = async (id: number): Promise<Boolean> => {
         return true;
     } catch (error) {
         console.error(error);
-        throw new Error('Database error. See server log for details.');
+        throw new Error('Database error when deleting profile. See server log for details.');
     }
 };
 
@@ -106,7 +106,7 @@ const updateProfileBio = async (id: number, newBio: string): Promise<Profile> =>
         return Profile.from(updatedProfile);
     } catch (error) {
         console.error(error);
-        throw new Error('Database error. See server log for details.');
+        throw new Error('Database error when updating profile bio. See server log for details.');
     }
 };
 const updateEmail = async (id: number, newEmail: string): Promise<Profile> => {
@@ -118,7 +118,7 @@ const updateEmail = async (id: number, newEmail: string): Promise<Profile> => {
         return Profile.from(updatedProfile);
     } catch (error) {
         console.error(error);
-        throw new Error('Database error. See server log for details.');
+        throw new Error('Database error when updating profile email. See server log for details.');
     }
 };
 const updatePassword = async (id: number, newPassword: string): Promise<Profile> => {
@@ -130,7 +130,7 @@ const updatePassword = async (id: number, newPassword: string): Promise<Profile>
         return Profile.from(updatedProfile);
     } catch (error) {
         console.error(error);
-        throw new Error('Database error. See server log for details.');
+        throw new Error('Database error when updating profile password. See server log for details.');
     }
 };
 

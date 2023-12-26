@@ -23,11 +23,20 @@ const getProfileById = async (id: number): Promise<Profile> => {
 };
 
 const getProfileByEmail = async (email: string): Promise<Profile> => {
-    const profiles = await profileDb.getAllProfiles();
-    const profile = profiles.find((p) => p.email === email);
+    const profile = await profileDb.getProfileByEmail(email);
     if (!profile) throw new Error(`Profile with email "${email}" does not exist`);
     return profile;
 };
+
+const getProfileByUsername = async (username: string): Promise<Profile> => {
+    const profile = await profileDb.getProfileByUsername(username);
+    if (!profile) throw new Error(`Profile with username "${username}" does not exist`);
+    return profile;
+}
+
+const hashPassword = async (password: string): Promise<string> => {
+    return await bcrypt.hash(password, 12);
+}
 
 const createProfile = async ({ email, password, role, username, bio }: ProfileInput): Promise<Profile> => {
     // check if errors occur when creating profile object
@@ -36,10 +45,14 @@ const createProfile = async ({ email, password, role, username, bio }: ProfileIn
     // check if username is already taken
     if (await profileDb.getProfileByUsername(username)) throw new Error(`Username already exists`);
 
-    // create profile
+    // check if email is already taken
+    if (await profileDb.getProfileByEmail(email)) throw new Error(`Email already exists`);
+
+    const hashedPassword = await hashPassword(password);
+
     return await profileDb.createProfile(
         profile.email,
-        await bcrypt.hash(profile.password, 12),
+        hashedPassword,
         profile.username,
         profile.role,
         profile.bio
@@ -76,8 +89,9 @@ const updateField = async (id: number, field: string, value: string): Promise<an
     } else if (field == 'password') {
         Profile.validatePassword(value);
         const profile = await profileDb.getProfileById(id);
-        if (profile.password === value) throw new Error(`New password must be different from old password`);
-        return await profileDb.updatePassword(id, value);
+        const hashedPassword = await hashPassword(value);
+        if (profile.password === hashedPassword) throw new Error(`New password must be different from old password`);
+        return await profileDb.updatePassword(id, hashedPassword);
         // }else if (field == "role"){  // Should it be possible to change roles?
     } else {
         throw new Error('Unsupported field');
@@ -155,6 +169,7 @@ export default {
     getAllProfiles,
     getProfileById,
     getProfileByEmail,
+    getProfileByUsername,
     createProfile,
     getProfileField,
     updateField,
@@ -163,4 +178,5 @@ export default {
     getGithubUser,
     authenticate,
     getLeaderBoard,
+    hashPassword,
 };
