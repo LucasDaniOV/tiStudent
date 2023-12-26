@@ -299,6 +299,45 @@ profileRouter.get('/:id/likedResources', async (req: Request & { auth: any }, re
 
 /**
  * @swagger
+ * /profiles/{profileId}/sharedResources:
+ *   get:
+ *     tags:
+ *       - profiles
+ *     summary: give an overview of a Profiles' shared Resources
+ *     parameters:
+ *       - name: profileId
+ *         in: path
+ *         required: true
+ *         description: The ID of the Profile.
+ *         schema:
+ *           type: number
+ *           example: 0
+ *
+ *     responses:
+ *       200:
+ *         description: The liked Resources of the Profile
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: array
+ *               items:
+ *                 $ref: '#/components/schemas/Resource'
+ */
+
+profileRouter.get('/:id/sharedResources', async (req: Request & { auth: any }, res: Response, next: NextFunction) => {
+    try {
+        const { role } = req.auth.role;
+        const profileId = parseInt(req.params.id);
+        const profile = await profileService.getProfileById(profileId);
+        const sharedResources = await profileService.getProfileField(profile, 'sharedResources');
+        res.status(200).json(sharedResources);
+    } catch (error) {
+        next(error);
+    }
+});
+
+/**
+ * @swagger
  * /profiles/{profileId}/bio?newBio:
  *   put:
  *     tags:
@@ -500,6 +539,35 @@ profileRouter.get('/exists/email', async (req: Request, res: Response, next: Nex
         } catch (error) {
             res.status(200).json({ status: false }); // If profile is not returned and error is thrown then return status: false
         }
+    } catch (error) {
+        next(error);
+    }
+});
+
+/**
+ * @swagger
+ * /profiles/leaderboard/10:
+ *   get:
+ *     security:
+ *       - bearerAuth: []
+ *     tags:
+ *       - profiles
+ *     summary: Get the leaderboard
+ *     responses:
+ *       200:
+ *         description: A list of profiles
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: array
+ *               items:
+ *                 $ref: '#/components/schemas/Profile'
+ */
+
+profileRouter.get('/leaderboard/10', async (req: Request, res: Response, next: NextFunction) => {
+    try {
+        const profiles = await profileService.getLeaderBoard();
+        res.status(200).json(profiles);
     } catch (error) {
         next(error);
     }

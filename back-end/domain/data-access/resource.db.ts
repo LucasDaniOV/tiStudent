@@ -175,6 +175,23 @@ const updateFieldOfResource = async (
     }
 };
 
+const getResourcesByProfile = async (profileId: number): Promise<Array<Resource>> => {
+    try {
+        const resources = await database.resource.findMany({
+            where: {
+                creatorId: profileId,
+            },
+            include: {
+                creator: true,
+            },
+        });
+        if (resources) return resources.map((r) => Resource.from(r));
+    } catch (error) {
+        console.error(error);
+        throw new Error('Database error. See server log for details.');
+    }
+};
+
 export default {
     getAllResources,
     getResourceById,
@@ -182,4 +199,5 @@ export default {
     getResourceByContent,
     deleteResource,
     updateFieldOfResource,
+    getResourcesByProfile,
 };
