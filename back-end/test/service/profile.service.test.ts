@@ -107,9 +107,6 @@ test(`given: existing profiles, when: getAllProfiles is called, then: all profil
     // given
     const profiles = [
         new Profile({ email: validEmail, password: validPassword, role: validRole, username: username }),
-        // new Profile({ email: validEmail, password: validPassword, role: validRole, username: username }),
-        // new Profile({ email: validEmail, password: validPassword, role: validRole, username: username }),
-        // new Profile({ email: validEmail, password: validPassword, role: validRole, username: username }),
     ];
     profileDb.getAllProfiles = mockProfileDbGetAllProfiles.mockResolvedValue(profiles);
 
