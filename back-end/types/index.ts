@@ -29,6 +29,6 @@ type AuthenticationResponse = {
     role: Role;
 };
 
-type Role = 'admin' | 'user' | 'guest';
+type Role = 'ADMIN' | 'USER';
 
 export { ResourceInput, ProfileInput, AuthenticationResponse, Role };
