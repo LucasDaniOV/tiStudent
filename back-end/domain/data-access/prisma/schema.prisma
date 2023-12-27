@@ -8,54 +8,99 @@ datasource db {
 }
 
 model Profile {
-    id                 Int      @id @default(autoincrement())
-    email              String   @unique
-    password           String
-    role               String?
-    username           String     @unique
-    bio                String?
-    createdAt          DateTime
-    latestActivity     DateTime
-    publishedResources Resource[] @relation("publishedResources")
-    writtenComments    Comment[]  @relation("writtenComments")
-    likedResources     Like[]
+    id             Int            @id @default(autoincrement())
+    createdAt      DateTime
+    updatedAt      DateTime
+    latestActivity DateTime
+    email          String         @unique
+    username       String         @unique
+    password       String
+    role           Role           @default(USER)
+    bio            String?
+    resources      Resource[]
+    comments       Comment[]
+    resourceLikes  ResourceLike[]
+    commentLikes   CommentLike[]
 }
 
 model Resource {
-    id          Int       @id @default(autoincrement())
+    id          Int                     @id @default(autoincrement())
     createdAt   DateTime
+    updatedAt   DateTime
     title       String
     description String
-    category    String
-    subject     String
-    creatorId   Int
-    creator     Profile   @relation("publishedResources", fields: [creatorId], references: [id], onDelete: Cascade)
-    comments    Comment[] @relation("commentsOnResource")
-    upvoters    Like[]
+    categories  CategoriesOnResources[]
+    subjects    SubjectsOnResources[]
+    profileId   Int
+    profile     Profile                 @relation(fields: [profileId], references: [id], onDelete: Cascade)
+    comments    Comment[]
+    likes       ResourceLike[]
+}
+
+model ResourceLike {
+    id         Int       @id @default(autoincrement())
+    createdAt  DateTime
+    profileId  Int
+    profile    Profile   @relation(fields: [profileId], references: [id], onDelete: Cascade)
+    resourceId Int
+    resource   Resource? @relation(fields: [resourceId], references: [id], onDelete: Cascade)
 }
 
 model Comment {
-    id         Int       @id @default(autoincrement())
-    message    String
+    id         Int           @id @default(autoincrement())
     createdAt  DateTime
-    edited     Boolean
+    updatedAt  DateTime
+    message    String
     profileId  Int
-    profile    Profile   @relation("writtenComments", fields: [profileId], references: [id], onDelete: Cascade)
-    resourceId Int?
-    resource   Resource? @relation("commentsOnResource", fields: [resourceId], references: [id], onDelete: Cascade)
-    likers     Like[]
+    profile    Profile       @relation(fields: [profileId], references: [id], onDelete: Cascade)
+    resourceId Int
+    resource   Resource      @relation(fields: [resourceId], references: [id], onDelete: Cascade)
+    likes      CommentLike[]
     parentId   Int?
-    parent     Comment? @relation("parentComment", fields: [parentId], references: [id], onDelete: Cascade)
-    childComments Comment[] @relation("parentComment")
+    parent     Comment?      @relation("ParentChildren", fields: [parentId], references: [id], onDelete: Cascade)
+    children   Comment[]     @relation("ParentChildren")
 }
 
-model Like {
-    id         Int       @id @default(autoincrement())
-    createdAt  DateTime
-    profileId  Int
-    resourceId Int?
-    commentId  Int?
-    upvoter    Profile   @relation(fields: [profileId], references: [id], onDelete: Cascade)
-    resource   Resource? @relation(fields: [resourceId], references: [id], onDelete: Cascade)
-    comment    Comment?  @relation(fields: [commentId], references: [id], onDelete: Cascade)
+model CommentLike {
+    id        Int      @id @default(autoincrement())
+    createdAt DateTime
+    profileId Int
+    profile   Profile  @relation(fields: [profileId], references: [id], onDelete: Cascade)
+    commentId Int
+    comment   Comment  @relation(fields: [commentId], references: [id], onDelete: Cascade)
+}
+
+model Category {
+    id        Int                     @id @default(autoincrement())
+    name      String
+    resources CategoriesOnResources[]
+}
+
+model Subject {
+    id        Int                   @id @default(autoincrement())
+    name      String
+    resources SubjectsOnResources[]
+}
+
+model CategoriesOnResources {
+    resourceId Int
+    resource   Resource @relation(fields: [resourceId], references: [id], onDelete: Cascade)
+    categoryId Int
+    category   Category @relation(fields: [categoryId], references: [id], onDelete: Cascade)
+
+    @@id([categoryId, resourceId])
+}
+
+model SubjectsOnResources {
+    resourceId Int
+    resource   Resource @relation(fields: [resourceId], references: [id], onDelete: Cascade)
+    subjectId  Int
+    subject    Subject  @relation(fields: [subjectId], references: [id], onDelete: Cascade)
+
+    @@id([subjectId, resourceId])
+}
+
+enum Role {
+    USER
+    ADMIN
 }
