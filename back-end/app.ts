@@ -10,6 +10,7 @@ import { version } from './package.json';
 import helmet from 'helmet';
 import { commentRouter } from './controller/comment.routes';
 import { likeRouter } from './controller/like.routes';
+import subjectRouter from './controller/subject.routes';
 import categoryRouter from './controller/category.routes';
 import { authRouter } from './controller/auth.routes';
 
@@ -36,6 +37,7 @@ app.get('/status', (req, res) => {
 app.use('/resources', resourceRouter);
 app.use('/profiles', profileRouter);
 app.use('/comments', commentRouter);
+app.use('/subjects', subjectRouter);
 app.use('/categories', categoryRouter);
 app.use('/', authRouter);
 
