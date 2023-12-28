@@ -10,6 +10,7 @@ import { version } from './package.json';
 import helmet from 'helmet';
 import { commentRouter } from './controller/comment.routes';
 import { likeRouter } from './controller/like.routes';
+import { authRouter } from './controller/auth.routes';
 
 const app = express();
 
@@ -23,14 +24,7 @@ app.use(
         secret: process.env.JWT_SECRET,
         algorithms: ['HS256'],
     }).unless({
-        path: [
-            '/api-docs',
-            /^\/api-docs\/.*/,
-            '/profiles/login',
-            '/profiles/signup',
-            /\/profiles\/exists\/email*/,
-            '/status',
-        ],
+        path: ['/api-docs', /^\/api-docs\/.*/, '/signup', '/signin', '/status'],
     })
 );
 
@@ -41,7 +35,7 @@ app.get('/status', (req, res) => {
 app.use('/resources', resourceRouter);
 app.use('/profiles', profileRouter);
 app.use('/comments', commentRouter);
-app.use('/like', likeRouter);
+app.use('/', authRouter);
 
 const swaggerOpts = {
     definition: {

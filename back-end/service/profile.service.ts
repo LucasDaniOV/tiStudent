@@ -1,18 +1,29 @@
 import { UnauthorizedError } from 'express-jwt';
-import likeDb from '../domain/data-access/like.db';
 import profileDb from '../domain/data-access/profile.db';
-import { Like } from '../domain/model/like';
 import { Profile } from '../domain/model/profile';
 import { AuthenticationResponse, ProfileInput, Role } from '../types';
 import { generateJwtToken } from '../util/jwt';
 import { comparePasswordWithHash, hashPassword } from '../util/password';
-import resourceDb from '../domain/data-access/resource.db';
 
-const getAllProfiles = async (role: Role) => {
-    if (role !== 'admin')
+const createProfile = async (profileInput: ProfileInput): Promise<Profile> => {
+    const { email, username, password, role, bio } = profileInput;
+    Profile.validate(email, username, password, role, bio);
+
+    if (await profileDb.getProfileByUsername(username)) throw new Error(`Username already exists`);
+
+    if (await profileDb.getProfileByEmail(email)) throw new Error(`Email already exists`);
+
+    const hashedPassword = await hashPassword(password);
+
+    return await profileDb.createProfile(email, hashedPassword, username, role, bio);
+};
+
+const getAllProfiles = async (role: Role): Promise<Profile[]> => {
+    if (role !== 'ADMIN') {
         throw new UnauthorizedError('credentials_required', {
             message: 'Only admins can get all Profiles',
         });
+    }
     return await profileDb.getAllProfiles();
 };
 
@@ -34,104 +45,75 @@ const getProfileByUsername = async (username: string): Promise<Profile> => {
     return profile;
 };
 
-const createProfile = async ({ email, password, role, username, bio }: ProfileInput): Promise<Profile> => {
-    // check if errors occur when creating profile object
-    const profile = new Profile({ email, password, username, role, bio });
+const updateBio = async (profile: Profile, bio: string): Promise<Profile> => {
+    Profile.validateBio(bio);
+    if (profile.bio === bio) throw new Error(`New bio must be different from old bio`);
+    return await profileDb.updateBio(profile.id, bio);
+};
 
-    // check if username is already taken
-    if (await profileDb.getProfileByUsername(username)) throw new Error(`Username already exists`);
+const updateEmail = async (profile: Profile, email: string): Promise<Profile> => {
+    Profile.validateEmail(email);
+    if (profile.email === email) throw new Error(`New email must be different from old email`);
+    return await profileDb.updateEmail(profile.id, email);
+};
 
-    // check if email is already taken
-    if (await profileDb.getProfileByEmail(email)) throw new Error(`Email already exists`);
+const updatePassword = async (profile: Profile, password: string): Promise<Profile> => {
+    Profile.validatePassword(password);
+
+    if (await comparePasswordWithHash(password, profile.password)) {
+        throw new Error(`New password must be different from old password`);
+    }
 
     const hashedPassword = await hashPassword(password);
-
-    return await profileDb.createProfile(profile.email, hashedPassword, profile.username, profile.role, profile.bio);
+    return await profileDb.updatePassword(profile.id, hashedPassword);
 };
 
-const getProfileField = async (profile: Profile, field: string) => {
-    if (field == 'username') return profile.username;
-    else if (field == 'bio') return profile.bio;
-    else if (field == 'latestActivity') return profile.latestActivity;
-    else if (field == 'likedResources') return await likeDb.getLikesByProfile(profile.id);
-    else if (field == 'sharedResources') return resourceDb.getResourcesByProfile(profile.id);
-    else throw new Error('Unsupported field');
+const updateUsername = async (profile: Profile, username: string): Promise<Profile> => {
+    Profile.validateUsername(username);
+    if (profile.username === username) throw new Error(`New username must be different from old username`);
+    return await profileDb.updateUsername(profile.id, username);
 };
 
-const updateField = async (id: number, field: string, value: string): Promise<any> => {
-    if (field == 'bio') return await profileDb.updateProfileBio(id, value);
-    else if (field == 'likes') {
-        const likeId = parseInt(value);
-        const likes = await likeDb.getLikesByProfile(id);
-        const like = likes.find((l) => l.id == likeId);
-        if (like) {
-            const removed = await likeDb.deleteLike(likeId);
-            if (removed) return await likeDb.getLikesByProfile(id);
-            else throw new Error('Something went wrong');
-        } else {
-            throw new Error('Profile has no like on this object');
-        }
-    } else if (field == 'email') {
-        Profile.validateEmail(value);
-        const profile = await profileDb.getProfileById(id);
-        if (profile.email === value) throw new Error(`New email must be different from old email`);
-        return await profileDb.updateEmail(id, value);
-    } else if (field == 'password') {
-        Profile.validatePassword(value);
-        const profile = await profileDb.getProfileById(id);
-        if (await comparePasswordWithHash(value, profile.password)) throw new Error(`New password must be different from old password`);
-        return await profileDb.updatePassword(id, value);
-        // }else if (field == "role"){  // Should it be possible to change roles?
-    } else {
-        throw new Error('Unsupported field');
+const updateRole = async (profile: Profile, role: Role): Promise<Profile> => {
+    Profile.validateRole(role);
+    if (profile.role === role) throw new Error(`New role must be different from old role`);
+    return await profileDb.updateRole(profile.id, role);
+};
+
+const updateProfile = async (id: number, profileInput: ProfileInput): Promise<Profile> => {
+    const profile = await getProfileById(id);
+    const { bio, email, password, role, username } = profileInput;
+    let result: Profile;
+
+    if (bio) {
+        result = await updateBio(profile, bio);
     }
+
+    if (email) {
+        result = await updateEmail(profile, email);
+    }
+
+    if (password) {
+        result = await updatePassword(profile, password);
+    }
+
+    if (role) {
+        result = await updateRole(profile, role);
+    }
+
+    if (username) {
+        result = await updateUsername(profile, username);
+    }
+
+    return result;
 };
 
-const deleteProfile = async (profileId: number): Promise<Boolean> => {
+const deleteProfile = async (profileId: number): Promise<Profile> => {
+    await getProfileById(profileId);
     return await profileDb.deleteProfile(profileId);
 };
 
-const getGithubAccessToken = async (code: string): Promise<string> => {
-    try {
-        const client_id = process.env.GITHUB_CLIENT_ID;
-        const client_secret = process.env.GITHUB_CLIENT_SECRET;
-        const required_scope = 'read:user';
-
-        const res = await fetch('https://github.com/login/oauth/access_token', {
-            method: 'POST',
-            headers: {
-                Accept: 'application/json',
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({
-                client_id,
-                client_secret,
-                code,
-            }),
-        });
-
-        const { access_token, scope } = await res.json();
-        if (scope !== required_scope) throw new Error('Invalid scope');
-        return access_token;
-    } catch (error) {
-        throw new Error('Failed to fetch access token');
-    }
-};
-
-const getGithubUser = async (access_token: string): Promise<any> => {
-    try {
-        const res = await fetch('https://api.github.com/user', {
-            headers: {
-                Authorization: `Bearer ${access_token}`,
-            },
-        });
-        return await res.json();
-    } catch (error) {
-        throw new Error('Failed to fetch user');
-    }
-};
-
-const authenticate = async ({ email, password }: ProfileInput): Promise<AuthenticationResponse> => {
+const authenticate = async (email: string, password: string): Promise<AuthenticationResponse> => {
     const profile = await getProfileByEmail(email);
 
     const isValidPassword = await comparePasswordWithHash(password, profile.password);
@@ -146,25 +128,13 @@ const authenticate = async ({ email, password }: ProfileInput): Promise<Authenti
     };
 };
 
-const getLeaderBoard = async () => {
-    try {
-        return await profileDb.getLeaderboard();
-    } catch (error) {
-        console.log('Error fetching leaderboard.');
-    }
-};
-
 export default {
+    createProfile,
     getAllProfiles,
     getProfileById,
     getProfileByEmail,
     getProfileByUsername,
-    createProfile,
-    getProfileField,
-    updateField,
+    updateProfile,
     deleteProfile,
-    getGithubAccessToken,
-    getGithubUser,
     authenticate,
-    getLeaderBoard,
 };
