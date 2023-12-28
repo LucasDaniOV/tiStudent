@@ -1,22 +1,53 @@
 import ResourceService from "@/services/ResourceService";
 import { useRouter } from "next/router";
-import React, { MouseEvent } from "react";
-import { Resource } from "../../types";
+import React, { MouseEvent, useEffect, useState } from "react";
+import { Profile, Resource } from "../../types";
 import { useTranslation } from "next-i18next";
+import ProfileService from "@/services/ProfileService";
 
 type Props = {
   resources: Array<Resource>;
 };
-
 const ResourceOverviewTable: React.FC<Props> = ({ resources }: Props) => {
+  const [profile, setProfile] = useState<Profile>();
   const router = useRouter();
   const { t } = useTranslation();
-  const deleteResource = async (e: MouseEvent, resource: Resource) => {
+  useEffect(() => {
+    const getProfile = async () => {
+      const p = String(sessionStorage.getItem("loggedInUser"));
+      if (!p) return;
+      const pObject = await ProfileService.getProfileById(JSON.parse(p).id);
+      console.log(pObject.data);
+      if (pObject) setProfile(pObject.data);
+    };
+    getProfile();
+  }, []);
+
+  const deleteResource = async (resource: Resource) => {
+    if (
+      !confirm(
+        `Are you sure you want to delete resource with title: ${resource.title}?`
+      )
+    ) {
+      return;
+    } else {
+      await ResourceService.deleteResourceById(resource.id);
+      router.reload(); // houden? indien niet -> refresh rate verhogen
+    }
+  };
+
+  const checkAuthority = async (e: MouseEvent, resource: Resource) => {
     e.stopPropagation();
     e.preventDefault();
-    if (!confirm(`Are you sure you want to delete ${resource.id}?`)) return;
-    await ResourceService.deleteResourceById(resource.id);
-    router.reload();
+    if (profile?.role === "admin") {
+      deleteResource(resource);
+    } else {
+      if (profile?.id === resource.creator.id) {
+        deleteResource(resource);
+      } else {
+        confirm("You are not the creator of this Resource.");
+      }
+    }
   };
   return (
     <>
@@ -68,7 +99,7 @@ const ResourceOverviewTable: React.FC<Props> = ({ resources }: Props) => {
                 <td className="border p-4">{resource.subject}</td>
                 <td
                   className="border p-4"
-                  onClick={(e) => deleteResource(e, resource)}
+                  onClick={(e) => checkAuthority(e, resource)}
                 >
                   {t("delete")}
                 </td>
