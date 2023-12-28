@@ -1,75 +1,38 @@
 import commentDb from '../domain/data-access/comment.db';
 import { Comment } from '../domain/model/comment';
-import { Profile } from '../domain/model/profile';
-import { Resource } from '../domain/model/resource';
+import profileService from './profile.service';
+import resourceService from './resource.service';
 
-const getAllComments = async () => {
-    const comments = await commentDb.getAllComments();
-    if (!comments) throw new Error('There are no comments');
-    return comments;
+const createComment = async (resourceId: number, profileId: number, message: string): Promise<Comment> => {
+    Comment.validateMessage(message);
+    await resourceService.getResourceById(resourceId);
+    await profileService.getProfileById(profileId);
+    return await commentDb.createComment(resourceId, profileId, message);
 };
+
+const getComments = async (): Promise<Comment[]> => await commentDb.getComments();
 
 const getCommentById = async (commentId: number): Promise<Comment> => {
     const comment = await commentDb.getCommentById(commentId);
-    if (!comment) throw new Error(`No comment with id ${commentId} found`);
+    if (!comment) throw new Error(`no comment with id ${commentId} found`);
     return comment;
 };
 
-const writeComment = async (
-    profile: Profile,
-    resource: Resource,
-    message: string,
-    parentId: number | null = null
-): Promise<Comment> => {
-    if (parentId) {
-        const parentComments = await commentDb.getAllCommentsOnResource(resource.id);
-        if (parentComments.findIndex((c) => c.id == parentId) !== -1) {
-            return await commentDb.createCommentOnComment(profile, resource, message, parentId);
-        } else {
-            throw new Error(`Parent Comment with id ${parentId} is not present on Resource with id ${resource.id}`);
-        }
-    } else return await commentDb.createCommentOnResource(profile, resource, message);
-};
-
-const getAllCommentsByProfile = async (profileId: number): Promise<Comment[]> => {
-    return await commentDb.getAllCommentsByProfile(profileId);
-};
-
-const getAllCommentsByProfileOnResource = async (profileId: number, resourceId: number): Promise<Comment[]> => {
-    return await commentDb.getAllCommentsByProfileOnResource(profileId, resourceId);
+const updateCommentMessage = async (commentId: number, message: string): Promise<Comment> => {
+    Comment.validateMessage(message);
+    await getCommentById(commentId);
+    return await commentDb.updateCommentMessage(commentId, message);
 };
 
 const deleteComment = async (commentId: number): Promise<Comment> => {
-    const comment = await commentDb.getCommentById(commentId);
-    if (!comment) throw new Error(`No comment with id ${commentId} found`);
-    commentDb.deleteComment(comment.id);
-    return comment;
-};
-
-const updateComment = async (comment: Comment, newMessage: string): Promise<Comment | Profile> => {
-    const c = await getCommentById(comment.id);
-    if (c) {
-        if (!newMessage.trim()) throw new Error("New message can't be empty");
-        const newComment = await commentDb.updateMessageOnComment(c.id, newMessage);
-        if (newComment) {
-            return newComment;
-        }
-    }
-};
-
-const getCommentsOnComment = async (commentId: number) => {
-    const comments = await commentDb.getCommentsOnComment(commentId);
-    if (comments) return comments;
-    else throw new Error('This comment has no subcomments');
+    await getCommentById(commentId);
+    return await commentDb.deleteComment(commentId);
 };
 
 export default {
-    getAllComments,
+    createComment,
+    getComments,
     getCommentById,
-    writeComment,
-    getAllCommentsByProfile,
-    getAllCommentsByProfileOnResource,
-    getCommentsOnComment,
+    updateCommentMessage,
     deleteComment,
-    updateComment,
 };

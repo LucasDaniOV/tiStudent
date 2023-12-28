@@ -12,6 +12,12 @@ type ResourceInput = {
     profileId?: number;
 };
 
+type CommentInput = {
+    resourceId?: number;
+    profileId?: number;
+    message?: string;
+};
+
 type AuthenticationResponse = {
     token: string;
     email: string;
@@ -21,4 +27,4 @@ type AuthenticationResponse = {
 
 type Role = 'ADMIN' | 'USER';
 
-export { AuthenticationResponse, ProfileInput, ResourceInput, Role };
+export { AuthenticationResponse, CommentInput, ProfileInput, ResourceInput, Role };

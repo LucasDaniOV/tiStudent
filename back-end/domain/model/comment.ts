@@ -1,63 +1,42 @@
-import { Profile } from './profile';
-import { Resource } from './resource';
-import { Profile as ProfilePrisma, Resource as ResourcePrisma, Comment as CommentPrisma } from '@prisma/client';
+import { Comment as CommentPrisma } from '@prisma/client';
 
 export class Comment {
-    readonly id?: number;
+    readonly id: number;
+    readonly createdAt: Date;
+    readonly updatedAt: Date;
     readonly message: string;
-    readonly createdAt?: Date;
-    readonly profile: Profile;
-    readonly resource: Resource;
-    readonly edited?: boolean = false;
-    readonly parentId: number | null;
-    readonly childComments: Comment[];
+    readonly profileId: number;
+    readonly resourceId: number;
 
-    constructor(comment: {
-        id?: number;
-        message: string;
-        createdAt?: Date;
-        profile: Profile;
-        resource: Resource;
-        edited?: boolean;
-        parentId: number | null;
-    }) {
-        this.id = comment.id;
-        if (comment.createdAt) {
-            this.createdAt = comment.createdAt;
-        } else {
-            this.createdAt = new Date();
-        }
-        if (comment.message.trim().length === 0) {
-            throw new Error("Message can't be empty");
-        }
-        this.message = comment.message;
-        this.profile = comment.profile;
-        this.resource = comment.resource;
-        this.edited = comment.edited;
-        this.parentId = comment.parentId;
+    constructor(id: number, createdAt: Date, updatedAt: Date, message: string, profileId: number, resourceId: number) {
+        Comment.validateMessage(message);
+        this.id = id;
+        this.createdAt = createdAt;
+        this.updatedAt = updatedAt;
+        this.message = message;
+        this.profileId = profileId;
+        this.resourceId = resourceId;
     }
 
-    static from({
-        id,
-        message,
-        createdAt,
-        edited,
-        profile,
-        resource,
-        parentId,
-    }: CommentPrisma & {
-        profile: ProfilePrisma;
-    } & {
-        resource: ResourcePrisma & { creator: ProfilePrisma };
-    } & { parentId: number | null }) {
-        return new Comment({
-            id,
-            message,
-            createdAt: createdAt ? createdAt : new Date(),
-            edited,
-            profile: Profile.from(profile),
-            resource: Resource.from(resource),
-            parentId,
-        });
+    equals(other: Comment): boolean {
+        return (
+            this.id === other.id &&
+            this.createdAt === other.createdAt &&
+            this.updatedAt === other.updatedAt &&
+            this.message === other.message &&
+            this.profileId === other.profileId &&
+            this.resourceId === other.resourceId
+        );
     }
+
+    static validateMessage(message: string): void {
+        if (!message) throw new Error('Message cannot be null or undefined');
+        if (typeof message !== 'string') throw new Error('Message must be a string');
+        if (message.length < 1) throw new Error('Message cannot be empty');
+        if (message.length > 1000) throw new Error('Message cannot be longer than 1000 characters');
+    }
+
+    static from = ({ id, createdAt, updatedAt, message, profileId, resourceId }: CommentPrisma): Comment => {
+        return new Comment(id, createdAt, updatedAt, message, profileId, resourceId);
+    };
 }
