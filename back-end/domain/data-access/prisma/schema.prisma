@@ -7,11 +7,16 @@ datasource db {
     url      = env("DATABASE_URL")
 }
 
+enum Role {
+    USER
+    ADMIN
+}
+
 model Profile {
     id             Int            @id @default(autoincrement())
-    createdAt      DateTime
-    updatedAt      DateTime
-    latestActivity DateTime
+    createdAt      DateTime       @default(now())
+    updatedAt      DateTime       @updatedAt
+    latestActivity DateTime       @default(now())
     email          String         @unique
     username       String         @unique
     password       String
@@ -25,8 +30,8 @@ model Profile {
 
 model Resource {
     id          Int                     @id @default(autoincrement())
-    createdAt   DateTime
-    updatedAt   DateTime
+    createdAt   DateTime                @default(now())
+    updatedAt   DateTime                @updatedAt
     title       String
     description String
     categories  CategoriesOnResources[]
@@ -37,48 +42,15 @@ model Resource {
     likes       ResourceLike[]
 }
 
-model ResourceLike {
-    id         Int       @id @default(autoincrement())
-    createdAt  DateTime
-    profileId  Int
-    profile    Profile   @relation(fields: [profileId], references: [id], onDelete: Cascade)
-    resourceId Int
-    resource   Resource? @relation(fields: [resourceId], references: [id], onDelete: Cascade)
-}
-
-model Comment {
-    id         Int           @id @default(autoincrement())
-    createdAt  DateTime
-    updatedAt  DateTime
-    message    String
-    profileId  Int
-    profile    Profile       @relation(fields: [profileId], references: [id], onDelete: Cascade)
-    resourceId Int
-    resource   Resource      @relation(fields: [resourceId], references: [id], onDelete: Cascade)
-    likes      CommentLike[]
-    parentId   Int?
-    parent     Comment?      @relation("ParentChildren", fields: [parentId], references: [id], onDelete: Cascade)
-    children   Comment[]     @relation("ParentChildren")
-}
-
-model CommentLike {
-    id        Int      @id @default(autoincrement())
-    createdAt DateTime
-    profileId Int
-    profile   Profile  @relation(fields: [profileId], references: [id], onDelete: Cascade)
-    commentId Int
-    comment   Comment  @relation(fields: [commentId], references: [id], onDelete: Cascade)
-}
-
 model Category {
     id        Int                     @id @default(autoincrement())
-    name      String
+    name      String                  @unique
     resources CategoriesOnResources[]
 }
 
 model Subject {
     id        Int                   @id @default(autoincrement())
-    name      String
+    name      String                @unique
     resources SubjectsOnResources[]
 }
 
@@ -100,7 +72,32 @@ model SubjectsOnResources {
     @@id([subjectId, resourceId])
 }
 
-enum Role {
-    USER
-    ADMIN
+model Comment {
+    id         Int           @id @default(autoincrement())
+    createdAt  DateTime      @default(now())
+    updatedAt  DateTime      @updatedAt
+    message    String
+    profileId  Int
+    profile    Profile       @relation(fields: [profileId], references: [id], onDelete: Cascade)
+    resourceId Int
+    resource   Resource      @relation(fields: [resourceId], references: [id], onDelete: Cascade)
+    likes      CommentLike[]
+}
+
+model ResourceLike {
+    id         Int       @id @default(autoincrement())
+    createdAt  DateTime  @default(now())
+    profileId  Int
+    profile    Profile   @relation(fields: [profileId], references: [id], onDelete: Cascade)
+    resourceId Int
+    resource   Resource? @relation(fields: [resourceId], references: [id], onDelete: Cascade)
+}
+
+model CommentLike {
+    id        Int      @id @default(autoincrement())
+    createdAt DateTime @default(now())
+    profileId Int
+    profile   Profile  @relation(fields: [profileId], references: [id], onDelete: Cascade)
+    commentId Int
+    comment   Comment  @relation(fields: [commentId], references: [id], onDelete: Cascade)
 }
