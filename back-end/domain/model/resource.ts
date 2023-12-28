@@ -1,108 +1,64 @@
-import { Profile as ProfilePrisma, Resource as ResourcePrisma } from '@prisma/client';
-import { Category } from './category';
-import { Profile } from './profile';
-import { Subject } from './subject';
+import { Resource as ResourcePrisma } from '@prisma/client';
 
 export class Resource {
-    readonly id?: number;
-    readonly createdAt?: Date;
+    readonly id: number;
+    readonly createdAt: Date;
+    readonly updatedAt: Date;
     readonly title: string;
     readonly description: string;
-    readonly category: Category;
-    readonly subject: Subject;
-    readonly creator: Profile;
+    readonly profileId: number;
 
     constructor(resource: {
-        id?: number;
-        createdAt?: Date;
+        id: number;
+        createdAt: Date;
+        updatedAt: Date;
         title: string;
         description: string;
-        category: Category;
-        subject: Subject;
-        creator: Profile;
+        profileId: number;
     }) {
-        this.validate(resource);
-
+        Resource.validate(resource.title, resource.description);
         this.id = resource.id;
-        this.createdAt = resource.createdAt ? resource.createdAt : new Date();
+        this.createdAt = resource.createdAt;
+        this.updatedAt = resource.updatedAt;
         this.title = resource.title;
         this.description = resource.description;
-        this.category = resource.category;
-        this.subject = resource.subject;
-        this.creator = resource.creator;
+        this.profileId = resource.profileId;
     }
 
-    equals(otherResource: {
-        title: string;
-        description: string;
-        category: Category;
-        subject: Subject;
-        creator: Profile;
-    }): boolean {
+    equals(otherResource: Resource): boolean {
         return (
+            this.id === otherResource.id &&
+            this.createdAt === otherResource.createdAt &&
+            this.updatedAt === otherResource.updatedAt &&
             this.title === otherResource.title &&
             this.description === otherResource.description &&
-            this.category == otherResource.category &&
-            this.subject == otherResource.subject &&
-            this.creator === otherResource.creator
+            this.profileId === otherResource.profileId
         );
     }
 
-    validate(resource: {
-        title: string;
-        description: string;
-        category: Category;
-        subject: Subject;
-        creator: Profile;
-    }): void {
-        this.validateTitle(resource.title);
-        this.validateDescription(resource.description);
-        this.validateCategory(resource.category);
-        this.validateSubject(resource.subject);
-        this.validateCreator(resource.creator);
+    static validate(title: string, description: string): void {
+        Resource.validateTitle(title);
+        Resource.validateDescription(description);
     }
 
-    validateTitle = (title: string) => {
+    static validateTitle = (title: string) => {
         if (!title) throw new Error('title is required');
         if (title.length > 60) throw new Error('title cannot be longer than 60 characters');
     };
 
-    validateDescription = (description: string) => {
+    static validateDescription = (description: string) => {
         if (!description) throw new Error('description is required');
         if (description.length > 500) throw new Error('description cannot be longer than 500 characters');
     };
 
-    validateCategory = (category: Category) => {
-        if (!category) throw new Error('category is required');
-        if (!Object.values(Category).includes(category as Category)) throw new Error('Invalid category');
-    };
-
-    validateSubject = (subject: Subject) => {
-        if (!subject) throw new Error('subject is required');
-        if (!Object.values(Subject).includes(subject as Subject)) throw new Error('Invalid subject');
-    };
-
-    validateCreator = (creator: Profile) => {
-        if (!creator) throw new Error('creator Profile is required');
-    };
-
-    static from({
-        id,
-        creator,
-        createdAt,
-        title,
-        description,
-        category,
-        subject,
-    }: ResourcePrisma & { creator: ProfilePrisma }) {
+    static from({ id, createdAt, updatedAt, title, description, profileId }: ResourcePrisma): Resource {
         return new Resource({
             id,
-            creator: Profile.from(creator),
-            createdAt: createdAt,
+            createdAt,
+            updatedAt,
             title,
             description,
-            category: category as Category,
-            subject: subject as Subject,
+            profileId,
         });
     }
 }
