@@ -10,6 +10,7 @@ import { version } from './package.json';
 import helmet from 'helmet';
 import { commentRouter } from './controller/comment.routes';
 import { likeRouter } from './controller/like.routes';
+import categoryRouter from './controller/category.routes';
 import { authRouter } from './controller/auth.routes';
 
 const app = express();
@@ -35,6 +36,7 @@ app.get('/status', (req, res) => {
 app.use('/resources', resourceRouter);
 app.use('/profiles', profileRouter);
 app.use('/comments', commentRouter);
+app.use('/categories', categoryRouter);
 app.use('/', authRouter);
 
 const swaggerOpts = {
