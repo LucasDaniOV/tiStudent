@@ -5,11 +5,8 @@ const prisma = new PrismaClient();
 
 async function main() {
     // Profile
-    const satoshi = await prisma.profile.create({
+    await prisma.profile.create({
         data: {
-            createdAt: new Date(),
-            updatedAt: new Date(),
-            latestActivity: new Date(),
             email: 'satoshi@tistudent.com',
             username: 'JJ',
             password: await hashPassword('Str0ngPW!!!'),
@@ -17,11 +14,8 @@ async function main() {
         },
     });
 
-    const alice = await prisma.profile.create({
+    const aliceProfile = await prisma.profile.create({
         data: {
-            createdAt: new Date(),
-            updatedAt: new Date(),
-            latestActivity: new Date(),
             email: 'alice@gmail.com',
             username: 'ICE money bang bang',
             password: await hashPassword('Str0ngPW!!!2'),
@@ -29,11 +23,8 @@ async function main() {
         },
     });
 
-    const bob = await prisma.profile.create({
+    const bobProfile = await prisma.profile.create({
         data: {
-            createdAt: new Date(),
-            updatedAt: new Date(),
-            latestActivity: new Date(),
             email: 'bob@gmail.com',
             username: 'BobTheBuilder',
             password: await hashPassword('passWord123!$'),
@@ -43,25 +34,23 @@ async function main() {
     });
 
     // Resource
-    const aliceresource = await prisma.resource.create({
+    const resource = await prisma.resource.create({
         data: {
-            createdAt: new Date(),
-            updatedAt: new Date(),
             title: 'P1 fundamentals summary',
             description: 'All the important stuff for p1',
-            profileId: alice.id,
+            profileId: aliceProfile.id,
         },
     });
 
     // Category
-    const summary = await prisma.category.create({
+    const summaryCategory = await prisma.category.create({
         data: {
             name: 'Summary',
         },
     });
 
     // Subject
-    const programming1 = await prisma.subject.create({
+    const programming1Subject = await prisma.subject.create({
         data: {
             name: 'Programming 1',
         },
@@ -70,66 +59,56 @@ async function main() {
     // linking Resource with Category
     await prisma.categoriesOnResources.create({
         data: {
-            resourceId: aliceresource.id,
-            categoryId: summary.id,
+            resourceId: resource.id,
+            categoryId: summaryCategory.id,
         },
     });
 
     // linking Resource with Subject
     await prisma.subjectsOnResources.create({
         data: {
-            resourceId: aliceresource.id,
-            subjectId: programming1.id,
+            resourceId: resource.id,
+            subjectId: programming1Subject.id,
         },
     });
 
     // Comment
     const bobComment = await prisma.comment.create({
         data: {
-            createdAt: new Date(),
-            updatedAt: new Date(),
             message: 'Great summary Alice',
-            profileId: bob.id,
-            resourceId: aliceresource.id,
+            profileId: bobProfile.id,
+            resourceId: resource.id,
         },
     });
 
-    const aliceComment = await prisma.comment.create({
+    await prisma.comment.create({
         data: {
-            createdAt: new Date(),
-            updatedAt: new Date(),
             message: 'Thanks Bob',
-            profileId: alice.id,
-            resourceId: aliceresource.id,
-            parentId: bobComment.id,
+            profileId: aliceProfile.id,
+            resourceId: resource.id,
         },
     });
 
-    const bobComment2 = await prisma.comment.create({
+    await prisma.comment.create({
         data: {
-            createdAt: new Date(),
-            updatedAt: new Date(),
             message: 'Love you too',
-            profileId: bob.id,
-            resourceId: aliceresource.id,
-            parentId: aliceComment.id,
+            profileId: bobProfile.id,
+            resourceId: resource.id,
         },
     });
 
     // ResourceLike
     await prisma.resourceLike.create({
         data: {
-            createdAt: new Date(),
-            profileId: bob.id,
-            resourceId: aliceresource.id,
+            profileId: bobProfile.id,
+            resourceId: resource.id,
         },
     });
 
     // CommentLike
     await prisma.commentLike.create({
         data: {
-            createdAt: new Date(),
-            profileId: alice.id,
+            profileId: aliceProfile.id,
             commentId: bobComment.id,
         },
     });
