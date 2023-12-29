@@ -115,14 +115,15 @@ const getCategoriesByResourceId = async (resourceId: string) => {
     categories.push(category.category.name);
   }
 
-  console.log(categories);
   return categories;
 };
 
 const getSubjectsByResourceId = async (resourceId: string) => {
   const token = getToken();
   const subjects = await fetch(
-    process.env.NEXT_PUBLIC_API_URL + "/subjects?resourceId=" + resourceId,
+    process.env.NEXT_PUBLIC_API_URL +
+      "/subjects-on-resources?resourceId=" +
+      resourceId,
     {
       method: "GET",
       headers: {
@@ -131,7 +132,18 @@ const getSubjectsByResourceId = async (resourceId: string) => {
       },
     }
   );
-  return await subjects.json();
+
+  const jsonSubjects = await subjects.json();
+
+  const subjectsOnResources = jsonSubjects.subjectsOnResources;
+
+  const subjectsArray: Subject[] = [];
+  for (const subjectOnResource of subjectsOnResources) {
+    const subject = await getById("subjects", subjectOnResource.subjectId);
+    subjectsArray.push(subject.subject.name);
+  }
+
+  return subjectsArray;
 };
 
 const ResourceService = {

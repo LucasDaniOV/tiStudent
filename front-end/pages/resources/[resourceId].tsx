@@ -38,7 +38,7 @@ const ReadResourceById = () => {
     const response = await ResourceService.getSubjectsByResourceId(
       resourceId as string
     );
-    setSubjects(response.subjects);
+    setSubjects(response);
   };
 
   const getCategories = async () => {

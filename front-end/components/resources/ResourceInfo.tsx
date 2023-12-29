@@ -55,7 +55,7 @@ const ResourceInfo: React.FC<Props> = ({
             <li>
               <strong>{t("resources.fields.subject")}</strong>{" "}
               {subjects.map((subject) => {
-                return subject.name + ", ";
+                return subject + ", ";
               })}
             </li>
             <li>
