@@ -13,8 +13,8 @@ const Home: React.FC = () => {
   const getUser = async () => {
     const user = sessionStorage.getItem("loggedInUser");
     if (user) {
-      const profile = await ProfileService.getProfileByEmail(
-        JSON.parse(user).email
+      const profile = await ProfileService.getProfileById(
+        JSON.parse(user).id
       );
       setName(profile.username);
     }
