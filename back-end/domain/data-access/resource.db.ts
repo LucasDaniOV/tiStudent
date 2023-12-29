@@ -27,6 +27,40 @@ const getAllResources = async (): Promise<Resource[]> => {
     }
 };
 
+const getAllResourcesIncludingCategoriesAndSubjects = async (): Promise<any[]> => {
+    try {
+        return await database.resource.findMany({
+            include: {
+                categories: {
+                    select: {
+                        category: {
+                            select: {
+                                id: true,
+                                name: true,
+                            },
+                        },
+                    },
+                },
+                subjects: {
+                    select: {
+                        subject: {
+                            select: {
+                                id: true,
+                                name: true,
+                            },
+                        },
+                    },
+                },
+            },
+        });
+    } catch (error) {
+        console.error(error);
+        throw new Error(
+            'Database error when getting all resources including categories and subjects. See server log for details.'
+        );
+    }
+};
+
 const getResourcesByProfileId = async (profileId: number): Promise<Resource[]> => {
     try {
         const resources = await database.resource.findMany({
@@ -90,6 +124,7 @@ const deleteResource = async (id: number): Promise<Resource> => {
 export default {
     createResource,
     getAllResources,
+    getAllResourcesIncludingCategoriesAndSubjects,
     getResourceById,
     getResourcesByProfileId,
     updateResource,

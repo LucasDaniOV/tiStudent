@@ -20,10 +20,15 @@ resourceRouter.post('/', async (req: Request, res: Response, next: NextFunction)
 resourceRouter.get('/', async (req: Request, res: Response, next: NextFunction) => {
     try {
         const profileId: number | undefined = parseInt(req.query.profileId as string);
+
+        const includeCategoriesAndSubjects: boolean = req.query.includeCategoriesAndSubjects === 'true';
+
         let resources: Resource[];
 
         if (profileId) {
             resources = await resourceService.getResourcesByProfileId(profileId);
+        } else if (includeCategoriesAndSubjects) {
+            resources = await resourceService.getAllResourcesIncludingCategoriesAndSubjects();
         } else {
             resources = await resourceService.getAllResources();
         }
