@@ -45,4 +45,11 @@ export type StatusMessage = {
   type: "error" | "success";
 };
 
-export type Type = "users" | "resources" | "profiles" | "likes";
+export type Type =
+  | "users"
+  | "resources"
+  | "profiles"
+  | "likes"
+  | "categories"
+  | "subjects"
+  | "comments";

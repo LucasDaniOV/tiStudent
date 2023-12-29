@@ -45,7 +45,7 @@ const ReadResourceById = () => {
     const response = await ResourceService.getCategoriesByResourceId(
       resourceId as string
     );
-    setCategories(response.categories);
+    setCategories(response);
   };
 
   const getCreator = async (profileId: string) => {

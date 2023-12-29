@@ -94,8 +94,10 @@ const getResourcesByProfile = async (profileId: number) => {
 
 const getCategoriesByResourceId = async (resourceId: string) => {
   const token = getToken();
-  const categories = await fetch(
-    process.env.NEXT_PUBLIC_API_URL + "/categories?resourceId=" + resourceId,
+  const categoriesOnResource = await fetch(
+    process.env.NEXT_PUBLIC_API_URL +
+      "/categories-on-resources?resourceId=" +
+      resourceId,
     {
       method: "GET",
       headers: {
@@ -104,7 +106,17 @@ const getCategoriesByResourceId = async (resourceId: string) => {
       },
     }
   );
-  return await categories.json();
+  const jsonCategoriesOnResource = await categoriesOnResource.json();
+  const categoriesOnResources = jsonCategoriesOnResource.categoriesOnResources;
+
+  const categories: Category[] = [];
+  for (const categoryOnResource of categoriesOnResources) {
+    const category = await getById("categories", categoryOnResource.categoryId);
+    categories.push(category.category.name);
+  }
+
+  console.log(categories);
+  return categories;
 };
 
 const getSubjectsByResourceId = async (resourceId: string) => {

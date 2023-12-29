@@ -45,7 +45,7 @@ const ResourceInfo: React.FC<Props> = ({
             <li>
               <strong>{t("resources.fields.category")}:</strong>{" "}
               {categories.map((category) => {
-                return category.name + ", ";
+                return category + ", ";
               })}
             </li>
             <li>
