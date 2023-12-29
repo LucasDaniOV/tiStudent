@@ -1,5 +1,5 @@
 import Subjects from "@/components/Subjects";
-import Header from "@/components/header";
+import Header from "@/components/Header";
 import ProfileService from "@/services/ProfileService";
 import ResourceService from "@/services/ResourceService";
 import { StatusMessage } from "@/types";
