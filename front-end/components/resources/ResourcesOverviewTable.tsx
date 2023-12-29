@@ -5,7 +5,7 @@ import { Resource } from "../../types";
 import { useTranslation } from "next-i18next";
 
 type Props = {
-  resources: Array<Resource>;
+  resources: any[];
 };
 
 const ResourceOverviewTable: React.FC<Props> = ({ resources }: Props) => {
@@ -40,12 +40,12 @@ const ResourceOverviewTable: React.FC<Props> = ({ resources }: Props) => {
               <th scope="col" className="border p-4 text-left">
                 {t("resources.fields.description")}
               </th>
-              {/* <th scope="col" className="border p-4 text-left">
+              <th scope="col" className="border p-4 text-left">
                 {t("resources.fields.category")}
               </th>
               <th scope="col" className="border p-4 text-left">
                 {t("resources.fields.subject")}
-              </th> */}
+              </th>
             </tr>
           </thead>
           <tbody>
@@ -65,8 +65,16 @@ const ResourceOverviewTable: React.FC<Props> = ({ resources }: Props) => {
                 <td className="border p-4">{String(resource.createdAt)}</td>
                 <td className="border p-4">{resource.title}</td>
                 <td className="border p-4">{resource.description}</td>
-                {/* <td className="border p-4">{resource.category}</td>
-                <td className="border p-4">{resource.subject}</td> */}
+                <td className="border p-4">
+                  {resource.categories.map((category: any) => {
+                    return category.category.name;
+                  })}
+                </td>
+                <td className="border p-4">
+                  {resource.subjects.map((subject: any) => {
+                    return subject.subject.name;
+                  })}
+                </td>
                 <td
                   className="border p-4"
                   onClick={(e) => deleteResource(e, resource)}

@@ -8,7 +8,7 @@ const type = "resources";
 
 const getAllResources = async () => {
   const token = getToken();
-  const res = await fetch(baseUrl, {
+  const res = await fetch(baseUrl + "?includeCategoriesAndSubjects=true", {
     method: "GET",
     headers: {
       "Content-Type": "application/json",

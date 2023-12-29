@@ -45,7 +45,7 @@ const ResourceInfo: React.FC<Props> = ({
             <li>
               <strong>{t("resources.fields.category")}:</strong>{" "}
               {categories.map((category) => {
-                return category + ", ";
+                return category as unknown as string;
               })}
             </li>
             <li>
@@ -55,7 +55,7 @@ const ResourceInfo: React.FC<Props> = ({
             <li>
               <strong>{t("resources.fields.subject")}</strong>{" "}
               {subjects.map((subject) => {
-                return subject + ", ";
+                return subject as unknown as string;
               })}
             </li>
             <li>
