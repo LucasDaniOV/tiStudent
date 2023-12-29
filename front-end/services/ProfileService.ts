@@ -61,9 +61,7 @@ const loginUser = async (email: string, password: string) => {
   });
 };
 
-const getLeaderboard = async (): Promise<
-  Array<{ profile: Profile; resourceCount: number }>
-> => {
+const getLeaderboard = async () => {
   const token = getToken();
   const res = await fetch(process.env.NEXT_PUBLIC_API_URL + `/leaderboard/10`, {
     method: "GET",

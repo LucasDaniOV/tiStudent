@@ -23,12 +23,15 @@ const Profiles: React.FC = () => {
       return;
     }
     setAuthorized(true);
-    return setProfiles(response);
+    return setProfiles(response.profiles);
   };
+
+  console.log(profiles)
+
   const getTopTen = async () => {
     const response = await ProfileService.getLeaderboard();
     setAuthorized(true);
-    return setTopTen(response);
+    return setTopTen(response.profiles);
   };
 
   useInterval(() => {
