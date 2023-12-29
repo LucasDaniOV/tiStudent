@@ -1,13 +1,25 @@
-import { getAll, getById } from "@/util/get";
-import { Like, Profile, Resource } from "../types";
+import { getAll } from "@/util/get";
 import { getToken } from "@/util/token";
+import { Profile } from "../types";
 
 const baseUrl = process.env.NEXT_PUBLIC_API_URL + "/profiles";
 const type = "profiles";
 
 const getAllProfiles = async () => await getAll(type);
 
-const getProfileById = async (profileId: string) => getById(type, profileId);
+const getProfileById = async (profileId: string) => {
+  const token = getToken();
+  const res = await fetch(baseUrl + `/${profileId}`, {
+    method: "GET",
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${token}`,
+    },
+  });
+
+  const profile = await res.json();
+  return profile;
+};
 
 const deleteProfileById = async (profileId: number): Promise<Boolean> => {
   const token = getToken();

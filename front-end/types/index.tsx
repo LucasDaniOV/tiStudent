@@ -1,46 +1,43 @@
-import { Category } from "../../back-end/domain/model/category";
-import { Subject } from "../../back-end/domain/model/subject";
+export type Role = "ADMIN" | "USER";
 
 export type Resource = {
   id: string;
-  creator: Profile;
   createdAt: Date;
+  updatedAt: Date;
   title: string;
   description: string;
-  category: Category;
-  subject: Subject;
+  profileId: string;
 };
-
-type Role = "admin" | "user" | "guest";
 
 export type Profile = {
   id: string;
+  createdAt: Date;
+  updatedAt: Date;
+  latestActivity: Date;
   email: string;
+  username: string;
   password: string;
   role: Role;
-  username: string;
   bio?: string;
-  createdAt: Date;
-  latestActivity: Date;
 };
 
 export type Comment = {
   id: string;
-  message: string;
   createdAt: Date;
-  edited: boolean;
-  profile: Profile;
-  resource: Resource;
-  parentId: string;
+  updatedAt: Date;
+  message: string;
+  profileId: string;
+  resourceId: string;
 };
 
-export type Like = {
+export type Category = {
   id: string;
-  createdAt: Date;
-  profile: Profile;
-  resource: Resource;
-  parentId: string;
-  comment?: Comment;
+  name: string;
+};
+
+export type Subject = {
+  id: string;
+  name: string;
 };
 
 export type StatusMessage = {

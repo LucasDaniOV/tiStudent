@@ -1,6 +1,5 @@
-import Header from "@/components/header";
+import Header from "@/components/Header";
 import ProfileCreateForm from "@/components/profiles/ProfileCreateForm";
-import GithubLoginButton from "@/components/profiles/GithubLoginButton";
 import UserLoginForm from "@/components/profiles/ProfileLoginForm";
 import { useTranslation } from "next-i18next";
 import { serverSideTranslations } from "next-i18next/serverSideTranslations";
@@ -46,9 +45,6 @@ const Login: React.FC = () => {
               <UserLoginForm />
             </section>
 
-            <section className="w-max">
-              <GithubLoginButton />
-            </section>
             <section className="m-10 mt-0">
               <h1>{t("login.profile.message")}</h1>
               <ProfileCreateForm />

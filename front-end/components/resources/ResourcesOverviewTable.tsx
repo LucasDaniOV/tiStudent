@@ -18,6 +18,7 @@ const ResourceOverviewTable: React.FC<Props> = ({ resources }: Props) => {
     await ResourceService.deleteResourceById(resource.id);
     router.reload();
   };
+
   return (
     <>
       {resources && (
@@ -39,12 +40,12 @@ const ResourceOverviewTable: React.FC<Props> = ({ resources }: Props) => {
               <th scope="col" className="border p-4 text-left">
                 {t("resources.fields.description")}
               </th>
-              <th scope="col" className="border p-4 text-left">
+              {/* <th scope="col" className="border p-4 text-left">
                 {t("resources.fields.category")}
               </th>
               <th scope="col" className="border p-4 text-left">
                 {t("resources.fields.subject")}
-              </th>
+              </th> */}
             </tr>
           </thead>
           <tbody>
@@ -60,12 +61,12 @@ const ResourceOverviewTable: React.FC<Props> = ({ resources }: Props) => {
                 }}
               >
                 <td className="border p-4">{resource.id}</td>
-                <td className="border p-4">{resource.creator.id}</td>
+                <td className="border p-4">{resource.profileId}</td>
                 <td className="border p-4">{String(resource.createdAt)}</td>
                 <td className="border p-4">{resource.title}</td>
                 <td className="border p-4">{resource.description}</td>
-                <td className="border p-4">{resource.category}</td>
-                <td className="border p-4">{resource.subject}</td>
+                {/* <td className="border p-4">{resource.category}</td>
+                <td className="border p-4">{resource.subject}</td> */}
                 <td
                   className="border p-4"
                   onClick={(e) => deleteResource(e, resource)}
