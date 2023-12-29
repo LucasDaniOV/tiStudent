@@ -9,28 +9,6 @@ const getAllProfiles = async () => await getAll(type);
 
 const getProfileById = async (profileId: string) => getById(type, profileId);
 
-const getProfileByEmail = async (email: string) => {
-  const token = getToken();
-  const res = await fetch(baseUrl + `/${email}`, {
-    method: "GET",
-    headers: {
-      "Content-Type": "application/json",
-      Authorization: `Bearer ${token}`,
-    },
-  });
-  return await res.json();
-};
-
-const checkProfileExists = async (email: string) => {
-  const res = await fetch(baseUrl + `/exists/email?email=${email}`, {
-    method: "GET",
-    headers: {
-      "Content-Type": "boolean",
-    },
-  });
-  return await res.json();
-};
-
 const deleteProfileById = async (profileId: number): Promise<Boolean> => {
   const token = getToken();
   const res = await fetch(baseUrl + `/${profileId}`, {
@@ -125,8 +103,6 @@ const getLeaderboard = async (): Promise<
 export default {
   getAllProfiles,
   getProfileById,
-  getProfileByEmail,
-  checkProfileExists,
   deleteProfileById,
   createProfile,
   getLikesByProfile,
