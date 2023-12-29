@@ -1,23 +1,47 @@
 import profileDb from '../../domain/data-access/profile.db';
 import resourceDb from '../../domain/data-access/resource.db';
-import { Category } from '../../domain/model/category';
 import { Profile } from '../../domain/model/profile';
 import { Resource } from '../../domain/model/resource';
-import { Subject } from '../../domain/model/subject';
 import resourceService from '../../service/resource.service';
+import { ResourceInput } from '../../types';
 
-const creator = new Profile({
-    id: 69420,
-    email: 'resource.service.test@tistudent.be',
-    password: '_r3sourceSe4viceTe5t',
-    role: 'admin',
-    username: 'resourceServiceTest',
-});
-
+const id = 1;
+const createdAt = new Date();
+const updatedAt = new Date();
+const latestActivity = new Date();
 const title = 'Hello World';
 const description = 'This is a test resource';
-const category = Category.CheatSheet;
-const subject = Subject.FullStack_Software_Develoment;
+const profileId = 1;
+const email = 'resource.service.test@tistudent.com';
+const username = 'DonVitoCorleone';
+const password = 'resourceServiceT3st_;D';
+const role = 'USER';
+
+const resource = new Resource({
+    id,
+    createdAt,
+    updatedAt,
+    title,
+    description,
+    profileId,
+});
+
+const profile = new Profile({
+    id,
+    createdAt,
+    updatedAt,
+    latestActivity,
+    email,
+    username,
+    password,
+    role,
+});
+
+const resourceInput: ResourceInput = {
+    title,
+    description,
+    profileId,
+};
 
 let mockResourceDbGetResourceByContent: jest.Mock;
 let mockResourceDbCreateResource: jest.Mock;
@@ -39,67 +63,41 @@ afterEach(() => {
 
 test(`given: valid values for Resource, when: Resource is created, then: Resource is created with those values`, async () => {
     // given
-    const resource = new Resource({ creator, title, description, category, subject });
-    profileDb.getProfileById = mockProfileDbGetProfileById.mockResolvedValue(creator);
-    resourceDb.getResourceByContent = mockResourceDbGetResourceByContent.mockReturnValue(undefined);
+    profileDb.getProfileById = mockProfileDbGetProfileById.mockResolvedValue(profile);
     resourceDb.createResource = mockResourceDbCreateResource.mockResolvedValue(resource);
 
     // when
-    const sut = await resourceService.createResource({ creator, title, description, category, subject });
+    const sut = await resourceService.createResource(resourceInput);
 
     // then
     expect(mockResourceDbCreateResource).toHaveBeenCalledTimes(1);
-    expect(sut.creator).toEqual(creator);
     expect(sut.title).toEqual(title);
     expect(sut.description).toEqual(description);
-    expect(sut.category).toEqual(category);
-    expect(sut.subject).toEqual(subject);
+    expect(sut.profileId).toEqual(profileId);
 });
 
-test(`given: existing Resource, when: Resource is created, then: error is thrown`, () => {
-    // given
-    const resource = new Resource({ creator, title, description, category, subject });
-    profileDb.getProfileById = mockProfileDbGetProfileById.mockResolvedValue(creator);
-    resourceDb.getResourceByContent = mockResourceDbGetResourceByContent.mockReturnValue(resource);
-
-    // when
-    const sut = async () => await resourceService.createResource({ creator, title, description, category, subject });
-
-    // then
-    expect(sut).rejects.toThrowError('Resource already exists');
-});
-
-test(`given: no creator, when: Resource is created, then: error is thrown`, () => {
-    // when
-    const sut = async () => await resourceService.createResource({ title, description, category, subject });
-
-    // then
-    expect(sut).rejects.toThrowError('creator Profile is required');
-});
-
-test(`given: invalid creator, when: Resource is created, then: error is thrown`, async () => {
+test(`given: invalid profile id, when: Resource is created, then: error is thrown`, async () => {
     // given
     profileDb.getProfileById = mockProfileDbGetProfileById.mockResolvedValue(undefined);
 
     // when
-    const sut = async () => await resourceService.createResource({ creator, title, description, category, subject });
+    const sut = async () => await resourceService.createResource(resourceInput);
 
     // then
-    await expect(sut).rejects.toThrowError('Profile with id 69420 does not exist');
+    await expect(sut).rejects.toThrowError('Profile with id 1 does not exist');
     expect(mockProfileDbGetProfileById).toHaveBeenCalledTimes(1);
 });
 
 test(`given: valid id for Resource, when: Resource is requested, then: Resource is returned`, async () => {
     // given
-    const resource = new Resource({ creator, title, description, category, subject });
     resourceDb.getResourceById = mockResourceDbGetResourceById.mockResolvedValue(resource);
 
     // when
-    const sut = await resourceService.getResourceById(0);
+    const sut = await resourceService.getResourceById(1);
 
     // then
     expect(mockResourceDbGetResourceById).toHaveBeenCalledTimes(1);
-    expect(mockResourceDbGetResourceById).toHaveBeenCalledWith(0);
+    expect(mockResourceDbGetResourceById).toHaveBeenCalledWith(1);
     expect(sut).toEqual(resource);
 });
 
@@ -118,17 +116,12 @@ test(`given: invalid id for Resource, when: Resource is requested, then: error i
 
 test(`given: available Resources, when: all Resources are requested, then: all Resources are returned`, async () => {
     // given
-    const resources = [
-        new Resource({ id: 0, creator, title, description, category, subject }),
-        new Resource({ id: 1, creator, title, description, category, subject }),
-        new Resource({ id: 2, creator, title, description, category, subject }),
-    ];
-    resourceDb.getAllResources = mockResourceDbGetAllResources.mockResolvedValue(resources);
+    resourceDb.getAllResources = mockResourceDbGetAllResources.mockResolvedValue([resource]);
 
     // when
-    const returnedResources = await resourceService.getAllResources('admin');
+    const returnedResources = await resourceService.getAllResources();
 
     // then
     expect(mockResourceDbGetAllResources).toHaveBeenCalledTimes(1);
-    expect(returnedResources).toEqual(resources);
+    expect(returnedResources).toEqual([resource]);
 });
