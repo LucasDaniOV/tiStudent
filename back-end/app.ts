@@ -7,10 +7,7 @@ import swaggerUi from 'swagger-ui-express';
 import { categoryOnResourceRouter } from './controller/categoryOnResource.routes';
 import { profileRouter } from './controller/profile.routes';
 import { resourceRouter } from './controller/resource.routes';
-import { version } from './package.json';
-import helmet from 'helmet';
-import { commentRouter } from './controller/comment.routes';
-import { likeRouter } from './controller/like.routes';
+import { resourceLikeRouter } from './controller/resourceLike.routes';
 import subjectRouter from './controller/subject.routes';
 import { subjectOnResourceRouter } from './controller/subjectOnResource.routes';
 import { commentLikeRouter } from './controller/commentLike.routes';
@@ -43,6 +40,7 @@ app.use('/categories', categoryRouter);
 app.use('/categories-on-resources', categoryOnResourceRouter);
 app.use('/subjects-on-resources', subjectOnResourceRouter);
 app.use('/commentlikes', commentLikeRouter);
+app.use('/resourcelikes', resourceLikeRouter);
 app.use('/', authRouter);
 
 const swaggerOpts = {
