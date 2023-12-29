@@ -21,18 +21,6 @@ const deleteProfileById = async (profileId: number): Promise<Boolean> => {
   return await res.json();
 };
 
-const getLikesByProfile = async (profileId: string): Promise<Array<Like>> => {
-  const token = getToken();
-  const res = await fetch(baseUrl + `/${profileId}/likedResources`, {
-    method: "GET",
-    headers: {
-      "Content-Type": "application/json",
-      Authorization: `Bearer ${token}`,
-    },
-  });
-  return await res.json();
-};
-
 const createProfile = async (
   email: string,
   password: string,
@@ -61,25 +49,11 @@ const loginUser = async (email: string, password: string) => {
   });
 };
 
-const getResourcesByProfile = async (
-  profileId: string
-): Promise<Array<Resource>> => {
-  const token = getToken();
-  const res = await fetch(baseUrl + `/${profileId}/sharedResources`, {
-    method: "GET",
-    headers: {
-      "Content-Type": "application/json",
-      Authorization: `Bearer ${token}`,
-    },
-  });
-  return await res.json();
-};
-
 const getLeaderboard = async (): Promise<
   Array<{ profile: Profile; resourceCount: number }>
 > => {
   const token = getToken();
-  const res = await fetch(baseUrl + `/leaderboard/10`, {
+  const res = await fetch(process.env.NEXT_PUBLIC_API_URL + `/leaderboard/10`, {
     method: "GET",
     headers: {
       "Content-Type": "application/json",
@@ -94,8 +68,6 @@ export default {
   getProfileById,
   deleteProfileById,
   createProfile,
-  getLikesByProfile,
   loginUser,
-  getResourcesByProfile,
   getLeaderboard,
 };
