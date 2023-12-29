@@ -64,27 +64,24 @@ categoryOnResourceRouter.get('/resource/:resourceId', async (req: Request, res: 
     }
 });
 
-categoryOnResourceRouter.delete(
-    '/category/:categoryId/resource/:resourceId',
-    async (req: Request, res: Response, next: NextFunction) => {
-        try {
-            const categoryId: number = parseInt(req.params.categoryId);
-            const resourceId: number = parseInt(req.params.resourceId);
+categoryOnResourceRouter.delete('/', async (req: Request, res: Response, next: NextFunction) => {
+    try {
+        const categoryId: number = parseInt(req.query.categoryId as string);
+        const resourceId: number = parseInt(req.query.resourceId as string);
 
-            const deletedCategoryOnResource = await categoryOnResourceService.deleteCategoryOnResource(
-                categoryId,
-                resourceId
-            );
+        const deletedCategoryOnResource = await categoryOnResourceService.deleteCategoryOnResource(
+            categoryId,
+            resourceId
+        );
 
-            res.status(200).json({
-                status: 'success',
-                message: 'category on resource deleted',
-                deletedCategoryOnResource,
-            });
-        } catch (error) {
-            next(error);
-        }
+        res.status(200).json({
+            status: 'success',
+            message: 'category on resource deleted',
+            deletedCategoryOnResource,
+        });
+    } catch (error) {
+        next(error);
     }
-);
+});
 
 export { categoryOnResourceRouter };
