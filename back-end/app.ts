@@ -2,15 +2,20 @@ import * as bodyParser from 'body-parser';
 import cors from 'cors';
 import express, { NextFunction, Request, Response } from 'express';
 import { expressjwt } from 'express-jwt';
+import helmet from 'helmet';
 import swaggerJSDoc from 'swagger-jsdoc';
 import swaggerUi from 'swagger-ui-express';
+import { authRouter } from './controller/auth.routes';
+import categoryRouter from './controller/category.routes';
 import { categoryOnResourceRouter } from './controller/categoryOnResource.routes';
+import { commentRouter } from './controller/comment.routes';
+import { commentLikeRouter } from './controller/commentLike.routes';
 import { profileRouter } from './controller/profile.routes';
 import { resourceRouter } from './controller/resource.routes';
 import { resourceLikeRouter } from './controller/resourceLike.routes';
 import subjectRouter from './controller/subject.routes';
 import { subjectOnResourceRouter } from './controller/subjectOnResource.routes';
-import { commentLikeRouter } from './controller/commentLike.routes';
+import { version } from './package.json';
 
 const app = express();
 
@@ -32,11 +37,11 @@ app.get('/status', (req, res) => {
     res.json({ message: 'Back-end is running...' });
 });
 
-app.use('/resources', resourceRouter);
 app.use('/profiles', profileRouter);
+app.use('/resources', resourceRouter);
 app.use('/comments', commentRouter);
-app.use('/subjects', subjectRouter);
 app.use('/categories', categoryRouter);
+app.use('/subjects', subjectRouter);
 app.use('/categories-on-resources', categoryOnResourceRouter);
 app.use('/subjects-on-resources', subjectOnResourceRouter);
 app.use('/commentlikes', commentLikeRouter);
