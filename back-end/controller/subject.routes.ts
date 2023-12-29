@@ -18,9 +18,15 @@ subjectRouter.post('/', async (req: Request, res: Response, next: NextFunction) 
 
 subjectRouter.get('/', async (req: Request, res: Response, next: NextFunction) => {
     try {
-        const subjects: Subject[] = await subjectService.getAllSubjects();
+        const name: string | undefined = req.query.name as string;
 
-        res.status(200).json({ status: 'success', message: 'subjects found', subjects });
+        if (name) {
+            const subject: Subject = await subjectService.getSubjectByName(name);
+            res.status(200).json({ status: 'success', message: 'subjects found', subject });
+        } else {
+            const subjects: Subject[] = await subjectService.getAllSubjects();
+            res.status(200).json({ status: 'success', message: 'subjects found', subjects });
+        }
     } catch (error) {
         next(error);
     }
