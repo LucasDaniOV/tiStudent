@@ -95,3 +95,16 @@ test('delete subject on resource', async () => {
     expect(res.body.message).toEqual('subject on resource deleted');
     expect(res.body.deletedSubjectOnResource).toEqual({ resourceId, subjectId });
 });
+
+test('delete another subject on resource', async () => {
+    // when
+    const res = await request(app)
+        .delete(`/subjects-on-resources?subjectId=1&resourceId=${resourceId}`)
+        .set('Authorization', `Bearer ${token}`);
+
+    // then
+    expect(res.status).toEqual(200);
+    expect(res.body.status).toEqual('success');
+    expect(res.body.message).toEqual('subject on resource deleted');
+    expect(res.body.deletedSubjectOnResource).toEqual({ resourceId, subjectId: 1 });
+});
