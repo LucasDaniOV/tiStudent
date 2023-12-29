@@ -50,17 +50,6 @@ const createProfile = async (
   return await res.json();
 };
 
-const getGithubUser = async (code: string) => {
-  const url = `${baseUrl}/login/github?code=${code}`;
-  const res = await fetch(url, {
-    method: "GET",
-    headers: {
-      "Content-Type": "application/json",
-    },
-  });
-  return await res.json();
-};
-
 const loginUser = async (email: string, password: string) => {
   const url = process.env.NEXT_PUBLIC_API_URL + "/signin";
   return await fetch(url, {
@@ -106,7 +95,6 @@ export default {
   deleteProfileById,
   createProfile,
   getLikesByProfile,
-  getGithubUser,
   loginUser,
   getResourcesByProfile,
   getLeaderboard,
