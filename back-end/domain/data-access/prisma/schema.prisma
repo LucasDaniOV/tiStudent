@@ -29,28 +29,28 @@ model Profile {
 }
 
 model Resource {
-    id          Int                     @id @default(autoincrement())
-    createdAt   DateTime                @default(now())
-    updatedAt   DateTime                @updatedAt
+    id          Int                  @id @default(autoincrement())
+    createdAt   DateTime             @default(now())
+    updatedAt   DateTime             @updatedAt
     title       String
     description String
     categories  CategoryOnResource[]
     subjects    SubjectOnResource[]
     profileId   Int
-    profile     Profile                 @relation(fields: [profileId], references: [id], onDelete: Cascade)
+    profile     Profile              @relation(fields: [profileId], references: [id], onDelete: Cascade)
     comments    Comment[]
     likes       ResourceLike[]
 }
 
 model Category {
-    id        Int                     @id @default(autoincrement())
-    name      String                  @unique
+    id        Int                  @id @default(autoincrement())
+    name      String               @unique
     resources CategoryOnResource[]
 }
 
 model Subject {
-    id        Int                   @id @default(autoincrement())
-    name      String                @unique
+    id        Int                 @id @default(autoincrement())
+    name      String              @unique
     resources SubjectOnResource[]
 }
 
@@ -85,19 +85,21 @@ model Comment {
 }
 
 model ResourceLike {
-    id         Int       @id @default(autoincrement())
     createdAt  DateTime  @default(now())
     profileId  Int
     profile    Profile   @relation(fields: [profileId], references: [id], onDelete: Cascade)
     resourceId Int
     resource   Resource? @relation(fields: [resourceId], references: [id], onDelete: Cascade)
+
+    @@id([profileId, resourceId])
 }
 
 model CommentLike {
-    id        Int      @id @default(autoincrement())
     createdAt DateTime @default(now())
     profileId Int
     profile   Profile  @relation(fields: [profileId], references: [id], onDelete: Cascade)
     commentId Int
     comment   Comment  @relation(fields: [commentId], references: [id], onDelete: Cascade)
+
+    @@id([profileId, commentId])
 }
