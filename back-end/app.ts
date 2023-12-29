@@ -4,6 +4,7 @@ import express, { NextFunction, Request, Response } from 'express';
 import { expressjwt } from 'express-jwt';
 import swaggerJSDoc from 'swagger-jsdoc';
 import swaggerUi from 'swagger-ui-express';
+import { categoryOnResourceRouter } from './controller/categoryOnResource.routes';
 import { profileRouter } from './controller/profile.routes';
 import { resourceRouter } from './controller/resource.routes';
 import { version } from './package.json';
@@ -39,6 +40,7 @@ app.use('/profiles', profileRouter);
 app.use('/comments', commentRouter);
 app.use('/subjects', subjectRouter);
 app.use('/categories', categoryRouter);
+app.use('/categories-on-resources', categoryOnResourceRouter);
 app.use('/', authRouter);
 
 const swaggerOpts = {
