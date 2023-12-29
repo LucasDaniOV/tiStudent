@@ -20,7 +20,15 @@ commentRouter.post('/', async (req: Request, res: Response, next: NextFunction) 
 
 commentRouter.get('/', async (req: Request, res: Response, next: NextFunction) => {
     try {
-        const comments: Comment[] = await commentService.getComments();
+        const resourceId: number = parseInt(req.query.resourceId as string);
+
+        let comments: Comment[];
+
+        if (resourceId) {
+            comments = await commentService.getCommentsByResourceId(resourceId);
+        } else {
+            comments = await commentService.getComments();
+        }
 
         res.status(200).json({ status: 'success', message: 'comments found', comments });
     } catch (error) {

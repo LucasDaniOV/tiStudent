@@ -1,5 +1,5 @@
 import { serverSideTranslations } from "next-i18next/serverSideTranslations";
-import Header from "@/components/header";
+import Header from "@/components/Header";
 import ProfileInfo from "@/components/profiles/ProfileInfo";
 import ProfileService from "@/services/ProfileService";
 import { Profile } from "@/types";

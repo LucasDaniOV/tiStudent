@@ -16,6 +16,7 @@ import { resourceLikeRouter } from './controller/resourceLike.routes';
 import subjectRouter from './controller/subject.routes';
 import { subjectOnResourceRouter } from './controller/subjectOnResource.routes';
 import { version } from './package.json';
+import { leaderboardRouter } from './controller/leaderboard.routes';
 import fileRouter from './controller/files.routes';
 
 const app = express();
@@ -47,6 +48,7 @@ app.use('/categories-on-resources', categoryOnResourceRouter);
 app.use('/subjects-on-resources', subjectOnResourceRouter);
 app.use('/commentlikes', commentLikeRouter);
 app.use('/resourcelikes', resourceLikeRouter);
+app.use('/leaderboard', leaderboardRouter);
 app.use('/', authRouter);
 app.use('/files', fileRouter);
 

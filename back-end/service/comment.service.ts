@@ -18,6 +18,11 @@ const getCommentById = async (commentId: number): Promise<Comment> => {
     return comment;
 };
 
+const getCommentsByResourceId = async (resourceId: number): Promise<Comment[]> => {
+    await resourceService.getResourceById(resourceId);
+    return await commentDb.getCommentsByResourceId(resourceId);
+};
+
 const updateCommentMessage = async (commentId: number, message: string): Promise<Comment> => {
     Comment.validateMessage(message);
     await getCommentById(commentId);
@@ -33,6 +38,7 @@ export default {
     createComment,
     getComments,
     getCommentById,
+    getCommentsByResourceId,
     updateCommentMessage,
     deleteComment,
 };

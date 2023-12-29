@@ -19,7 +19,14 @@ resourceRouter.post('/', async (req: Request, res: Response, next: NextFunction)
 
 resourceRouter.get('/', async (req: Request, res: Response, next: NextFunction) => {
     try {
-        const resources: Resource[] = await resourceService.getAllResources();
+        const profileId: number | undefined = parseInt(req.query.profileId as string);
+        let resources: Resource[];
+
+        if (profileId) {
+            resources = await resourceService.getResourcesByProfileId(profileId);
+        } else {
+            resources = await resourceService.getAllResources();
+        }
 
         res.status(200).json({ status: 'success', message: 'resources found', resources });
     } catch (error) {

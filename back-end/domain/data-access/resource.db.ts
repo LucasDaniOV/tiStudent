@@ -27,6 +27,20 @@ const getAllResources = async (): Promise<Resource[]> => {
     }
 };
 
+const getResourcesByProfileId = async (profileId: number): Promise<Resource[]> => {
+    try {
+        const resources = await database.resource.findMany({
+            where: {
+                profileId,
+            },
+        });
+        if (resources) return resources.map((r) => Resource.from(r));
+    } catch (error) {
+        console.error(error);
+        throw new Error('Database error when getting resources by profile id. See server log for details.');
+    }
+};
+
 const getResourceById = async (id: number): Promise<Resource> => {
     try {
         const resourcePrisma = await database.resource.findUnique({
@@ -77,6 +91,7 @@ export default {
     createResource,
     getAllResources,
     getResourceById,
+    getResourcesByProfileId,
     updateResource,
     deleteResource,
 };

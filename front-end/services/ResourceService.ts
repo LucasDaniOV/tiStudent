@@ -24,72 +24,80 @@ const createResource = async (
   profileId: string,
   title: string,
   description: string,
-  category: string,
-  subject: string
+  categoryId: number = 1,
+  subjectId: number = 1
 ) => {
   const token = getToken();
-  const res1 = await ProfileService.getProfileById(profileId);
 
-  if (res1.status === "error") {
-    return {
-      message: "Profile does not exist",
-      status: "error",
-    };
-  }
-
-  const creator = res1.data as Profile;
-
-  const res2 = await fetch(baseUrl, {
+  const res = await fetch(baseUrl, {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
       Authorization: `Bearer ${token}`,
     },
     body: JSON.stringify({
-      creator,
+      profileId,
       title,
       description,
-      category,
-      subject,
     }),
   });
 
-  const res2Json = await res2.json();
+  const resource = await res.json();
+  const resourceId = resource.id;
 
-  if (res2Json.status === "error") {
-    return {
-      status: "error",
-      message: res2Json.message,
-    };
-  }
+  await fetch(process.env.NEXT_PUBLIC_API_URL + "/subjects-on-resources", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${token}`,
+    },
+    body: JSON.stringify({
+      resourceId,
+      subjectId,
+    }),
+  });
 
-  return res2Json;
+  await fetch(process.env.NEXT_PUBLIC_API_URL + "/categories-on-resources", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${token}`,
+    },
+    body: JSON.stringify({
+      resourceId,
+      categoryId,
+    }),
+  });
+
+  return res;
 };
 
 const getCommentsOnResource = async (id: string): Promise<Comment[]> => {
   const token = getToken();
-  const comments = await fetch(baseUrl + `/${id}/comments`, {
-    method: "GET",
-    headers: {
-      "Content-Type": "application/json",
-      Authorization: `Bearer ${token}`,
-    },
-  });
-  return comments.json();
+  const comments = await fetch(
+    process.env.NEXT_PUBLIC_API_URL + "/comments?resourceId=" + id,
+    {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+    }
+  );
+  return await comments.json();
 };
 
 const getResourcesByProfile = async (profileId: number) => {
   const token = getToken();
-  const comments = await fetch(baseUrl + `/${profileId}/resources`, {
+  const resources = await fetch(baseUrl + "?profileId=" + profileId, {
     method: "GET",
     headers: {
       "Content-Type": "application/json",
       Authorization: `Bearer ${token}`,
     },
   });
-  return comments.json();
-
-}
+  return await resources.json();
+};
 
 const ResourceService = {
   getAllResources,
@@ -97,6 +105,7 @@ const ResourceService = {
   deleteResourceById,
   createResource,
   getCommentsOnResource,
+  getResourcesByProfile,
 };
 
 export default ResourceService;

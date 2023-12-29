@@ -1,5 +1,5 @@
 import Comments from "@/components/comments/Comments";
-import Header from "@/components/header";
+import Header from "@/components/Header";
 import Likes from "@/components/likes/likes";
 import ResourceInfo from "@/components/resources/ResourceInfo";
 import CommentService from "@/services/CommentService";

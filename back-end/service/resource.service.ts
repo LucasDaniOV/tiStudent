@@ -18,6 +18,11 @@ const getResourceById = async (id: number): Promise<Resource> => {
     return resource;
 };
 
+const getResourcesByProfileId = async (profileId: number): Promise<Resource[]> => {
+    await profileService.getProfileById(profileId);
+    return await resourceDb.getResourcesByProfileId(profileId);
+};
+
 const updateResource = async (id: number, resourceInput: ResourceInput): Promise<Resource> => {
     const { title, description } = resourceInput;
     Resource.validate(title, description);
@@ -34,6 +39,7 @@ export default {
     createResource,
     getAllResources,
     getResourceById,
+    getResourcesByProfileId,
     updateResource,
     deleteResource,
 };

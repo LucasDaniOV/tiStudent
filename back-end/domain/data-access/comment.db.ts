@@ -41,6 +41,20 @@ const getCommentById = async (commentId: number): Promise<Comment> => {
     }
 };
 
+const getCommentsByResourceId = async (resourceId: number): Promise<Comment[]> => {
+    try {
+        const commentsPrisma = await database.comment.findMany({
+            where: {
+                resourceId,
+            },
+        });
+        if (commentsPrisma) return commentsPrisma.map((c) => Comment.from(c));
+    } catch (error) {
+        console.error(error);
+        throw new Error('Database error when getting comments by resource id. See server log for details.');
+    }
+};
+
 const updateCommentMessage = async (commentId: number, message: string): Promise<Comment> => {
     try {
         const commentPrisma = await database.comment.update({
@@ -76,6 +90,7 @@ export default {
     createComment,
     getComments,
     getCommentById,
+    getCommentsByResourceId,
     updateCommentMessage,
     deleteComment,
 };
