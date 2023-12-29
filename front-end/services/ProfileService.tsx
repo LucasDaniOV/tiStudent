@@ -62,7 +62,7 @@ const createProfile = async (
   username: string,
   bio?: string
 ) => {
-  const res = await fetch(baseUrl + "/signup", {
+  const res = await fetch("/signup", {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
