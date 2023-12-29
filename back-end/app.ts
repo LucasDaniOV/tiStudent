@@ -16,6 +16,7 @@ import { resourceLikeRouter } from './controller/resourceLike.routes';
 import subjectRouter from './controller/subject.routes';
 import { subjectOnResourceRouter } from './controller/subjectOnResource.routes';
 import { version } from './package.json';
+import fileRouter from './controller/files.routes';
 
 const app = express();
 
@@ -29,7 +30,7 @@ app.use(
         secret: process.env.JWT_SECRET,
         algorithms: ['HS256'],
     }).unless({
-        path: ['/api-docs', /^\/api-docs\/.*/, '/signup', '/signin', '/status'],
+        path: ['/api-docs', /^\/api-docs\/.*/, '/signup', '/signin', '/status', /\/upload*/],
     })
 );
 
@@ -47,6 +48,7 @@ app.use('/subjects-on-resources', subjectOnResourceRouter);
 app.use('/commentlikes', commentLikeRouter);
 app.use('/resourcelikes', resourceLikeRouter);
 app.use('/', authRouter);
+app.use('/files', fileRouter);
 
 const swaggerOpts = {
     definition: {
