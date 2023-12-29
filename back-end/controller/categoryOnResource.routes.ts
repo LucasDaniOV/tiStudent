@@ -22,7 +22,17 @@ categoryOnResourceRouter.post('/', async (req: Request, res: Response, next: Nex
 
 categoryOnResourceRouter.get('/', async (req: Request, res: Response, next: NextFunction) => {
     try {
-        const categoriesOnResources: CategoryOnResource[] = await categoryOnResourceService.getCategoriesOnResources();
+        const categoryId: number | undefined = parseInt(req.query.categoryId as string);
+        const resourceId: number | undefined = parseInt(req.query.resourceId as string);
+        let categoriesOnResources: CategoryOnResource[];
+
+        if (categoryId) {
+            categoriesOnResources = await categoryOnResourceService.getCategoriesOnResourcesByCategoryId(categoryId);
+        } else if (resourceId) {
+            categoriesOnResources = await categoryOnResourceService.getCategoriesOnResourcesByResourceId(resourceId);
+        } else {
+            categoriesOnResources = await categoryOnResourceService.getCategoriesOnResources();
+        }
 
         res.status(200).json({ status: 'success', message: 'categories on resources found', categoriesOnResources });
     } catch (error) {
