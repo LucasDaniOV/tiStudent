@@ -54,6 +54,7 @@ const updateBio = async (profile: Profile, bio: string): Promise<Profile> => {
 const updateEmail = async (profile: Profile, email: string): Promise<Profile> => {
     Profile.validateEmail(email);
     if (profile.email === email) throw new Error(`New email must be different from old email`);
+    if (await profileDb.getProfileByEmail(email)) throw new Error(`Email already exists`);
     return await profileDb.updateEmail(profile.id, email);
 };
 
@@ -71,6 +72,7 @@ const updatePassword = async (profile: Profile, password: string): Promise<Profi
 const updateUsername = async (profile: Profile, username: string): Promise<Profile> => {
     Profile.validateUsername(username);
     if (profile.username === username) throw new Error(`New username must be different from old username`);
+    if (await profileDb.getProfileByUsername(username)) throw new Error(`Username already exists`);
     return await profileDb.updateUsername(profile.id, username);
 };
 
@@ -134,6 +136,11 @@ export default {
     getProfileById,
     getProfileByEmail,
     getProfileByUsername,
+    updateBio,
+    updateEmail,
+    updatePassword,
+    updateUsername,
+    updateRole,
     updateProfile,
     deleteProfile,
     authenticate,

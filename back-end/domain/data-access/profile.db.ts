@@ -82,7 +82,7 @@ const updateBio = async (id: number, newBio: string): Promise<Profile> => {
     try {
         const updatedProfile = await database.profile.update({
             where: { id },
-            data: { bio: newBio, latestActivity: new Date() },
+            data: { bio: newBio },
         });
         return Profile.from(updatedProfile);
     } catch (error) {
@@ -95,7 +95,7 @@ const updateEmail = async (id: number, newEmail: string): Promise<Profile> => {
     try {
         const updatedProfile = await database.profile.update({
             where: { id },
-            data: { email: newEmail, latestActivity: new Date() },
+            data: { email: newEmail },
         });
         return Profile.from(updatedProfile);
     } catch (error) {
@@ -108,7 +108,7 @@ const updatePassword = async (id: number, newPassword: string): Promise<Profile>
     try {
         const updatedProfile = await database.profile.update({
             where: { id },
-            data: { password: newPassword, latestActivity: new Date() },
+            data: { password: newPassword },
         });
         return Profile.from(updatedProfile);
     } catch (error) {
@@ -121,7 +121,7 @@ const updateUsername = async (id: number, newUsername: string): Promise<Profile>
     try {
         const updatedProfile = await database.profile.update({
             where: { id },
-            data: { username: newUsername, latestActivity: new Date() },
+            data: { username: newUsername },
         });
         return Profile.from(updatedProfile);
     } catch (error) {
@@ -134,7 +134,7 @@ const updateRole = async (id: number, newRole: Role): Promise<Profile> => {
     try {
         const updatedProfile = await database.profile.update({
             where: { id },
-            data: { role: newRole, latestActivity: new Date() },
+            data: { role: newRole },
         });
         return Profile.from(updatedProfile);
     } catch (error) {
