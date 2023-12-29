@@ -64,27 +64,21 @@ subjectOnResourceRouter.get('/resource/:resourceId', async (req: Request, res: R
     }
 });
 
-subjectOnResourceRouter.delete(
-    '/subject/:subjectId/resource/:resourceId',
-    async (req: Request, res: Response, next: NextFunction) => {
-        try {
-            const subjectId: number = parseInt(req.params.subjectId);
-            const resourceId: number = parseInt(req.params.resourceId);
+subjectOnResourceRouter.delete('/', async (req: Request, res: Response, next: NextFunction) => {
+    try {
+        const subjectId: number = parseInt(req.query.subjectId as string);
+        const resourceId: number = parseInt(req.query.resourceId as string);
 
-            const deletedSubjectOnResource = await subjectOnResourceService.deleteSubjectOnResource(
-                subjectId,
-                resourceId
-            );
+        const deletedSubjectOnResource = await subjectOnResourceService.deleteSubjectOnResource(subjectId, resourceId);
 
-            res.status(200).json({
-                status: 'success',
-                message: 'subject on resource deleted',
-                deletedSubjectOnResource,
-            });
-        } catch (error) {
-            next(error);
-        }
+        res.status(200).json({
+            status: 'success',
+            message: 'subject on resource deleted',
+            deletedSubjectOnResource,
+        });
+    } catch (error) {
+        next(error);
     }
-);
+});
 
 export { subjectOnResourceRouter };

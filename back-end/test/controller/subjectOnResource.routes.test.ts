@@ -86,7 +86,7 @@ test('get subjects on resources by resource id', async () => {
 test('delete subject on resource', async () => {
     // when
     const res = await request(app)
-        .delete(`/subjects-on-resources/subject/${subjectId}/resource/${resourceId}`)
+        .delete(`/subjects-on-resources?subjectId=${subjectId}&resourceId=${resourceId}`)
         .set('Authorization', `Bearer ${token}`);
 
     // then
