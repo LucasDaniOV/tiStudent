@@ -40,7 +40,7 @@ const createProfile = async (
   username: string,
   bio?: string
 ) => {
-  const res = await fetch("/signup", {
+  const res = await fetch(process.env.NEXT_PUBLIC_API_URL + "/signup", {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
@@ -62,7 +62,7 @@ const getGithubUser = async (code: string) => {
 };
 
 const loginUser = async (email: string, password: string) => {
-  const url = `${baseUrl}/login`;
+  const url = process.env.NEXT_PUBLIC_API_URL + "/signin";
   return await fetch(url, {
     method: "POST",
     headers: {
