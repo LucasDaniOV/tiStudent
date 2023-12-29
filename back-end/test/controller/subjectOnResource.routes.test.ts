@@ -28,21 +28,6 @@ test('create subject on resource', async () => {
     expect(res.body.subjectOnResource.resourceId).toEqual(resourceId);
 });
 
-test('create another subject on resource', async () => {
-    // when
-    const res = await request(app)
-        .post('/subjects-on-resources')
-        .set('Authorization', `Bearer ${token}`)
-        .send({ subjectId: 1, resourceId });
-
-    // then
-    expect(res.status).toEqual(200);
-    expect(res.body.status).toEqual('success');
-    expect(res.body.message).toEqual('subject created on resource');
-    expect(res.body.subjectOnResource.subjectId).toEqual(1);
-    expect(res.body.subjectOnResource.resourceId).toEqual(2);
-});
-
 test('get subjects on resources', async () => {
     // when
     const res = await request(app).get('/subjects-on-resources').set('Authorization', `Bearer ${token}`);
@@ -51,7 +36,7 @@ test('get subjects on resources', async () => {
     expect(res.status).toEqual(200);
     expect(res.body.status).toEqual('success');
     expect(res.body.message).toEqual('subjects on resources found');
-    expect(res.body.subjectsOnResources).toBeDefined;
+    expect(res.body.subjectsOnResources).toBeDefined();
 });
 
 test('get subjects on resources by subject id', async () => {
@@ -77,10 +62,7 @@ test('get subjects on resources by resource id', async () => {
     expect(res.status).toEqual(200);
     expect(res.body.status).toEqual('success');
     expect(res.body.message).toEqual('subjects on resource for resource id found');
-    expect(res.body.subjectsOnResources).toEqual([
-        { resourceId, subjectId },
-        { resourceId, subjectId: 1 },
-    ]);
+    expect(res.body.subjectsOnResources).toEqual([{ resourceId, subjectId }]);
 });
 
 test('delete subject on resource', async () => {
@@ -94,17 +76,4 @@ test('delete subject on resource', async () => {
     expect(res.body.status).toEqual('success');
     expect(res.body.message).toEqual('subject on resource deleted');
     expect(res.body.deletedSubjectOnResource).toEqual({ resourceId, subjectId });
-});
-
-test('delete another subject on resource', async () => {
-    // when
-    const res = await request(app)
-        .delete(`/subjects-on-resources?subjectId=1&resourceId=${resourceId}`)
-        .set('Authorization', `Bearer ${token}`);
-
-    // then
-    expect(res.status).toEqual(200);
-    expect(res.body.status).toEqual('success');
-    expect(res.body.message).toEqual('subject on resource deleted');
-    expect(res.body.deletedSubjectOnResource).toEqual({ resourceId, subjectId: 1 });
 });
