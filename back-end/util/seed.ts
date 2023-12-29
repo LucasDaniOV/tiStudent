@@ -70,6 +70,12 @@ async function main() {
         },
     });
 
+    const fullstackSubject = await prisma.subject.create({
+        data: {
+            name: 'Full-Stack Software Development',
+        },
+    });
+
     // linking Resource with Category
     await prisma.categoryOnResource.create({
         data: {

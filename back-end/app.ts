@@ -12,7 +12,7 @@ import helmet from 'helmet';
 import { commentRouter } from './controller/comment.routes';
 import { likeRouter } from './controller/like.routes';
 import subjectRouter from './controller/subject.routes';
-import categoryRouter from './controller/category.routes';
+import { subjectOnResourceRouter } from './controller/subjectOnResource.routes';
 import { authRouter } from './controller/auth.routes';
 
 const app = express();
@@ -41,6 +41,7 @@ app.use('/comments', commentRouter);
 app.use('/subjects', subjectRouter);
 app.use('/categories', categoryRouter);
 app.use('/categories-on-resources', categoryOnResourceRouter);
+app.use('/subjects-on-resources', subjectOnResourceRouter);
 app.use('/', authRouter);
 
 const swaggerOpts = {
