@@ -34,8 +34,8 @@ model Resource {
     updatedAt   DateTime                @updatedAt
     title       String
     description String
-    categories  CategoriesOnResources[]
-    subjects    SubjectsOnResources[]
+    categories  CategoryOnResource[]
+    subjects    SubjectOnResource[]
     profileId   Int
     profile     Profile                 @relation(fields: [profileId], references: [id], onDelete: Cascade)
     comments    Comment[]
@@ -45,16 +45,16 @@ model Resource {
 model Category {
     id        Int                     @id @default(autoincrement())
     name      String                  @unique
-    resources CategoriesOnResources[]
+    resources CategoryOnResource[]
 }
 
 model Subject {
     id        Int                   @id @default(autoincrement())
     name      String                @unique
-    resources SubjectsOnResources[]
+    resources SubjectOnResource[]
 }
 
-model CategoriesOnResources {
+model CategoryOnResource {
     resourceId Int
     resource   Resource @relation(fields: [resourceId], references: [id], onDelete: Cascade)
     categoryId Int
@@ -63,7 +63,7 @@ model CategoriesOnResources {
     @@id([categoryId, resourceId])
 }
 
-model SubjectsOnResources {
+model SubjectOnResource {
     resourceId Int
     resource   Resource @relation(fields: [resourceId], references: [id], onDelete: Cascade)
     subjectId  Int

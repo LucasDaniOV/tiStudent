@@ -5,7 +5,7 @@ const prisma = new PrismaClient();
 
 async function main() {
     // Profile
-    await prisma.profile.create({
+    const satoshi = await prisma.profile.create({
         data: {
             email: 'satoshi@tistudent.com',
             username: 'JJ',
@@ -42,10 +42,24 @@ async function main() {
         },
     });
 
+    const resource2 = await prisma.resource.create({
+        data: {
+            title: 'Full-Stack Software Development Cheat Sheet',
+            description: 'All the important stuff for FSSD',
+            profileId: satoshi.id,
+        },
+    });
+
     // Category
     const summaryCategory = await prisma.category.create({
         data: {
             name: 'Summary',
+        },
+    });
+
+    const cheatSheetCategory = await prisma.category.create({
+        data: {
+            name: 'Cheat Sheet',
         },
     });
 
@@ -57,7 +71,7 @@ async function main() {
     });
 
     // linking Resource with Category
-    await prisma.categoriesOnResources.create({
+    await prisma.categoryOnResource.create({
         data: {
             resourceId: resource.id,
             categoryId: summaryCategory.id,
@@ -65,7 +79,7 @@ async function main() {
     });
 
     // linking Resource with Subject
-    await prisma.subjectsOnResources.create({
+    await prisma.subjectOnResource.create({
         data: {
             resourceId: resource.id,
             subjectId: programming1Subject.id,
