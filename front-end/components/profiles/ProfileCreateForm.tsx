@@ -73,7 +73,6 @@ const ProfileCreateForm: React.FC = () => {
     );
     const profileObject = await ProfileService.loginUser(email, password);
     const profile = await profileObject.json();
-    console.log(profile);
     sessionStorage.setItem("loggedInUser", JSON.stringify(profile));
     const message = res.message;
     const type = res.status;

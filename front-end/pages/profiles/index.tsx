@@ -26,8 +26,6 @@ const Profiles: React.FC = () => {
     return setProfiles(response.profiles);
   };
 
-  console.log(profiles)
-
   const getTopTen = async () => {
     const response = await ProfileService.getLeaderboard();
     setAuthorized(true);

@@ -17,12 +17,12 @@ const ReadProfileById = () => {
     const fetchedProfile = await ProfileService.getProfileById(
       profileId as string
     );
-    return setProfile(fetchedProfile.data);
+    return setProfile(fetchedProfile.profile);
   };
 
   useEffect(() => {
-    if (profileId) getProfileById();
-  });
+    if (profileId && !profile) getProfileById();
+  }, [profile, profileId]);
 
   return (
     <>
