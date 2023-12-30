@@ -269,6 +269,190 @@ paths:
         '401':
           $ref: '#/components/responses/Unauthorized'
 
+  /resources:
+    post:
+      tags:
+        - resources
+      summary: create resource
+      description: |
+        Create a new resource
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ResourceInput'
+      responses:
+        '200':
+          description: resource created
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: 'success'
+                  message:
+                    type: string
+                    example: 'resource created'
+                  resource:
+                    $ref: '#/components/schemas/Resource'
+        '400':
+          $ref: '#/components/responses/ApplicationError'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+
+    get:
+      tags:
+        - resources
+      summary: get resources
+      description: |
+        Get all resources
+      parameters:
+        - in: query
+          name: profileId
+          description: get resources by profileId
+          schema:
+            type: integer
+            example: 1
+      responses:
+        '200':
+          description: resources found
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: 'success'
+                  message:
+                    type: string
+                    example: 'resources found'
+                  resources:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/ResourceData'
+
+        '400':
+          $ref: '#/components/responses/ApplicationError'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+
+  /resources/{id}:
+    get:
+      tags:
+        - resources
+      summary: get resource
+      description: |
+        Get resource by id
+      parameters:
+        - name: id
+          in: path
+          description: resource id
+          required: true
+          schema:
+            type: integer
+            example: 1
+      responses:
+        '200':
+          description: resource found
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: 'success'
+                  message:
+                    type: string
+                    example: 'resource found'
+                  resource:
+                    $ref: '#/components/schemas/ResourceData'
+        '400':
+          $ref: '#/components/responses/ApplicationError'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+
+    put:
+      tags:
+        - resources
+      summary: update resource
+      description: |
+        Update resource by id
+      parameters:
+        - name: id
+          in: path
+          description: resource id
+          required: true
+          schema:
+            type: integer
+            example: 1
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                title:
+                  type: string
+                  example: 'example title'
+                description:
+                  type: string
+                  example: 'example description'
+      responses:
+        '200':
+          description: resource updated
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: 'success'
+                  message:
+                    type: string
+                    example: 'resource updated'
+                  updatedResource:
+                    $ref: '#/components/schemas/Resource'
+        '400':
+          $ref: '#/components/responses/ApplicationError'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+
+    delete:
+      tags:
+        - resources
+      summary: delete resource
+      description: |
+        Delete resource by id
+      parameters:
+        - name: id
+          in: path
+          description: resource id
+          required: true
+          schema:
+            type: integer
+            example: 1
+      responses:
+        '200':
+          description: resource deleted
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: 'success'
+                  message:
+                    type: string
+                    example: 'resource deleted'
+                  deletedResource:
+                    $ref: '#/components/schemas/Resource'
+
 components:
   securitySchemes:
     BearerAuth:
@@ -429,3 +613,132 @@ components:
         resourceId:
           type: integer
           example: 1
+
+    ResourceInput:
+      type: object
+      required:
+        - title
+        - description
+        - profileId
+      properties:
+        title:
+          type: string
+          example: 'example title'
+        description:
+          type: string
+          example: 'example description'
+        profileId:
+          type: integer
+          example: 1
+
+    Resource:
+      type: object
+      properties:
+        id:
+          type: integer
+          example: 1
+        createdAt:
+          type: string
+          example: '2023-12-29T14:41:55.854Z'
+        updatedAt:
+          type: string
+          example: '2023-12-29T14:41:55.854Z'
+        title:
+          type: string
+          example: 'example title'
+        description:
+          type: string
+          example: 'example description'
+        profileId:
+          type: integer
+          example: 1
+
+    ResourceData:
+      type: object
+      properties:
+        id:
+          type: integer
+          example: 1
+        createdAt:
+          type: string
+          example: '2023-12-29T14:41:55.854Z'
+        updatedAt:
+          type: string
+          example: '2023-12-29T14:41:55.854Z'
+        title:
+          type: string
+          example: 'example title'
+        description:
+          type: string
+          example: 'example description'
+        profileId:
+          type: integer
+          example: 1
+        categories:
+          type: array
+          items:
+            type: object
+            properties:
+              category:
+                $ref: '#/components/schemas/Category'                
+        subjects:
+          type: array
+          items:
+            type: object
+            properties:
+              subject:
+                $ref: '#/components/schemas/Subject'
+        comments:
+          type: array
+          items:
+            type: object
+            properties:
+              id:
+                type: integer
+                example: 1
+              createdAt:
+                type: string
+                example: '2023-12-29T14:41:55.854Z'
+              updatedAt:
+                type: string
+                example: '2023-12-29T14:41:55.854Z'
+              message:
+                type: string
+                example: 'example message'
+              profile:
+                type: object
+                properties:
+                  id:
+                    type: integer
+                    example: 1
+                  username:
+                    type: string
+                    example: 'JJ'
+              likes:
+                type: array
+                items:
+                  $ref: '#/components/schemas/CommentLike'
+        likes:
+          type: array
+          items:
+            $ref: '#/components/schemas/ResourceLike'
+
+    Category:
+      type: object
+      properties:
+        id:
+          type: integer
+          example: 1
+        name:
+          type: string
+          example: 'Summary'
+
+    Subject:
+      type: object
+      properties:
+        id:
+          type: integer
+          example: 1
+        name:
+          type: string
+          example: 'Programming 1'
