@@ -1376,9 +1376,16 @@ paths:
       description: |
         Delete resource like by id
       parameters:
-        - name: id
+        - name: resourceId
           in: query
-          description: resource like id
+          description: resource id
+          required: true
+          schema:
+            type: integer
+            example: 1
+        - name: profileId
+          in: query
+          description: profile id
           required: true
           schema:
             type: integer
@@ -1399,6 +1406,123 @@ paths:
                     example: 'resource like deleted'
                   deletedResourceLike:
                     $ref: '#/components/schemas/ResourceLike'
+        '400':
+          $ref: '#/components/responses/ApplicationError'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+
+  /commentlikes:
+    post:
+      tags:
+        - commentlikes
+      summary: create comment like
+      description: |
+        Create a new comment like
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CommentLikeInput'
+      responses:
+        '200':
+          description: comment like created
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: 'success'                    
+                  message:
+                    type: string
+                    example: 'comment like created'
+                  commentLike:
+                    $ref: '#/components/schemas/CommentLike'
+        '400':
+          $ref: '#/components/responses/ApplicationError'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+
+    get:
+      tags:
+        - commentlikes
+      summary: get comment likes
+      description: |
+        Get all comment likes
+      parameters:
+        - in: query
+          name: profileId
+          description: get comment likes by profileId
+          schema:
+            type: integer
+            example: 1
+        - in: query
+          name: commentId
+          description: get comment likes by commentId
+          schema:
+            type: integer
+            example: 1
+      responses:
+        '200':
+          description: comment likes found
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: 'success'                    
+                  message:
+                    type: string
+                    example: 'comment likes found'
+                  commentLikes:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/CommentLike'
+        '400':
+          $ref: '#/components/responses/ApplicationError'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+
+    delete:
+      tags:
+        - commentlikes
+      summary: delete comment like
+      description: |
+        Delete comment like by id
+      parameters:
+        - name: commendId
+          in: query
+          description: comment id
+          required: true
+          schema:
+            type: integer
+            example: 1
+        - name: profileId
+          in: query
+          description: profile id
+          required: true
+          schema:
+            type: integer
+            example: 1
+      responses:
+        '200':
+          description: comment like deleted
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: 'success'                    
+                  message:
+                    type: string
+                    example: 'comment like deleted'
+                  deletedCommentLike:
+                    $ref: '#/components/schemas/CommentLike'
         '400':
           $ref: '#/components/responses/ApplicationError'
         '401':
