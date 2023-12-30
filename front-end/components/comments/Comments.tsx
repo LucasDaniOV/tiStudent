@@ -9,15 +9,22 @@ import Likes from "../likes/likes";
 import { useTranslation } from "next-i18next";
 
 type Props = {
-  id: string;
+  resourceId: string;
   object: "resource" | "comment";
+  commentsProp: Comment[];
+  commentId?: string;
 };
 
-const Comments: React.FC<Props> = ({ id, object }: Props) => {
+const Comments: React.FC<Props> = ({
+  object,
+  commentsProp,
+  resourceId,
+  commentId,
+}: Props) => {
   const { t } = useTranslation();
   const [profile, setProfile] = useState<Profile>();
   const [role, setRole] = useState<string>("");
-  const [commentsOnResource, setComments] = useState<Array<Comment>>([]);
+  const [comments, setComments] = useState<Comment[]>(commentsProp);
   const [subcommentsVisibility, setSubcommentsVisibility] = useState<{
     [key: string]: boolean;
   }>({});
@@ -31,44 +38,50 @@ const Comments: React.FC<Props> = ({ id, object }: Props) => {
       [commentId]: !prevVisibility[commentId],
     }));
   };
+
   const toggleOptionsVisibility = (commentId: string) => {
     setOptionsVisibility((prevVisibility) => ({
       ...prevVisibility,
       [commentId]: !prevVisibility[commentId],
     }));
   };
+
   const router = useRouter();
   const token = getToken();
+
   useEffect(() => {
-    const fetchComments = async () => {
+    const checkLoggedIn = async () => {
       try {
-        if (object === "resource") {
-          const comments = await ResourceService.getCommentsOnResource(id);
-          setComments(comments);
-        } else {
-          const comments = await CommentService.getCommentsOnComment(id);
-          setComments(comments);
-        }
         const loggedInUser = sessionStorage.getItem("loggedInUser");
         if (!loggedInUser) return;
         const profileResponse = await ProfileService.getProfileById(
           JSON.parse(loggedInUser).id
         );
-        setProfile(profileResponse.data);
+        setProfile(profileResponse.profile);
         setRole(JSON.parse(loggedInUser).role);
       } catch (error) {
-        console.error("Error fetching comments:", error);
+        console.error("Error:", error);
       }
     };
-    fetchComments();
-  }, []);
+
+    checkLoggedIn();
+
+    if (comments.length === 0 && commentId) {
+      const getComments = async () => {
+        const response = await CommentService.getChildrenByCommentId(commentId);
+        setComments(response.comments);
+      };
+      getComments();
+    }
+  }, [comments, commentId]);
+
   const handleDelete = async (
     e: React.MouseEvent<HTMLAnchorElement, MouseEvent>,
     comment: Comment
   ): Promise<void> => {
     e.stopPropagation();
     e.preventDefault();
-    if (profile?.id === comment.profile.id || role == "admin") {
+    if (profile?.id === comment.profileId || role == "ADMIN") {
       if (
         !confirm(
           `${t("resources.comment.options.delete.message")}(${comment.message})`
@@ -94,7 +107,7 @@ const Comments: React.FC<Props> = ({ id, object }: Props) => {
     if (!profile) return;
     const comment = await CommentService.writeCommentOnComment(
       profile.id,
-      parentComment.resource.id,
+      resourceId,
       parentComment.id,
       message,
       token
@@ -104,7 +117,7 @@ const Comments: React.FC<Props> = ({ id, object }: Props) => {
 
   return (
     <>
-      {commentsOnResource.length > 0 && profile ? (
+      {comments.length > 0 && profile ? (
         <ul
           className={
             object == "comment"
@@ -112,7 +125,7 @@ const Comments: React.FC<Props> = ({ id, object }: Props) => {
               : "bg-gray-400 pb-10 pt-10"
           }
         >
-          {commentsOnResource.map((com, index) => {
+          {comments.map((com, index) => {
             return (
               <li key={index}>
                 <div
@@ -122,7 +135,13 @@ const Comments: React.FC<Props> = ({ id, object }: Props) => {
                       : "grid-cols-5 grid justify-between w-10/12 m-auto text-center"
                   }
                 >
-                  <Likes id={com.id} object="comment" profileId={profile.id} />
+                  <Likes
+                    profileId={profile.id}
+                    object="comment"
+                    likesObjects={com.likes}
+                    commentId={com.id}
+                    resourceId={resourceId}
+                  />
                   <span
                     className={
                       object == "comment"
@@ -139,7 +158,7 @@ const Comments: React.FC<Props> = ({ id, object }: Props) => {
                         : "p-1 bg-gray-200 text-gray-700 flex items-center justify-center"
                     }
                   >
-                    - {com.profile.username}
+                    - {com.profile!.username}
                   </span>
                   {!com.parentId && (
                     <a
@@ -151,7 +170,7 @@ const Comments: React.FC<Props> = ({ id, object }: Props) => {
                       {t("resources.comment.reply")}
                     </a>
                   )}
-                  {(profile.id == com.profile.id || role == "admin") &&
+                  {(profile.id == com.profile!.id || role == "admin") &&
                     (!optionsVisibility[com.id] ? (
                       <a
                         className="float-right cursor-pointer p-1 pr-2 text-gray-600 hover:bg-gray-700 hover:text-white  flex items-center justify-center"
@@ -204,7 +223,12 @@ const Comments: React.FC<Props> = ({ id, object }: Props) => {
                   )}
                 </div>
                 {!com.parentId && subcommentsVisibility[com.id] && (
-                  <Comments id={com.id} object="comment" />
+                  <Comments
+                    commentId={com.id}
+                    object="comment"
+                    commentsProp={[]}
+                    resourceId={resourceId}
+                  />
                 )}
               </li>
             );
