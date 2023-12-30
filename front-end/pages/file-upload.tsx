@@ -1,7 +1,8 @@
 import FileUploadComponent from "@/components/FileUploadComponent";
-import Header from "@/components/header";
+import Header from "@/components/Header";
 import ProfileService from "@/services/ProfileService";
 import styles from "@/styles/Home.module.css";
+import { Profile } from "@/types";
 import { useTranslation } from "next-i18next";
 import { serverSideTranslations } from "next-i18next/serverSideTranslations";
 import Head from "next/head";
@@ -10,14 +11,13 @@ import React, { useEffect } from "react";
 
 const FileUpload: React.FC = () => {
   const { t } = useTranslation();
-  const [name, setName] = React.useState<string>("");
+  const [user, setUser] = React.useState<Profile>();
   const getUser = async () => {
     const user = sessionStorage.getItem("loggedInUser");
     if (user) {
-      const profile = await ProfileService.getProfileByEmail(
-        JSON.parse(user).email
-      );
-      setName(profile.username);
+      const id = JSON.parse(user).id;
+      const profile = await ProfileService.getProfileById(id);
+      setUser(profile);
     }
   };
   useEffect(() => {
@@ -34,7 +34,7 @@ const FileUpload: React.FC = () => {
       </Head>
       <main className="flex flex-col items-center justify-center w-max m-auto">
         <Header current="home" />
-        <FileUploadComponent />
+        {user ? <FileUploadComponent /> : <p>{t("authorization.error")}</p>}
       </main>
     </>
   );
