@@ -73,6 +73,20 @@ const getLeaderboard = async () => {
   return await res.json();
 };
 
+const getLikesByProfile = async (profileId: string) => {
+  const token = getToken();
+  const res = await fetch(baseUrl + `/${profileId}/likes`, {
+    method: "GET",
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${token}`,
+    },
+  });
+
+  const json = await res.json();
+  return { resourceLikes: json.resourceLikes, commentLikes: json.commentLikes };
+};
+
 export default {
   getAllProfiles,
   getProfileById,
@@ -80,4 +94,5 @@ export default {
   createProfile,
   loginUser,
   getLeaderboard,
+  getLikesByProfile,
 };
