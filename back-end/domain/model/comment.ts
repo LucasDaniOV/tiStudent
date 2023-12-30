@@ -7,8 +7,17 @@ export class Comment {
     readonly message: string;
     readonly profileId: number;
     readonly resourceId: number;
+    readonly parentId?: number;
 
-    constructor(id: number, createdAt: Date, updatedAt: Date, message: string, profileId: number, resourceId: number) {
+    constructor(
+        id: number,
+        createdAt: Date,
+        updatedAt: Date,
+        message: string,
+        profileId: number,
+        resourceId: number,
+        parentId?: number
+    ) {
         Comment.validateMessage(message);
         this.id = id;
         this.createdAt = createdAt;
@@ -16,6 +25,7 @@ export class Comment {
         this.message = message;
         this.profileId = profileId;
         this.resourceId = resourceId;
+        this.parentId = parentId;
     }
 
     equals(other: Comment): boolean {
@@ -25,7 +35,8 @@ export class Comment {
             this.updatedAt === other.updatedAt &&
             this.message === other.message &&
             this.profileId === other.profileId &&
-            this.resourceId === other.resourceId
+            this.resourceId === other.resourceId &&
+            this.parentId === other.parentId
         );
     }
 
@@ -36,7 +47,7 @@ export class Comment {
         if (message.length > 1000) throw new Error('Message cannot be longer than 1000 characters');
     }
 
-    static from = ({ id, createdAt, updatedAt, message, profileId, resourceId }: CommentPrisma): Comment => {
-        return new Comment(id, createdAt, updatedAt, message, profileId, resourceId);
+    static from = ({ id, createdAt, updatedAt, message, profileId, resourceId, parentId }: CommentPrisma): Comment => {
+        return new Comment(id, createdAt, updatedAt, message, profileId, resourceId, parentId);
     };
 }

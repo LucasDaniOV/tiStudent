@@ -3,11 +3,17 @@ import { Comment } from '../domain/model/comment';
 import profileService from './profile.service';
 import resourceService from './resource.service';
 
-const createComment = async (resourceId: number, profileId: number, message: string): Promise<Comment> => {
+const createComment = async (
+    resourceId: number,
+    profileId: number,
+    message: string,
+    parentId?: number
+): Promise<Comment> => {
     Comment.validateMessage(message);
     await resourceService.getResourceById(resourceId);
     await profileService.getProfileById(profileId);
-    return await commentDb.createComment(resourceId, profileId, message);
+    if (parentId) await getCommentById(parentId);
+    return await commentDb.createComment(resourceId, profileId, message, parentId);
 };
 
 const getComments = async (): Promise<Comment[]> => await commentDb.getComments();
@@ -21,6 +27,11 @@ const getCommentById = async (commentId: number): Promise<Comment> => {
 const getCommentsByResourceId = async (resourceId: number): Promise<Comment[]> => {
     await resourceService.getResourceById(resourceId);
     return await commentDb.getCommentsByResourceId(resourceId);
+};
+
+const getChildrenByCommentId = async (commentId: number): Promise<any[]> => {
+    await getCommentById(commentId);
+    return await commentDb.getChildrenByCommentId(commentId);
 };
 
 const updateCommentMessage = async (commentId: number, message: string): Promise<Comment> => {
@@ -39,6 +50,7 @@ export default {
     getComments,
     getCommentById,
     getCommentsByResourceId,
+    getChildrenByCommentId,
     updateCommentMessage,
     deleteComment,
 };

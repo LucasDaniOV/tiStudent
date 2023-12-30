@@ -1,13 +1,19 @@
 import database from '../../util/database';
 import { Comment } from '../model/comment';
 
-const createComment = async (resourceId: number, profileId: number, message: string): Promise<Comment> => {
+const createComment = async (
+    resourceId: number,
+    profileId: number,
+    message: string,
+    parentId?: number
+): Promise<Comment> => {
     try {
         const commentPrisma = await database.comment.create({
             data: {
                 resourceId,
                 profileId,
                 message,
+                parentId,
             },
         });
         if (commentPrisma) return Comment.from(commentPrisma);
@@ -55,6 +61,29 @@ const getCommentsByResourceId = async (resourceId: number): Promise<Comment[]> =
     }
 };
 
+const getChildrenByCommentId = async (commentId: number): Promise<any[]> => {
+    try {
+        return await database.comment.findMany({
+            where: {
+                parentId: commentId,
+            },
+            include: {
+                profile: {
+                    select: {
+                        id: true,
+                        username: true,
+                    },
+                },
+                likes: true,
+            },
+        });
+        // if (commentsPrisma) return commentsPrisma.map((c) => Comment.from(c));
+    } catch (error) {
+        console.error(error);
+        throw new Error('Database error when getting child comments by comment id. See server log for details.');
+    }
+};
+
 const updateCommentMessage = async (commentId: number, message: string): Promise<Comment> => {
     try {
         const commentPrisma = await database.comment.update({
@@ -91,6 +120,7 @@ export default {
     getComments,
     getCommentById,
     getCommentsByResourceId,
+    getChildrenByCommentId,
     updateCommentMessage,
     deleteComment,
 };
