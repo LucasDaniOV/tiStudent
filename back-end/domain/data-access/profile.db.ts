@@ -78,6 +78,25 @@ const getProfileByEmail = async (email: string): Promise<Profile> => {
     }
 };
 
+const getProfileLikes = async (id: number): Promise<any> => {
+    try {
+        return await database.profile.findUnique({
+            where: {
+                id,
+            },
+            select: {
+                id: true,
+                username: true,
+                resourceLikes: true,
+                commentLikes: true,
+            },
+        });
+    } catch (error) {
+        console.log(error);
+        throw new Error('Database error when getting profile likes. See server log for details.');
+    }
+};
+
 const updateBio = async (id: number, newBio: string): Promise<Profile> => {
     try {
         const updatedProfile = await database.profile.update({
@@ -161,6 +180,7 @@ export default {
     getProfileById,
     getProfileByUsername,
     getProfileByEmail,
+    getProfileLikes,
     updateBio,
     updateEmail,
     updatePassword,
