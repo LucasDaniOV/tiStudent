@@ -1,203 +1,143 @@
 import database from '../../util/database';
-import { Category } from '../model/category';
 import { Resource } from '../model/resource';
-import { Subject } from '../model/subject';
 
-const getAllResources = async (): Promise<Resource[]> => {
-    try {
-        const resourcesPrisma = await database.resource.findMany({
-            include: {
-                creator: true,
+const include = {
+    categories: {
+        select: {
+            category: {
+                select: {
+                    id: true,
+                    name: true,
+                },
             },
-        });
-        if (resourcesPrisma) return resourcesPrisma.map((resourcePrisma) => Resource.from(resourcePrisma));
-    } catch (error) {
-        console.error(error);
-        throw new Error('Database error. See server log for details.');
-    }
+        },
+    },
+    subjects: {
+        select: {
+            subject: {
+                select: {
+                    id: true,
+                    name: true,
+                },
+            },
+        },
+    },
+    comments: {
+        where: {
+            parentId: null,
+        },
+        select: {
+            id: true,
+            createdAt: true,
+            updatedAt: true,
+            message: true,
+            profile: {
+                select: {
+                    id: true,
+                    username: true,
+                },
+            },
+            likes: true,
+        },
+    },
+    likes: true,
 };
 
-const getResourceById = async (id: number): Promise<Resource> => {
+const createResource = async (title: string, description: string, profileId: number): Promise<Resource> => {
     try {
-        const resourcePrisma = await database.resource.findUnique({
-            where: {
-                id,
-            },
-            include: {
-                creator: true,
-            },
-        });
-        if (resourcePrisma) return Resource.from(resourcePrisma);
-    } catch (error) {
-        console.error(error);
-        throw new Error('Database error. See server log for details.');
-    }
-};
-
-const createResource = async ({ creator, title, description, category, subject }): Promise<Resource> => {
-    try {
-        const resource = new Resource({ creator, title, description, category, subject });
         const resourcePrisma = await database.resource.create({
             data: {
-                creator: {
-                    connect: {
-                        id: Number(resource.creator.id),
-                    },
-                },
-                title: resource.title,
-                createdAt: new Date(),
-                description: resource.description,
-                category: resource.category,
-                subject: resource.subject,
-            },
-            include: {
-                creator: true,
-            },
-        });
-        if (resourcePrisma) return Resource.from(resourcePrisma);
-    } catch (error) {
-        console.error(error);
-        throw new Error('Database error. See server log for details.');
-    }
-};
-
-const getResourceByContent = async (
-    title: string,
-    description: string,
-    category: string,
-    subject: string
-): Promise<Resource> => {
-    try {
-        const resourcePrisma = await database.resource.findFirst({
-            where: {
                 title,
                 description,
-                category,
-                subject,
-            },
-            include: {
-                creator: true,
+                profileId,
             },
         });
         if (resourcePrisma) return Resource.from(resourcePrisma);
     } catch (error) {
         console.error(error);
-        throw new Error('Database error. See server log for details.');
+        throw new Error('Database error when creating resource. See server log for details.');
     }
 };
 
-const deleteResource = async (resourceId: number): Promise<Boolean> => {
+const getAllResources = async (): Promise<any[]> => {
     try {
-        await database.resource.delete({
-            where: {
-                id: resourceId,
-            },
+        const resourcesPrisma = await database.resource.findMany({
+            include,
         });
-        return true;
+        return resourcesPrisma;
+        // if (resourcesPrisma) return resourcesPrisma.map((r) => Resource.from(r));
     } catch (error) {
         console.error(error);
-        throw new Error('Database error. See server log for details.');
+        throw new Error('Database error when getting all resources. See server log for details.');
     }
 };
 
-const updateFieldOfResource = async (
-    resourceId: number,
-    field: string,
-    newValue: string | Category | Subject
-): Promise<Resource> => {
-    try {
-        const resource = await getResourceById(resourceId);
-        if (resource) {
-            switch (field) {
-                case 'title':
-                    const resourceTitlePrisma = await database.resource.update({
-                        where: {
-                            id: resourceId,
-                        },
-                        data: {
-                            title: newValue,
-                        },
-                        include: {
-                            creator: true,
-                        },
-                    });
-                    if (resourceTitlePrisma) return Resource.from(resourceTitlePrisma);
-                    break;
-                case 'description':
-                    const resourceDescriptionPrisma = await database.resource.update({
-                        where: {
-                            id: resourceId,
-                        },
-                        data: {
-                            description: newValue,
-                        },
-                        include: {
-                            creator: true,
-                        },
-                    });
-                    if (resourceDescriptionPrisma) return Resource.from(resourceDescriptionPrisma);
-                    break;
-                case 'category':
-                    const resourceCategoryPrisma = await database.resource.update({
-                        where: {
-                            id: resourceId,
-                        },
-                        data: {
-                            category: newValue as Category,
-                        },
-                        include: {
-                            creator: true,
-                        },
-                    });
-                    if (resourceCategoryPrisma) return Resource.from(resourceCategoryPrisma);
-                    break;
-                case 'subject':
-                    const resourceSubjectPrisma = await database.resource.update({
-                        where: {
-                            id: resourceId,
-                        },
-                        data: {
-                            subject: newValue as Subject,
-                        },
-                        include: {
-                            creator: true,
-                        },
-                    });
-                    if (resourceSubjectPrisma) return Resource.from(resourceSubjectPrisma);
-                    break;
-                default:
-                    throw new Error('Field not supported');
-            }
-        }
-    } catch (error) {
-        console.error(error);
-        throw new Error('Database error. See server log for details.');
-    }
-};
-
-const getResourcesByProfile = async (profileId: number): Promise<Array<Resource>> => {
+const getResourcesByProfileId = async (profileId: number): Promise<Resource[]> => {
     try {
         const resources = await database.resource.findMany({
             where: {
-                creatorId: profileId,
-            },
-            include: {
-                creator: true,
+                profileId,
             },
         });
         if (resources) return resources.map((r) => Resource.from(r));
     } catch (error) {
         console.error(error);
-        throw new Error('Database error. See server log for details.');
+        throw new Error('Database error when getting resources by profile id. See server log for details.');
+    }
+};
+
+const getResourceById = async (id: number): Promise<any> => {
+    try {
+        return await database.resource.findUnique({
+            where: {
+                id,
+            },
+            include,
+        });
+        // if (resourcePrisma) return Resource.from(resourcePrisma);
+    } catch (error) {
+        console.error(error);
+        throw new Error('Database error when getting resource by id. See server log for details.');
+    }
+};
+
+const updateResource = async (id: number, title: string, description: string): Promise<Resource> => {
+    try {
+        const resourcePrisma = await database.resource.update({
+            where: {
+                id,
+            },
+            data: {
+                title,
+                description,
+            },
+        });
+        if (resourcePrisma) return Resource.from(resourcePrisma);
+    } catch (error) {
+        console.error(error);
+        throw new Error('Database error when updating resource. See server log for details.');
+    }
+};
+
+const deleteResource = async (id: number): Promise<Resource> => {
+    try {
+        const resourcePrisma = await database.resource.delete({
+            where: {
+                id,
+            },
+        });
+        if (resourcePrisma) return Resource.from(resourcePrisma);
+    } catch (error) {
+        console.error(error);
+        throw new Error('Database error when deleting resource. See server log for details.');
     }
 };
 
 export default {
+    createResource,
     getAllResources,
     getResourceById,
-    createResource,
-    getResourceByContent,
+    getResourcesByProfileId,
+    updateResource,
     deleteResource,
-    updateFieldOfResource,
-    getResourcesByProfile,
 };

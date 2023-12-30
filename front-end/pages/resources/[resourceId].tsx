@@ -1,22 +1,23 @@
+import Header from "@/components/Header";
 import Comments from "@/components/comments/Comments";
-import Header from "@/components/header";
 import Likes from "@/components/likes/likes";
 import ResourceInfo from "@/components/resources/ResourceInfo";
 import CommentService from "@/services/CommentService";
-import LikeService from "@/services/LikeService";
 import ProfileService from "@/services/ProfileService";
 import ResourceService from "@/services/ResourceService";
-import { Like, Profile, Resource } from "@/types/index";
-import { getToken } from "@/util/token";
+import { Category, Profile, Resource, Subject } from "@/types/index";
+import { useTranslation } from "next-i18next";
+import { serverSideTranslations } from "next-i18next/serverSideTranslations";
 import Head from "next/head";
 import { useRouter } from "next/router";
 import { FormEvent, useEffect, useState } from "react";
-import { serverSideTranslations } from "next-i18next/serverSideTranslations";
-import { useTranslation } from "next-i18next";
 
 const ReadResourceById = () => {
   const { t } = useTranslation();
   const [resource, setResource] = useState<Resource>();
+  const [subjects, setSubjects] = useState<Subject[]>([]);
+  const [categories, setCategories] = useState<Category[]>([]);
+  const [creator, setCreator] = useState<Profile>();
   const [profile, setProfile] = useState<Profile>();
   const [commentMessage, setMessage] = useState<string>("");
   const router = useRouter();
@@ -30,13 +31,33 @@ const ReadResourceById = () => {
       ProfileService.getProfileById(JSON.parse(loggedInUser).id),
     ]);
     setResource(resourceResponse);
-    setProfile(profileResponse.data);
+    setProfile(profileResponse.profile);
+  };
+
+  const getSubjects = async () => {
+    const response = await ResourceService.getSubjectsByResourceId(
+      resourceId as string
+    );
+    setSubjects(response);
+  };
+
+  const getCategories = async () => {
+    const response = await ResourceService.getCategoriesByResourceId(
+      resourceId as string
+    );
+    setCategories(response);
+  };
+
+  const getCreator = async (profileId: string) => {
+    const response = await ProfileService.getProfileById(profileId);
+    setCreator(response.profile);
   };
 
   const handleSubmit = async (e: FormEvent): Promise<void> => {
     e.preventDefault();
     if (!profile) return;
     if (!resource) return;
+    if (!commentMessage) return;
     await CommentService.writeCommentOnResource(
       profile.id,
       resource.id,
@@ -46,10 +67,14 @@ const ReadResourceById = () => {
   };
 
   useEffect(() => {
-    if (resourceId) {
+    if (resourceId && !resource) {
       getResourceById();
+      getSubjects();
+      getCategories();
     }
-  }, [resourceId]);
+    if (!creator && resource && resource.profileId)
+      getCreator(resource.profileId as string);
+  }, [resourceId, resource]);
 
   return (
     <>
@@ -61,18 +86,34 @@ const ReadResourceById = () => {
         {!resourceId && <p>{t("loading")}</p>}
         <div className="flex flex-row">
           <section className="flex flex-row w-screen m-auto">
-            {resource && profile && (
-              <Likes
-                profileId={profile.id}
-                id={String(resource.id)}
-                object="resource"
-              />
-            )}
-            <ResourceInfo resource={resource as Resource}></ResourceInfo>
+            <>
+              {resource && profile && (
+                <Likes
+                  profileId={profile.id}
+                  object="resource"
+                  likesObjects={resource.likes}
+                  resourceId={resource.id}
+                />
+              )}
+              {resource && profile && categories && subjects && creator && (
+                <ResourceInfo
+                  resource={resource as Resource}
+                  subjects={subjects}
+                  categories={categories}
+                  creator={creator}
+                ></ResourceInfo>
+              )}
+            </>
           </section>
         </div>
         <section className="mt-10">
-          {resource && <Comments id={resource.id} object="resource"></Comments>}
+          {resource && (
+            <Comments
+              object="resource"
+              commentsProp={resource.comments}
+              resourceId={resource.id}
+            ></Comments>
+          )}
         </section>
         <section>
           {resource && (

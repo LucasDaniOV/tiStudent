@@ -1,5 +1,5 @@
 import { serverSideTranslations } from "next-i18next/serverSideTranslations";
-import Header from "@/components/header";
+import Header from "@/components/Header";
 import ProfileInfo from "@/components/profiles/ProfileInfo";
 import ProfileService from "@/services/ProfileService";
 import { Profile } from "@/types";
@@ -17,12 +17,12 @@ const ReadProfileById = () => {
     const fetchedProfile = await ProfileService.getProfileById(
       profileId as string
     );
-    return setProfile(fetchedProfile.data);
+    return setProfile(fetchedProfile.profile);
   };
 
   useEffect(() => {
-    if (profileId) getProfileById();
-  });
+    if (profileId && !profile) getProfileById();
+  }, [profile, profileId]);
 
   return (
     <>

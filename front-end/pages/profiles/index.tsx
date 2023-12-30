@@ -1,5 +1,5 @@
 import { serverSideTranslations } from "next-i18next/serverSideTranslations";
-import Header from "@/components/header";
+import Header from "@/components/Header";
 import ProfilesOverviewTable from "@/components/profiles/ProfilesOverviewTable";
 import { Profile } from "@/types";
 import Head from "next/head";
@@ -23,11 +23,13 @@ const Profiles: React.FC = () => {
       return;
     }
     setAuthorized(true);
-    return setProfiles(response);
+    return setProfiles(response.profiles);
   };
+
   const getTopTen = async () => {
     const response = await ProfileService.getLeaderboard();
-    return setTopTen(response);
+    setAuthorized(true);
+    return setTopTen(response.profiles);
   };
 
   useInterval(() => {

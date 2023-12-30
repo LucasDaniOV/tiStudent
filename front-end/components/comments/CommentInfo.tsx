@@ -11,7 +11,7 @@ const CommentInfo: React.FC<Props> = ({ comment }: Props) => {
       {comment && (
         <>
           <h1>
-            {comment.message} - {comment.profile.username}
+            {comment.message} - {comment.profile!.username}
           </h1>
         </>
       )}

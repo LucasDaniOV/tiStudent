@@ -1,64 +1,53 @@
 import * as bodyParser from 'body-parser';
 import cors from 'cors';
-import * as dotenv from 'dotenv';
 import express, { NextFunction, Request, Response } from 'express';
 import { expressjwt } from 'express-jwt';
-import swaggerJSDoc from 'swagger-jsdoc';
+import helmet from 'helmet';
 import swaggerUi from 'swagger-ui-express';
+import yaml from 'yamljs';
+import { authRouter } from './controller/auth.routes';
+import categoryRouter from './controller/category.routes';
+import { categoryOnResourceRouter } from './controller/categoryOnResource.routes';
+import { commentRouter } from './controller/comment.routes';
+import { commentLikeRouter } from './controller/commentLike.routes';
+import { leaderboardRouter } from './controller/leaderboard.routes';
 import { profileRouter } from './controller/profile.routes';
 import { resourceRouter } from './controller/resource.routes';
-import { version } from './package.json';
-import helmet from 'helmet';
-import { commentRouter } from './controller/comment.routes';
-import { likeRouter } from './controller/like.routes';
+import { resourceLikeRouter } from './controller/resourceLike.routes';
+import subjectRouter from './controller/subject.routes';
+import { subjectOnResourceRouter } from './controller/subjectOnResource.routes';
 
 const app = express();
 
+const swaggerSpec = yaml.load('./controller/swagger/swagger.yaml');
+
 app.use(helmet());
-
-dotenv.config();
-const port = process.env.APP_PORT || 3000;
-
 app.use(cors());
 app.use(bodyParser.json());
-
 app.use(
     expressjwt({
         secret: process.env.JWT_SECRET,
         algorithms: ['HS256'],
     }).unless({
-        path: [
-            '/api-docs',
-            /^\/api-docs\/.*/,
-            '/profiles/login',
-            '/profiles/signup',
-            /\/profiles\/exists\/email*/,
-            '/status',
-        ],
+        path: ['/api-docs', /^\/api-docs\/.*/, '/signup', '/signin', '/status'],
     })
 );
 
+app.use('/profiles', profileRouter);
+app.use('/resources', resourceRouter);
+app.use('/comments', commentRouter);
+app.use('/categories', categoryRouter);
+app.use('/subjects', subjectRouter);
+app.use('/categories-on-resources', categoryOnResourceRouter);
+app.use('/subjects-on-resources', subjectOnResourceRouter);
+app.use('/commentlikes', commentLikeRouter);
+app.use('/resourcelikes', resourceLikeRouter);
+app.use('/leaderboard', leaderboardRouter);
+app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec));
 app.get('/status', (req, res) => {
     res.json({ message: 'Back-end is running...' });
 });
-
-app.use('/resources', resourceRouter);
-app.use('/profiles', profileRouter);
-app.use('/comments', commentRouter);
-app.use('/like', likeRouter);
-
-const swaggerOpts = {
-    definition: {
-        openapi: '3.0.0',
-        info: {
-            title: 'tiStudent API',
-            version,
-        },
-    },
-    apis: ['./controller/*.routes.ts'],
-};
-const swaggerSpec = swaggerJSDoc(swaggerOpts);
-app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec));
+app.use('/', authRouter);
 
 app.use((err: Error, req: Request, res: Response, next: NextFunction) => {
     if (err.name === 'UnauthorizedError') {
@@ -68,6 +57,4 @@ app.use((err: Error, req: Request, res: Response, next: NextFunction) => {
     }
 });
 
-app.listen(port || 3000, () => {
-    console.log(`Back-end is running on port ${port}.`);
-});
+export default app;

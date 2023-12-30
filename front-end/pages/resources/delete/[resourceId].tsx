@@ -1,5 +1,5 @@
 import { serverSideTranslations } from "next-i18next/serverSideTranslations";
-import Header from "@/components/header";
+import Header from "@/components/Header";
 import ResourceService from "@/services/ResourceService";
 import Head from "next/head";
 import { useRouter } from "next/router";

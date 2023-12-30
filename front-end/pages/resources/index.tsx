@@ -1,4 +1,4 @@
-import Header from "@/components/header";
+import Header from "@/components/Header";
 import { serverSideTranslations } from "next-i18next/serverSideTranslations";
 import Head from "next/head";
 import Link from "next/link";
@@ -19,7 +19,7 @@ const Resources: React.FC = () => {
       return;
     }
     setAuthorized(true);
-    return response;
+    return response.resources;
   };
 
   const { data, isLoading, error } = useSWR("resources", getResources);

@@ -1,19 +1,21 @@
 import Subjects from "@/components/Subjects";
-import Header from "@/components/header";
+import Header from "@/components/Header";
 import ProfileService from "@/services/ProfileService";
 import ResourceService from "@/services/ResourceService";
-import { StatusMessage } from "@/types";
+import { Category, StatusMessage } from "@/types";
 import { useTranslation } from "next-i18next";
 import { serverSideTranslations } from "next-i18next/serverSideTranslations";
 import Head from "next/head";
 import { useRouter } from "next/router";
 import React, { FormEvent, useEffect, useRef, useState } from "react";
+import CategoryService from "@/services/CategoryService";
+import SubjectService from "@/services/SubjectService";
 
 const CreateResourceForm: React.FC = () => {
   const { t } = useTranslation();
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
-  const [category, setCategory] = useState("");
+  const [category, setCategory] = useState<Category>();
   const [isVisible, setVisible] = useState(false);
   const subjectsInputRef = useRef<HTMLInputElement | null>(null);
   const [subject, setSubject] = useState("");
@@ -28,6 +30,9 @@ const CreateResourceForm: React.FC = () => {
   const [statusMessages, setStatusMessages] = useState<StatusMessage[]>([]);
   const router = useRouter();
 
+  const [categories, setCategories] = useState([]);
+  const [subjects, setSubjects] = useState([]);
+
   const clearErrors = () => {
     setTitleError("");
     setDescriptionError("");
@@ -37,28 +42,67 @@ const CreateResourceForm: React.FC = () => {
     setStatusMessages([]);
   };
 
-  //validate komt nog
-  // const validate = () => {}
-
   const createResource = async () => {
-    if (profileId) {
-      const result = await ResourceService.createResource(
-        profileId,
-        title,
-        description,
-        category,
-        subject
-      );
-      const message = result.message;
-      const type = result.status;
-      setStatusMessages([{ message, type }]);
-    }
+    const result = await ResourceService.createResource(title, description);
+    const message = result.message;
+    const type = result.status;
+    setStatusMessages([{ message, type }]);
+    if (!result.resource) return;
+
+    const categoryOnResource = await CategoryService.addCategoryToResource(
+      result.resource.id,
+      category!.id
+    );
+    setStatusMessages([
+      ...statusMessages,
+      { message: categoryOnResource.message, type: categoryOnResource.status },
+    ]);
+
+    if (!categoryOnResource) return;
+
+    const subjectYo = await SubjectService.getSubjectIdByName(subject);
+    setStatusMessages([
+      ...statusMessages,
+      { message: subjectYo.message, type: subjectYo.status },
+    ]);
+
+    if (!subjectYo) return;
+
+    const subjectId = subjectYo.subject.id;
+
+    const subjectOnResource = await SubjectService.addSubjectToResource(
+      result.resource.id,
+      subjectId
+    );
+    setStatusMessages([
+      ...statusMessages,
+      { message: subjectOnResource.message, type: subjectOnResource.status },
+    ]);
   };
 
   const handleSubmit = (e: FormEvent) => {
     e.preventDefault();
     clearErrors();
-    // if (!validate()) return;
+
+    if (!category) {
+      setCategoryError("Category is required");
+      return;
+    }
+
+    if (!subject) {
+      setSubjectError("Subject is required");
+      return;
+    }
+    if (!title) {
+      setTitleError("Title is required");
+      return;
+    }
+
+    if (!description) {
+      setDescriptionError("Description is required");
+      return;
+    }
+
     createResource();
     router.push("/resources");
   };
@@ -80,13 +124,27 @@ const CreateResourceForm: React.FC = () => {
     setProfileId(JSON.parse(user).id);
   };
 
+  const getCategories = async () => {
+    const response = await CategoryService.getAllCategories();
+    setCategories(response.categories);
+  };
+
+  const getSubjects = async () => {
+    const response = await SubjectService.getAllSubjects();
+    setSubjects(response.subjects);
+  };
+
   useEffect(() => {
+    if (!categories || categories.length === 0) getCategories();
+    if (!subjects || subjects.length === 0) getSubjects();
+
     document.addEventListener("click", handleOutsideClicks);
     () => {
       document.removeEventListener("click", handleOutsideClicks);
     };
     setUser();
-  }, [profileId]);
+  }, [profileId, categories, subjects]);
+
   return (
     <>
       <Head>
@@ -119,47 +177,28 @@ const CreateResourceForm: React.FC = () => {
                     setDescription(e.target.value);
                   }}
                 ></textarea>
-                <label className="mt-2 mb-2">
-                  {t("resources.fields.category")}:
-                </label>
+
                 <div>
-                  <input
-                    type="radio"
-                    id="summary"
-                    name="category"
-                    value={"Summary"}
-                    className="mr-2"
-                    onChange={(e) => setCategory(e.target.value)}
-                  />
-                  <label className="mt-2 mb-2" htmlFor="summary">
-                    {t("resources.fields.summary")}
+                  <label className="mt-2 mb-2">
+                    {t("resources.fields.category")}:
                   </label>
-                </div>
-                <div>
-                  <input
-                    type="radio"
-                    id="cheat-sheet"
-                    name="category"
-                    value={"Cheat Sheet"}
-                    className="mr-2"
-                    onChange={(e) => setCategory(e.target.value)}
-                  />
-                  <label className="mt-2 mb-2" htmlFor="cheat-sheet">
-                    {t("resources.fields.cheat.sheet")}
-                  </label>
-                </div>
-                <div>
-                  <input
-                    type="radio"
-                    id="lecture-notes"
-                    name="category"
-                    value={"Lecture Notes"}
-                    className="mr-2"
-                    onChange={(e) => setCategory(e.target.value)}
-                  />
-                  <label className="mt-2 mb-2" htmlFor="lecture-notes">
-                    {t("resources.fields.lecture.notes")}
-                  </label>
+                  {categories.map((category: Category) => {
+                    return (
+                      <div key={category.id}>
+                        <input
+                          type="radio"
+                          id={category.name}
+                          name="category"
+                          value={category.name}
+                          className="mr-2"
+                          onChange={(e) => setCategory(category)}
+                        />
+                        <label className="mt-2 mb-2" htmlFor={category.name}>
+                          {category.name}
+                        </label>
+                      </div>
+                    );
+                  })}
                 </div>
                 <label className="mt-2 mb-2" htmlFor="subject">
                   {t("resources.fields.subject")}
@@ -179,6 +218,7 @@ const CreateResourceForm: React.FC = () => {
                     visible={isVisible}
                     func={setSubject}
                     filter={subject}
+                    subjects={subjects}
                   />
                 )}
                 {profileIdError && <div>{profileIdError}</div>}

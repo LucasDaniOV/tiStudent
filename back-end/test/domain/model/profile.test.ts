@@ -1,17 +1,33 @@
 import { Profile } from '../../../domain/model/profile';
 import { Role } from '../../../types';
 
+const validId = 1;
+const validCreatedAt = new Date();
+const validUpdatedAt = new Date();
+const validLatestActivity = new Date();
 const validEmail = 'test@ucll.be';
+const validUsername = 'sudo';
 const validPassword = 'Password!123';
-const validRole = 'user';
-const username = 'sudo';
+const validRole = 'USER';
+const validBio = 'The Terminator';
+
 const username2 = 'profileTest';
-const bio = 'The Terminator';
 const bio2 = "I'll be back";
 
 test(`given: valid values for Profile, when: Profile is created, then: Profile is created`, () => {
     // when
-    const profile = new Profile({ email: validEmail, password: validPassword, role: validRole, username, bio });
+    const profile = new Profile({
+        id: validId,
+        createdAt: validCreatedAt,
+        updatedAt: validUpdatedAt,
+        latestActivity: validLatestActivity,
+        email: validEmail,
+        username: validUsername,
+        password: validPassword,
+        role: validRole,
+        bio: validBio,
+    });
+
     // then
     expect(profile instanceof Profile).toBeTruthy();
 });
@@ -19,7 +35,17 @@ test(`given: valid values for Profile, when: Profile is created, then: Profile i
 test(`given: no email for Profile, when: Profile is created, then: Profile is not created and an error is thrown`, () => {
     // when
     const createProfileInvalidEmail = () =>
-        new Profile({ email: undefined, password: validPassword, role: validRole, username: username, bio: bio });
+        new Profile({
+            id: validId,
+            createdAt: validCreatedAt,
+            updatedAt: validUpdatedAt,
+            latestActivity: validLatestActivity,
+            email: undefined,
+            username: validUsername,
+            password: validPassword,
+            role: validRole,
+            bio: validBio,
+        });
 
     // then
     expect(createProfileInvalidEmail).toThrow('Email is required');
@@ -31,7 +57,17 @@ test(`given: invalid email for Profile, when: Profile is created, then: Profile 
 
     // when
     const createProfileInvalidEmail = () =>
-        new Profile({ email: invalidEmail, password: validPassword, role: validRole, username: username, bio: bio });
+        new Profile({
+            id: validId,
+            createdAt: validCreatedAt,
+            updatedAt: validUpdatedAt,
+            latestActivity: validLatestActivity,
+            email: invalidEmail,
+            username: validUsername,
+            password: validPassword,
+            role: validRole,
+            bio: validBio,
+        });
 
     // then
     expect(createProfileInvalidEmail).toThrow("Email must contain a '@'");
@@ -43,7 +79,18 @@ test(`given: invalid password (too short) for Profile, when: Profile is created,
 
     // when
     const createProfileInvalidPassword = () =>
-        new Profile({ email: validEmail, password: invalidPassword, role: validRole, username: username, bio: bio });
+        new Profile({
+            id: validId,
+            createdAt: validCreatedAt,
+            updatedAt: validUpdatedAt,
+            latestActivity: validLatestActivity,
+            email: validEmail,
+            username: validUsername,
+            password: invalidPassword,
+            role: validRole,
+            bio: validBio,
+        });
+
     // then
     expect(createProfileInvalidPassword).toThrow('Password must be at least 8 characters long');
 });
@@ -54,7 +101,17 @@ test(`given: invalid password (no number) for Profile, when: Profile is created,
 
     // when
     const createProfileInvalidPassword = () =>
-        new Profile({ email: validEmail, password: invalidPassword, role: validRole, username: username, bio: bio });
+        new Profile({
+            id: validId,
+            createdAt: validCreatedAt,
+            updatedAt: validUpdatedAt,
+            latestActivity: validLatestActivity,
+            email: validEmail,
+            username: validUsername,
+            password: invalidPassword,
+            role: validRole,
+            bio: validBio,
+        });
 
     // then
     expect(createProfileInvalidPassword).toThrow('Password must contain at least 1 number');
@@ -66,7 +123,17 @@ test(`given: invalid password (no capital letter) for Profile,  when: Profile is
 
     // when
     const createProfileInvalidPassword = () =>
-        new Profile({ email: validEmail, password: invalidPassword, role: validRole, username: username, bio: bio });
+        new Profile({
+            id: validId,
+            createdAt: validCreatedAt,
+            updatedAt: validUpdatedAt,
+            latestActivity: validLatestActivity,
+            email: validEmail,
+            username: validUsername,
+            password: invalidPassword,
+            role: validRole,
+            bio: validBio,
+        });
 
     // then
     expect(createProfileInvalidPassword).toThrow('Password must contain at least 1 capital letter');
@@ -78,7 +145,17 @@ test(`given: invalid password (no special sign) for Profile,  when: Profile is c
 
     // when
     const createProfileInvalidPassword = () =>
-        new Profile({ email: validEmail, password: invalidPassword, role: validRole, username: username, bio: bio });
+        new Profile({
+            id: validId,
+            createdAt: validCreatedAt,
+            updatedAt: validUpdatedAt,
+            latestActivity: validLatestActivity,
+            email: validEmail,
+            username: validUsername,
+            password: invalidPassword,
+            role: validRole,
+            bio: validBio,
+        });
 
     // then
     expect(createProfileInvalidPassword).toThrow(
@@ -89,7 +166,18 @@ test(`given: invalid password (no special sign) for Profile,  when: Profile is c
 test(`given: no username, when: Profile is created, then: error is thrown`, () => {
     // when
     const createProfile = () =>
-        new Profile({ email: validEmail, password: validPassword, role: validRole, username: undefined, bio: bio });
+        new Profile({
+            id: validId,
+            createdAt: validCreatedAt,
+            updatedAt: validUpdatedAt,
+            latestActivity: validLatestActivity,
+            email: validEmail,
+            username: undefined,
+            password: validPassword,
+            role: validRole,
+            bio: validBio,
+        });
+
     // then
     expect(createProfile).toThrowError('Username is required');
 });
@@ -100,57 +188,34 @@ test(`given: too long username, when: Profile is created, then: error is thrown`
 
     // when
     const createProfile = () =>
-        new Profile({ email: validEmail, password: validPassword, role: validRole, username: longUsername, bio: bio });
+        new Profile({
+            id: validId,
+            createdAt: validCreatedAt,
+            updatedAt: validUpdatedAt,
+            latestActivity: validLatestActivity,
+            email: validEmail,
+            username: longUsername,
+            password: validPassword,
+            role: validRole,
+            bio: validBio,
+        });
 
     // then
     expect(createProfile).toThrowError('Username cannot be longer than 30 characters');
 });
 
-test(`given: no createdAt, when: Profile is created, then: createdAt is set to now`, () => {
-    // when
-    const profile = new Profile({
-        email: validEmail,
-        password: validPassword,
-        role: validRole,
-        username: username,
-        bio: bio,
-    });
-
-    // then
-    expect(new Date().getTime() - profile.createdAt.getTime()).toBeLessThan(1000);
-});
-
-test(`given: valid values for Profile, when: Profile is created, then: latestActivity is set to now`, () => {
-    // when
-    const profile = new Profile({
-        email: validEmail,
-        password: validPassword,
-        role: validRole,
-        username: username,
-        bio: bio,
-    });
-
-    // then
-    expect(new Date().getTime() - profile.latestActivity.getTime()).toBeLessThan(1000);
-});
-
-test(`given: valid values for Profile, when: Profile is created, then: latestActivity equals createdAt`, () => {
-    // when
-    const profile = new Profile({
-        email: validEmail,
-        password: validPassword,
-        role: validRole,
-        username: username,
-        bio: bio,
-    });
-
-    // then
-    expect(profile.latestActivity).toEqual(profile.createdAt);
-});
-
 test(`given: no bio, when: Profile is created, then: bio is undefined`, () => {
     // when
-    const profile = new Profile({ email: validEmail, password: validPassword, role: validRole, username: username });
+    const profile = new Profile({
+        id: validId,
+        createdAt: validCreatedAt,
+        updatedAt: validUpdatedAt,
+        latestActivity: validLatestActivity,
+        email: validEmail,
+        username: validUsername,
+        password: validPassword,
+        role: validRole,
+    });
 
     // then
     expect(profile.bio).toBeUndefined();
@@ -162,80 +227,46 @@ test(`given: too long bio, when: Profile is created, then: error is thrown`, () 
 
     // when
     const createProfile = () =>
-        new Profile({ email: validEmail, password: validPassword, role: validRole, username: username, bio: longBio });
+        new Profile({
+            id: validId,
+            createdAt: validCreatedAt,
+            updatedAt: validUpdatedAt,
+            latestActivity: validLatestActivity,
+            email: validEmail,
+            username: validUsername,
+            password: validPassword,
+            role: validRole,
+            bio: longBio,
+        });
 
     // then
     expect(createProfile).toThrowError('Bio cannot be longer than 200 characters');
 });
 
-test(`given: existing Profile, when: getLatestActivity is called, then: latestActivity is returned`, () => {
-    // given
-    const profile = new Profile({
-        email: validEmail,
-        password: validPassword,
-        role: validRole,
-        username: username,
-        bio: bio,
-    });
-
-    // when
-    const sut = profile.latestActivity;
-
-    // then
-    expect(sut instanceof Date).toBeTruthy();
-    expect(sut).toEqual(profile.latestActivity);
-});
-
-test(`given: existing Profile, when: getUsername is called, then: username is returned`, () => {
-    // given
-    const un = 'profileTest';
-    const profile = new Profile({
-        email: validEmail,
-        password: validPassword,
-        role: validRole,
-        username: un,
-        bio: bio,
-    });
-    // when
-    const sut = profile.username;
-
-    // then
-    expect(sut).toEqual(un);
-});
-
-test(`given: existing Profile, when: getBio is called, then: bio is returned`, () => {
-    // given
-    const b = 'profileTest';
-
-    // when
-    const sut = new Profile({
-        email: validEmail,
-        password: validPassword,
-        role: validRole,
-        username: username,
-        bio: b,
-    });
-    new Profile({ email: validEmail, password: validPassword, role: validRole, username: username, bio: b });
-
-    // then
-    expect(sut.bio).toEqual(b);
-});
-
 test(`given: existing Profile, when: equals is called with same Profile, then: true is returned`, () => {
     // given
     const profile = new Profile({
+        id: validId,
+        createdAt: validCreatedAt,
+        updatedAt: validUpdatedAt,
+        latestActivity: validLatestActivity,
         email: validEmail,
+        username: validUsername,
         password: validPassword,
         role: validRole,
-        username: username,
-        bio: bio,
+        bio: validBio,
     });
+
     const profile2 = new Profile({
+        id: validId,
+        createdAt: validCreatedAt,
+        updatedAt: validUpdatedAt,
+        latestActivity: validLatestActivity,
         email: validEmail,
+        username: validUsername,
         password: validPassword,
         role: validRole,
-        username: username,
-        bio: bio,
+        bio: validBio,
     });
 
     // when
@@ -248,17 +279,26 @@ test(`given: existing Profile, when: equals is called with same Profile, then: t
 test(`given: existing Profile, when: equals is called with different Profile, then: false is returned`, () => {
     // given
     const profile = new Profile({
+        id: validId,
+        createdAt: validCreatedAt,
+        updatedAt: validUpdatedAt,
+        latestActivity: validLatestActivity,
         email: validEmail,
+        username: validUsername,
         password: validPassword,
         role: validRole,
-        username: username,
-        bio: bio,
+        bio: validBio,
     });
+
     const profile2 = new Profile({
+        id: validId,
+        createdAt: validCreatedAt,
+        updatedAt: validUpdatedAt,
+        latestActivity: validLatestActivity,
         email: validEmail,
+        username: username2,
         password: validPassword,
         role: validRole,
-        username: username2,
         bio: bio2,
     });
 
@@ -269,56 +309,6 @@ test(`given: existing Profile, when: equals is called with different Profile, th
     expect(sut).toBeFalsy();
 });
 
-test(`given: Profile, when: getting email, then: email is returned`, () => {
-    // given
-    const profile = new Profile({
-        email: validEmail,
-        password: validPassword,
-        role: validRole,
-        username: username,
-        bio: bio,
-    });
-
-    // when
-    const email = profile.email;
-
-    // then
-    expect(email).toEqual(validEmail);
-});
-
-test(`given: Profile, when: getting password, then: password is returned`, () => {
-    // given
-    const profile = new Profile({
-        email: validEmail,
-        password: validPassword,
-        role: validRole,
-        username: username,
-        bio: bio,
-    });
-
-    // when
-    const password = profile.password;
-
-    // then
-    expect(password).toEqual(validPassword);
-});
-
-test(`given valid role, when: creating Profile, then: Profile is created with that role`, () => {
-    // given
-    const profile = new Profile({
-        email: validEmail,
-        password: validPassword,
-        role: validRole,
-        username: username2,
-        bio: bio2,
-    });
-    // when
-    const role = profile.role;
-
-    // then
-    expect(role).toEqual(validRole);
-});
-
 test(`given invalid role, when: creating Profile, then: Profile is not created and error is thrown`, () => {
     // given
     const invalidRole = 'invalid';
@@ -326,13 +316,17 @@ test(`given invalid role, when: creating Profile, then: Profile is not created a
     // when
     const createProfileInvalidRole = () =>
         new Profile({
+            id: validId,
+            createdAt: validCreatedAt,
+            updatedAt: validUpdatedAt,
+            latestActivity: validLatestActivity,
             email: validEmail,
+            username: validUsername,
             password: validPassword,
             role: invalidRole as Role,
-            username: username2,
-            bio: bio2,
+            bio: validBio,
         });
 
     // then
-    expect(createProfileInvalidRole).toThrow('Role must be one of "admin", "user", or "guest"');
+    expect(createProfileInvalidRole).toThrow('Role must be one of "ADMIN", "USER"');
 });

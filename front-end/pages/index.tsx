@@ -1,4 +1,4 @@
-import Header from "@/components/header";
+import Header from "@/components/Header";
 import ProfileService from "@/services/ProfileService";
 import styles from "@/styles/Home.module.css";
 import { useTranslation } from "next-i18next";
@@ -13,9 +13,7 @@ const Home: React.FC = () => {
   const getUser = async () => {
     const user = sessionStorage.getItem("loggedInUser");
     if (user) {
-      const profile = await ProfileService.getProfileByEmail(
-        JSON.parse(user).email
-      );
+      const profile = await ProfileService.getProfileById(JSON.parse(user).id);
       setName(profile.username);
     }
   };

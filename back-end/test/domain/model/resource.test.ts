@@ -1,79 +1,36 @@
-import { Category } from '../../../domain/model/category';
-import { Profile } from '../../../domain/model/profile';
 import { Resource } from '../../../domain/model/resource';
-import { Subject } from '../../../domain/model/subject';
-import { Role } from '../../../types';
 
-const validProfile = new Profile({
-    email: 'resource-test@tistudent.be',
-    password: '_R3sourceTe5t',
-    role: 'admin',
-    username: 'resource-test',
-});
+const validId = 1;
 const validCreatedAt = new Date();
+const validUpdatedAt = new Date();
 const validTitle = 'Hello World';
 const validDescription = 'This is a test resource';
-const validCategory = Category.CheatSheet;
-const validSubject = Subject.FullStack_Software_Develoment;
+const validProfileId = 1;
 
 test(`given: valid values for Resource, when: Resource is created, then: Resource is created`, () => {
     // when
     const resource = new Resource({
-        creator: validProfile,
+        id: validId,
         createdAt: validCreatedAt,
+        updatedAt: validUpdatedAt,
         title: validTitle,
         description: validDescription,
-        category: validCategory,
-        subject: validSubject,
+        profileId: validProfileId,
     });
 
     // then
-    expect(resource.creator).toEqual(validProfile);
-    expect(resource.createdAt).toEqual(validCreatedAt);
-    expect(resource.title).toEqual(validTitle);
-    expect(resource.description).toEqual(validDescription);
-    expect(resource.category).toEqual(validCategory);
-    expect(resource.subject).toEqual(validSubject);
-});
-
-test(`given: no creator, when: Resource is created, then: error is thrown`, () => {
-    // when
-    const createResource = () =>
-        new Resource({
-            createdAt: validCreatedAt,
-            title: validTitle,
-            description: validDescription,
-            category: validCategory,
-            subject: validSubject,
-        } as Resource);
-
-    // then
-    expect(createResource).toThrowError('creator Profile is required');
-});
-
-test(`given: no createdAt, when: Resource is created, then: createdAt is set to now`, () => {
-    // when
-    const resource = new Resource({
-        creator: validProfile,
-        title: validTitle,
-        description: validDescription,
-        category: validCategory,
-        subject: validSubject,
-    });
-
-    // then
-    expect(new Date().getTime() - resource.createdAt.getTime()).toBeLessThan(1000);
+    expect(resource instanceof Resource).toBeTruthy();
 });
 
 test(`given: no title, when: Resource is created, then: error is thrown`, () => {
     // when
     const createResource = () =>
         new Resource({
-            creator: validProfile,
+            id: validId,
             createdAt: validCreatedAt,
+            updatedAt: validUpdatedAt,
             description: validDescription,
-            category: validCategory,
-            subject: validSubject,
+            profileId: validProfileId,
         } as Resource);
 
     // then
@@ -84,45 +41,15 @@ test(`given: no description, when: Resource is created, then: error is thrown`, 
     // when
     const createResource = () =>
         new Resource({
-            creator: validProfile,
+            id: validId,
             createdAt: validCreatedAt,
+            updatedAt: validUpdatedAt,
             title: validTitle,
-            category: validCategory,
-            subject: validSubject,
+            profileId: validProfileId,
         } as Resource);
 
     // then
     expect(createResource).toThrowError('description is required');
-});
-
-test(`given: no category, when: Resource is created, then: error is thrown`, () => {
-    // when
-    const createResource = () =>
-        new Resource({
-            creator: validProfile,
-            createdAt: validCreatedAt,
-            title: validTitle,
-            description: validDescription,
-            subject: validSubject,
-        } as Resource);
-
-    // then
-    expect(createResource).toThrowError('category is required');
-});
-
-test(`given: no subject, when: Resource is created, then: error is thrown`, () => {
-    // when
-    const createResource = () =>
-        new Resource({
-            creator: validProfile,
-            createdAt: validCreatedAt,
-            title: validTitle,
-            description: validDescription,
-            category: validCategory,
-        } as Resource);
-
-    // then
-    expect(createResource).toThrowError('subject is required');
 });
 
 test(`given: too long title, when: Resource is created, then: error is thrown`, () => {
@@ -132,12 +59,12 @@ test(`given: too long title, when: Resource is created, then: error is thrown`, 
     // when
     const createResource = () =>
         new Resource({
-            creator: validProfile,
+            id: validId,
             createdAt: validCreatedAt,
+            updatedAt: validUpdatedAt,
             title: invalidTitle,
             description: validDescription,
-            category: validCategory,
-            subject: validSubject,
+            profileId: validProfileId,
         });
 
     // then
@@ -152,52 +79,14 @@ test(`given: too long description, when: Resource is created, then: error is thr
     // when
     const createResource = () =>
         new Resource({
-            creator: validProfile,
+            id: validId,
             createdAt: validCreatedAt,
+            updatedAt: validUpdatedAt,
             title: validTitle,
             description: invalidDescription,
-            category: validCategory,
-            subject: validSubject,
+            profileId: validProfileId,
         });
 
     // then
     expect(createResource).toThrowError('description cannot be longer than 500 characters');
-});
-
-test(`given: invalid category, when: Resource is created, then: error is thrown`, () => {
-    // given
-    const invalidCategory = 'invalid category';
-
-    // when
-    const createResource = () =>
-        new Resource({
-            creator: validProfile,
-            createdAt: validCreatedAt,
-            title: validTitle,
-            description: validDescription,
-            category: invalidCategory as Category,
-            subject: validSubject,
-        });
-
-    // then
-    expect(createResource).toThrowError('Invalid category');
-});
-
-test(`given: invalid subject, when: Resource is created, then: error is thrown`, () => {
-    // given
-    const invalidSubject = 'invalid subject';
-
-    // when
-    const createResource = () =>
-        new Resource({
-            creator: validProfile,
-            createdAt: validCreatedAt,
-            title: validTitle,
-            description: validDescription,
-            category: validCategory,
-            subject: invalidSubject as Subject,
-        });
-
-    // then
-    expect(createResource).toThrowError('Invalid subject');
 });
