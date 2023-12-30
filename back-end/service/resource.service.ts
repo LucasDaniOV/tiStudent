@@ -10,12 +10,9 @@ const createResource = async (resourceInput: ResourceInput): Promise<Resource> =
     return await resourceDb.createResource(title, description, profileId);
 };
 
-const getAllResources = async (): Promise<Resource[]> => await resourceDb.getAllResources();
+const getAllResources = async (): Promise<any[]> => await resourceDb.getAllResources();
 
-const getAllResourcesIncludingCategoriesAndSubjects = async (): Promise<any[]> =>
-    await resourceDb.getAllResourcesIncludingCategoriesAndSubjects();
-
-const getResourceById = async (id: number): Promise<Resource> => {
+const getResourceById = async (id: number): Promise<any> => {
     const resource = await resourceDb.getResourceById(id);
     if (!resource) throw new Error(`Resource with id ${id} does not exist`);
     return resource;
@@ -41,7 +38,6 @@ const deleteResource = async (id: number): Promise<Resource> => {
 export default {
     createResource,
     getAllResources,
-    getAllResourcesIncludingCategoriesAndSubjects,
     getResourceById,
     getResourcesByProfileId,
     updateResource,
