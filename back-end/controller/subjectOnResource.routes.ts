@@ -22,7 +22,17 @@ subjectOnResourceRouter.post('/', async (req: Request, res: Response, next: Next
 
 subjectOnResourceRouter.get('/', async (req: Request, res: Response, next: NextFunction) => {
     try {
-        const subjectsOnResources: SubjectOnResource[] = await subjectOnResourceService.getSubjectsOnResources();
+        const subjectId: number | undefined = parseInt(req.query.subjectId as string);
+        const resourceId: number | undefined = parseInt(req.query.resourceId as string);
+        let subjectsOnResources: SubjectOnResource[];
+
+        if (subjectId) {
+            subjectsOnResources = await subjectOnResourceService.getSubjectsOnResourcesBySubjectId(subjectId);
+        } else if (resourceId) {
+            subjectsOnResources = await subjectOnResourceService.getSubjectsOnResourcesByResourceId(resourceId);
+        } else {
+            subjectsOnResources = await subjectOnResourceService.getSubjectsOnResources();
+        }
 
         res.status(200).json({ status: 'success', message: 'subjects on resources found', subjectsOnResources });
     } catch (error) {

@@ -3,29 +3,27 @@ import cors from 'cors';
 import express, { NextFunction, Request, Response } from 'express';
 import { expressjwt } from 'express-jwt';
 import helmet from 'helmet';
-import swaggerJSDoc from 'swagger-jsdoc';
 import swaggerUi from 'swagger-ui-express';
+import yaml from 'yamljs';
 import { authRouter } from './controller/auth.routes';
 import categoryRouter from './controller/category.routes';
 import { categoryOnResourceRouter } from './controller/categoryOnResource.routes';
 import { commentRouter } from './controller/comment.routes';
 import { commentLikeRouter } from './controller/commentLike.routes';
+import { leaderboardRouter } from './controller/leaderboard.routes';
 import { profileRouter } from './controller/profile.routes';
 import { resourceRouter } from './controller/resource.routes';
 import { resourceLikeRouter } from './controller/resourceLike.routes';
 import subjectRouter from './controller/subject.routes';
 import { subjectOnResourceRouter } from './controller/subjectOnResource.routes';
-import { version } from './package.json';
-import { leaderboardRouter } from './controller/leaderboard.routes';
-import fileRouter from './controller/files.routes';
 
 const app = express();
 
-app.use(helmet());
+const swaggerSpec = yaml.load('./controller/swagger/swagger.yaml');
 
+app.use(helmet());
 app.use(cors());
 app.use(bodyParser.json());
-
 app.use(
     expressjwt({
         secret: process.env.JWT_SECRET,
@@ -34,10 +32,6 @@ app.use(
         path: ['/api-docs', /^\/api-docs\/.*/, '/signup', '/signin', '/status'],
     })
 );
-
-app.get('/status', (req, res) => {
-    res.json({ message: 'Back-end is running...' });
-});
 
 app.use('/profiles', profileRouter);
 app.use('/resources', resourceRouter);
@@ -49,6 +43,10 @@ app.use('/subjects-on-resources', subjectOnResourceRouter);
 app.use('/commentlikes', commentLikeRouter);
 app.use('/resourcelikes', resourceLikeRouter);
 app.use('/leaderboard', leaderboardRouter);
+app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec));
+app.get('/status', (req, res) => {
+    res.json({ message: 'Back-end is running...' });
+});
 app.use('/', authRouter);
 app.use('/files', fileRouter);
 

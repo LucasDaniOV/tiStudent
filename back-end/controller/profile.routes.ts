@@ -29,6 +29,18 @@ profileRouter.get('/:profileId', async (req: Request, res: Response, next: NextF
     }
 });
 
+profileRouter.get('/:profileId/likes', async (req: Request, res: Response, next: NextFunction) => {
+    try {
+        const profileId: number = parseInt(req.params.profileId);
+
+        const profile = await profileService.getProfileLikes(profileId);
+
+        res.status(200).json({ status: 'success', message: 'likes created by profile', profile });
+    } catch (error) {
+        next(error);
+    }
+});
+
 profileRouter.put('/:profileId', async (req: Request, res: Response, next: NextFunction) => {
     try {
         const profileId: number = parseInt(req.params.profileId);

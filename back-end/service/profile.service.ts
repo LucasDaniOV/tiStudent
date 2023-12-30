@@ -45,6 +45,11 @@ const getProfileByUsername = async (username: string): Promise<Profile> => {
     return profile;
 };
 
+const getProfileLikes = async (profileId: number): Promise<any> => {
+    await getProfileById(profileId);
+    return await profileDb.getProfileLikes(profileId);
+};
+
 const updateBio = async (profile: Profile, bio: string): Promise<Profile> => {
     Profile.validateBio(bio);
     if (profile.bio === bio) throw new Error(`New bio must be different from old bio`);
@@ -136,6 +141,7 @@ export default {
     getProfileById,
     getProfileByEmail,
     getProfileByUsername,
+    getProfileLikes,
     updateBio,
     updateEmail,
     updatePassword,

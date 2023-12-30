@@ -1,4 +1,5 @@
 import Header from "@/components/Header";
+import Header from "@/components/Header";
 import ProfileCreateForm from "@/components/profiles/ProfileCreateForm";
 import UserLoginForm from "@/components/profiles/ProfileLoginForm";
 import { useTranslation } from "next-i18next";
@@ -45,7 +46,6 @@ const Login: React.FC = () => {
               <UserLoginForm />
             </section>
 
-            <section className="w-max"></section>
             <section className="m-10 mt-0">
               <h1>{t("login.profile.message")}</h1>
               <ProfileCreateForm />

@@ -19,7 +19,7 @@ const Resources: React.FC = () => {
       return;
     }
     setAuthorized(true);
-    return response;
+    return response.resources;
   };
 
   const { data, isLoading, error } = useSWR("resources", getResources);

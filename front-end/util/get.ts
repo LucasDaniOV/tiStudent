@@ -1,6 +1,8 @@
 import { Type } from "@/types";
 import { getToken } from "./token";
+
 const base = process.env.NEXT_PUBLIC_API_URL + "/";
+
 const getAll = async (type: Type) => {
   const token = getToken();
 

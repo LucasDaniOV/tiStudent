@@ -9,8 +9,9 @@ commentRouter.post('/', async (req: Request, res: Response, next: NextFunction) 
         const resourceId: number = parseInt(req.body.resourceId);
         const profileId: number = parseInt(req.body.profileId);
         const message: string = req.body.message;
+        const parentId: number | undefined = parseInt(req.body.parentId);
 
-        const comment: Comment = await commentService.createComment(resourceId, profileId, message);
+        const comment: Comment = await commentService.createComment(resourceId, profileId, message, parentId);
 
         res.status(200).json({ status: 'success', message: 'comment created', comment });
     } catch (error) {
@@ -43,6 +44,18 @@ commentRouter.get('/:commentId', async (req: Request, res: Response, next: NextF
         const comment: Comment = await commentService.getCommentById(commentId);
 
         res.status(200).json({ status: 'success', message: 'comment found', comment });
+    } catch (error) {
+        next(error);
+    }
+});
+
+commentRouter.get('/:commentId/children', async (req: Request, res: Response, next: NextFunction) => {
+    try {
+        const commentId: number = parseInt(req.params.commentId);
+
+        const comments: Comment[] = await commentService.getChildrenByCommentId(commentId);
+
+        res.status(200).json({ status: 'success', message: 'child comments found', comments });
     } catch (error) {
         next(error);
     }

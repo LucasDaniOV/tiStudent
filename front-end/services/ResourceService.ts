@@ -1,4 +1,4 @@
-import { Profile, Comment, Resource } from "@/types";
+import { Profile, Comment, Resource, Category, Subject } from "@/types";
 import ProfileService from "./ProfileService";
 import { getAll, getById } from "@/util/get";
 import { getToken } from "@/util/token";
@@ -6,8 +6,32 @@ import { getToken } from "@/util/token";
 const baseUrl = process.env.NEXT_PUBLIC_API_URL + "/resources";
 const type = "resources";
 
-const getAllResources = async () => getAll(type);
-const getResourceById = async (resourceId: string) => getById(type, resourceId);
+const getAllResources = async () => {
+  const token = getToken();
+  const res = await fetch(baseUrl + "?includeCategoriesAndSubjects=true", {
+    method: "GET",
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${token}`,
+    },
+  });
+
+  return await res.json();
+};
+
+const getResourceById = async (id: string): Promise<Resource> => {
+  const token = getToken();
+  const res = await fetch(baseUrl + "/" + id, {
+    method: "GET",
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${token}`,
+    },
+  });
+
+  const resource = await res.json();
+  return resource.resource;
+};
 
 const deleteResourceById = async (resourceId: string) => {
   const token = getToken();
@@ -20,13 +44,7 @@ const deleteResourceById = async (resourceId: string) => {
   });
 };
 
-const createResource = async (
-  profileId: string,
-  title: string,
-  description: string,
-  categoryId: number = 1,
-  subjectId: number = 1
-) => {
+const createResource = async (title: string, description: string) => {
   const token = getToken();
 
   const res = await fetch(baseUrl, {
@@ -36,40 +54,15 @@ const createResource = async (
       Authorization: `Bearer ${token}`,
     },
     body: JSON.stringify({
-      profileId,
-      title,
       description,
+      title,
+      profileId: parseInt(
+        JSON.parse(sessionStorage.getItem("loggedInUser")!).id || ""
+      ),
     }),
   });
 
-  const resource = await res.json();
-  const resourceId = resource.id;
-
-  await fetch(process.env.NEXT_PUBLIC_API_URL + "/subjects-on-resources", {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-      Authorization: `Bearer ${token}`,
-    },
-    body: JSON.stringify({
-      resourceId,
-      subjectId,
-    }),
-  });
-
-  await fetch(process.env.NEXT_PUBLIC_API_URL + "/categories-on-resources", {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-      Authorization: `Bearer ${token}`,
-    },
-    body: JSON.stringify({
-      resourceId,
-      categoryId,
-    }),
-  });
-
-  return res;
+  return await res.json();
 };
 
 const getCommentsOnResource = async (id: string): Promise<Comment[]> => {
@@ -99,6 +92,60 @@ const getResourcesByProfile = async (profileId: number) => {
   return await resources.json();
 };
 
+const getCategoriesByResourceId = async (resourceId: string) => {
+  const token = getToken();
+  const categoriesOnResource = await fetch(
+    process.env.NEXT_PUBLIC_API_URL +
+      "/categories-on-resources?resourceId=" +
+      resourceId,
+    {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+    }
+  );
+  const jsonCategoriesOnResource = await categoriesOnResource.json();
+  const categoriesOnResources = jsonCategoriesOnResource.categoriesOnResources;
+
+  const categories: Category[] = [];
+  for (const categoryOnResource of categoriesOnResources) {
+    const category = await getById("categories", categoryOnResource.categoryId);
+    categories.push(category.category.name);
+  }
+
+  return categories;
+};
+
+const getSubjectsByResourceId = async (resourceId: string) => {
+  const token = getToken();
+  const subjects = await fetch(
+    process.env.NEXT_PUBLIC_API_URL +
+      "/subjects-on-resources?resourceId=" +
+      resourceId,
+    {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+    }
+  );
+
+  const jsonSubjects = await subjects.json();
+
+  const subjectsOnResources = jsonSubjects.subjectsOnResources;
+
+  const subjectsArray: Subject[] = [];
+  for (const subjectOnResource of subjectsOnResources) {
+    const subject = await getById("subjects", subjectOnResource.subjectId);
+    subjectsArray.push(subject.subject.name);
+  }
+
+  return subjectsArray;
+};
+
 const ResourceService = {
   getAllResources,
   getResourceById,
@@ -106,6 +153,8 @@ const ResourceService = {
   createResource,
   getCommentsOnResource,
   getResourcesByProfile,
+  getCategoriesByResourceId,
+  getSubjectsByResourceId,
 };
 
 export default ResourceService;

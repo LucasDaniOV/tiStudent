@@ -20,6 +20,7 @@ resourceRouter.post('/', async (req: Request, res: Response, next: NextFunction)
 resourceRouter.get('/', async (req: Request, res: Response, next: NextFunction) => {
     try {
         const profileId: number | undefined = parseInt(req.query.profileId as string);
+
         let resources: Resource[];
 
         if (profileId) {
