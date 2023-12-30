@@ -1294,6 +1294,116 @@ paths:
         '401':
           $ref: '#/components/responses/Unauthorized'
 
+  /resourcelikes:
+    post:
+      tags:
+        - resourcelikes
+      summary: create resource like
+      description: |
+        Create a new resource like
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ResourceLikeInput'
+      responses:
+        '200':
+          description: resource like created
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: 'success'                    
+                  message:
+                    type: string
+                    example: 'resource like created'
+                  resourceLike:
+                    $ref: '#/components/schemas/ResourceLike'
+        '400':
+          $ref: '#/components/responses/ApplicationError'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+
+    get:
+      tags:
+        - resourcelikes
+      summary: get resource likes
+      description: |
+        Get all resource likes
+      parameters:
+        - in: query
+          name: profileId
+          description: get resource likes by profileId
+          schema:
+            type: integer
+            example: 1
+        - in: query
+          name: resourceId
+          description: get resource likes by resourceId
+          schema:
+            type: integer
+            example: 1
+      responses:
+        '200':
+          description: resource likes found
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: 'success'                    
+                  message:
+                    type: string
+                    example: 'resource likes found'
+                  resourceLikes:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/ResourceLike'
+        '400':
+          $ref: '#/components/responses/ApplicationError'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+
+    delete:
+      tags:
+        - resourcelikes
+      summary: delete resource like
+      description: |
+        Delete resource like by id
+      parameters:
+        - name: id
+          in: query
+          description: resource like id
+          required: true
+          schema:
+            type: integer
+            example: 1
+      responses:
+        '200':
+          description: resource like deleted
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: 'success'                    
+                  message:
+                    type: string
+                    example: 'resource like deleted'
+                  deletedResourceLike:
+                    $ref: '#/components/schemas/ResourceLike'
+        '400':
+          $ref: '#/components/responses/ApplicationError'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+
 components:
   securitySchemes:
     BearerAuth:
@@ -1428,6 +1538,32 @@ components:
         bio:
           type: string
           example: 'example bio'
+    
+    CommentLikeInput:
+      type: object
+      required:
+        - profileId
+        - commentId
+      properties:
+        profileId:
+          type: integer
+          example: 1
+        commentId:
+          type: integer
+          example: 1
+
+    ResourceLikeInput:
+      type: object
+      required:
+        - profileId
+        - resourceId
+      properties:
+        profileId:
+          type: integer
+          example: 1
+        resourceId:
+          type: integer
+          example: 1
 
     CommentLike:
       type: object
