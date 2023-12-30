@@ -1038,6 +1038,262 @@ paths:
         '401':
           $ref: '#/components/responses/Unauthorized'
 
+  /comments:
+    post:
+      tags:
+        - comments
+      summary: create comment
+      description: |
+        Create a new comment
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CommentInput'
+      responses:
+        '200':
+          description: comment created
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: 'success'
+                  message:
+                    example: 'comment created'
+                  comment:
+                    $ref: '#/components/schemas/Comment'
+        '400':
+          $ref: '#/components/responses/ApplicationError'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+
+    get:
+      tags:
+        - comments
+      summary: get comments
+      description: |
+        Get all comments
+      parameters:
+        - in: query
+          name: resourceId
+          description: get comments by resourceId
+          schema:
+            type: integer
+            example: 1
+      responses:
+        '200':
+          description: comments found
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: 'success'                    
+                  message:
+                    type: string
+                    example: 'comments found'
+                  comments:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Comment'
+        '400':
+          $ref: '#/components/responses/ApplicationError'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+
+  /comments/{id}:
+    get:
+      tags:
+        - comments
+      summary: get comment
+      description: |
+        Get comment by id
+      parameters:
+        - name: id
+          in: path
+          description: comment id
+          required: true
+          schema:
+            type: integer
+            example: 1
+      responses:
+        '200':
+          description: comment found
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: 'success'                    
+                  message:
+                    type: string
+                    example: 'comment found'
+                  comment:
+                    $ref: '#/components/schemas/Comment'
+        '400':
+          $ref: '#/components/responses/ApplicationError'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+    
+    put:
+      tags:
+        - comments
+      summary: update comment
+      description: |
+        Update comment by id
+      parameters:
+        - name: id
+          in: path
+          description: comment id
+          required: true
+          schema:
+            type: integer
+            example: 1
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                message:
+                  type: string
+                  example: 'example message'
+      responses:
+        '200':
+          description: comment updated
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: 'success'                    
+                  message:
+                    type: string
+                    example: 'comment updated'
+                  updatedComment:
+                    $ref: '#/components/schemas/Comment'
+        '400':
+          $ref: '#/components/responses/ApplicationError'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+    
+    delete:
+      tags:
+        - comments
+      summary: delete comment
+      description: |
+        Delete comment by id
+      parameters:
+        - name: id
+          in: path
+          description: comment id
+          required: true
+          schema:
+            type: integer
+            example: 1
+      responses:
+        '200':
+          description: comment deleted
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: 'success'                    
+                  message:
+                    type: string
+                    example: 'comment deleted'
+                  deletedComment:
+                    $ref: '#/components/schemas/Comment'
+        '400':
+          $ref: '#/components/responses/ApplicationError'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+
+  /comments/{id}/children:
+    get:
+      tags:
+        - comments
+      summary: get comment children
+      description: |
+        Get comment children by id
+      parameters:
+        - name: id
+          in: path
+          description: comment id
+          required: true
+          schema:
+            type: integer
+            example: 1
+      responses:
+        '200':
+          description: child comments found
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: 'success'                    
+                  message:
+                    type: string
+                    example: 'comment children found'
+                  comments:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        id:
+                          type: integer
+                          example: 1
+                        createdAt:
+                          type: string
+                          example: '2023-12-29T14:41:55.854Z'
+                        updatedAt:
+                          type: string
+                          example: '2023-12-29T14:41:55.854Z'
+                        message:
+                          type: string
+                          example: 'example message'
+                        profileId:
+                          type: integer
+                          example: 1
+                        resourceId:
+                          type: integer
+                          example: 1
+                        parentId:
+                          type: integer
+                          example: 1
+                        profile:
+                          type: object
+                          properties:
+                            id:
+                              type: integer
+                              example: 1
+                            username:
+                              type: string
+                              example: 'JJ'
+                        likes:
+                          type: array
+                          items:
+                            $ref: '#/components/schemas/CommentLike'
+        '400':
+          $ref: '#/components/responses/ApplicationError'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+
 components:
   securitySchemes:
     BearerAuth:
@@ -1345,5 +1601,47 @@ components:
           type: integer
           example: 1
         subjectId:
+          type: integer
+          example: 1
+
+    CommentInput:
+      type: object
+      required:
+        - message
+        - profileId
+        - resourceId
+      properties:
+        message:
+          type: string
+          example: 'example message'
+        profileId:
+          type: integer
+          example: 1
+        resourceId:
+          type: integer
+          example: 1
+
+    Comment:
+      type: object
+      properties:
+        id:
+          type: integer
+          example: 1
+        createdAt:
+          type: string
+          example: '2023-12-29T14:41:55.854Z'
+        updatedAt:
+          type: string
+          example: '2023-12-29T14:41:55.854Z'
+        message:
+          type: string
+          example: 'example message'
+        profileId:
+          type: integer
+          example: 1
+        resourceId:
+          type: integer
+          example: 1
+        parentId:
           type: integer
           example: 1
