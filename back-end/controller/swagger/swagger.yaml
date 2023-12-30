@@ -634,6 +634,187 @@ paths:
         '401':
           $ref: '#/components/responses/Unauthorized'
 
+  /subjects:
+    post:
+      tags:
+        - subjects
+      summary: create subject
+      description: |
+        Create a new subject
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                name:
+                  type: string
+                  example: 'Subject Name'
+      responses:
+        '200':
+          description: subject created
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: 'success'
+                  message:
+                    type: string
+                    example: 'subject created'
+                  subject:
+                    $ref: '#/components/schemas/Subject'
+        '400':
+          $ref: '#/components/responses/ApplicationError'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+
+    get:
+      tags:
+        - subjects
+      summary: get subjects
+      description: |
+        Get all subjects
+      responses:
+        '200':
+          description: subjects found
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: 'success'
+                  message:
+                    type: string
+                    example: 'subjects found'
+                  subjects:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Subject'
+        '400':
+          $ref: '#/components/responses/ApplicationError'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+
+  /subjects/{id}:
+    get:
+      tags:
+        - subjects
+      summary: get subject
+      description: |
+        Get subject by id
+      parameters:
+        - name: id
+          in: path
+          description: subject id
+          required: true
+          schema:
+            type: integer
+            example: 1
+      responses:
+        '200':
+          description: subject found
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: 'success'
+                  message:
+                    type: string
+                    example: 'subject found'
+                  subject:
+                    $ref: '#/components/schemas/Subject'
+        '400':
+          $ref: '#/components/responses/ApplicationError'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+
+    put:
+      tags:
+        - subjects
+      summary: update subject
+      description: |
+        Update subject by id
+      parameters:
+        - name: id
+          in: path
+          description: subject id
+          required: true
+          schema:
+            type: integer
+            example: 1
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                name:
+                  type: string
+                  example: 'Subject Name'
+      responses:
+        '200':
+          description: subject updated
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: 'success'
+                  message:
+                    type: string
+                    example: 'subject updated'
+                  updatedSubject:
+                    $ref: '#/components/schemas/Subject'
+        '400':
+          $ref: '#/components/responses/ApplicationError'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+
+    delete:
+      tags:
+        - subjects
+      summary: delete subject
+      description: |
+        Delete subject by id
+      parameters:
+        - name: id
+          in: path
+          description: subject id
+          required: true
+          schema:
+            type: integer
+            example: 1
+      responses:
+        '200':
+          description: subject deleted
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: 'success'
+                  message:
+                    type: string
+                    example: 'subject deleted'
+                  deletedSubject:
+                    $ref: '#/components/schemas/Subject'
+        '400':
+          $ref: '#/components/responses/ApplicationError'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+
 components:
   securitySchemes:
     BearerAuth:
@@ -923,3 +1104,23 @@ components:
         name:
           type: string
           example: 'Subject Name'
+    
+    CategoryOnResource:
+      type: object
+      properties:
+        resourceId:
+          type: integer
+          example: 1
+        categoryId:
+          type: integer
+          example: 1
+
+    SubjectOnResource:
+      type: object
+      properties:
+        resourceId:
+          type: integer
+          example: 1
+        subjectId:
+          type: integer
+          example: 1
