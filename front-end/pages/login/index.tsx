@@ -1,5 +1,4 @@
 import Header from "@/components/Header";
-import Header from "@/components/Header";
 import ProfileCreateForm from "@/components/profiles/ProfileCreateForm";
 import UserLoginForm from "@/components/profiles/ProfileLoginForm";
 import { useTranslation } from "next-i18next";

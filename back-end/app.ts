@@ -16,6 +16,7 @@ import { resourceRouter } from './controller/resource.routes';
 import { resourceLikeRouter } from './controller/resourceLike.routes';
 import subjectRouter from './controller/subject.routes';
 import { subjectOnResourceRouter } from './controller/subjectOnResource.routes';
+import fileRouter from './controller/files.routes';
 
 const app = express();
 
@@ -43,25 +44,14 @@ app.use('/subjects-on-resources', subjectOnResourceRouter);
 app.use('/commentlikes', commentLikeRouter);
 app.use('/resourcelikes', resourceLikeRouter);
 app.use('/leaderboard', leaderboardRouter);
+app.use('/', authRouter);
+app.use('/files', fileRouter);
+
 app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec));
 app.get('/status', (req, res) => {
     res.json({ message: 'Back-end is running...' });
 });
 app.use('/', authRouter);
-app.use('/files', fileRouter);
-
-const swaggerOpts = {
-    definition: {
-        openapi: '3.0.0',
-        info: {
-            title: 'tiStudent API',
-            version,
-        },
-    },
-    apis: ['./controller/*.routes.ts'],
-};
-const swaggerSpec = swaggerJSDoc(swaggerOpts);
-app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec));
 
 app.use((err: Error, req: Request, res: Response, next: NextFunction) => {
     if (err.name === 'UnauthorizedError') {
