@@ -7,6 +7,10 @@ export type Resource = {
   title: string;
   description: string;
   profileId: string;
+  categories: Category[];
+  subjects: Subject[];
+  comments: Comment[];
+  likes: Like[];
 };
 
 export type Profile = {
@@ -21,6 +25,12 @@ export type Profile = {
   bio?: string;
 };
 
+export type Like = {
+  createdAt: Date;
+  profileId: string;
+  resourceId: string;
+};
+
 export type Comment = {
   id: string;
   createdAt: Date;
@@ -28,6 +38,12 @@ export type Comment = {
   message: string;
   profileId: string;
   resourceId: string;
+  profile?: {
+    id: string;
+    username: string;
+  };
+  likes: Like[];
+  parentId?: string;
 };
 
 export type Category = {
