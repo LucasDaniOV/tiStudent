@@ -106,6 +106,7 @@ async function main() {
             message: 'Thanks Bob',
             profileId: aliceProfile.id,
             resourceId: resource.id,
+            parentId: bobComment.id,
         },
     });
 
