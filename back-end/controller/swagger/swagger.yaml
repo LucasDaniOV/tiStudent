@@ -815,6 +815,229 @@ paths:
         '401':
           $ref: '#/components/responses/Unauthorized'
 
+  /categories-on-resources:
+    post:
+      tags:
+        - categories-on-resources
+      summary: create category on resource
+      description: |
+        Link category to resource
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CategoryOnResource'
+      responses:
+        '200':
+          description: category on resource created
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: 'success'
+                  message:
+                    type: string
+                    example: 'category created on resource'
+                  categoryOnResource:
+                    $ref: '#/components/schemas/CategoryOnResource'
+        '400':
+          $ref: '#/components/responses/ApplicationError'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+
+    get:
+      tags:
+        - categories-on-resources
+      summary: get categories on resources
+      description: |
+        Get all categories on resources
+      parameters:
+        - in: query
+          name: resourceId
+          description: get categories on resources by resourceId
+          schema:
+            type: integer
+            example: 1
+        - in: query
+          name: categoryId
+          description: get categories on resources by categoryId
+          schema:
+            type: integer
+            example: 1
+      responses:
+        '200':
+          description: categories on resources found
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: 'success'
+                  message:
+                    type: string
+                    example: categories on resources found
+                  categoriesOnResources:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/CategoryOnResource'
+        '400':
+          $ref: '#/components/responses/ApplicationError'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+      
+  /categories-on-resources/{id}:
+    delete:
+      tags:
+        - categories-on-resources
+      summary: delete category on resource
+      description: |
+        Delete category on resource by id
+      parameters:
+        - name: id
+          in: path
+          description: category on resource id
+          required: true
+          schema:
+            type: integer
+            example: 1
+      responses:
+        '200':
+          description: category on resource deleted
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: 'success'
+                  message:
+                    type: string
+                    example: 'category on resource deleted'
+                  deletedCategoryOnResource:
+                    $ref: '#/components/schemas/CategoryOnResource'
+        '400':
+          $ref: '#/components/responses/ApplicationError'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+
+
+  /subjects-on-resources:
+    post:
+      tags:
+        - subjects-on-resources
+      summary: create subject on resource
+      description: |
+        Link subject to resource
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SubjectOnResource'
+      responses:
+        '200':
+          description: subject on resource created
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: 'success'
+                  message:
+                    type: string
+                    example: 'subject created on resource'
+                  subjectOnResource:
+                    $ref: '#/components/schemas/SubjectOnResource'
+        '400':
+          $ref: '#/components/responses/ApplicationError'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+
+    get:
+      tags:
+        - subjects-on-resources
+      summary: get subjects on resources
+      description: |
+        Get all subjects on resources
+      parameters:
+        - in: query
+          name: resourceId
+          description: get subjects on resources by resourceId
+          schema:
+            type: integer
+            example: 1
+        - in: query
+          name: subjectId
+          description: get subjects on resources by subjectId
+          schema:
+            type: integer
+            example: 1
+      responses:
+        '200':
+          description: subjects on resources found
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: 'success'
+                  message:
+                    type: string
+                    example: subjects on resources found
+                  subjectsOnResources:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/SubjectOnResource'
+        '400':
+          $ref: '#/components/responses/ApplicationError'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+      
+  /subjects-on-resources/{id}:
+    delete:
+      tags:
+        - subjects-on-resources
+      summary: delete subject on resource
+      description: |
+        Delete subject on resource by id
+      parameters:
+        - name: id
+          in: path
+          description: subject on resource id
+          required: true
+          schema:
+            type: integer
+            example: 1
+      responses:
+        '200':
+          description: subject on resource deleted
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: 'success'
+                  message:
+                    type: string
+                    example: 'subject on resource deleted'
+                  deletedSubjectOnResource:
+                    $ref: '#/components/schemas/SubjectOnResource'
+        '400':
+          $ref: '#/components/responses/ApplicationError'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+
 components:
   securitySchemes:
     BearerAuth:
