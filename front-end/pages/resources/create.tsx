@@ -10,11 +10,14 @@ import { useRouter } from "next/router";
 import React, { FormEvent, useEffect, useRef, useState } from "react";
 import CategoryService from "@/services/CategoryService";
 import SubjectService from "@/services/SubjectService";
+import FileUploadComponent from "@/components/FileUploadComponent";
 
 const CreateResourceForm: React.FC = () => {
   const { t } = useTranslation();
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
+  const [filePath, setFilePath] = useState("");
+  const [thumbNail, setThumbNail] = useState("");
   const [category, setCategory] = useState<Category>();
   const [isVisible, setVisible] = useState(false);
   const subjectsInputRef = useRef<HTMLInputElement | null>(null);
@@ -23,6 +26,8 @@ const CreateResourceForm: React.FC = () => {
 
   const [titleError, setTitleError] = useState<string>("");
   const [descriptionError, setDescriptionError] = useState<string>("");
+  const [filePathError, setFilePathError] = useState("");
+  const [thumbNailError, setThumbNailError] = useState("");
   const [categoryError, setCategoryError] = useState<string>("");
   const [subjectError, setSubjectError] = useState<string>("");
   const [profileIdError, setProfileIdError] = useState<string>("");
@@ -36,6 +41,8 @@ const CreateResourceForm: React.FC = () => {
   const clearErrors = () => {
     setTitleError("");
     setDescriptionError("");
+    setFilePathError("");
+    setThumbNailError("");
     setCategoryError("");
     setSubjectError("");
     setProfileIdError("");
@@ -43,7 +50,12 @@ const CreateResourceForm: React.FC = () => {
   };
 
   const createResource = async () => {
-    const result = await ResourceService.createResource(title, description);
+    const result = await ResourceService.createResource(
+      title,
+      description,
+      filePath,
+      thumbNail
+    );
     const message = result.message;
     const type = result.status;
     setStatusMessages([{ message, type }]);
@@ -177,7 +189,14 @@ const CreateResourceForm: React.FC = () => {
                     setDescription(e.target.value);
                   }}
                 ></textarea>
-
+                <div>
+                  <p className="mt-2 mb-2">File: </p>
+                  <FileUploadComponent callback={setFilePath} />
+                </div>
+                <div>
+                  <p className="mt-2 mb-2">Thumbnail: </p>
+                  <FileUploadComponent callback={setThumbNail} />
+                </div>
                 <div>
                   <label className="mt-2 mb-2">
                     {t("resources.fields.category")}:
