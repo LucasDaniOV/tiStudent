@@ -3,6 +3,7 @@ import { Router, useRouter } from "next/router";
 import React from "react";
 import { useTranslation } from "next-i18next";
 import ResourceService from "@/services/ResourceService";
+import FileDownloadComponent from "../FileDownloadComponent";
 
 type Props = {
   resource: Resource;
@@ -19,7 +20,7 @@ const ResourceInfo: React.FC<Props> = ({
 }: Props) => {
   const { t } = useTranslation();
   const router = useRouter();
-
+  console.log(resource.filePath);
   return (
     <>
       {resource && (
@@ -61,6 +62,9 @@ const ResourceInfo: React.FC<Props> = ({
             <li>
               <strong>{t("resources.fields.user.id")}</strong>{" "}
               {resource.profileId}
+            </li>
+            <li>
+              <FileDownloadComponent fileName={resource.filePath} />
             </li>
           </ul>
           <br />
