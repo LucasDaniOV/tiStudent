@@ -4,10 +4,10 @@ import { ResourceInput } from '../types';
 import profileService from './profile.service';
 
 const createResource = async (resourceInput: ResourceInput): Promise<Resource> => {
-    const { title, description, profileId } = resourceInput;
+    const { title, description, filePath, thumbNail, profileId } = resourceInput;
     Resource.validate(title, description);
     await profileService.getProfileById(profileId);
-    return await resourceDb.createResource(title, description, profileId);
+    return await resourceDb.createResource(title, description, filePath, thumbNail, profileId);
 };
 
 const getAllResources = async (): Promise<any[]> => await resourceDb.getAllResources();
@@ -24,10 +24,10 @@ const getResourcesByProfileId = async (profileId: number): Promise<Resource[]> =
 };
 
 const updateResource = async (id: number, resourceInput: ResourceInput): Promise<Resource> => {
-    const { title, description } = resourceInput;
+    const { title, description, filePath, thumbNail } = resourceInput;
     Resource.validate(title, description);
     await getResourceById(id);
-    return await resourceDb.updateResource(id, title, description);
+    return await resourceDb.updateResource(id, title, description, filePath, thumbNail);
 };
 
 const deleteResource = async (id: number): Promise<Resource> => {

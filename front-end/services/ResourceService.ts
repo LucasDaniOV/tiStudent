@@ -44,7 +44,12 @@ const deleteResourceById = async (resourceId: string) => {
   });
 };
 
-const createResource = async (title: string, description: string) => {
+const createResource = async (
+  title: string,
+  description: string,
+  filePath: string,
+  thumbNail: string
+) => {
   const token = getToken();
 
   const res = await fetch(baseUrl, {
@@ -54,8 +59,10 @@ const createResource = async (title: string, description: string) => {
       Authorization: `Bearer ${token}`,
     },
     body: JSON.stringify({
-      description,
       title,
+      description,
+      filePath,
+      thumbNail,
       profileId: parseInt(
         JSON.parse(sessionStorage.getItem("loggedInUser")!).id || ""
       ),

@@ -6,6 +6,8 @@ export type Resource = {
   updatedAt: Date;
   title: string;
   description: string;
+  filePath: string;
+  thumbNail: string;
   profileId: string;
   categories: Category[];
   subjects: Subject[];

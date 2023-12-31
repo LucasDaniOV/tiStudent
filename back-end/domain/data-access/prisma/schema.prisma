@@ -34,6 +34,8 @@ model Resource {
     updatedAt   DateTime             @updatedAt
     title       String
     description String
+    filePath    String
+    thumbNail   String
     categories  CategoryOnResource[]
     subjects    SubjectOnResource[]
     profileId   Int

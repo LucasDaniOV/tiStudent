@@ -38,6 +38,8 @@ async function main() {
         data: {
             title: 'P1 fundamentals summary',
             description: 'All the important stuff for p1',
+            filePath: 'aple.jpg',
+            thumbNail: 'default-thumbnail.jpg',
             profileId: aliceProfile.id,
         },
     });
@@ -46,6 +48,8 @@ async function main() {
         data: {
             title: 'Full-Stack Software Development Cheat Sheet',
             description: 'All the important stuff for FSSD',
+            filePath: 'aple.jpg',
+            thumbNail: 'default-thumbnail.jpg',
             profileId: satoshi.id,
         },
     });

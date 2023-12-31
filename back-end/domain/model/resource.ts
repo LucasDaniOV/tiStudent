@@ -6,6 +6,8 @@ export class Resource {
     readonly updatedAt: Date;
     readonly title: string;
     readonly description: string;
+    readonly filePath: string;
+    readonly thumbNail: string;
     readonly profileId: number;
 
     constructor(resource: {
@@ -14,6 +16,8 @@ export class Resource {
         updatedAt: Date;
         title: string;
         description: string;
+        filePath: string;
+        thumbNail: string;
         profileId: number;
     }) {
         Resource.validate(resource.title, resource.description);
@@ -22,6 +26,8 @@ export class Resource {
         this.updatedAt = resource.updatedAt;
         this.title = resource.title;
         this.description = resource.description;
+        this.filePath = resource.filePath;
+        this.thumbNail = resource.thumbNail;
         this.profileId = resource.profileId;
     }
 
@@ -32,6 +38,8 @@ export class Resource {
             this.updatedAt === otherResource.updatedAt &&
             this.title === otherResource.title &&
             this.description === otherResource.description &&
+            this.filePath == otherResource.filePath &&
+            this.thumbNail == otherResource.thumbNail &&
             this.profileId === otherResource.profileId
         );
     }
@@ -51,13 +59,24 @@ export class Resource {
         if (description.length > 500) throw new Error('description cannot be longer than 500 characters');
     };
 
-    static from({ id, createdAt, updatedAt, title, description, profileId }: ResourcePrisma): Resource {
+    static from({
+        id,
+        createdAt,
+        updatedAt,
+        title,
+        description,
+        filePath,
+        thumbNail,
+        profileId,
+    }: ResourcePrisma): Resource {
         return new Resource({
             id,
             createdAt,
             updatedAt,
             title,
             description,
+            filePath,
+            thumbNail,
             profileId,
         });
     }

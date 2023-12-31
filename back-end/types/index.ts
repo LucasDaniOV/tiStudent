@@ -9,6 +9,8 @@ type ProfileInput = {
 type ResourceInput = {
     title?: string;
     description?: string;
+    filePath?: string;
+    thumbNail: string;
     profileId?: number;
 };
 

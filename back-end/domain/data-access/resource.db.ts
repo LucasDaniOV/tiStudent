@@ -43,12 +43,20 @@ const include = {
     likes: true,
 };
 
-const createResource = async (title: string, description: string, profileId: number): Promise<Resource> => {
+const createResource = async (
+    title: string,
+    description: string,
+    filePath: string,
+    thumbNail: string,
+    profileId: number
+): Promise<Resource> => {
     try {
         const resourcePrisma = await database.resource.create({
             data: {
                 title,
                 description,
+                filePath,
+                thumbNail,
                 profileId,
             },
         });
@@ -101,7 +109,13 @@ const getResourceById = async (id: number): Promise<any> => {
     }
 };
 
-const updateResource = async (id: number, title: string, description: string): Promise<Resource> => {
+const updateResource = async (
+    id: number,
+    title: string,
+    description: string,
+    filePath: string,
+    thumbNail: string
+): Promise<Resource> => {
     try {
         const resourcePrisma = await database.resource.update({
             where: {
@@ -110,6 +124,8 @@ const updateResource = async (id: number, title: string, description: string): P
             data: {
                 title,
                 description,
+                filePath,
+                thumbNail,
             },
         });
         if (resourcePrisma) return Resource.from(resourcePrisma);
