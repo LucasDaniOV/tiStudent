@@ -14,7 +14,7 @@ const Home: React.FC = () => {
     const user = sessionStorage.getItem("loggedInUser");
     if (user) {
       const profile = await ProfileService.getProfileById(JSON.parse(user).id);
-      setName(profile.username);
+      setName(profile.profile.username);
     }
   };
   useEffect(() => {
