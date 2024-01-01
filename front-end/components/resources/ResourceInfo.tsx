@@ -63,9 +63,6 @@ const ResourceInfo: React.FC<Props> = ({
               <strong>{t("resources.fields.user.id")}</strong>{" "}
               {resource.profileId}
             </li>
-            <li>
-              <FileDownloadComponent fileName={resource.filePath} />
-            </li>
           </ul>
           <br />
         </div>
