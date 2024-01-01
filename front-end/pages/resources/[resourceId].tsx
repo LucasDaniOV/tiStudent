@@ -1,3 +1,4 @@
+import FileDownloadComponent from "@/components/FileDownloadComponent";
 import Header from "@/components/Header";
 import Comments from "@/components/comments/Comments";
 import Likes from "@/components/likes/likes";
@@ -8,7 +9,11 @@ import ResourceService from "@/services/ResourceService";
 import { Category, Profile, Resource, Subject } from "@/types/index";
 import { useTranslation } from "next-i18next";
 import { serverSideTranslations } from "next-i18next/serverSideTranslations";
+import defaultLogo1 from "../../public/images/default-thumbnail1.jpg";
+import defaultLogo2 from "../../public/images/default-thumbnail2.jpg";
+import defaultLogo3 from "../../public/images/default-thumbnail3.jpg";
 import Head from "next/head";
+import Image from "next/image";
 import { useRouter } from "next/router";
 import { FormEvent, useEffect, useState } from "react";
 
@@ -87,6 +92,21 @@ const ReadResourceById = () => {
         <div className="flex flex-row">
           <section className="flex flex-row w-screen m-auto">
             <>
+              {resource && (
+                <Image
+                  src={
+                    resource.thumbNail == "default-thumbnail1.jpg"
+                      ? defaultLogo1
+                      : resource.thumbNail == "default-thumbnail2.jpg"
+                      ? defaultLogo2
+                      : defaultLogo3
+                  }
+                  width={150}
+                  height={100}
+                  alt="Thumbnail"
+                />
+              )}
+
               {resource && profile && (
                 <Likes
                   profileId={profile.id}
@@ -102,6 +122,9 @@ const ReadResourceById = () => {
                   categories={categories}
                   creator={creator}
                 ></ResourceInfo>
+              )}
+              {resource && (
+                <FileDownloadComponent fileName={resource.filePath} />
               )}
             </>
           </section>
