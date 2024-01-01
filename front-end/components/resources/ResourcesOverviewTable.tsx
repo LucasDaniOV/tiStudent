@@ -1,9 +1,9 @@
+import ProfileService from "@/services/ProfileService";
 import ResourceService from "@/services/ResourceService";
 import { useTranslation } from "next-i18next";
 import { useRouter } from "next/router";
 import React, { MouseEvent, useEffect, useState } from "react";
 import { Profile, Resource } from "../../types";
-import ProfileService from "@/services/ProfileService";
 
 type Props = {
   resources: any[];
@@ -39,10 +39,10 @@ const ResourceOverviewTable: React.FC<Props> = ({ resources }: Props) => {
   const checkAuthority = async (e: MouseEvent, resource: Resource) => {
     e.stopPropagation();
     e.preventDefault();
-    if (profile?.role === "admin") {
+    if (profile?.role === "ADMIN") {
       deleteResource(resource);
     } else {
-      if (profile?.id === resource.creator.id) {
+      if (profile?.id === resource.profileId) {
         deleteResource(resource);
       } else {
         confirm("You are not the creator of this Resource.");
