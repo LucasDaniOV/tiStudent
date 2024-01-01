@@ -1,12 +1,12 @@
-import { serverSideTranslations } from "next-i18next/serverSideTranslations";
 import Header from "@/components/Header";
 import ProfileInfo from "@/components/profiles/ProfileInfo";
 import ProfileService from "@/services/ProfileService";
 import { Profile } from "@/types";
+import { useTranslation } from "next-i18next";
+import { serverSideTranslations } from "next-i18next/serverSideTranslations";
 import Head from "next/head";
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
-import { useTranslation } from "next-i18next";
 
 const ReadProfileById = () => {
   const [profile, setProfile] = useState<Profile>();

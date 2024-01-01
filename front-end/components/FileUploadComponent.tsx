@@ -1,6 +1,5 @@
 import { getToken } from "@/util/token";
-import { useRouter } from "next/router";
-import React, { useState, ChangeEvent } from "react";
+import React, { ChangeEvent, useState } from "react";
 
 type Props = {
   callback: Function;

@@ -1,9 +1,7 @@
 import { Category, Profile, Resource, Subject } from "@/types";
-import { Router, useRouter } from "next/router";
-import React from "react";
 import { useTranslation } from "next-i18next";
-import ResourceService from "@/services/ResourceService";
-import FileDownloadComponent from "../FileDownloadComponent";
+import { useRouter } from "next/router";
+import React from "react";
 
 type Props = {
   resource: Resource;

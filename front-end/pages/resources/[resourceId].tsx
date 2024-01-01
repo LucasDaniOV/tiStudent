@@ -9,13 +9,13 @@ import ResourceService from "@/services/ResourceService";
 import { Category, Profile, Resource, Subject } from "@/types/index";
 import { useTranslation } from "next-i18next";
 import { serverSideTranslations } from "next-i18next/serverSideTranslations";
-import defaultLogo1 from "../../public/images/default-thumbnail1.jpg";
-import defaultLogo2 from "../../public/images/default-thumbnail2.jpg";
-import defaultLogo3 from "../../public/images/default-thumbnail3.jpg";
 import Head from "next/head";
 import Image from "next/image";
 import { useRouter } from "next/router";
 import { FormEvent, useEffect, useState } from "react";
+import defaultLogo1 from "../../public/images/default-thumbnail1.jpg";
+import defaultLogo2 from "../../public/images/default-thumbnail2.jpg";
+import defaultLogo3 from "../../public/images/default-thumbnail3.jpg";
 
 const ReadResourceById = () => {
   const { t } = useTranslation();

@@ -1,6 +1,4 @@
 import { getToken } from "@/util/token";
-import ProfileService from "./ProfileService";
-import { Like } from "@/types";
 
 const baseUrl = process.env.NEXT_PUBLIC_API_URL + "/like";
 

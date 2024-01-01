@@ -1,12 +1,11 @@
 import CommentService from "@/services/CommentService";
 import ProfileService from "@/services/ProfileService";
-import ResourceService from "@/services/ResourceService";
 import { Comment, Profile } from "@/types";
 import { getToken } from "@/util/token";
+import { useTranslation } from "next-i18next";
 import { useRouter } from "next/router";
 import React, { useEffect, useState } from "react";
 import Likes from "../likes/likes";
-import { useTranslation } from "next-i18next";
 
 type Props = {
   resourceId: string;

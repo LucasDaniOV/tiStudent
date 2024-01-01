@@ -1,6 +1,5 @@
-import { Profile, Comment, Resource, Category, Subject } from "@/types";
-import ProfileService from "./ProfileService";
-import { getAll, getById } from "@/util/get";
+import { Category, Comment, Resource, Subject } from "@/types";
+import { getById } from "@/util/get";
 import { getToken } from "@/util/token";
 
 const baseUrl = process.env.NEXT_PUBLIC_API_URL + "/resources";

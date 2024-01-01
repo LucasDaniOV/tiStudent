@@ -1,6 +1,5 @@
 import ProfileService from "@/services/ProfileService";
 import { StatusMessage } from "@/types";
-import { getToken } from "@/util/token";
 import { useTranslation } from "next-i18next";
 import { useRouter } from "next/router";
 import React, { FormEvent, useState } from "react";

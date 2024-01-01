@@ -1,4 +1,3 @@
-import CommentService from "@/services/CommentService";
 import LikeService from "@/services/LikeService";
 import { Like } from "@/types";
 import { useEffect, useState } from "react";

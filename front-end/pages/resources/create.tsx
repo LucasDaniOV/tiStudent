@@ -1,17 +1,16 @@
-import Subjects from "@/components/Subjects";
+import FileUploadComponent from "@/components/FileUploadComponent";
 import Header from "@/components/Header";
-import ProfileService from "@/services/ProfileService";
+import Subjects from "@/components/Subjects";
+import Thumbnails from "@/components/Thumbnails";
+import CategoryService from "@/services/CategoryService";
 import ResourceService from "@/services/ResourceService";
-import { Category, StatusMessage, Subject } from "@/types";
+import SubjectService from "@/services/SubjectService";
+import { Category, StatusMessage } from "@/types";
 import { useTranslation } from "next-i18next";
 import { serverSideTranslations } from "next-i18next/serverSideTranslations";
 import Head from "next/head";
 import { useRouter } from "next/router";
 import React, { FormEvent, useEffect, useRef, useState } from "react";
-import CategoryService from "@/services/CategoryService";
-import SubjectService from "@/services/SubjectService";
-import FileUploadComponent from "@/components/FileUploadComponent";
-import Thumbnails from "@/components/Thumbnails";
 
 const CreateResourceForm: React.FC = () => {
   const { t } = useTranslation();

@@ -1,6 +1,5 @@
 import { getAll } from "@/util/get";
 import { getToken } from "@/util/token";
-import { Profile } from "../types";
 
 const baseUrl = process.env.NEXT_PUBLIC_API_URL + "/profiles";
 const type = "profiles";

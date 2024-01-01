@@ -1,9 +1,8 @@
-import { Subject } from "@/types";
+import Image from "next/image";
 import React from "react";
 import th1 from "../public/images/default-thumbnail1.jpg";
 import th2 from "../public/images/default-thumbnail2.jpg";
 import th3 from "../public/images/default-thumbnail3.jpg";
-import Image from "next/image";
 
 type Props = {
   visible: boolean;

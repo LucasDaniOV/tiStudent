@@ -1,7 +1,7 @@
+import { useTranslation } from "next-i18next";
 import Link from "next/link";
 import React, { useEffect, useState } from "react";
 import Language from "./Language";
-import { useTranslation } from "next-i18next";
 
 type Props = {
   current: string;

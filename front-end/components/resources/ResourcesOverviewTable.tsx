@@ -1,8 +1,8 @@
 import ResourceService from "@/services/ResourceService";
+import { useTranslation } from "next-i18next";
 import { useRouter } from "next/router";
 import React, { MouseEvent } from "react";
 import { Resource } from "../../types";
-import { useTranslation } from "next-i18next";
 
 type Props = {
   resources: any[];

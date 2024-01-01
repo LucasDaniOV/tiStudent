@@ -1,8 +1,8 @@
 import ProfileService from "@/services/ProfileService";
 import { Profile } from "@/types";
+import { useTranslation } from "next-i18next";
 import { useRouter } from "next/router";
 import { MouseEvent } from "react";
-import { useTranslation } from "next-i18next";
 
 type Props = {
   profiles: Array<Profile>;

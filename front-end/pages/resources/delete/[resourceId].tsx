@@ -1,12 +1,12 @@
-import { serverSideTranslations } from "next-i18next/serverSideTranslations";
 import Header from "@/components/Header";
 import ResourceService from "@/services/ResourceService";
+import { Resource } from "@/types/index";
+import { useTranslation } from "next-i18next";
+import { serverSideTranslations } from "next-i18next/serverSideTranslations";
 import Head from "next/head";
+import Link from "next/link";
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
-import { Resource } from "@/types/index";
-import Link from "next/link";
-import { useTranslation } from "next-i18next";
 
 const DeleteResourceById = () => {
   const [resource, setResource] = useState<Resource>();
