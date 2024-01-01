@@ -1,6 +1,5 @@
 import ProfileService from "@/services/ProfileService";
 import { StatusMessage } from "@/types";
-import { getToken } from "@/util/token";
 import { useTranslation } from "next-i18next";
 import { useRouter } from "next/router";
 import React, { FormEvent, useState } from "react";
@@ -64,26 +63,20 @@ const ProfileCreateForm: React.FC = () => {
   };
 
   const createProfile = async () => {
-    const existingProfile = await ProfileService.checkProfileExists(email);
-    if (existingProfile.status === true) {
-      setStatusMessages([{ message: t("email.linked"), type: "error" }]);
-    } else {
-      const res = await ProfileService.createProfile(
-        email,
-        password,
-        "user",
-        username,
-        bio
-      );
-      const profileObject = await ProfileService.loginUser(email, password);
-      const profile = await profileObject.json();
-      console.log(profile);
-      sessionStorage.setItem("loggedInUser", JSON.stringify(profile));
-      const message = res.message;
-      const type = res.status;
-      setStatusMessages([{ message, type }]);
-      router.push("/");
-    }
+    const res = await ProfileService.createProfile(
+      email,
+      password,
+      "USER",
+      username,
+      bio
+    );
+    const profileObject = await ProfileService.loginUser(email, password);
+    const profile = await profileObject.json();
+    sessionStorage.setItem("loggedInUser", JSON.stringify(profile));
+    const message = res.message;
+    const type = res.status;
+    setStatusMessages([{ message, type }]);
+    router.push("/");
   };
 
   const handleSubmit = async (e: FormEvent) => {

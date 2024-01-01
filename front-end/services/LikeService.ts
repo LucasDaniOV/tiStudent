@@ -1,6 +1,4 @@
-import { Like } from "@/types";
 import { getToken } from "@/util/token";
-import ProfileService from "./ProfileService";
 
 const baseUrl = process.env.NEXT_PUBLIC_API_URL + "/like";
 
@@ -30,31 +28,30 @@ const getAllLikesOnComment = async (commentId: string) => {
 
 const likeResource = async (profileId: string, resourceId: string) => {
   const token = getToken();
-  const res = await fetch(baseUrl + `/${profileId}/resource/${resourceId}`, {
+  const res = await fetch(process.env.NEXT_PUBLIC_API_URL + `/resourcelikes`, {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
       Authorization: `Bearer ${token}`,
     },
+    body: JSON.stringify({ profileId, resourceId }),
   });
   return await res.json();
 };
+
 const likeComment = async (
   profileId: string,
-  resourceId: string,
   commentId: string
 ) => {
   const token = getToken();
-  const res = await fetch(
-    baseUrl + `/${profileId}/resource/${resourceId}/comment/${commentId}`,
-    {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${token}`,
-      },
-    }
-  );
+  const res = await fetch(process.env.NEXT_PUBLIC_API_URL + `/commentlikes`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${token}`,
+    },
+    body: JSON.stringify({ profileId, commentId }),
+  });
   return await res.json();
 };
 
@@ -64,27 +61,34 @@ const unLike = async (
   profileId: string
 ) => {
   const token = getToken();
-  let likeId = "";
-  const likes = await ProfileService.getLikesByProfile(profileId);
-  if (object == "resource") {
-    const like = likes.find(
-      (l) => l.comment == null && l.resource.id == objectId
+
+  if (object === "resource") {
+    const res = await fetch(
+      process.env.NEXT_PUBLIC_API_URL +
+        `/resourcelikes?resourceId=${objectId}&profileId=${profileId}`,
+      {
+        method: "DELETE",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+      }
     );
-    if (like) likeId = like?.id;
-  } else {
-    const like = likes.find(
-      (l) => l.comment !== null && l.comment!.id == objectId
+    return await res.json();
+  } else if (object === "comment") {
+    const res = await fetch(
+      process.env.NEXT_PUBLIC_API_URL +
+        `/commentlikes?commentId=${objectId}&profileId=${profileId}`,
+      {
+        method: "DELETE",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+      }
     );
-    if (like) likeId = like?.id;
+    return await res.json();
   }
-  const res = await fetch(baseUrl + `/${profileId}/${likeId}`, {
-    method: "DELETE",
-    headers: {
-      "Content-Type": "application/json",
-      Authorization: `Bearer ${token}`,
-    },
-  });
-  return await res.json();
 };
 
 const LikeService = {

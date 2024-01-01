@@ -1,8 +1,11 @@
+import FileUploadComponent from "@/components/FileUploadComponent";
+import Header from "@/components/Header";
 import Subjects from "@/components/Subjects";
-import Header from "@/components/header";
-import ProfileService from "@/services/ProfileService";
+import Thumbnails from "@/components/Thumbnails";
+import CategoryService from "@/services/CategoryService";
 import ResourceService from "@/services/ResourceService";
-import { StatusMessage } from "@/types";
+import SubjectService from "@/services/SubjectService";
+import { Category, StatusMessage } from "@/types";
 import { useTranslation } from "next-i18next";
 import { serverSideTranslations } from "next-i18next/serverSideTranslations";
 import Head from "next/head";
@@ -13,14 +16,20 @@ const CreateResourceForm: React.FC = () => {
   const { t } = useTranslation();
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
-  const [category, setCategory] = useState("");
-  const [isVisible, setVisible] = useState(false);
+  const [filePath, setFilePath] = useState("");
+  const [thumbNail, setThumbNail] = useState("");
+  const [category, setCategory] = useState<Category>();
+  const [subjectsIsVisible, setSubjectVisible] = useState(false);
+  const [thumbnailIsVisible, setThumbnailsVisible] = useState(false);
   const subjectsInputRef = useRef<HTMLInputElement | null>(null);
+  const thumbnailsInputRef = useRef<HTMLInputElement | null>(null);
   const [subject, setSubject] = useState("");
   const [profileId, setProfileId] = useState<string>("");
 
   const [titleError, setTitleError] = useState<string>("");
   const [descriptionError, setDescriptionError] = useState<string>("");
+  const [filePathError, setFilePathError] = useState("");
+  const [thumbNailError, setThumbNailError] = useState("");
   const [categoryError, setCategoryError] = useState<string>("");
   const [subjectError, setSubjectError] = useState<string>("");
   const [profileIdError, setProfileIdError] = useState<string>("");
@@ -28,37 +37,91 @@ const CreateResourceForm: React.FC = () => {
   const [statusMessages, setStatusMessages] = useState<StatusMessage[]>([]);
   const router = useRouter();
 
+  const [categories, setCategories] = useState([]);
+  const [subjects, setSubjects] = useState([]);
+
   const clearErrors = () => {
     setTitleError("");
     setDescriptionError("");
+    setFilePathError("");
+    setThumbNailError("");
     setCategoryError("");
     setSubjectError("");
     setProfileIdError("");
     setStatusMessages([]);
   };
 
-  //validate komt nog
-  // const validate = () => {}
-
   const createResource = async () => {
-    if (profileId) {
-      const result = await ResourceService.createResource(
-        profileId,
-        title,
-        description,
-        category,
-        subject
-      );
-      const message = result.message;
-      const type = result.status;
-      setStatusMessages([{ message, type }]);
-    }
+    const result = await ResourceService.createResource(
+      title,
+      description,
+      filePath,
+      thumbNail ? thumbNail : "default-thumbnail1.jpg"
+    );
+    const message = result.message;
+    const type = result.status;
+    setStatusMessages([{ message, type }]);
+    if (!result.resource) return;
+
+    const categoryOnResource = await CategoryService.addCategoryToResource(
+      result.resource.id,
+      category!.id
+    );
+    setStatusMessages([
+      ...statusMessages,
+      { message: categoryOnResource.message, type: categoryOnResource.status },
+    ]);
+
+    if (!categoryOnResource) return;
+
+    const subjectYo = await SubjectService.getSubjectIdByName(subject);
+    setStatusMessages([
+      ...statusMessages,
+      { message: subjectYo.message, type: subjectYo.status },
+    ]);
+
+    if (!subjectYo) return;
+
+    const subjectId = subjectYo.subject.id;
+
+    const subjectOnResource = await SubjectService.addSubjectToResource(
+      result.resource.id,
+      subjectId
+    );
+    setStatusMessages([
+      ...statusMessages,
+      { message: subjectOnResource.message, type: subjectOnResource.status },
+    ]);
   };
 
   const handleSubmit = (e: FormEvent) => {
     e.preventDefault();
     clearErrors();
-    // if (!validate()) return;
+
+    if (!category) {
+      setCategoryError("Category is required");
+      return;
+    }
+
+    if (!subject) {
+      setSubjectError("Subject is required");
+      return;
+    }
+    if (!title) {
+      setTitleError("Title is required");
+      return;
+    }
+
+    if (!description) {
+      setDescriptionError("Description is required");
+      return;
+    }
+
+    if (!filePath) {
+      setFilePathError("File is required");
+      return;
+    }
+
     createResource();
     router.push("/resources");
   };
@@ -69,7 +132,15 @@ const CreateResourceForm: React.FC = () => {
         subjectsInputRef.current &&
         !subjectsInputRef.current.contains(event.target as Node)
       ) {
-        setVisible(false);
+        setSubjectVisible(false);
+      }
+    }
+    if (thumbnailsInputRef) {
+      if (
+        thumbnailsInputRef.current &&
+        !thumbnailsInputRef.current.contains(event.target as Node)
+      ) {
+        setThumbnailsVisible(false);
       }
     }
   };
@@ -80,13 +151,27 @@ const CreateResourceForm: React.FC = () => {
     setProfileId(JSON.parse(user).id);
   };
 
+  const getCategories = async () => {
+    const response = await CategoryService.getAllCategories();
+    setCategories(response.categories);
+  };
+
+  const getSubjects = async () => {
+    const response = await SubjectService.getAllSubjects();
+    setSubjects(response.subjects);
+  };
+
   useEffect(() => {
+    if (!categories || categories.length === 0) getCategories();
+    if (!subjects || subjects.length === 0) getSubjects();
+
     document.addEventListener("click", handleOutsideClicks);
     () => {
       document.removeEventListener("click", handleOutsideClicks);
     };
     setUser();
-  }, [profileId]);
+  }, [profileId, categories, subjects]);
+
   return (
     <>
       <Head>
@@ -119,47 +204,49 @@ const CreateResourceForm: React.FC = () => {
                     setDescription(e.target.value);
                   }}
                 ></textarea>
-                <label className="mt-2 mb-2">
-                  {t("resources.fields.category")}:
-                </label>
                 <div>
-                  <input
-                    type="radio"
-                    id="summary"
-                    name="category"
-                    value={"Summary"}
-                    className="mr-2"
-                    onChange={(e) => setCategory(e.target.value)}
-                  />
-                  <label className="mt-2 mb-2" htmlFor="summary">
-                    {t("resources.fields.summary")}
-                  </label>
+                  <p className="mt-2 mb-2">File: </p>
+                  <FileUploadComponent callback={setFilePath} />
                 </div>
                 <div>
                   <input
-                    type="radio"
-                    id="cheat-sheet"
-                    name="category"
-                    value={"Cheat Sheet"}
-                    className="mr-2"
-                    onChange={(e) => setCategory(e.target.value)}
+                    type="search"
+                    id="thumbnail"
+                    onFocus={() => setThumbnailsVisible(true)}
+                    ref={thumbnailsInputRef}
+                    value={thumbNail}
+                    className="pl-2"
+                    placeholder="Thumbnail..."
+                    onChange={(e) => setThumbNail(e.target.value)}
                   />
-                  <label className="mt-2 mb-2" htmlFor="cheat-sheet">
-                    {t("resources.fields.cheat.sheet")}
-                  </label>
+                  {thumbnailIsVisible && (
+                    <Thumbnails
+                      visible={thumbnailIsVisible}
+                      func={setThumbNail}
+                    />
+                  )}
                 </div>
                 <div>
-                  <input
-                    type="radio"
-                    id="lecture-notes"
-                    name="category"
-                    value={"Lecture Notes"}
-                    className="mr-2"
-                    onChange={(e) => setCategory(e.target.value)}
-                  />
-                  <label className="mt-2 mb-2" htmlFor="lecture-notes">
-                    {t("resources.fields.lecture.notes")}
+                  <label className="mt-2 mb-2">
+                    {t("resources.fields.category")}:
                   </label>
+                  {categories.map((category: Category) => {
+                    return (
+                      <div key={category.id}>
+                        <input
+                          type="radio"
+                          id={category.name}
+                          name="category"
+                          value={category.name}
+                          className="mr-2"
+                          onChange={(e) => setCategory(category)}
+                        />
+                        <label className="mt-2 mb-2" htmlFor={category.name}>
+                          {category.name}
+                        </label>
+                      </div>
+                    );
+                  })}
                 </div>
                 <label className="mt-2 mb-2" htmlFor="subject">
                   {t("resources.fields.subject")}
@@ -167,23 +254,26 @@ const CreateResourceForm: React.FC = () => {
                 <input
                   type="search"
                   id="subject"
-                  onFocus={() => setVisible(true)}
+                  onFocus={() => setSubjectVisible(true)}
                   ref={subjectsInputRef}
                   value={subject}
                   className="pl-2"
                   placeholder="Subject..."
                   onChange={(e) => setSubject(e.target.value)}
                 />
-                {isVisible && (
+                {subjectsIsVisible && (
                   <Subjects
-                    visible={isVisible}
+                    visible={subjectsIsVisible}
                     func={setSubject}
                     filter={subject}
+                    subjects={subjects}
                   />
                 )}
                 {profileIdError && <div>{profileIdError}</div>}
                 {titleError && <div>{titleError}</div>}
                 {descriptionError && <div>{descriptionError}</div>}
+                {filePathError && <div>{filePathError}</div>}
+                {thumbNailError && <div>{thumbNailError}</div>}
                 {categoryError && <div>{categoryError}</div>}
                 {subjectError && <div>{subjectError}</div>}
                 <button

@@ -1,29 +1,34 @@
-import CommentService from "@/services/CommentService";
 import LikeService from "@/services/LikeService";
 import { Like } from "@/types";
 import { useEffect, useState } from "react";
 
 type Props = {
   profileId: string;
-  id: string;
   object: "resource" | "comment";
+  likesObjects: Like[];
+  commentId?: string;
+  resourceId: string;
 };
 
-const Likes: React.FC<Props> = ({ profileId, id, object }: Props) => {
+const Likes: React.FC<Props> = ({
+  profileId,
+  object,
+  likesObjects,
+  commentId,
+  resourceId,
+}: Props) => {
   const [clicked, setClicked] = useState<"up" | undefined>(undefined);
   const [likes, setLikes] = useState<number>(0);
   const getLikes = async () => {
     if (object == "resource") {
-      const resourceLikes = await LikeService.getAllLikesOnResource(id);
-      setLikes(resourceLikes.data.length);
-      const likers = resourceLikes.data.map((l: Like) => l.profile.id);
+      setLikes(likesObjects.length);
+      const likers = likesObjects.map((l: Like) => l.profileId);
       if (likers.includes(profileId)) {
         setClicked("up");
       }
     } else {
-      const commentLikes = await LikeService.getAllLikesOnComment(id);
-      setLikes(commentLikes.data.length);
-      const likers = commentLikes.data.map((l: Like) => l.profile.id);
+      setLikes(likesObjects.length);
+      const likers = likesObjects.map((l: Like) => l.profileId);
       if (likers.includes(profileId)) {
         setClicked("up");
       }
@@ -42,22 +47,19 @@ const Likes: React.FC<Props> = ({ profileId, id, object }: Props) => {
     if (clicked == "up") {
       setLikes(likes - 1);
       if (object == "resource") {
-        await LikeService.unLike("resource", id, profileId);
+        await LikeService.unLike("resource", resourceId, profileId);
       } else {
-        await LikeService.unLike("comment", id, profileId);
+        await LikeService.unLike("comment", commentId!, profileId);
       }
       setClicked(undefined);
       //remove like
     } else {
-      console.log("up");
       setLikes(likes + 1);
       setClicked("up");
       if (object == "resource") {
-        await LikeService.likeResource(profileId, id);
+        await LikeService.likeResource(profileId, resourceId);
       } else {
-        const comment = await CommentService.getCommentById(id);
-        const resourceId = comment.resource.id;
-        await LikeService.likeComment(profileId, resourceId, id);
+        await LikeService.likeComment(profileId, commentId!);
       }
     }
   };

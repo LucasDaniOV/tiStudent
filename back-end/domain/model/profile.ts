@@ -2,48 +2,55 @@ import { Profile as ProfilePrisma } from '@prisma/client';
 import { Role } from '../../types';
 
 export class Profile {
-    readonly id?: number;
+    readonly id: number;
+    readonly createdAt: Date;
+    readonly updatedAt: Date;
+    readonly latestActivity: Date;
     readonly email: string;
-    readonly password: string;
-    readonly role?: Role;
     readonly username: string;
+    readonly password: string;
+    readonly role: Role;
     readonly bio?: string;
-    readonly createdAt?: Date;
-    readonly latestActivity?: Date;
 
     constructor(profile: {
-        id?: number;
+        id: number;
+        createdAt: Date;
+        updatedAt: Date;
+        latestActivity: Date;
         email: string;
-        password: string;
-        role?: Role;
         username: string;
+        password: string;
+        role: Role;
         bio?: string;
-        createdAt?: Date;
-        latestActivity?: Date;
     }) {
-        Profile.validateUsername(profile.username);
-        Profile.validateEmail(profile.email);
-        Profile.validatePassword(profile.password);
-        Profile.validateRole(profile.role);
-        Profile.validateBio(profile.bio);
+        Profile.validate(profile.email, profile.username, profile.password, profile.role, profile.bio);
         this.id = profile.id;
+        this.createdAt = profile.createdAt;
+        this.updatedAt = profile.updatedAt;
+        this.latestActivity = profile.latestActivity;
         this.email = profile.email;
+        this.username = profile.username;
         this.password = profile.password;
         this.role = profile.role;
-        this.username = profile.username;
         this.bio = profile.bio;
-        this.createdAt = profile.createdAt ? profile.createdAt : new Date();
-        this.latestActivity = profile.latestActivity ? profile.latestActivity : this.createdAt;
     }
 
-    equals(otherProfile: { email: string; password: string; role?: Role; username: string; bio?: string }): boolean {
+    equals(otherProfile: { email: string; password: string; role: Role; username: string; bio?: string }): boolean {
         return (
             this.email === otherProfile.email &&
+            this.username === otherProfile.username &&
             this.password === otherProfile.password &&
             this.role === otherProfile.role &&
-            this.username === otherProfile.username &&
             this.bio === otherProfile.bio
         );
+    }
+
+    static validate(email: string, username: string, password: string, role: Role, bio?: string): void {
+        Profile.validateEmail(email);
+        Profile.validateUsername(username);
+        Profile.validatePassword(password);
+        Profile.validateRole(role);
+        Profile.validateBio(bio);
     }
 
     static validateEmail = (email: string): void => {
@@ -62,9 +69,9 @@ export class Profile {
     };
 
     static validateRole = (role: Role): void => {
-        if (role == null) return;
-        if (!['admin', 'user', 'guest'].includes(role))
-            throw new Error('Role must be one of "admin", "user", or "guest"');
+        if (!['ADMIN', 'USER'].includes(role)) {
+            throw new Error('Role must be one of "ADMIN", "USER"');
+        }
     };
 
     static validateUsername = (username: string): void => {
@@ -76,16 +83,27 @@ export class Profile {
         if (bio != null && bio.length > 200) throw new Error('Bio cannot be longer than 200 characters');
     };
 
-    static from({ id, email, password, role, username, bio, createdAt, latestActivity }: ProfilePrisma): Profile {
+    static from({
+        id,
+        createdAt,
+        updatedAt,
+        latestActivity,
+        email,
+        username,
+        password,
+        role,
+        bio,
+    }: ProfilePrisma): Profile {
         return new Profile({
             id,
-            email,
-            password,
-            role: role as Role,
-            username,
-            bio,
-            createdAt: createdAt ? createdAt : new Date(),
+            createdAt,
+            updatedAt,
             latestActivity,
+            email,
+            username,
+            password,
+            role,
+            bio,
         });
     }
 }

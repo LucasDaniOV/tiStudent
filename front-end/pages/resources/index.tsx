@@ -1,4 +1,5 @@
-import Header from "@/components/header";
+import Header from "@/components/Header";
+import { useTranslation } from "next-i18next";
 import { serverSideTranslations } from "next-i18next/serverSideTranslations";
 import Head from "next/head";
 import Link from "next/link";
@@ -7,7 +8,6 @@ import useSWR, { mutate } from "swr";
 import useInterval from "use-interval";
 import ResourcesOverviewTable from "../../components/resources/ResourcesOverviewTable";
 import ResourceService from "../../services/ResourceService";
-import { useTranslation } from "next-i18next";
 
 const Resources: React.FC = () => {
   const [authorized, setAuthorized] = useState<boolean>(false);
@@ -19,7 +19,7 @@ const Resources: React.FC = () => {
       return;
     }
     setAuthorized(true);
-    return response;
+    return response.resources;
   };
 
   const { data, isLoading, error } = useSWR("resources", getResources);

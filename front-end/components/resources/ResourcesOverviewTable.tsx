@@ -1,12 +1,12 @@
 import ResourceService from "@/services/ResourceService";
+import { useTranslation } from "next-i18next";
 import { useRouter } from "next/router";
 import React, { MouseEvent, useEffect, useState } from "react";
 import { Profile, Resource } from "../../types";
-import { useTranslation } from "next-i18next";
 import ProfileService from "@/services/ProfileService";
 
 type Props = {
-  resources: Array<Resource>;
+  resources: any[];
 };
 const ResourceOverviewTable: React.FC<Props> = ({ resources }: Props) => {
   const [profile, setProfile] = useState<Profile>();
@@ -49,6 +49,7 @@ const ResourceOverviewTable: React.FC<Props> = ({ resources }: Props) => {
       }
     }
   };
+
   return (
     <>
       {resources && (
@@ -91,12 +92,20 @@ const ResourceOverviewTable: React.FC<Props> = ({ resources }: Props) => {
                 }}
               >
                 <td className="border p-4">{resource.id}</td>
-                <td className="border p-4">{resource.creator.id}</td>
+                <td className="border p-4">{resource.profileId}</td>
                 <td className="border p-4">{String(resource.createdAt)}</td>
                 <td className="border p-4">{resource.title}</td>
                 <td className="border p-4">{resource.description}</td>
-                <td className="border p-4">{resource.category}</td>
-                <td className="border p-4">{resource.subject}</td>
+                <td className="border p-4">
+                  {resource.categories.map((category: any) => {
+                    return category.category.name;
+                  })}
+                </td>
+                <td className="border p-4">
+                  {resource.subjects.map((subject: any) => {
+                    return subject.subject.name;
+                  })}
+                </td>
                 <td
                   className="border p-4"
                   onClick={(e) => checkAuthority(e, resource)}

@@ -1,0 +1,1907 @@
+openapi: 3.0.0
+
+servers:
+  - description: local
+    url: http://localhost:3000/
+  - description: WIP
+    url: https://api.tistudent.com/v1
+
+info:
+  description: tiStudent API
+  version: "1.0.0"
+  title: tiStudent API
+  contact:
+    email: contact@tistudent.com
+  license:
+    name: Apache 2.0
+    url: 'http://www.apache.org/licenses/LICENSE-2.0.html'
+
+tags:
+  - name: profiles
+  - name: resources
+  - name: categories
+  - name: subjects
+  - name: categories-on-resources
+  - name: subjects-on-resources
+  - name: comments
+  - name: resourcelikes
+  - name: commentlikes
+
+security:
+  - BearerAuth: []
+
+paths:
+  /signin:
+    post:
+      tags:
+        - profiles
+      summary: signin
+      description: |
+        Authenticate profile with email and password
+      requestBody:
+        $ref: '#/components/requestBodies/Signin'
+      responses:
+        '200':
+          $ref: '#/components/responses/Authenicated'
+        '400':
+          $ref: '#/components/responses/ApplicationError'      
+
+  /signup:
+    post:
+      tags:
+        - profiles
+      summary: signup
+      description: |
+        Create a new profile
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ProfileInput'
+      responses:
+        '200':
+          description: profile created
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: 'success'
+                  message:
+                    type: string
+                    example: 'profile created'
+                  profile:
+                    $ref: '#/components/schemas/Profile'
+        '400':
+          $ref: '#/components/responses/ApplicationError'
+
+  /profiles:
+    get:
+      tags:
+        - profiles
+      summary: get profiles
+      description: |
+        Get all profiles
+      responses:
+        '200':
+          description: profiles found
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: 'success'
+                  message:
+                    type: string
+                    example: 'profiles found'
+                  profiles:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Profile'
+        '400':
+          $ref: '#/components/responses/ApplicationError'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+
+  /profiles/{id}:
+    get:
+      tags:
+        - profiles
+      summary: get profile
+      description: |
+        Get profile by id
+      parameters:
+        - name: id
+          in: path
+          description: profile id
+          required: true
+          schema:
+            type: integer
+            example: 1
+      responses:
+        '200':
+          description: profile found
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: 'success'
+                  message:
+                    type: string
+                    example: 'profile found'
+                  profile:
+                    $ref: '#/components/schemas/Profile'
+        '400':
+          $ref: '#/components/responses/ApplicationError'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+
+    put:
+      tags:
+        - profiles
+      summary: update profile
+      description: |
+        Update profile by id
+      parameters:
+        - name: id
+          in: path
+          description: profile id
+          required: true
+          schema:
+            type: integer
+            example: 1
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ProfileInput'
+      responses:
+        '200':
+          description: profile updated
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: 'success'
+                  message:
+                    type: string
+                    example: 'profile updated'
+                  updatedProfile:
+                    $ref: '#/components/schemas/Profile'
+        '400':
+          $ref: '#/components/responses/ApplicationError'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+
+    delete:
+      tags:
+        - profiles
+      summary: delete profile
+      description: |
+        Delete profile by id
+      parameters:
+        - name: id
+          in: path
+          description: profile id
+          required: true
+          schema:
+            type: integer
+            example: 1
+      responses:
+        '200':
+          description: profile deleted
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: 'success'
+                  message:
+                    type: string
+                    example: 'profile deleted'
+                  deletedProfile:
+                    $ref: '#/components/schemas/Profile'
+        '400':
+          $ref: '#/components/responses/ApplicationError'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+
+  /profiles/{id}/likes:
+    get:
+      tags:
+        - profiles
+      summary: get profile likes
+      description: |
+        Get profile likes by id
+      parameters:
+        - name: id
+          in: path
+          description: profile id
+          required: true
+          schema:
+            type: integer
+            example: 1
+      responses:
+        '200':
+          description: profile likes found
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: 'success'
+                  message:
+                    type: string
+                    example: 'likes created by profile'
+                  profile:
+                    type: object
+                    properties:
+                      id:
+                        type: integer
+                        example: 1
+                      username:
+                        type: string
+                        example: 'JJ'
+                      resourcelikes:
+                        type: array
+                        items:
+                          $ref: '#/components/schemas/ResourceLike'
+                      commentlikes:
+                        type: array
+                        items:
+                          $ref: '#/components/schemas/CommentLike'
+        '400':
+          $ref: '#/components/responses/ApplicationError'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+
+  /resources:
+    post:
+      tags:
+        - resources
+      summary: create resource
+      description: |
+        Create a new resource
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ResourceInput'
+      responses:
+        '200':
+          description: resource created
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: 'success'
+                  message:
+                    type: string
+                    example: 'resource created'
+                  resource:
+                    $ref: '#/components/schemas/Resource'
+        '400':
+          $ref: '#/components/responses/ApplicationError'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+
+    get:
+      tags:
+        - resources
+      summary: get resources
+      description: |
+        Get all resources
+      parameters:
+        - in: query
+          name: profileId
+          description: get resources by profileId
+          schema:
+            type: integer
+            example: 1
+      responses:
+        '200':
+          description: resources found
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: 'success'
+                  message:
+                    type: string
+                    example: 'resources found'
+                  resources:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/ResourceData'
+
+        '400':
+          $ref: '#/components/responses/ApplicationError'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+
+  /resources/{id}:
+    get:
+      tags:
+        - resources
+      summary: get resource
+      description: |
+        Get resource by id
+      parameters:
+        - name: id
+          in: path
+          description: resource id
+          required: true
+          schema:
+            type: integer
+            example: 1
+      responses:
+        '200':
+          description: resource found
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: 'success'
+                  message:
+                    type: string
+                    example: 'resource found'
+                  resource:
+                    $ref: '#/components/schemas/ResourceData'
+        '400':
+          $ref: '#/components/responses/ApplicationError'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+
+    put:
+      tags:
+        - resources
+      summary: update resource
+      description: |
+        Update resource by id
+      parameters:
+        - name: id
+          in: path
+          description: resource id
+          required: true
+          schema:
+            type: integer
+            example: 1
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                title:
+                  type: string
+                  example: 'example title'
+                description:
+                  type: string
+                  example: 'example description'
+      responses:
+        '200':
+          description: resource updated
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: 'success'
+                  message:
+                    type: string
+                    example: 'resource updated'
+                  updatedResource:
+                    $ref: '#/components/schemas/Resource'
+        '400':
+          $ref: '#/components/responses/ApplicationError'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+
+    delete:
+      tags:
+        - resources
+      summary: delete resource
+      description: |
+        Delete resource by id
+      parameters:
+        - name: id
+          in: path
+          description: resource id
+          required: true
+          schema:
+            type: integer
+            example: 1
+      responses:
+        '200':
+          description: resource deleted
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: 'success'
+                  message:
+                    type: string
+                    example: 'resource deleted'
+                  deletedResource:
+                    $ref: '#/components/schemas/Resource'
+
+  /categories:
+    post:
+      tags:
+        - categories
+      summary: create category
+      description: |
+        Create a new category
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                name:
+                  type: string
+                  example: 'Category Name'
+      responses:
+        '200':
+          description: category created
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: 'success'
+                  message:
+                    type: string
+                    example: 'category created'
+                  category:
+                    $ref: '#/components/schemas/Category'
+        '400':
+          $ref: '#/components/responses/ApplicationError'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+
+    get:
+      tags:
+        - categories
+      summary: get categories
+      description: |
+        Get all categories
+      responses:
+        '200':
+          description: categories found
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: 'success'
+                  message:
+                    type: string
+                    example: 'categories found'
+                  categories:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Category'
+        '400':
+          $ref: '#/components/responses/ApplicationError'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+
+  /categories/{id}:
+    get:
+      tags:
+        - categories
+      summary: get category
+      description: |
+        Get category by id
+      parameters:
+        - name: id
+          in: path
+          description: category id
+          required: true
+          schema:
+            type: integer
+            example: 1
+      responses:
+        '200':
+          description: category found
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: 'success'
+                  message:
+                    type: string
+                    example: 'category found'
+                  category:
+                    $ref: '#/components/schemas/Category'
+        '400':
+          $ref: '#/components/responses/ApplicationError'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+    
+    put:
+      tags:
+        - categories
+      summary: update category
+      description: |
+        Update category by id
+      parameters:
+        - name: id
+          in: path
+          description: category id
+          required: true
+          schema:
+            type: integer
+            example: 1
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                name:
+                  type: string
+                  example: 'Category Name'
+      responses:
+        '200':
+          description: category updated
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: 'success'
+                  message:
+                    type: string
+                    example: 'category updated'
+                  updatedCategory:
+                    $ref: '#/components/schemas/Category'
+        '400':
+          $ref: '#/components/responses/ApplicationError'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+
+    delete:
+      tags:
+        - categories
+      summary: delete category
+      description: |
+        Delete category by id
+      parameters:
+        - name: id
+          in: path
+          description: category id
+          required: true
+          schema:
+            type: integer
+            example: 1
+      responses:
+        '200':
+          description: category deleted
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: 'success'
+                  message:
+                    type: string
+                    example: 'category deleted'
+                  deletedCategory:
+                    $ref: '#/components/schemas/Category'
+        '400':
+          $ref: '#/components/responses/ApplicationError'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+
+  /subjects:
+    post:
+      tags:
+        - subjects
+      summary: create subject
+      description: |
+        Create a new subject
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                name:
+                  type: string
+                  example: 'Subject Name'
+      responses:
+        '200':
+          description: subject created
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: 'success'
+                  message:
+                    type: string
+                    example: 'subject created'
+                  subject:
+                    $ref: '#/components/schemas/Subject'
+        '400':
+          $ref: '#/components/responses/ApplicationError'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+
+    get:
+      tags:
+        - subjects
+      summary: get subjects
+      description: |
+        Get all subjects
+      responses:
+        '200':
+          description: subjects found
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: 'success'
+                  message:
+                    type: string
+                    example: 'subjects found'
+                  subjects:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Subject'
+        '400':
+          $ref: '#/components/responses/ApplicationError'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+
+  /subjects/{id}:
+    get:
+      tags:
+        - subjects
+      summary: get subject
+      description: |
+        Get subject by id
+      parameters:
+        - name: id
+          in: path
+          description: subject id
+          required: true
+          schema:
+            type: integer
+            example: 1
+      responses:
+        '200':
+          description: subject found
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: 'success'
+                  message:
+                    type: string
+                    example: 'subject found'
+                  subject:
+                    $ref: '#/components/schemas/Subject'
+        '400':
+          $ref: '#/components/responses/ApplicationError'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+
+    put:
+      tags:
+        - subjects
+      summary: update subject
+      description: |
+        Update subject by id
+      parameters:
+        - name: id
+          in: path
+          description: subject id
+          required: true
+          schema:
+            type: integer
+            example: 1
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                name:
+                  type: string
+                  example: 'Subject Name'
+      responses:
+        '200':
+          description: subject updated
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: 'success'
+                  message:
+                    type: string
+                    example: 'subject updated'
+                  updatedSubject:
+                    $ref: '#/components/schemas/Subject'
+        '400':
+          $ref: '#/components/responses/ApplicationError'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+
+    delete:
+      tags:
+        - subjects
+      summary: delete subject
+      description: |
+        Delete subject by id
+      parameters:
+        - name: id
+          in: path
+          description: subject id
+          required: true
+          schema:
+            type: integer
+            example: 1
+      responses:
+        '200':
+          description: subject deleted
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: 'success'
+                  message:
+                    type: string
+                    example: 'subject deleted'
+                  deletedSubject:
+                    $ref: '#/components/schemas/Subject'
+        '400':
+          $ref: '#/components/responses/ApplicationError'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+
+  /categories-on-resources:
+    post:
+      tags:
+        - categories-on-resources
+      summary: create category on resource
+      description: |
+        Link category to resource
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CategoryOnResource'
+      responses:
+        '200':
+          description: category on resource created
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: 'success'
+                  message:
+                    type: string
+                    example: 'category created on resource'
+                  categoryOnResource:
+                    $ref: '#/components/schemas/CategoryOnResource'
+        '400':
+          $ref: '#/components/responses/ApplicationError'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+
+    get:
+      tags:
+        - categories-on-resources
+      summary: get categories on resources
+      description: |
+        Get all categories on resources
+      parameters:
+        - in: query
+          name: resourceId
+          description: get categories on resources by resourceId
+          schema:
+            type: integer
+            example: 1
+        - in: query
+          name: categoryId
+          description: get categories on resources by categoryId
+          schema:
+            type: integer
+            example: 1
+      responses:
+        '200':
+          description: categories on resources found
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: 'success'
+                  message:
+                    type: string
+                    example: categories on resources found
+                  categoriesOnResources:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/CategoryOnResource'
+        '400':
+          $ref: '#/components/responses/ApplicationError'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+      
+  /categories-on-resources/{id}:
+    delete:
+      tags:
+        - categories-on-resources
+      summary: delete category on resource
+      description: |
+        Delete category on resource by id
+      parameters:
+        - name: id
+          in: path
+          description: category on resource id
+          required: true
+          schema:
+            type: integer
+            example: 1
+      responses:
+        '200':
+          description: category on resource deleted
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: 'success'
+                  message:
+                    type: string
+                    example: 'category on resource deleted'
+                  deletedCategoryOnResource:
+                    $ref: '#/components/schemas/CategoryOnResource'
+        '400':
+          $ref: '#/components/responses/ApplicationError'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+
+
+  /subjects-on-resources:
+    post:
+      tags:
+        - subjects-on-resources
+      summary: create subject on resource
+      description: |
+        Link subject to resource
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SubjectOnResource'
+      responses:
+        '200':
+          description: subject on resource created
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: 'success'
+                  message:
+                    type: string
+                    example: 'subject created on resource'
+                  subjectOnResource:
+                    $ref: '#/components/schemas/SubjectOnResource'
+        '400':
+          $ref: '#/components/responses/ApplicationError'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+
+    get:
+      tags:
+        - subjects-on-resources
+      summary: get subjects on resources
+      description: |
+        Get all subjects on resources
+      parameters:
+        - in: query
+          name: resourceId
+          description: get subjects on resources by resourceId
+          schema:
+            type: integer
+            example: 1
+        - in: query
+          name: subjectId
+          description: get subjects on resources by subjectId
+          schema:
+            type: integer
+            example: 1
+      responses:
+        '200':
+          description: subjects on resources found
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: 'success'
+                  message:
+                    type: string
+                    example: subjects on resources found
+                  subjectsOnResources:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/SubjectOnResource'
+        '400':
+          $ref: '#/components/responses/ApplicationError'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+      
+  /subjects-on-resources/{id}:
+    delete:
+      tags:
+        - subjects-on-resources
+      summary: delete subject on resource
+      description: |
+        Delete subject on resource by id
+      parameters:
+        - name: id
+          in: path
+          description: subject on resource id
+          required: true
+          schema:
+            type: integer
+            example: 1
+      responses:
+        '200':
+          description: subject on resource deleted
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: 'success'
+                  message:
+                    type: string
+                    example: 'subject on resource deleted'
+                  deletedSubjectOnResource:
+                    $ref: '#/components/schemas/SubjectOnResource'
+        '400':
+          $ref: '#/components/responses/ApplicationError'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+
+  /comments:
+    post:
+      tags:
+        - comments
+      summary: create comment
+      description: |
+        Create a new comment
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CommentInput'
+      responses:
+        '200':
+          description: comment created
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: 'success'
+                  message:
+                    example: 'comment created'
+                  comment:
+                    $ref: '#/components/schemas/Comment'
+        '400':
+          $ref: '#/components/responses/ApplicationError'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+
+    get:
+      tags:
+        - comments
+      summary: get comments
+      description: |
+        Get all comments
+      parameters:
+        - in: query
+          name: resourceId
+          description: get comments by resourceId
+          schema:
+            type: integer
+            example: 1
+      responses:
+        '200':
+          description: comments found
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: 'success'                    
+                  message:
+                    type: string
+                    example: 'comments found'
+                  comments:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Comment'
+        '400':
+          $ref: '#/components/responses/ApplicationError'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+
+  /comments/{id}:
+    get:
+      tags:
+        - comments
+      summary: get comment
+      description: |
+        Get comment by id
+      parameters:
+        - name: id
+          in: path
+          description: comment id
+          required: true
+          schema:
+            type: integer
+            example: 1
+      responses:
+        '200':
+          description: comment found
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: 'success'                    
+                  message:
+                    type: string
+                    example: 'comment found'
+                  comment:
+                    $ref: '#/components/schemas/Comment'
+        '400':
+          $ref: '#/components/responses/ApplicationError'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+    
+    put:
+      tags:
+        - comments
+      summary: update comment
+      description: |
+        Update comment by id
+      parameters:
+        - name: id
+          in: path
+          description: comment id
+          required: true
+          schema:
+            type: integer
+            example: 1
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                message:
+                  type: string
+                  example: 'example message'
+      responses:
+        '200':
+          description: comment updated
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: 'success'                    
+                  message:
+                    type: string
+                    example: 'comment updated'
+                  updatedComment:
+                    $ref: '#/components/schemas/Comment'
+        '400':
+          $ref: '#/components/responses/ApplicationError'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+    
+    delete:
+      tags:
+        - comments
+      summary: delete comment
+      description: |
+        Delete comment by id
+      parameters:
+        - name: id
+          in: path
+          description: comment id
+          required: true
+          schema:
+            type: integer
+            example: 1
+      responses:
+        '200':
+          description: comment deleted
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: 'success'                    
+                  message:
+                    type: string
+                    example: 'comment deleted'
+                  deletedComment:
+                    $ref: '#/components/schemas/Comment'
+        '400':
+          $ref: '#/components/responses/ApplicationError'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+
+  /comments/{id}/children:
+    get:
+      tags:
+        - comments
+      summary: get comment children
+      description: |
+        Get comment children by id
+      parameters:
+        - name: id
+          in: path
+          description: comment id
+          required: true
+          schema:
+            type: integer
+            example: 1
+      responses:
+        '200':
+          description: child comments found
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: 'success'                    
+                  message:
+                    type: string
+                    example: 'comment children found'
+                  comments:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        id:
+                          type: integer
+                          example: 1
+                        createdAt:
+                          type: string
+                          example: '2023-12-29T14:41:55.854Z'
+                        updatedAt:
+                          type: string
+                          example: '2023-12-29T14:41:55.854Z'
+                        message:
+                          type: string
+                          example: 'example message'
+                        profileId:
+                          type: integer
+                          example: 1
+                        resourceId:
+                          type: integer
+                          example: 1
+                        parentId:
+                          type: integer
+                          example: 1
+                        profile:
+                          type: object
+                          properties:
+                            id:
+                              type: integer
+                              example: 1
+                            username:
+                              type: string
+                              example: 'JJ'
+                        likes:
+                          type: array
+                          items:
+                            $ref: '#/components/schemas/CommentLike'
+        '400':
+          $ref: '#/components/responses/ApplicationError'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+
+  /resourcelikes:
+    post:
+      tags:
+        - resourcelikes
+      summary: create resource like
+      description: |
+        Create a new resource like
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ResourceLikeInput'
+      responses:
+        '200':
+          description: resource like created
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: 'success'                    
+                  message:
+                    type: string
+                    example: 'resource like created'
+                  resourceLike:
+                    $ref: '#/components/schemas/ResourceLike'
+        '400':
+          $ref: '#/components/responses/ApplicationError'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+
+    get:
+      tags:
+        - resourcelikes
+      summary: get resource likes
+      description: |
+        Get all resource likes
+      parameters:
+        - in: query
+          name: profileId
+          description: get resource likes by profileId
+          schema:
+            type: integer
+            example: 1
+        - in: query
+          name: resourceId
+          description: get resource likes by resourceId
+          schema:
+            type: integer
+            example: 1
+      responses:
+        '200':
+          description: resource likes found
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: 'success'                    
+                  message:
+                    type: string
+                    example: 'resource likes found'
+                  resourceLikes:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/ResourceLike'
+        '400':
+          $ref: '#/components/responses/ApplicationError'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+
+    delete:
+      tags:
+        - resourcelikes
+      summary: delete resource like
+      description: |
+        Delete resource like by id
+      parameters:
+        - name: resourceId
+          in: query
+          description: resource id
+          required: true
+          schema:
+            type: integer
+            example: 1
+        - name: profileId
+          in: query
+          description: profile id
+          required: true
+          schema:
+            type: integer
+            example: 1
+      responses:
+        '200':
+          description: resource like deleted
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: 'success'                    
+                  message:
+                    type: string
+                    example: 'resource like deleted'
+                  deletedResourceLike:
+                    $ref: '#/components/schemas/ResourceLike'
+        '400':
+          $ref: '#/components/responses/ApplicationError'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+
+  /commentlikes:
+    post:
+      tags:
+        - commentlikes
+      summary: create comment like
+      description: |
+        Create a new comment like
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CommentLikeInput'
+      responses:
+        '200':
+          description: comment like created
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: 'success'                    
+                  message:
+                    type: string
+                    example: 'comment like created'
+                  commentLike:
+                    $ref: '#/components/schemas/CommentLike'
+        '400':
+          $ref: '#/components/responses/ApplicationError'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+
+    get:
+      tags:
+        - commentlikes
+      summary: get comment likes
+      description: |
+        Get all comment likes
+      parameters:
+        - in: query
+          name: profileId
+          description: get comment likes by profileId
+          schema:
+            type: integer
+            example: 1
+        - in: query
+          name: commentId
+          description: get comment likes by commentId
+          schema:
+            type: integer
+            example: 1
+      responses:
+        '200':
+          description: comment likes found
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: 'success'                    
+                  message:
+                    type: string
+                    example: 'comment likes found'
+                  commentLikes:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/CommentLike'
+        '400':
+          $ref: '#/components/responses/ApplicationError'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+
+    delete:
+      tags:
+        - commentlikes
+      summary: delete comment like
+      description: |
+        Delete comment like by id
+      parameters:
+        - name: commendId
+          in: query
+          description: comment id
+          required: true
+          schema:
+            type: integer
+            example: 1
+        - name: profileId
+          in: query
+          description: profile id
+          required: true
+          schema:
+            type: integer
+            example: 1
+      responses:
+        '200':
+          description: comment like deleted
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: 'success'                    
+                  message:
+                    type: string
+                    example: 'comment like deleted'
+                  deletedCommentLike:
+                    $ref: '#/components/schemas/CommentLike'
+        '400':
+          $ref: '#/components/responses/ApplicationError'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+
+components:
+  securitySchemes:
+    BearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+
+  requestBodies:
+    Signin:
+      content:
+        application/json:
+          schema:
+            type: object
+            required:
+              - email
+              - password
+            properties:
+              email:
+                type: string
+                example: satoshi@tistudent.com
+              password:
+                type: string
+                example: 'Str0ngPW!!!'
+
+  responses:
+    Authenicated:
+      description: Authenticated
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              status:
+                type: string
+                example: 'success'
+              message:
+                type: string
+                example: 'authentication successful'
+              token:
+                type: string
+                example: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6InNhdG9zaGlAdGlzdHVkZW50LmNvbSIsInJvbGUiOiJBRE1JTiIsImlhdCI6MTcwMzk0MzUzMiwiZXhwIjoxNzAzOTcyMzMyLCJpc3MiOiJ0aXN0dWRlbnRfYXBwIn0.M-kP0sNi9oAY7sCopgn9ioWuUbkNE8MgOMds5P8NQg0'
+              email:
+                type: string
+                example: 'satoshi@tistudent.com'
+              id:
+                type: integer
+                example: 1
+              role:
+                type: string
+                example: 'ADMIN'
+
+    Unauthorized:
+      description: Unauthorized
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              status:
+                type: string
+                example: 'error'
+              message:
+                type: string
+                example: 'unauthorized'
+
+    ApplicationError:
+      description: Application Error
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              status:
+                type: string
+                example: 'error'
+              message:
+                type: string
+                example: 'application error'
+
+  schemas:
+    ProfileInput:
+      type: object
+      required:
+        - email
+        - username
+        - password
+        - role
+      properties:
+        email:
+          type: string
+          example: satoshi@tistudent.com
+        username:
+          type: string
+          example: 'JJ'
+        password:
+          type: string
+          example: 'Str0ngPW!!!'
+        role:
+          type: string
+          example: 'ADMIN'
+        bio:
+          type: string
+          example: 'example bio'
+
+    Profile:
+      type: object
+      properties:
+        id:
+          type: integer
+          example: 1
+        createdAt:
+          type: string
+          example: '2023-12-29T14:41:55.854Z'
+        updatedAt:
+          type: string
+          example: '2023-12-29T14:41:55.854Z'
+        latestActivity:
+          type: string
+          example: '2023-12-29T14:41:55.854Z'
+        email:
+          type: string
+          example: satoshi@tistudent.com
+        username:
+          type: string
+          example: 'JJ'
+        password:
+          type: string
+          example: 'Str0ngPW!!!'
+        role:
+          type: string
+          example: 'ADMIN'
+        bio:
+          type: string
+          example: 'example bio'
+    
+    CommentLikeInput:
+      type: object
+      required:
+        - profileId
+        - commentId
+      properties:
+        profileId:
+          type: integer
+          example: 1
+        commentId:
+          type: integer
+          example: 1
+
+    ResourceLikeInput:
+      type: object
+      required:
+        - profileId
+        - resourceId
+      properties:
+        profileId:
+          type: integer
+          example: 1
+        resourceId:
+          type: integer
+          example: 1
+
+    CommentLike:
+      type: object
+      properties:
+        createdAt:
+          type: string
+          example: '2023-12-29T14:41:55.854Z'
+        profileId:
+          type: integer
+          example: 1
+        commentId:
+          type: integer
+          example: 1
+
+    ResourceLike:
+      type: object
+      properties:
+        createdAt:
+          type: string
+          example: '2023-12-29T14:41:55.854Z'
+        profileId:
+          type: integer
+          example: 1
+        resourceId:
+          type: integer
+          example: 1
+
+    ResourceInput:
+      type: object
+      required:
+        - title
+        - description
+        - profileId
+      properties:
+        title:
+          type: string
+          example: 'example title'
+        description:
+          type: string
+          example: 'example description'
+        profileId:
+          type: integer
+          example: 1
+
+    Resource:
+      type: object
+      properties:
+        id:
+          type: integer
+          example: 1
+        createdAt:
+          type: string
+          example: '2023-12-29T14:41:55.854Z'
+        updatedAt:
+          type: string
+          example: '2023-12-29T14:41:55.854Z'
+        title:
+          type: string
+          example: 'example title'
+        description:
+          type: string
+          example: 'example description'
+        profileId:
+          type: integer
+          example: 1
+
+    ResourceData:
+      type: object
+      properties:
+        id:
+          type: integer
+          example: 1
+        createdAt:
+          type: string
+          example: '2023-12-29T14:41:55.854Z'
+        updatedAt:
+          type: string
+          example: '2023-12-29T14:41:55.854Z'
+        title:
+          type: string
+          example: 'example title'
+        description:
+          type: string
+          example: 'example description'
+        profileId:
+          type: integer
+          example: 1
+        categories:
+          type: array
+          items:
+            type: object
+            properties:
+              category:
+                $ref: '#/components/schemas/Category'                
+        subjects:
+          type: array
+          items:
+            type: object
+            properties:
+              subject:
+                $ref: '#/components/schemas/Subject'
+        comments:
+          type: array
+          items:
+            type: object
+            properties:
+              id:
+                type: integer
+                example: 1
+              createdAt:
+                type: string
+                example: '2023-12-29T14:41:55.854Z'
+              updatedAt:
+                type: string
+                example: '2023-12-29T14:41:55.854Z'
+              message:
+                type: string
+                example: 'example message'
+              profile:
+                type: object
+                properties:
+                  id:
+                    type: integer
+                    example: 1
+                  username:
+                    type: string
+                    example: 'JJ'
+              likes:
+                type: array
+                items:
+                  $ref: '#/components/schemas/CommentLike'
+        likes:
+          type: array
+          items:
+            $ref: '#/components/schemas/ResourceLike'
+
+    Category:
+      type: object
+      properties:
+        id:
+          type: integer
+          example: 1
+        name:
+          type: string
+          example: 'Category Name'
+
+    Subject:
+      type: object
+      properties:
+        id:
+          type: integer
+          example: 1
+        name:
+          type: string
+          example: 'Subject Name'
+    
+    CategoryOnResource:
+      type: object
+      properties:
+        resourceId:
+          type: integer
+          example: 1
+        categoryId:
+          type: integer
+          example: 1
+
+    SubjectOnResource:
+      type: object
+      properties:
+        resourceId:
+          type: integer
+          example: 1
+        subjectId:
+          type: integer
+          example: 1
+
+    CommentInput:
+      type: object
+      required:
+        - message
+        - profileId
+        - resourceId
+      properties:
+        message:
+          type: string
+          example: 'example message'
+        profileId:
+          type: integer
+          example: 1
+        resourceId:
+          type: integer
+          example: 1
+
+    Comment:
+      type: object
+      properties:
+        id:
+          type: integer
+          example: 1
+        createdAt:
+          type: string
+          example: '2023-12-29T14:41:55.854Z'
+        updatedAt:
+          type: string
+          example: '2023-12-29T14:41:55.854Z'
+        message:
+          type: string
+          example: 'example message'
+        profileId:
+          type: integer
+          example: 1
+        resourceId:
+          type: integer
+          example: 1
+        parentId:
+          type: integer
+          example: 1

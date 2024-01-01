@@ -1,15 +1,24 @@
-import { Resource } from "@/types";
-import { Router, useRouter } from "next/router";
-import React from "react";
+import { Category, Profile, Resource, Subject } from "@/types";
 import { useTranslation } from "next-i18next";
+import { useRouter } from "next/router";
+import React from "react";
 
 type Props = {
   resource: Resource;
+  categories: Category[];
+  subjects: Subject[];
+  creator: Profile;
 };
 
-const ResourceInfo: React.FC<Props> = ({ resource }: Props) => {
+const ResourceInfo: React.FC<Props> = ({
+  resource,
+  categories,
+  subjects,
+  creator,
+}: Props) => {
   const { t } = useTranslation();
   const router = useRouter();
+  console.log(resource.filePath);
   return (
     <>
       {resource && (
@@ -25,16 +34,18 @@ const ResourceInfo: React.FC<Props> = ({ resource }: Props) => {
             <span
               className="hover:cursor-pointer hover:text-red-600 m-1"
               onClick={() =>
-                router.push("../../profiles/" + resource.creator.id)
+                router.push("../../profiles/" + resource.profileId)
               }
             >
-              {resource.creator.username}
+              {creator.username}
             </span>
           </h1>
           <ul className="items-end m-auto">
             <li>
               <strong>{t("resources.fields.category")}:</strong>{" "}
-              {resource.category}
+              {categories.map((category) => {
+                return category as unknown as string;
+              })}
             </li>
             <li>
               <strong>{t("resources.fields.created.at")}</strong>{" "}
@@ -42,11 +53,13 @@ const ResourceInfo: React.FC<Props> = ({ resource }: Props) => {
             </li>
             <li>
               <strong>{t("resources.fields.subject")}</strong>{" "}
-              {resource.subject}
+              {subjects.map((subject) => {
+                return subject as unknown as string;
+              })}
             </li>
             <li>
               <strong>{t("resources.fields.user.id")}</strong>{" "}
-              {resource.creator.id}
+              {resource.profileId}
             </li>
           </ul>
           <br />

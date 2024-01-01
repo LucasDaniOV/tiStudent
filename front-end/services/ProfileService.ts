@@ -1,5 +1,4 @@
-import { getAll, getById } from "@/util/get";
-import { Like, Profile, Resource } from "../types";
+import { getAll } from "@/util/get";
 import { getToken } from "@/util/token";
 
 const baseUrl = process.env.NEXT_PUBLIC_API_URL + "/profiles";
@@ -7,46 +6,24 @@ const type = "profiles";
 
 const getAllProfiles = async () => await getAll(type);
 
-const getProfileById = async (profileId: string) => getById(type, profileId);
-
-const getProfileByEmail = async (email: string) => {
+const getProfileById = async (profileId: string) => {
   const token = getToken();
-  const res = await fetch(baseUrl + `/${email}`, {
+  const res = await fetch(baseUrl + `/${profileId}`, {
     method: "GET",
     headers: {
       "Content-Type": "application/json",
       Authorization: `Bearer ${token}`,
     },
   });
-  return await res.json();
-};
 
-const checkProfileExists = async (email: string) => {
-  const res = await fetch(baseUrl + `/exists/email?email=${email}`, {
-    method: "GET",
-    headers: {
-      "Content-Type": "boolean",
-    },
-  });
-  return await res.json();
+  const profile = await res.json();
+  return profile;
 };
 
 const deleteProfileById = async (profileId: number): Promise<Boolean> => {
   const token = getToken();
   const res = await fetch(baseUrl + `/${profileId}`, {
     method: "DELETE",
-    headers: {
-      "Content-Type": "application/json",
-      Authorization: `Bearer ${token}`,
-    },
-  });
-  return await res.json();
-};
-
-const getLikesByProfile = async (profileId: string): Promise<Array<Like>> => {
-  const token = getToken();
-  const res = await fetch(baseUrl + `/${profileId}/likedResources`, {
-    method: "GET",
     headers: {
       "Content-Type": "application/json",
       Authorization: `Bearer ${token}`,
@@ -62,7 +39,7 @@ const createProfile = async (
   username: string,
   bio?: string
 ) => {
-  const res = await fetch(baseUrl + "/signup", {
+  const res = await fetch(process.env.NEXT_PUBLIC_API_URL + "/signup", {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
@@ -72,19 +49,8 @@ const createProfile = async (
   return await res.json();
 };
 
-const getGithubUser = async (code: string) => {
-  const url = `${baseUrl}/login/github?code=${code}`;
-  const res = await fetch(url, {
-    method: "GET",
-    headers: {
-      "Content-Type": "application/json",
-    },
-  });
-  return await res.json();
-};
-
 const loginUser = async (email: string, password: string) => {
-  const url = `${baseUrl}/login`;
+  const url = process.env.NEXT_PUBLIC_API_URL + "/signin";
   return await fetch(url, {
     method: "POST",
     headers: {
@@ -94,11 +60,9 @@ const loginUser = async (email: string, password: string) => {
   });
 };
 
-const getResourcesByProfile = async (
-  profileId: string
-): Promise<Array<Resource>> => {
+const getLeaderboard = async () => {
   const token = getToken();
-  const res = await fetch(baseUrl + `/${profileId}/sharedResources`, {
+  const res = await fetch(process.env.NEXT_PUBLIC_API_URL + `/leaderboard/10`, {
     method: "GET",
     headers: {
       "Content-Type": "application/json",
@@ -108,30 +72,26 @@ const getResourcesByProfile = async (
   return await res.json();
 };
 
-const getLeaderboard = async (): Promise<
-  Array<{ profile: Profile; resourceCount: number }>
-> => {
+const getLikesByProfile = async (profileId: string) => {
   const token = getToken();
-  const res = await fetch(baseUrl + `/leaderboard/10`, {
+  const res = await fetch(baseUrl + `/${profileId}/likes`, {
     method: "GET",
     headers: {
       "Content-Type": "application/json",
       Authorization: `Bearer ${token}`,
     },
   });
-  return await res.json();
+
+  const json = await res.json();
+  return { resourceLikes: json.resourceLikes, commentLikes: json.commentLikes };
 };
 
 export default {
   getAllProfiles,
   getProfileById,
-  getProfileByEmail,
-  checkProfileExists,
   deleteProfileById,
   createProfile,
-  getLikesByProfile,
-  getGithubUser,
   loginUser,
-  getResourcesByProfile,
   getLeaderboard,
+  getLikesByProfile,
 };

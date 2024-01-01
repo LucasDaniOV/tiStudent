@@ -1,46 +1,61 @@
-import { Category } from "../../back-end/domain/model/category";
-import { Subject } from "../../back-end/domain/model/subject";
+export type Role = "ADMIN" | "USER";
 
 export type Resource = {
   id: string;
-  creator: Profile;
   createdAt: Date;
+  updatedAt: Date;
   title: string;
   description: string;
-  category: Category;
-  subject: Subject;
+  filePath: string;
+  thumbNail: string;
+  profileId: string;
+  categories: Category[];
+  subjects: Subject[];
+  comments: Comment[];
+  likes: Like[];
 };
-
-type Role = "admin" | "user" | "guest";
 
 export type Profile = {
   id: string;
+  createdAt: Date;
+  updatedAt: Date;
+  latestActivity: Date;
   email: string;
+  username: string;
   password: string;
   role: Role;
-  username: string;
   bio?: string;
+};
+
+export type Like = {
   createdAt: Date;
-  latestActivity: Date;
+  profileId: string;
+  resourceId: string;
 };
 
 export type Comment = {
   id: string;
-  message: string;
   createdAt: Date;
-  edited: boolean;
-  profile: Profile;
-  resource: Resource;
-  parentId: string;
+  updatedAt: Date;
+  message: string;
+  profileId: string;
+  resourceId: string;
+  profile?: {
+    id: string;
+    username: string;
+  };
+  likes: Like[];
+  parentId?: string;
 };
 
-export type Like = {
+export type Category = {
   id: string;
-  createdAt: Date;
-  profile: Profile;
-  resource: Resource;
-  parentId: string;
-  comment?: Comment;
+  name: string;
+};
+
+export type Subject = {
+  id: string;
+  name: string;
 };
 
 export type StatusMessage = {
@@ -48,4 +63,11 @@ export type StatusMessage = {
   type: "error" | "success";
 };
 
-export type Type = "users" | "resources" | "profiles" | "likes";
+export type Type =
+  | "users"
+  | "resources"
+  | "profiles"
+  | "likes"
+  | "categories"
+  | "subjects"
+  | "comments";

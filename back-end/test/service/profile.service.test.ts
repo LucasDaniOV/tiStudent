@@ -1,28 +1,54 @@
 import profileDb from '../../domain/data-access/profile.db';
 import { Profile } from '../../domain/model/profile';
 import profileService from '../../service/profile.service';
-import { Role } from '../../types';
+import { ProfileInput, Role } from '../../types';
 
-const validEmail = 'profile.service.test@tistudent.be';
-const validPassword = 'profileServiceT3st_;D';
-const validRole = 'user';
+const id = 1;
+const createdAt = new Date();
+const updatedAt = new Date();
+const latestActivity = new Date();
+const email = 'profile.service.test@tistudent.be';
+const password = 'profileServiceT3st_;D';
+const role = 'USER';
 const username = 'TheProfileServiceTester';
-const profileInput = { userId: 0, email: validEmail, password: validPassword, username, role: validRole as Role };
+
+const updatedEmail = 'profile.service.test@tistudent.be2';
+const updatedUsername = 'TheGodfather';
+
+const profile = new Profile({
+    id,
+    createdAt,
+    updatedAt,
+    latestActivity,
+    email,
+    password,
+    role,
+    username,
+});
+
+const profileInput: ProfileInput = {
+    email,
+    password,
+    role,
+    username,
+};
 
 let mockProfileDbGetAllProfiles: jest.Mock;
 let mockProfileDbGetProfileById: jest.Mock;
 let mockProfileDbGetProfileByEmail: jest.Mock;
 let mockProfileDbCreateProfile: jest.Mock;
-let mockProfileDbUpdateEmail: jest.Mock;
 let mockProfileDbGetProfileByUsername: jest.Mock;
+let mockProfileDbUpdateEmail: jest.Mock;
+let mockProfileDbUpdateUsername: jest.Mock;
 
 beforeEach(() => {
     mockProfileDbGetAllProfiles = jest.fn();
     mockProfileDbGetProfileById = jest.fn();
     mockProfileDbGetProfileByEmail = jest.fn();
     mockProfileDbCreateProfile = jest.fn();
-    mockProfileDbUpdateEmail = jest.fn();
     mockProfileDbGetProfileByUsername = jest.fn();
+    mockProfileDbUpdateEmail = jest.fn();
+    mockProfileDbUpdateUsername = jest.fn();
 });
 
 afterEach(() => {
@@ -31,7 +57,6 @@ afterEach(() => {
 
 test(`given: existing Profile, when: getProfileByUsername is called, then: existing Profile is returned`, async () => {
     // given
-    const profile = new Profile({ email: validEmail, password: validPassword, role: validRole, username: username });
     profileDb.getProfileByUsername = mockProfileDbGetProfileByUsername.mockResolvedValue(profile);
 
     // when
@@ -50,11 +75,10 @@ test(`given: non-existing Profile, when: getProfileByUsername is called, then: e
 
     // then
     expect(sut).rejects.toThrowError(`Profile with username "${username}" does not exist`);
-})
+});
 
 test(`given: valid values for Profile, when: Profile is created, then: Profile is created with those values`, async () => {
     // given
-    const profile = new Profile({ email: validEmail, password: validPassword, role: validRole, username: username });
     profileDb.getProfileByUsername = mockProfileDbGetProfileByUsername.mockResolvedValue(undefined);
     profileDb.getProfileByEmail = mockProfileDbGetProfileByEmail.mockResolvedValue(undefined);
     profileDb.createProfile = mockProfileDbCreateProfile.mockResolvedValue(profile);
@@ -69,9 +93,8 @@ test(`given: valid values for Profile, when: Profile is created, then: Profile i
 
 test(`given: taken username, when: Profile is created, then: error is thrown`, () => {
     // given
-    profileDb.getProfileByUsername = mockProfileDbGetProfileByUsername.mockResolvedValue(
-        new Profile({ email: validEmail, password: validPassword, role: validRole, username: username })
-    );
+    profileDb.getProfileByUsername = mockProfileDbGetProfileByUsername.mockResolvedValue(profile);
+
     // when
     const createProfile = async () => await profileService.createProfile(profileInput);
 
@@ -81,7 +104,6 @@ test(`given: taken username, when: Profile is created, then: error is thrown`, (
 
 test(`given: taken email, when: Profile is created, then: error is thrown`, () => {
     // given
-    const profile = new Profile({ email: validEmail, password: validPassword, role: validRole, username: username });
     profileDb.getProfileByUsername = mockProfileDbGetProfileByUsername.mockResolvedValue(undefined);
     profileDb.getProfileByEmail = mockProfileDbGetProfileByEmail.mockResolvedValue(profile);
 
@@ -92,38 +114,23 @@ test(`given: taken email, when: Profile is created, then: error is thrown`, () =
     expect(createProfile).rejects.toThrowError('Email already exists');
 });
 
-test(`hash password`, async () =>  {
-    // given
-    const password = 'password';
-
-    // when
-    const hashedPassword = await profileService.hashPassword(password);
-    
-    // then
-    expect(hashedPassword).not.toEqual(password);
-});
-
 test(`given: existing profiles, when: getAllProfiles is called, then: all profiles are returned`, async () => {
     // given
-    const profiles = [
-        new Profile({ email: validEmail, password: validPassword, role: validRole, username: username }),
-    ];
-    profileDb.getAllProfiles = mockProfileDbGetAllProfiles.mockResolvedValue(profiles);
+    profileDb.getAllProfiles = mockProfileDbGetAllProfiles.mockResolvedValue([profile]);
 
     // when
-    const sut = await profileService.getAllProfiles('admin');
+    const sut = await profileService.getAllProfiles('ADMIN');
 
     // then
-    expect(sut).toEqual(profiles);
+    expect(sut).toEqual([profile]);
 });
 
 test(`given: existing profile, when: getProfileById is called, then: profile is returned`, async () => {
     // given
-    const profile = new Profile({ email: validEmail, password: validPassword, role: validRole, username: username });
     profileDb.getProfileById = mockProfileDbGetProfileById.mockResolvedValue(profile);
 
     // when
-    const sut = await profileService.getProfileById(0);
+    const sut = await profileService.getProfileById(1);
 
     // then
     expect(sut).toEqual(profile);
@@ -134,41 +141,39 @@ test(`given: non-existing profile, when: getProfileById is called, then: error i
     profileDb.getProfileById = mockProfileDbGetProfileById.mockResolvedValue(undefined);
 
     // when
-    const getProfileById = async () => await profileService.getProfileById(0);
+    const getProfileById = async () => await profileService.getProfileById(69420);
 
     // then
-    expect(getProfileById).rejects.toThrowError('Profile with id 0 does not exist');
+    expect(getProfileById).rejects.toThrowError('Profile with id 69420 does not exist');
 });
 
-test(`given: valid values, when: updating Profile, then: Profile is updated`, async () => {
+test(`given: existing email, when: updateEmail is called, then: error is thrown`, () => {
     // given
-    const validId = 42;
-    const validProfile = new Profile({
-        id: validId,
-        email: validEmail,
-        password: validPassword,
-        role: validRole,
-        username: username,
-    });
-    const validNewEmail = 'newemail@tistudent.be';
-    profileDb.getProfileById = mockProfileDbGetProfileById.mockResolvedValue(validProfile);
-    profileDb.updateEmail = mockProfileDbUpdateEmail.mockResolvedValue(
-        new Profile({ id: validId, email: validNewEmail, password: validPassword, role: validRole, username: username })
-    );
+    profileDb.getProfileByEmail = mockProfileDbGetProfileByEmail.mockResolvedValue(profile);
 
-    //when
-    const sut = await profileService.updateField(validProfile.id, 'email', validNewEmail);
+    // when
+    const sut = async () => await profileService.updateEmail(profile, updatedEmail);
 
-    //then
-    expect(sut.email).toBe(validNewEmail);
-    expect(mockProfileDbGetProfileById).toHaveBeenCalledTimes(1);
-    expect(mockProfileDbGetProfileById).toHaveBeenCalledWith(validId);
+    // then
+    expect(sut).rejects.toThrowError('Email already exists');
+});
+
+test(`given: existing username, when: updateUsername is called, then: error is thrown`, () => {
+    // given
+    profileDb.getProfileByUsername = mockProfileDbGetProfileByUsername.mockResolvedValue(profile);
+
+    // when
+    const sut = async () => await profileService.updateUsername(profile, updatedUsername);
+
+    // then
+    expect(sut).rejects.toThrowError('Username already exists');
 });
 
 test(`given: invalid role, when: creating Profile, then: Profile is not created and error is thrown`, async () => {
     // given
     const invalidRole = 'invalidRole';
     profileDb.getProfileByEmail = mockProfileDbGetProfileByEmail.mockResolvedValue(undefined);
+
     // when
     const sut = async () =>
         await profileService.createProfile({
@@ -179,12 +184,12 @@ test(`given: invalid role, when: creating Profile, then: Profile is not created 
         });
 
     // then
-    expect(sut).rejects.toThrowError('Role must be one of "admin", "user", or "guest"');
+    expect(sut).rejects.toThrowError('Role must be one of "ADMIN", "USER"');
 });
 
 test(`given: unauthorized role, when: requesting all Profiles, then: Error is thrown`, () => {
     // given
-    const unauthorizedRole = 'guest';
+    const unauthorizedRole = 'USER';
 
     // when
     const sut = async () => await profileService.getAllProfiles(unauthorizedRole);
@@ -195,11 +200,10 @@ test(`given: unauthorized role, when: requesting all Profiles, then: Error is th
 
 test(`given: existing Profile, when: getProfileByEmail, then: existing Profile is returned`, async () => {
     // given
-    const profile = new Profile({ email: validEmail, password: validPassword, role: validRole, username: username });
     profileDb.getProfileByEmail = mockProfileDbGetProfileByEmail.mockResolvedValue(profile);
 
     // when
-    const sut = await profileService.getProfileByEmail(validEmail);
+    const sut = await profileService.getProfileByEmail(email);
 
     // then
     expect(sut).toEqual(profile);
@@ -210,8 +214,8 @@ test(`given: non-existing Profile, when: getProfileByEmail, then: error is throw
     profileDb.getProfileByEmail = mockProfileDbGetProfileByEmail.mockResolvedValue(undefined);
 
     // when
-    const sut = async () => await profileService.getProfileByEmail(validEmail);
+    const sut = async () => await profileService.getProfileByEmail(email);
 
     // then
-    expect(sut).rejects.toThrowError(`Profile with email "${validEmail}" does not exist`);
+    expect(sut).rejects.toThrowError(`Profile with email "${email}" does not exist`);
 });

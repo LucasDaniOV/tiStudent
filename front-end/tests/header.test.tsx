@@ -1,4 +1,4 @@
-import Header from "../components/header";
+import Header from "../components/Header";
 import React from "react";
 import { render } from "@testing-library/react";
 import userEvent, { screen } from "@testing-library/dom";

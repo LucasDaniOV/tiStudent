@@ -1,102 +1,45 @@
-import { UnauthorizedError } from 'express-jwt';
-import commentDb from '../domain/data-access/comment.db';
-import likeDb from '../domain/data-access/like.db';
-import profileDb from '../domain/data-access/profile.db';
 import resourceDb from '../domain/data-access/resource.db';
-import { Category } from '../domain/model/category';
-import { Comment } from '../domain/model/comment';
-import { Like } from '../domain/model/like';
-import { Profile } from '../domain/model/profile';
 import { Resource } from '../domain/model/resource';
-import { Subject } from '../domain/model/subject';
-import { ResourceInput, Role } from '../types';
+import { ResourceInput } from '../types';
+import profileService from './profile.service';
 
-// get all resources
-const getAllResources = async (role: Role): Promise<Resource[]> => {
-    if (role !== 'admin' && role !== 'user')
-        throw new UnauthorizedError('credentials_required', {
-            message: 'Only admins and users can get all resources',
-        });
-    return await resourceDb.getAllResources();
+const createResource = async (resourceInput: ResourceInput): Promise<Resource> => {
+    const { title, description, filePath, thumbNail, profileId } = resourceInput;
+    Resource.validate(title, description);
+    await profileService.getProfileById(profileId);
+    return await resourceDb.createResource(title, description, filePath, thumbNail, profileId);
 };
 
-// get resource by id
-const getResourceById = async (id: number): Promise<Resource> => {
+const getAllResources = async (): Promise<any[]> => await resourceDb.getAllResources();
+
+const getResourceById = async (id: number): Promise<any> => {
     const resource = await resourceDb.getResourceById(id);
     if (!resource) throw new Error(`Resource with id ${id} does not exist`);
     return resource;
 };
 
-// create resource
-const createResource = async ({ creator, title, description, category, subject }: ResourceInput): Promise<Resource> => {
-    if (!creator) throw new Error('creator Profile is required');
-    if (!(await profileDb.getProfileById(Number(creator.id))))
-        throw new Error(`Profile with id ${creator.id} does not exist`);
-    if (!Object.values(Category).includes(category)) throw new Error('Invalid Category');
-    if (!Object.values(Subject).includes(subject)) throw new Error('Invalid Subject');
-    const resource = new Resource({ creator, title, description, category, subject });
-
-    const existing = await resourceDb.getResourceByContent(
-        resource.title,
-        resource.description,
-        resource.category,
-        resource.subject
-    );
-    if (existing) throw new Error('Resource already exists');
-
-    return await resourceDb.createResource(resource);
+const getResourcesByProfileId = async (profileId: number): Promise<Resource[]> => {
+    await profileService.getProfileById(profileId);
+    return await resourceDb.getResourcesByProfileId(profileId);
 };
 
-const updateField = async (
-    resourceId: number,
-    field: string,
-    newValue: string | Category | Subject
-): Promise<Resource> => {
-    const resource = await resourceDb.getResourceById(resourceId);
-    return await resourceDb.updateFieldOfResource(resource.id, field, newValue);
+const updateResource = async (id: number, resourceInput: ResourceInput): Promise<Resource> => {
+    const { title, description, filePath, thumbNail } = resourceInput;
+    Resource.validate(title, description);
+    await getResourceById(id);
+    return await resourceDb.updateResource(id, title, description, filePath, thumbNail);
 };
 
-const getField = async (
-    resource: Resource,
-    field: string
-): Promise<string | number | Profile[] | Profile | Comment[] | Like[]> => {
-    switch (field) {
-        case 'creator':
-            return resource.creator;
-        case 'title':
-            return resource.title;
-
-        case 'description':
-            return resource.description;
-
-        case 'category':
-            return resource.category;
-
-        case 'subject':
-            return resource.subject;
-
-        case 'likes':
-            return (await likeDb.getLikesOnResource(resource.id)).length;
-
-        case 'upvoters':
-            return await profileDb.getProfilesWithLikeOnResource(resource);
-        case 'comments':
-            return commentDb.getAllCommentsOnResource(resource.id);
-
-        default:
-            throw new Error('Unsupported field');
-    }
-};
-
-const deleteResource = async (resourceId: number) => {
-    return await resourceDb.deleteResource(resourceId);
+const deleteResource = async (id: number): Promise<Resource> => {
+    await getResourceById(id);
+    return await resourceDb.deleteResource(id);
 };
 
 export default {
+    createResource,
     getAllResources,
     getResourceById,
-    createResource,
-    getField,
-    updateField,
+    getResourcesByProfileId,
+    updateResource,
     deleteResource,
 };

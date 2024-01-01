@@ -1,14 +1,14 @@
-import { serverSideTranslations } from "next-i18next/serverSideTranslations";
-import Header from "@/components/header";
+import Header from "@/components/Header";
+import LeaderBoard from "@/components/profiles/LeaderBoard";
 import ProfilesOverviewTable from "@/components/profiles/ProfilesOverviewTable";
 import { Profile } from "@/types";
+import { useTranslation } from "next-i18next";
+import { serverSideTranslations } from "next-i18next/serverSideTranslations";
 import Head from "next/head";
 import { useEffect, useState } from "react";
 import { mutate } from "swr";
 import useInterval from "use-interval";
 import ProfileService from "../../services/ProfileService";
-import { useTranslation } from "next-i18next";
-import LeaderBoard from "@/components/profiles/LeaderBoard";
 
 const Profiles: React.FC = () => {
   const [profiles, setProfiles] = useState<Array<Profile>>();
@@ -23,11 +23,13 @@ const Profiles: React.FC = () => {
       return;
     }
     setAuthorized(true);
-    return setProfiles(response);
+    return setProfiles(response.profiles);
   };
+
   const getTopTen = async () => {
     const response = await ProfileService.getLeaderboard();
-    return setTopTen(response);
+    setAuthorized(true);
+    return setTopTen(response.profiles);
   };
 
   useInterval(() => {
