@@ -1,5 +1,4 @@
 import Header from "@/components/Header";
-import { useTranslation } from "next-i18next";
 import { serverSideTranslations } from "next-i18next/serverSideTranslations";
 import Head from "next/head";
 import Link from "next/link";
@@ -8,14 +7,20 @@ import useSWR, { mutate } from "swr";
 import useInterval from "use-interval";
 import ResourcesOverviewTable from "../../components/resources/ResourcesOverviewTable";
 import ResourceService from "../../services/ResourceService";
+import { useTranslation } from "next-i18next";
+import { useRouter } from "next/router";
 
 const Resources: React.FC = () => {
   const [authorized, setAuthorized] = useState<boolean>(false);
   const { t } = useTranslation();
+  const router = useRouter();
   const getResources = async () => {
     const response = await ResourceService.getAllResources();
     if (response.status === "unauthorized" || response.status === "error") {
       setAuthorized(false);
+      sessionStorage.removeItem("loggedInUser");
+      confirm("You have to be logged in to view any resources.");
+      router.push("/login");
       return;
     }
     setAuthorized(true);
@@ -45,14 +50,16 @@ const Resources: React.FC = () => {
             <p>{t("authorization.error")}</p>
           )}
         </section>
-        <section id="addResource" className="col-span-1 m-auto">
-          <Link
-            href="/resources/create"
-            className=" bg-gray-400 p-8 hover:bg-gray-200 hover:text-black text-xl"
-          >
-            {t("resources.info.message")}
-          </Link>
-        </section>
+        {authorized && (
+          <section id="addResource" className="col-span-1 m-auto">
+            <Link
+              href="/resources/create"
+              className=" bg-gray-400 p-8 hover:bg-gray-200 hover:text-black text-xl"
+            >
+              {t("resources.info.message")}
+            </Link>
+          </section>
+        )}
       </main>
     </>
   );

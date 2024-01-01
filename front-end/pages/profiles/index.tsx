@@ -9,6 +9,7 @@ import useInterval from "use-interval";
 import ProfileService from "../../services/ProfileService";
 import { useTranslation } from "next-i18next";
 import LeaderBoard from "@/components/profiles/LeaderBoard";
+import { useRouter } from "next/router";
 
 const Profiles: React.FC = () => {
   const [profiles, setProfiles] = useState<Array<Profile>>();
@@ -16,10 +17,14 @@ const Profiles: React.FC = () => {
     useState<Array<{ profile: Profile; resourceCount: number }>>();
   const [authorized, setAuthorized] = useState<boolean>(false);
   const { t } = useTranslation();
+  const router = useRouter();
   const getProfiles = async () => {
     const response = await ProfileService.getAllProfiles();
     if (response.status === "unauthorized" || response.status === "error") {
       setAuthorized(false);
+      sessionStorage.removeItem("loggedInUser");
+      confirm("You have to be logged in to view any profiles.");
+      router.push("/login");
       return;
     }
     setAuthorized(true);
