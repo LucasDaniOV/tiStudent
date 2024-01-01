@@ -39,7 +39,7 @@ async function main() {
             title: 'P1 fundamentals summary',
             description: 'All the important stuff for p1',
             filePath: 'aple.jpg',
-            thumbNail: 'default-thumbnail.jpg',
+            thumbNail: 'default-thumbnail1.jpg',
             profileId: aliceProfile.id,
         },
     });
@@ -49,7 +49,7 @@ async function main() {
             title: 'Full-Stack Software Development Cheat Sheet',
             description: 'All the important stuff for FSSD',
             filePath: 'aple.jpg',
-            thumbNail: 'default-thumbnail.jpg',
+            thumbNail: 'default-thumbnail1.jpg',
             profileId: satoshi.id,
         },
     });
@@ -119,6 +119,7 @@ async function main() {
             message: 'Love you too',
             profileId: bobProfile.id,
             resourceId: resource.id,
+            parentId: bobComment.id,
         },
     });
 
