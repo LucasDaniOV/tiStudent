@@ -2,7 +2,7 @@ import Subjects from "@/components/Subjects";
 import Header from "@/components/Header";
 import ProfileService from "@/services/ProfileService";
 import ResourceService from "@/services/ResourceService";
-import { Category, StatusMessage } from "@/types";
+import { Category, StatusMessage, Subject } from "@/types";
 import { useTranslation } from "next-i18next";
 import { serverSideTranslations } from "next-i18next/serverSideTranslations";
 import Head from "next/head";
@@ -11,6 +11,7 @@ import React, { FormEvent, useEffect, useRef, useState } from "react";
 import CategoryService from "@/services/CategoryService";
 import SubjectService from "@/services/SubjectService";
 import FileUploadComponent from "@/components/FileUploadComponent";
+import Thumbnails from "@/components/Thumbnails";
 
 const CreateResourceForm: React.FC = () => {
   const { t } = useTranslation();
@@ -19,8 +20,10 @@ const CreateResourceForm: React.FC = () => {
   const [filePath, setFilePath] = useState("");
   const [thumbNail, setThumbNail] = useState("");
   const [category, setCategory] = useState<Category>();
-  const [isVisible, setVisible] = useState(false);
+  const [subjectsIsVisible, setSubjectVisible] = useState(false);
+  const [thumbnailIsVisible, setThumbnailsVisible] = useState(false);
   const subjectsInputRef = useRef<HTMLInputElement | null>(null);
+  const thumbnailsInputRef = useRef<HTMLInputElement | null>(null);
   const [subject, setSubject] = useState("");
   const [profileId, setProfileId] = useState<string>("");
 
@@ -54,7 +57,7 @@ const CreateResourceForm: React.FC = () => {
       title,
       description,
       filePath,
-      thumbNail
+      thumbNail ? thumbNail : "default-thumbnail1.jpg"
     );
     const message = result.message;
     const type = result.status;
@@ -115,6 +118,11 @@ const CreateResourceForm: React.FC = () => {
       return;
     }
 
+    if (!filePath) {
+      setFilePathError("File is required");
+      return;
+    }
+
     createResource();
     router.push("/resources");
   };
@@ -125,7 +133,15 @@ const CreateResourceForm: React.FC = () => {
         subjectsInputRef.current &&
         !subjectsInputRef.current.contains(event.target as Node)
       ) {
-        setVisible(false);
+        setSubjectVisible(false);
+      }
+    }
+    if (thumbnailsInputRef) {
+      if (
+        thumbnailsInputRef.current &&
+        !thumbnailsInputRef.current.contains(event.target as Node)
+      ) {
+        setThumbnailsVisible(false);
       }
     }
   };
@@ -194,8 +210,22 @@ const CreateResourceForm: React.FC = () => {
                   <FileUploadComponent callback={setFilePath} />
                 </div>
                 <div>
-                  <p className="mt-2 mb-2">Thumbnail: </p>
-                  <FileUploadComponent callback={setThumbNail} />
+                  <input
+                    type="search"
+                    id="thumbnail"
+                    onFocus={() => setThumbnailsVisible(true)}
+                    ref={thumbnailsInputRef}
+                    value={thumbNail}
+                    className="pl-2"
+                    placeholder="Thumbnail..."
+                    onChange={(e) => setThumbNail(e.target.value)}
+                  />
+                  {thumbnailIsVisible && (
+                    <Thumbnails
+                      visible={thumbnailIsVisible}
+                      func={setThumbNail}
+                    />
+                  )}
                 </div>
                 <div>
                   <label className="mt-2 mb-2">
@@ -225,16 +255,16 @@ const CreateResourceForm: React.FC = () => {
                 <input
                   type="search"
                   id="subject"
-                  onFocus={() => setVisible(true)}
+                  onFocus={() => setSubjectVisible(true)}
                   ref={subjectsInputRef}
                   value={subject}
                   className="pl-2"
                   placeholder="Subject..."
                   onChange={(e) => setSubject(e.target.value)}
                 />
-                {isVisible && (
+                {subjectsIsVisible && (
                   <Subjects
-                    visible={isVisible}
+                    visible={subjectsIsVisible}
                     func={setSubject}
                     filter={subject}
                     subjects={subjects}
@@ -243,6 +273,8 @@ const CreateResourceForm: React.FC = () => {
                 {profileIdError && <div>{profileIdError}</div>}
                 {titleError && <div>{titleError}</div>}
                 {descriptionError && <div>{descriptionError}</div>}
+                {filePathError && <div>{filePathError}</div>}
+                {thumbNailError && <div>{thumbNailError}</div>}
                 {categoryError && <div>{categoryError}</div>}
                 {subjectError && <div>{subjectError}</div>}
                 <button
