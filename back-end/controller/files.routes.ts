@@ -1,6 +1,7 @@
 import express, { NextFunction, Request, Response } from 'express';
 import multer from 'multer';
 import path from 'path';
+import fs from 'fs';
 
 const fileRouter = express.Router();
 const storage = multer.diskStorage({
@@ -36,6 +37,19 @@ fileRouter.get('/:filename', (req: Request, res: Response, next: NextFunction) =
     res.download(filePath, filename, (err) => {
         if (err) {
             next(err);
+        }
+    });
+});
+
+fileRouter.delete('/:filename', (req: Request, res: Response, next: NextFunction) => {
+    const filename = req.params.filename;
+    const filePath = path.join(__dirname, '../../uploads', filename); // Adjust the path based on your project structure
+
+    fs.unlink(filePath, (err) => {
+        if (err) {
+            next(err);
+        } else {
+            res.status(200).json({ status: 'success', message: 'File deleted successfully' });
         }
     });
 });
