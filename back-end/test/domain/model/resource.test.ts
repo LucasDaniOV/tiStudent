@@ -6,6 +6,8 @@ const validUpdatedAt = new Date();
 const validTitle = 'Hello World';
 const validDescription = 'This is a test resource';
 const validProfileId = 1;
+const validFilePath = 'aple.jpg';
+const validThumbnail = 'default-thumbnail1.jpg';
 
 test(`given: valid values for Resource, when: Resource is created, then: Resource is created`, () => {
     // when
@@ -16,6 +18,8 @@ test(`given: valid values for Resource, when: Resource is created, then: Resourc
         title: validTitle,
         description: validDescription,
         profileId: validProfileId,
+        filePath: validFilePath,
+        thumbNail: validThumbnail,
     });
 
     // then
@@ -65,6 +69,8 @@ test(`given: too long title, when: Resource is created, then: error is thrown`, 
             title: invalidTitle,
             description: validDescription,
             profileId: validProfileId,
+            filePath: validFilePath,
+            thumbNail: validThumbnail,
         });
 
     // then
@@ -85,6 +91,8 @@ test(`given: too long description, when: Resource is created, then: error is thr
             title: validTitle,
             description: invalidDescription,
             profileId: validProfileId,
+            filePath: validFilePath,
+            thumbNail: validThumbnail,
         });
 
     // then
