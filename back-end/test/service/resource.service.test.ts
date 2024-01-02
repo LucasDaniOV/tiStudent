@@ -16,6 +16,8 @@ const email = 'resource.service.test@tistudent.com';
 const username = 'DonVitoCorleone';
 const password = 'resourceServiceT3st_;D';
 const role = 'USER';
+const filePath = 'aple.jpg';
+const thumbNail = 'default-thumbnail1.jpg';
 
 const resource = new Resource({
     id,
@@ -23,6 +25,8 @@ const resource = new Resource({
     updatedAt,
     title,
     description,
+    filePath,
+    thumbNail,
     profileId,
 });
 
@@ -41,6 +45,8 @@ const resourceInput: ResourceInput = {
     title,
     description,
     profileId,
+    filePath,
+    thumbNail,
 };
 
 let mockResourceDbGetResourceByContent: jest.Mock;

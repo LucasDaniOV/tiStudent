@@ -116,6 +116,14 @@ async function main() {
 
     await prisma.comment.create({
         data: {
+            message: "You're welcome Alice",
+            profileId: bobProfile.id,
+            resourceId: resource.id,
+            parentId: bobComment.id,
+        },
+    });
+    await prisma.comment.create({
+        data: {
             message: 'Love you too',
             profileId: bobProfile.id,
             resourceId: resource.id,

@@ -18,20 +18,20 @@ const baseUrl = process.env.NEXT_PUBLIC_API_URL + "/comments";
 //   return await comments.json();
 // };
 
-// const getCommentById = async (
-//   commentId: string
-//   // token: string
-// ): Promise<Comment> => {
-//   const token = getToken();
-//   const comment = await fetch(baseUrl + `/${commentId}`, {
-//     method: "GET",
-//     headers: {
-//       "Content-Type": "application/json",
-//       Authorization: `Bearer ${token}`,
-//     },
-//   });
-//   return await comment.json();
-// };
+const getCommentById = async (
+  commentId: string
+  // token: string
+) => {
+  const token = getToken();
+  const comment = await fetch(baseUrl + `/${commentId}`, {
+    method: "GET",
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${token}`,
+    },
+  });
+  return await comment.json();
+};
 
 const writeCommentOnComment = async (
   profileId: string,
@@ -105,7 +105,7 @@ const deleteComment = async (
 
 const CommentService = {
   // getCommentsOnComment,
-  // getCommentById,
+  getCommentById,
   writeCommentOnComment,
   writeCommentOnResource,
   deleteComment,

@@ -60,7 +60,7 @@ const FileUploadComponent: React.FC<Props> = ({ fileName }: Props) => {
       {uploadedFile && (
         <div className="">
           <button
-            className="text-2xl align-middle hover:bg-gray-500"
+            className="text-2xl align-middle hover:bg-gray-500 border p-1 rounded-lg "
             onClick={handleDownload}
           >
             <span className="text-3xl align-middle">&#10515;</span> Download
