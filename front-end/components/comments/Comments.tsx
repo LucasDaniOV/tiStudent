@@ -30,7 +30,7 @@ const Comments: React.FC<Props> = ({
   const [optionsVisibility, setOptionsVisibility] = useState<{
     [key: string]: boolean;
   }>({});
-
+  const [parentComment, setParentComment] = useState<Comment>();
   const toggleVisibility = (commentId: string) => {
     setSubcommentsVisibility((prevVisibility) => ({
       ...prevVisibility,
@@ -69,6 +69,8 @@ const Comments: React.FC<Props> = ({
       const getComments = async () => {
         const response = await CommentService.getChildrenByCommentId(commentId);
         setComments(response.comments);
+        const parent = await CommentService.getCommentById(commentId);
+        setParentComment(parent.comment);
       };
       getComments();
     }
@@ -80,14 +82,15 @@ const Comments: React.FC<Props> = ({
   ): Promise<void> => {
     e.stopPropagation();
     e.preventDefault();
-    if (profile?.id === comment.profileId || role == "ADMIN") {
+
+    if (profile?.id === comment.profile?.id || role == "ADMIN") {
       if (
-        !confirm(
+        confirm(
           `${t("resources.comment.options.delete.message")}(${comment.message})`
         )
       )
-        return;
-      await CommentService.deleteComment(comment, token);
+        await CommentService.deleteComment(comment, token);
+      else return;
       router.reload();
     } else {
       alert(t("resources.comment.options.delete.error"));
@@ -157,7 +160,7 @@ const Comments: React.FC<Props> = ({
                         : "p-1 bg-gray-200 text-gray-700 flex items-center justify-center"
                     }
                   >
-                    - {com.profile!.username}
+                    - {com.profile?.username}
                   </span>
                   {!com.parentId && (
                     <a
@@ -169,24 +172,28 @@ const Comments: React.FC<Props> = ({
                       {t("resources.comment.reply")}
                     </a>
                   )}
-                  {(profile.id == com.profile!.id || role == "admin") &&
+                  {(profile.id == com.profile?.id ||
+                    role === "ADMIN" ||
+                    profile.id == parentComment?.profileId) && //Author of parent comment should be allowed to delete comments
                     (!optionsVisibility[com.id] ? (
                       <a
-                        className="float-right cursor-pointer p-1 pr-2 text-gray-600 hover:bg-gray-700 hover:text-white  flex items-center justify-center"
+                        className="text-2xl float-right cursor-pointer p-1 pr-2 text-gray-600 hover:bg-gray-700 hover:text-white  flex items-center justify-center"
                         onClick={() => toggleOptionsVisibility(com.id)}
                       >
                         &#8942;
                       </a>
                     ) : (
                       <div className="flex items-center bg-gray-600 m-auto">
-                        <a
-                          className="p-1 cursor-pointer border-2 border-transparent hover:border-2 hover:border-white"
-                          onClick={() =>
-                            alert(t("resources.comment.options.edit.message"))
-                          }
-                        >
-                          {t("resources.comment.options.edit.title")}
-                        </a>
+                        {profile.id == com.profile?.id && ( //Only author of comment should be able to edit the comment
+                          <a
+                            className="p-1 cursor-pointer border-2 border-transparent hover:border-2 hover:border-white"
+                            onClick={() =>
+                              alert(t("resources.comment.options.edit.message"))
+                            }
+                          >
+                            {t("resources.comment.options.edit.title")}
+                          </a>
+                        )}
 
                         <a
                           className="p-1 cursor-pointer border-2 border-transparent hover:border-2 hover:border-white "
