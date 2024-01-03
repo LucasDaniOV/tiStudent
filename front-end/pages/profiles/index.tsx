@@ -13,6 +13,7 @@ import { useRouter } from "next/router";
 
 const Profiles: React.FC = () => {
   const [profiles, setProfiles] = useState<Array<Profile>>();
+  const [errorVisible, setErrorVisible] = useState<boolean>(false);
   const [topTen, setTopTen] =
     useState<Array<{ profile: Profile; resourceCount: number }>>();
   const [authorized, setAuthorized] = useState<boolean>(false);
@@ -23,11 +24,15 @@ const Profiles: React.FC = () => {
     if (response.status === "unauthorized" || response.status === "error") {
       setAuthorized(false);
       sessionStorage.removeItem("loggedInUser");
-      confirm("You have to be logged in to view any profiles.");
+      if (!errorVisible) {
+        confirm("You have to be logged in to view any profiles.");
+        setErrorVisible(true);
+      }
       router.push("/login");
       return;
     }
     setAuthorized(true);
+    setErrorVisible(false);
     return setProfiles(response.profiles);
   };
 
