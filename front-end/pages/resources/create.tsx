@@ -1,7 +1,6 @@
 import FileUploadComponent from "@/components/FileUploadComponent";
 import Header from "@/components/Header";
 import Subjects from "@/components/Subjects";
-import Thumbnails from "@/components/Thumbnails";
 import CategoryService from "@/services/CategoryService";
 import ResourceService from "@/services/ResourceService";
 import SubjectService from "@/services/SubjectService";
@@ -20,9 +19,7 @@ const CreateResourceForm: React.FC = () => {
   const [thumbNail, setThumbNail] = useState("");
   const [category, setCategory] = useState<Category>();
   const [subjectsIsVisible, setSubjectVisible] = useState(false);
-  const [thumbnailIsVisible, setThumbnailsVisible] = useState(false);
   const subjectsInputRef = useRef<HTMLInputElement | null>(null);
-  const thumbnailsInputRef = useRef<HTMLInputElement | null>(null);
   const [subject, setSubject] = useState("");
   const [profileId, setProfileId] = useState<string>("");
 
@@ -135,14 +132,6 @@ const CreateResourceForm: React.FC = () => {
         setSubjectVisible(false);
       }
     }
-    if (thumbnailsInputRef) {
-      if (
-        thumbnailsInputRef.current &&
-        !thumbnailsInputRef.current.contains(event.target as Node)
-      ) {
-        setThumbnailsVisible(false);
-      }
-    }
   };
 
   const setUser = async () => {
@@ -209,22 +198,8 @@ const CreateResourceForm: React.FC = () => {
                   <FileUploadComponent callback={setFilePath} />
                 </div>
                 <div>
-                  <input
-                    type="search"
-                    id="thumbnail"
-                    onFocus={() => setThumbnailsVisible(true)}
-                    ref={thumbnailsInputRef}
-                    value={thumbNail}
-                    className="pl-2"
-                    placeholder="Thumbnail..."
-                    onChange={(e) => setThumbNail(e.target.value)}
-                  />
-                  {thumbnailIsVisible && (
-                    <Thumbnails
-                      visible={thumbnailIsVisible}
-                      func={setThumbNail}
-                    />
-                  )}
+                  <p className="mt-2 mb-2">Thumbnail: </p>
+                  <FileUploadComponent callback={setThumbNail} />
                 </div>
                 <div>
                   <label className="mt-2 mb-2">
