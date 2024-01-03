@@ -4,7 +4,7 @@ import { useTranslation } from "next-i18next";
 import { useRouter } from "next/router";
 import { FormEvent, useState } from "react";
 
-const UserLoginForm: React.FC = () => {
+const ProfileLoginForm: React.FC = () => {
   const [email, setEmail] = useState("");
   const [emailError, setEmailError] = useState("");
   const [password, setPassword] = useState("");
@@ -112,4 +112,4 @@ const UserLoginForm: React.FC = () => {
   );
 };
 
-export default UserLoginForm;
+export default ProfileLoginForm;

@@ -115,12 +115,14 @@ const ResourceOverviewTable: React.FC<Props> = ({ resources }: Props) => {
                 <td className="border p-4">{resource.profileId}</td>
                 <td>
                   <span className="flex items-center justify-center">
-                    <Image
-                      src={imageState[resource.id]}
-                      alt={"Thumbnail"}
-                      width={100}
-                      height={50}
-                    />
+                    {imageState && imageState[resource.id] && (
+                      <Image
+                        src={imageState[resource.id]}
+                        alt={"Thumbnail"}
+                        width={100}
+                        height={50}
+                      />
+                    )}
                   </span>
                 </td>
                 <td className="border p-4">{String(resource.createdAt)}</td>

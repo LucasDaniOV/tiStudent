@@ -101,12 +101,14 @@ const ReadResourceById = () => {
                 <>
                   {resource && (
                     <div className="col-span-1 flex justify-center">
-                      <Image
-                        src={image}
-                        width={150}
-                        height={100}
-                        alt="Thumbnail"
-                      />
+                      {image && (
+                        <Image
+                          src={image}
+                          width={150}
+                          height={100}
+                          alt="Thumbnail"
+                        />
+                      )}
                     </div>
                   )}
                   {resource && profile && categories && subjects && creator && (
