@@ -4,19 +4,22 @@ const baseUrl = process.env.NEXT_PUBLIC_API_URL + "/like";
 
 const getAllLikesOnResource = async (resourceId: string) => {
   const token = getToken();
-  const res = await fetch(baseUrl + "/resource/" + resourceId, {
-    method: "GET",
-    headers: {
-      "Content-Type": "application/json",
-      Authorization: `Bearer ${token}`,
-    },
-  });
+  const res = await fetch(
+    process.env.NEXT_PUBLIC_API_URL + "/resourceLikes?resourceId=" + resourceId,
+    {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+    }
+  );
   return await res.json();
 };
 
 const getAllLikesOnComment = async (commentId: string) => {
   const token = getToken();
-  const res = await fetch(baseUrl + "/comment/" + commentId, {
+  const res = await fetch(baseUrl + "/commentLikes/" + commentId, {
     method: "GET",
     headers: {
       "Content-Type": "application/json",
@@ -39,10 +42,7 @@ const likeResource = async (profileId: string, resourceId: string) => {
   return await res.json();
 };
 
-const likeComment = async (
-  profileId: string,
-  commentId: string
-) => {
+const likeComment = async (profileId: string, commentId: string) => {
   const token = getToken();
   const res = await fetch(process.env.NEXT_PUBLIC_API_URL + `/commentlikes`, {
     method: "POST",
