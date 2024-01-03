@@ -5,12 +5,11 @@ type Props = {
   fileName: any;
 };
 
-const FileUploadComponent: React.FC<Props> = ({ fileName }: Props) => {
+const FileDownloadComponent: React.FC<Props> = ({ fileName }: Props) => {
   const [uploadedFile, setUploadedFile] = useState<any>();
   useEffect(() => {
     setUploadedFile(fileName);
   }, [uploadedFile]);
-  console.log(uploadedFile);
 
   const handleDownload = async () => {
     if (uploadedFile) {
@@ -72,4 +71,4 @@ const FileUploadComponent: React.FC<Props> = ({ fileName }: Props) => {
   );
 };
 
-export default FileUploadComponent;
+export default FileDownloadComponent;
