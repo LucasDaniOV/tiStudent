@@ -10,6 +10,7 @@ const validUsername = 'sudo';
 const validPassword = 'Password!123';
 const validRole = 'USER';
 const validBio = 'The Terminator';
+const validPicture = 'default-profilePicture.jpg';
 
 const username2 = 'profileTest';
 const bio2 = "I'll be back";
@@ -26,6 +27,7 @@ test(`given: valid values for Profile, when: Profile is created, then: Profile i
         password: validPassword,
         role: validRole,
         bio: validBio,
+        picture: validPicture,
     });
 
     // then
@@ -45,6 +47,7 @@ test(`given: no email for Profile, when: Profile is created, then: Profile is no
             password: validPassword,
             role: validRole,
             bio: validBio,
+            picture: validPicture,
         });
 
     // then
@@ -67,6 +70,7 @@ test(`given: invalid email for Profile, when: Profile is created, then: Profile 
             password: validPassword,
             role: validRole,
             bio: validBio,
+            picture: validPicture,
         });
 
     // then
@@ -89,6 +93,7 @@ test(`given: invalid password (too short) for Profile, when: Profile is created,
             password: invalidPassword,
             role: validRole,
             bio: validBio,
+            picture: validPicture,
         });
 
     // then
@@ -111,6 +116,7 @@ test(`given: invalid password (no number) for Profile, when: Profile is created,
             password: invalidPassword,
             role: validRole,
             bio: validBio,
+            picture: validPicture,
         });
 
     // then
@@ -133,6 +139,7 @@ test(`given: invalid password (no capital letter) for Profile,  when: Profile is
             password: invalidPassword,
             role: validRole,
             bio: validBio,
+            picture: validPicture,
         });
 
     // then
@@ -155,6 +162,7 @@ test(`given: invalid password (no special sign) for Profile,  when: Profile is c
             password: invalidPassword,
             role: validRole,
             bio: validBio,
+            picture: validPicture,
         });
 
     // then
@@ -176,6 +184,7 @@ test(`given: no username, when: Profile is created, then: error is thrown`, () =
             password: validPassword,
             role: validRole,
             bio: validBio,
+            picture: validPicture,
         });
 
     // then
@@ -198,6 +207,7 @@ test(`given: too long username, when: Profile is created, then: error is thrown`
             password: validPassword,
             role: validRole,
             bio: validBio,
+            picture: validPicture,
         });
 
     // then
@@ -215,6 +225,7 @@ test(`given: no bio, when: Profile is created, then: bio is undefined`, () => {
         username: validUsername,
         password: validPassword,
         role: validRole,
+        picture: validPicture,
     });
 
     // then
@@ -237,6 +248,7 @@ test(`given: too long bio, when: Profile is created, then: error is thrown`, () 
             password: validPassword,
             role: validRole,
             bio: longBio,
+            picture: validPicture,
         });
 
     // then
@@ -255,6 +267,7 @@ test(`given: existing Profile, when: equals is called with same Profile, then: t
         password: validPassword,
         role: validRole,
         bio: validBio,
+        picture: validPicture,
     });
 
     const profile2 = new Profile({
@@ -267,6 +280,7 @@ test(`given: existing Profile, when: equals is called with same Profile, then: t
         password: validPassword,
         role: validRole,
         bio: validBio,
+        picture: validPicture,
     });
 
     // when
@@ -288,6 +302,7 @@ test(`given: existing Profile, when: equals is called with different Profile, th
         password: validPassword,
         role: validRole,
         bio: validBio,
+        picture: validPicture,
     });
 
     const profile2 = new Profile({
@@ -300,6 +315,7 @@ test(`given: existing Profile, when: equals is called with different Profile, th
         password: validPassword,
         role: validRole,
         bio: bio2,
+        picture: validPicture,
     });
 
     // when
@@ -325,6 +341,7 @@ test(`given invalid role, when: creating Profile, then: Profile is not created a
             password: validPassword,
             role: invalidRole as Role,
             bio: validBio,
+            picture: validPicture,
         });
 
     // then

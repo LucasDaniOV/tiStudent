@@ -1,5 +1,5 @@
 import Header from "@/components/Header";
-import ProfileInfo from "@/components/profiles/ProfileInfo";
+import AccountInfo from "@/components/profiles/AccountInfo";
 import ProfileService from "@/services/ProfileService";
 import { Profile } from "@/types";
 import { useTranslation } from "next-i18next";
@@ -19,7 +19,6 @@ const ReadProfileById = () => {
     );
     return setProfile(fetchedProfile.profile);
   };
-
   useEffect(() => {
     if (profileId && !profile) getProfileById();
   }, [profile, profileId]);
@@ -30,14 +29,17 @@ const ReadProfileById = () => {
         <title>{t("profiles.title")}</title>
       </Head>
       <Header current="profiles" />
-      <main>
-        <h1>
-          {t("profiles.info")}
-          {profile && profile.username}
+      <main className="mx-auto" style={{ width: "80%" }}>
+        <h1 className="flex justify-center mb-5">
+          {profile && (
+            <>
+              {t("profiles.info")} {profile.username}
+            </>
+          )}
         </h1>
         {!profileId && <p>{t("loading")}</p>}
         <section>
-          <ProfileInfo profile={profile as Profile}></ProfileInfo>
+          <AccountInfo profile={profile as Profile} />
         </section>
       </main>
     </>

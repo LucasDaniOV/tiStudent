@@ -22,6 +22,7 @@ model Profile {
     password       String
     role           Role           @default(USER)
     bio            String?
+    picture        String         @default("default-profilePicture.jpg")
     resources      Resource[]
     comments       Comment[]
     resourceLikes  ResourceLike[]

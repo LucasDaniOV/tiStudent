@@ -3,6 +3,7 @@ type ProfileInput = {
     username?: string;
     password?: string;
     role?: Role;
+    picture?: string;
     bio?: string;
 };
 

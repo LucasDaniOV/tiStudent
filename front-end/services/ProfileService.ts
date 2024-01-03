@@ -44,7 +44,14 @@ const createProfile = async (
     headers: {
       "Content-Type": "application/json",
     },
-    body: JSON.stringify({ email, password, role, username, bio }),
+    body: JSON.stringify({
+      email,
+      password,
+      role,
+      username,
+      bio,
+      picture: "default-profilePicture.jpg",
+    }),
   });
   return await res.json();
 };

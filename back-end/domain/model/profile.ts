@@ -10,6 +10,7 @@ export class Profile {
     readonly username: string;
     readonly password: string;
     readonly role: Role;
+    readonly picture: string;
     readonly bio?: string;
 
     constructor(profile: {
@@ -21,9 +22,10 @@ export class Profile {
         username: string;
         password: string;
         role: Role;
+        picture: string;
         bio?: string;
     }) {
-        Profile.validate(profile.email, profile.username, profile.password, profile.role, profile.bio);
+        Profile.validate(profile.email, profile.username, profile.password, profile.role, profile.picture, profile.bio);
         this.id = profile.id;
         this.createdAt = profile.createdAt;
         this.updatedAt = profile.updatedAt;
@@ -33,23 +35,40 @@ export class Profile {
         this.password = profile.password;
         this.role = profile.role;
         this.bio = profile.bio;
+        this.picture = profile.picture;
     }
 
-    equals(otherProfile: { email: string; password: string; role: Role; username: string; bio?: string }): boolean {
+    equals(otherProfile: {
+        email: string;
+        password: string;
+        role: Role;
+        username: string;
+        picture: string;
+        bio?: string;
+    }): boolean {
         return (
             this.email === otherProfile.email &&
             this.username === otherProfile.username &&
             this.password === otherProfile.password &&
             this.role === otherProfile.role &&
+            this.picture === otherProfile.picture &&
             this.bio === otherProfile.bio
         );
     }
 
-    static validate(email: string, username: string, password: string, role: Role, bio?: string): void {
+    static validate(
+        email: string,
+        username: string,
+        password: string,
+        role: Role,
+        picture: string,
+        bio?: string
+    ): void {
         Profile.validateEmail(email);
         Profile.validateUsername(username);
         Profile.validatePassword(password);
         Profile.validateRole(role);
+        Profile.validatePicture(picture);
         Profile.validateBio(bio);
     }
 
@@ -79,6 +98,10 @@ export class Profile {
         if (username.length > 30) throw new Error('Username cannot be longer than 30 characters');
     };
 
+    static validatePicture = (picture: string): void => {
+        if (picture == undefined || picture == null || !picture.trim()) throw new Error('Profile picture is required');
+    };
+
     static validateBio = (bio: string): void => {
         if (bio != null && bio.length > 200) throw new Error('Bio cannot be longer than 200 characters');
     };
@@ -92,6 +115,7 @@ export class Profile {
         username,
         password,
         role,
+        picture,
         bio,
     }: ProfilePrisma): Profile {
         return new Profile({
@@ -103,6 +127,7 @@ export class Profile {
             username,
             password,
             role,
+            picture,
             bio,
         });
     }

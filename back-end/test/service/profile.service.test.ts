@@ -11,6 +11,7 @@ const email = 'profile.service.test@tistudent.be';
 const password = 'profileServiceT3st_;D';
 const role = 'USER';
 const username = 'TheProfileServiceTester';
+const picture = 'default-profilePicture.jpg';
 
 const updatedEmail = 'profile.service.test@tistudent.be2';
 const updatedUsername = 'TheGodfather';
@@ -24,6 +25,7 @@ const profile = new Profile({
     password,
     role,
     username,
+    picture: picture,
 });
 
 const profileInput: ProfileInput = {
@@ -31,6 +33,7 @@ const profileInput: ProfileInput = {
     password,
     role,
     username,
+    picture: picture,
 };
 
 let mockProfileDbGetAllProfiles: jest.Mock;
@@ -181,6 +184,7 @@ test(`given: invalid role, when: creating Profile, then: Profile is not created 
             password: profileInput.password,
             username: profileInput.username,
             role: invalidRole as Role,
+            picture: profileInput.picture,
         });
 
     // then

@@ -16,6 +16,7 @@ const email = 'resource.service.test@tistudent.com';
 const username = 'DonVitoCorleone';
 const password = 'resourceServiceT3st_;D';
 const role = 'USER';
+const picture = 'default-profilePicture.jpg';
 const filePath = 'aple.jpg';
 const thumbNail = 'default-thumbnail1.jpg';
 
@@ -39,6 +40,7 @@ const profile = new Profile({
     username,
     password,
     role,
+    picture: picture,
 });
 
 const resourceInput: ResourceInput = {

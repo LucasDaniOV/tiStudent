@@ -13,9 +13,6 @@ import Head from "next/head";
 import Image from "next/image";
 import { useRouter } from "next/router";
 import { FormEvent, useEffect, useState } from "react";
-import defaultLogo1 from "../../public/images/default-thumbnail1.jpg";
-import defaultLogo2 from "../../public/images/default-thumbnail2.jpg";
-import defaultLogo3 from "../../public/images/default-thumbnail3.jpg";
 
 const ReadResourceById = () => {
   const { t } = useTranslation();
@@ -28,6 +25,7 @@ const ReadResourceById = () => {
   const [shareState, setShare] = useState<boolean>(false);
   const router = useRouter();
   const { resourceId } = router.query;
+  const [image, setImage] = useState<string>("");
 
   const getResourceById = async () => {
     const loggedInUser = sessionStorage.getItem("loggedInUser");
@@ -38,6 +36,9 @@ const ReadResourceById = () => {
     ]);
     setResource(resourceResponse);
     setProfile(profileResponse.profile);
+    const img = await import("../../../uploads/" + resourceResponse.thumbNail);
+    console.log("img");
+    setImage(img);
   };
 
   const getSubjects = async () => {
@@ -99,13 +100,7 @@ const ReadResourceById = () => {
                   {resource && (
                     <div className="col-span-1 flex justify-center">
                       <Image
-                        src={
-                          resource.thumbNail == "default-thumbnail1.jpg"
-                            ? defaultLogo1
-                            : resource.thumbNail == "default-thumbnail2.jpg"
-                            ? defaultLogo2
-                            : defaultLogo3
-                        }
+                        src={image}
                         width={150}
                         height={100}
                         alt="Thumbnail"
