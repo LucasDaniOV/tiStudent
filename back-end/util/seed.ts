@@ -11,6 +11,7 @@ async function main() {
             username: 'JJ',
             password: await hashPassword('Str0ngPW!!!'),
             role: 'ADMIN',
+            picture: 'default-profilePicture.jpg',
         },
     });
 
@@ -20,6 +21,7 @@ async function main() {
             username: 'ICE money bang bang',
             password: await hashPassword('Str0ngPW!!!2'),
             role: 'USER',
+            picture: 'default-profilePicture.jpg',
         },
     });
 
@@ -30,6 +32,7 @@ async function main() {
             password: await hashPassword('passWord123!$'),
             role: 'USER',
             bio: 'Call me bob the way I make these samenvattingen like damn.',
+            picture: 'default-profilePicture.jpg',
         },
     });
 
