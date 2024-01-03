@@ -21,8 +21,12 @@ const AccountInfo: React.FC<Props> = ({ profile }: Props) => {
     const response = await ResourceService.getResourcesByProfile(
       parseInt(profile.id)
     );
-    const img = await import("../../../back-end/uploads/" + profile.picture);
-    setProfilePicture(img);
+    try {
+      const img = await import("../../../back-end/uploads/" + profile.picture);
+      setProfilePicture(img);
+    } catch (error) {
+      console.error(error);
+    }
 
     if (response) {
       const likesPromises = response.resources.map(async (r: Resource) => {
