@@ -15,7 +15,7 @@ const getAllSubjects = async () => {
 const getSubjectIdByName = async (name: string) => {
   const token = getToken();
   const res = await fetch(
-    process.env.NEXT_PUBLIC_API_URL + "/subjects?name=" + name,
+    process.env.NEXT_PUBLIC_API_URL + "/subjects?name=" + encodeURIComponent(name),
     {
       method: "GET",
       headers: {
