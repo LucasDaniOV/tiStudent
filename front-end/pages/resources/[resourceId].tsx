@@ -36,7 +36,9 @@ const ReadResourceById = () => {
     ]);
     setResource(resourceResponse);
     setProfile(profileResponse.profile);
-    const img = await import("../../../uploads/" + resourceResponse.thumbNail);
+    const img = await import(
+      "../../../back-end/uploads/" + resourceResponse.thumbNail
+    );
     console.log("img");
     setImage(img);
   };

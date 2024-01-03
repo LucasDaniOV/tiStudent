@@ -108,4 +108,4 @@ vscode/
 .vscode
 
 back-end/domain/data-access/prisma/migrations/
-uploads/
+back-end/uploads/

@@ -21,7 +21,7 @@ const AccountInfo: React.FC<Props> = ({ profile }: Props) => {
     const response = await ResourceService.getResourcesByProfile(
       parseInt(profile.id)
     );
-    const img = await import("../../../uploads/" + profile.picture);
+    const img = await import("../../../back-end/uploads/" + profile.picture);
     setProfilePicture(img);
 
     if (response) {

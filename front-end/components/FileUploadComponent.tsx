@@ -3,13 +3,18 @@ import React, { ChangeEvent, useState } from "react";
 
 type Props = {
   callback: Function;
+  allowedExtensions: Array<string>;
 };
 
-const FileUploadComponent: React.FC<Props> = ({ callback }: Props) => {
+const FileUploadComponent: React.FC<Props> = ({
+  callback,
+  allowedExtensions,
+}: Props) => {
   const [state, setState] = useState<"pressed" | "unpressed">("unpressed");
   const [uploaded, setUploaded] = useState<
     "Upload" | "File succesfully uploaded"
   >("Upload");
+  const [error, setError] = useState<string>("");
   const [filename, setFilename] = useState<string>();
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const basic = "border p-1 rounded-lg ";
@@ -18,6 +23,9 @@ const FileUploadComponent: React.FC<Props> = ({ callback }: Props) => {
     const files = event.target.files;
     if (files && files.length > 0) {
       setSelectedFile(files[0]);
+      setUploaded("Upload");
+    } else {
+      setUploaded("Upload");
     }
   };
 
@@ -27,6 +35,24 @@ const FileUploadComponent: React.FC<Props> = ({ callback }: Props) => {
     e.preventDefault();
     e.stopPropagation();
     if (selectedFile) {
+      if (allowedExtensions) {
+        let valid = false;
+        allowedExtensions.forEach((allowedExtension) => {
+          if (!valid) {
+            if (selectedFile.name.endsWith(allowedExtension)) {
+              valid = true;
+            }
+          }
+        });
+        if (!valid) {
+          setError("Unsupported file format");
+          setUploaded("Upload");
+          setState("unpressed");
+          return;
+        } else {
+          setError("");
+        }
+      }
       try {
         const formData = new FormData();
         formData.append("file", selectedFile);
@@ -97,34 +123,37 @@ const FileUploadComponent: React.FC<Props> = ({ callback }: Props) => {
   };
 
   return (
-    <div className="m-2 p-1">
-      <input type="file" onChange={handleFileChange} />
-      <button
-        className={
-          state === "pressed"
-            ? basic + "bg-green-500 text-green-950"
-            : basic + "hover:bg-green-300 hover:text-green-950"
-        }
-        onClick={(e) => {
-          if (state === "unpressed") {
-            setState("pressed");
-            handleUpload(e);
-          }
-        }}
-      >
-        {uploaded}
-      </button>
-      {state === "pressed" && (
+    <>
+      <div className="m-2 p-1">
+        <input type="file" onChange={handleFileChange} />
         <button
-          className={basic + "text-2xl hover:bg-red-700 hover:text-white "}
+          className={
+            state === "pressed"
+              ? basic + "bg-green-500 text-green-950"
+              : basic + "hover:bg-green-300 hover:text-green-950"
+          }
           onClick={(e) => {
-            cancelUpload(e);
+            if (state === "unpressed") {
+              setState("pressed");
+              handleUpload(e);
+            }
           }}
         >
-          &times;
+          {uploaded}
         </button>
-      )}
-    </div>
+        {state === "pressed" && (
+          <button
+            className={basic + "text-2xl hover:bg-red-700 hover:text-white "}
+            onClick={(e) => {
+              cancelUpload(e);
+            }}
+          >
+            &times;
+          </button>
+        )}
+      </div>
+      <div className="text-red-800">{error && error}</div>
+    </>
   );
 };
 
