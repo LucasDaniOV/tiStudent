@@ -186,7 +186,7 @@ const ReadResourceById = () => {
                             onClick={() => {
                               setShare(true);
                               navigator.clipboard.writeText(
-                                "http://localhost:8000" + router.asPath
+                                location.origin + router.asPath
                               );
                             }}
                           >
