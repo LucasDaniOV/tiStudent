@@ -27,7 +27,7 @@ fileRouter.post('/', upload.single('file'), async (req: Request, res: Response, 
 
 fileRouter.get('/:filename', (req: Request, res: Response, next: NextFunction) => {
     const filename = req.params.filename;
-    const filePath = path.join(__dirname, '../../uploads', filename);
+    const filePath = path.join(__dirname, '../uploads', filename);
 
     res.download(filePath, filename, (err) => {
         if (err) {
@@ -38,7 +38,7 @@ fileRouter.get('/:filename', (req: Request, res: Response, next: NextFunction) =
 
 fileRouter.delete('/:filename', (req: Request, res: Response, next: NextFunction) => {
     const filename = req.params.filename;
-    const filePath = path.join(__dirname, '../../uploads', filename);
+    const filePath = path.join(__dirname, '../uploads', filename);
 
     fs.unlink(filePath, (err) => {
         if (err) {

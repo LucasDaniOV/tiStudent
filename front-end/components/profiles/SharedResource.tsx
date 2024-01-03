@@ -14,7 +14,7 @@ const SharedResource: React.FC<Props> = ({ resource, likes }: Props) => {
   useEffect(() => {
     const getThumbnail = async () => {
       const img = await import(
-        "../../../backend/uploads/" + resource.thumbNail
+        "../../../back-end/uploads/" + resource.thumbNail
       );
       setThumbNail(img);
     };
