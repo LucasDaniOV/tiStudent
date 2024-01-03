@@ -37,7 +37,6 @@ const ReadResourceById = () => {
     setResource(resourceResponse);
     setProfile(profileResponse.profile);
     const img = await import("../../../uploads/" + resourceResponse.thumbNail);
-    console.log("img");
     setImage(img);
   };
 
@@ -74,15 +73,25 @@ const ReadResourceById = () => {
   };
 
   useEffect(() => {
-    if (resourceId && !resource) {
+    if (!profile) return;
+    if (!resourceId) return;
+
+    if (!resource) {
       getResourceById();
+    }
+
+    if (!subjects) {
       getSubjects();
+    }
+
+    if (!categories) {
       getCategories();
     }
-    if (!creator && resource && resource.profileId)
+
+    if (!creator && resource && resource.profileId) {
       getCreator(resource.profileId as string);
+    }
   }, [resourceId, resource, profile]);
-  console.log(subjects);
 
   return (
     <>
