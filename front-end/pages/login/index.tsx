@@ -27,8 +27,10 @@ const Login: React.FC = () => {
           <section className="m-10 mt-0 text-center">
             <h1 className="text-center text-xl">{t("logout.message")}</h1>
             <form
-              onSubmit={() => {
+              onSubmit={(e) => {
+                e.preventDefault();
                 sessionStorage.removeItem("loggedInUser");
+                setUser(null);
               }}
             >
               <button
