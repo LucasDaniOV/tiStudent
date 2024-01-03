@@ -24,6 +24,7 @@ export type Profile = {
   username: string;
   password: string;
   role: Role;
+  picture: string;
   bio?: string;
 };
 

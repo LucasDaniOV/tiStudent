@@ -8,6 +8,7 @@ describe('test profile endpoints', () => {
     const username = 'AppTest';
     const role = 'USER';
     const bio = 'Testing profile signup';
+    const picture = 'default-profilePicture.jpg';
 
     let id: number;
     let token: string;
@@ -20,7 +21,7 @@ describe('test profile endpoints', () => {
 
     test('create profile', async () => {
         // when
-        const res = await request(app).post('/signup').send({ email, password, username, role, bio });
+        const res = await request(app).post('/signup').send({ email, password, username, role, bio, picture });
 
         // then
         expect(res.status).toEqual(200);
@@ -31,6 +32,7 @@ describe('test profile endpoints', () => {
         expect(res.body.profile.username).toEqual(username);
         expect(res.body.profile.role).toEqual(role);
         expect(res.body.profile.bio).toEqual(bio);
+        expect(res.body.profile.picture).toEqual(picture);
         expect(res.body.profile.createdAt).toBeDefined();
         expect(res.body.profile.latestActivity).toBeDefined();
         expect(res.body.profile.id).toBeDefined();
@@ -43,7 +45,7 @@ describe('test profile endpoints', () => {
         const username = 'AppTest2';
 
         // when
-        const res = await request(app).post('/signup').send({ email, password, username, role, bio });
+        const res = await request(app).post('/signup').send({ email, password, username, role, bio, picture });
 
         // then
         expect(res.status).toEqual(400);
@@ -56,7 +58,7 @@ describe('test profile endpoints', () => {
         const email = '@app.test2.ts';
 
         // when
-        const res = await request(app).post('/signup').send({ email, password, username, role, bio });
+        const res = await request(app).post('/signup').send({ email, password, username, role, bio, picture });
 
         // then
         expect(res.status).toEqual(400);
@@ -90,6 +92,7 @@ describe('test profile endpoints', () => {
         expect(res.body.profile.username).toEqual(username);
         expect(res.body.profile.role).toEqual(role);
         expect(res.body.profile.bio).toEqual(bio);
+        expect(res.body.profile.picture).toEqual(picture);
         expect(res.body.profile.createdAt).toBeDefined();
         expect(res.body.profile.latestActivity).toBeDefined();
     });
@@ -121,6 +124,7 @@ describe('test profile endpoints', () => {
             password: updatedPassword,
             role: updatedRole,
             username: updatedUsername,
+            picture: picture,
         });
 
         // then
@@ -128,6 +132,7 @@ describe('test profile endpoints', () => {
         expect(res.body.status).toEqual('success');
         expect(res.body.message).toEqual('profile updated');
         expect(res.body.updatedProfile.bio).toEqual(updatedBio);
+        expect(res.body.updatedProfile.picture).toEqual(picture);
         expect(res.body.updatedProfile.email).toEqual(updatedEmail);
         expect(await comparePasswordWithHash(updatedPassword, res.body.updatedProfile.password)).toEqual(true);
         expect(res.body.updatedProfile.role).toEqual(updatedRole);
@@ -144,6 +149,7 @@ describe('test profile endpoints', () => {
         expect(res.body.status).toEqual('success');
         expect(res.body.message).toEqual('profile deleted');
         expect(res.body.deletedProfile.bio).toEqual(updatedBio);
+        expect(res.body.deletedProfile.picture).toEqual(picture);
         expect(res.body.deletedProfile.email).toEqual(updatedEmail);
         expect(await comparePasswordWithHash(updatedPassword, res.body.deletedProfile.password)).toEqual(true);
         expect(res.body.deletedProfile.role).toEqual(updatedRole);

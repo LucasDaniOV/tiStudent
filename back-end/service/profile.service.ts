@@ -6,8 +6,8 @@ import { generateJwtToken } from '../util/jwt';
 import { comparePasswordWithHash, hashPassword } from '../util/password';
 
 const createProfile = async (profileInput: ProfileInput): Promise<Profile> => {
-    const { email, username, password, role, bio } = profileInput;
-    Profile.validate(email, username, password, role, bio);
+    const { email, username, password, role, picture, bio } = profileInput;
+    Profile.validate(email, username, password, role, picture, bio);
 
     if (await profileDb.getProfileByUsername(username)) throw new Error(`Username already exists`);
 
@@ -15,7 +15,7 @@ const createProfile = async (profileInput: ProfileInput): Promise<Profile> => {
 
     const hashedPassword = await hashPassword(password);
 
-    return await profileDb.createProfile(email, hashedPassword, username, role, bio);
+    return await profileDb.createProfile(email, hashedPassword, username, role, bio, picture);
 };
 
 const getAllProfiles = async (role: Role): Promise<Profile[]> => {

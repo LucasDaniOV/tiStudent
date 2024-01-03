@@ -7,7 +7,8 @@ const createProfile = async (
     password: string,
     username: string,
     role: Role,
-    bio?: string
+    bio?: string,
+    picture?: string
 ): Promise<Profile> => {
     try {
         const profilePrisma = await database.profile.create({
@@ -17,6 +18,7 @@ const createProfile = async (
                 username,
                 role,
                 bio,
+                picture,
             },
         });
         if (profilePrisma) return Profile.from(profilePrisma);
@@ -162,6 +164,19 @@ const updateRole = async (id: number, newRole: Role): Promise<Profile> => {
     }
 };
 
+const updatePicture = async (id: number, newPicture: string): Promise<Profile> => {
+    try {
+        const updatedProfile = await database.profile.update({
+            where: { id },
+            data: { picture: newPicture },
+        });
+        return Profile.from(updatedProfile);
+    } catch (error) {
+        console.error(error);
+        throw new Error('Database error when updating profile role. See server log for details.');
+    }
+};
+
 const deleteProfile = async (id: number): Promise<Profile> => {
     try {
         const deletedProfile = await database.profile.delete({
@@ -186,5 +201,6 @@ export default {
     updatePassword,
     updateUsername,
     updateRole,
+    updatePicture,
     deleteProfile,
 };
