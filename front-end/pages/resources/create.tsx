@@ -195,11 +195,23 @@ const CreateResourceForm: React.FC = () => {
                 ></textarea>
                 <div>
                   <p className="mt-2 mb-2">File: </p>
-                  <FileUploadComponent callback={setFilePath} />
+                  <FileUploadComponent
+                    callback={setFilePath}
+                    allowedExtensions={[
+                      ".jpg",
+                      ".jpeg",
+                      ".png",
+                      ".zip",
+                      ".pdf",
+                    ]}
+                  />
                 </div>
                 <div>
                   <p className="mt-2 mb-2">Thumbnail: </p>
-                  <FileUploadComponent callback={setThumbNail} />
+                  <FileUploadComponent
+                    callback={setThumbNail}
+                    allowedExtensions={[".jpg", ".jpeg", ".png"]}
+                  />
                 </div>
                 <div>
                   <label className="mt-2 mb-2">
