@@ -104,13 +104,8 @@ const ReadResourceById = () => {
       if (!resource) return;
     }
 
-    if (!subjects) {
-      getSubjects();
-    }
-
-    if (!categories) {
-      getCategories();
-    }
+    getSubjects();
+    getCategories();
 
     if (!creator && resource && resource.profileId) {
       getCreator(resource.profileId as string);
