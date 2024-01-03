@@ -21,8 +21,12 @@ const ResourceOverviewTable: React.FC<Props> = ({ resources }: Props) => {
   const mapImgToResource = async () => {
     await Promise.all(
       resources.map(async (r: Resource) => {
-        const img = await import("../../../back-end/uploads/" + r.thumbNail);
-        images[r.id] = img;
+        try {
+          const img = await import("../../../back-end/uploads/" + r.thumbNail);
+          images[r.id] = img;
+        } catch (error) {
+          console.error(error);
+        }
       })
     );
     setImageState(images);

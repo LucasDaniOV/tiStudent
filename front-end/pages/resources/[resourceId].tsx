@@ -27,19 +27,36 @@ const ReadResourceById = () => {
   const { resourceId } = router.query;
   const [image, setImage] = useState<string>("");
 
-  const getResourceById = async () => {
+  const getProfile = async () => {
     const loggedInUser = sessionStorage.getItem("loggedInUser");
     if (!loggedInUser) return;
-    const [resourceResponse, profileResponse] = await Promise.all([
-      ResourceService.getResourceById(resourceId as string),
-      ProfileService.getProfileById(JSON.parse(loggedInUser).id),
-    ]);
-    setResource(resourceResponse);
-    setProfile(profileResponse.profile);
-    const img = await import(
-      "../../../back-end/uploads/" + resourceResponse.thumbNail
+
+    const profileResponse = await ProfileService.getProfileById(
+      JSON.parse(loggedInUser).id
     );
-    setImage(img);
+
+    setProfile(profileResponse.profile);
+  };
+
+  const getResource = async () => {
+    const resource = await ResourceService.getResourceById(
+      resourceId as string
+    );
+
+    if (!resource) {
+      return;
+    }
+
+    setResource(resource);
+
+    try {
+      const img = await import(
+        "../../../back-end/uploads/" + resource.thumbNail
+      );
+      setImage(img);
+    } catch (error) {
+      console.error(error);
+    }
   };
 
   const getSubjects = async () => {
@@ -75,11 +92,16 @@ const ReadResourceById = () => {
   };
 
   useEffect(() => {
-    if (!profile) return;
     if (!resourceId) return;
 
+    if (!profile) {
+      getProfile();
+      if (!profile) return;
+    }
+
     if (!resource) {
-      getResourceById();
+      getResource();
+      if (!resource) return;
     }
 
     if (!subjects) {
