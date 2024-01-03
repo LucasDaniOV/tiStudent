@@ -1,5 +1,6 @@
 import { PrismaClient } from '@prisma/client';
 import { hashPassword } from './password';
+import { Subject, Category } from '../types';
 
 const prisma = new PrismaClient();
 
@@ -58,36 +59,37 @@ async function main() {
     });
 
     // Category
-    const summaryCategory = await prisma.category.create({
-        data: {
-            name: 'Summary',
-        },
-    });
-
-    const cheatSheetCategory = await prisma.category.create({
-        data: {
-            name: 'Cheat Sheet',
-        },
-    });
+    for (const category in Category) {
+        const name = Category[category];
+        await prisma.category.create({
+            data: {
+                name,
+            },
+        });
+    }
 
     // Subject
-    const programming1Subject = await prisma.subject.create({
-        data: {
-            name: 'Programming 1',
-        },
-    });
-
-    const fullstackSubject = await prisma.subject.create({
-        data: {
-            name: 'Full-Stack Software Development',
-        },
-    });
+    for (const subject in Subject) {
+        const name = Subject[subject];
+        await prisma.subject.create({
+            data: {
+                name,
+            },
+        });
+    }
 
     // linking Resource with Category
     await prisma.categoryOnResource.create({
         data: {
             resourceId: resource.id,
-            categoryId: summaryCategory.id,
+            categoryId: 1,
+        },
+    });
+
+    await prisma.categoryOnResource.create({
+        data: {
+            resourceId: resource2.id,
+            categoryId: 2,
         },
     });
 
@@ -95,7 +97,14 @@ async function main() {
     await prisma.subjectOnResource.create({
         data: {
             resourceId: resource.id,
-            subjectId: programming1Subject.id,
+            subjectId: 1,
+        },
+    });
+
+    await prisma.subjectOnResource.create({
+        data: {
+            resourceId: resource2.id,
+            subjectId: 11,
         },
     });
 
