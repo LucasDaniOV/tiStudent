@@ -1,4 +1,5 @@
 import Header from "@/components/Header";
+import PredefinedUsersTable from "@/components/PredefinedUsersTable";
 import ProfileCreateForm from "@/components/profiles/ProfileCreateForm";
 import UserLoginForm from "@/components/profiles/ProfileLoginForm";
 import { useTranslation } from "next-i18next";
@@ -43,6 +44,7 @@ const Login: React.FC = () => {
             <section className="m-10 mt-0">
               <h1 className="text-center text-xl">{t("login.message")}</h1>
               <UserLoginForm />
+              <PredefinedUsersTable />
             </section>
 
             <section className="m-10 mt-0">
