@@ -30,24 +30,30 @@ const ResourceInfo: React.FC<Props> = ({
                 <br />
               </h1>
               <span className="flex justify-center">
-                <strong>{t("resources.fields.subject")}:</strong>{" "}
-                {subjects.map((subject) => {
-                  return subject as unknown as string;
-                })}
+                <strong>{t("resources.fields.subject")}:</strong>
+                <span className="ml-1">
+                  {subjects.map((subject) => {
+                    return subject as unknown as string;
+                  })}
+                </span>
               </span>
               <span>
-                <strong>{t("resources.fields.category")}:</strong>{" "}
-                {categories.map((category) => {
-                  return category as unknown as string;
-                })}
+                <strong>{t("resources.fields.category")}:</strong>
+                <span className="ml-1">
+                  {categories.map((category) => {
+                    return category as unknown as string;
+                  })}
+                </span>
               </span>
               <span className="flex justify-center">
-                <strong>{t("resources.fields.created.at")}:</strong>{" "}
-                {
-                  String(resource.createdAt).split(
-                    "T"
-                  )[0] /* DISPLAY ONLY DATE */
-                }
+                <strong>{t("resources.fields.created.at")}:</strong>
+                <span className="ml-1">
+                  {
+                    String(resource.createdAt).split(
+                      "T"
+                    )[0] /* DISPLAY ONLY DATE */
+                  }
+                </span>
               </span>
             </div>
           </div>
