@@ -11,7 +11,7 @@ import { useTranslation } from "next-i18next";
 import { useRouter } from "next/router";
 
 const Resources: React.FC = () => {
-  const [authorized, setAuthorized] = useState<boolean>(false);
+  const [authorized, setAuthorized] = useState<boolean>(true);
   const { t } = useTranslation();
   const router = useRouter();
   const getResources = async () => {
