@@ -13,10 +13,14 @@ const SharedResource: React.FC<Props> = ({ resource, likes }: Props) => {
   const [thumbNail, setThumbNail] = useState<string>("");
   useEffect(() => {
     const getThumbnail = async () => {
-      const img = await import(
-        "../../../back-end/uploads/" + resource.thumbNail
-      );
-      setThumbNail(img);
+      try {
+        const img = await import(
+          "../../../back-end/uploads/" + resource.thumbNail
+        );
+        setThumbNail(img);
+      } catch (error) {
+        console.error(error);
+      }
     };
     getThumbnail();
   });
