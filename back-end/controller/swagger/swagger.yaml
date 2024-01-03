@@ -677,6 +677,13 @@ paths:
       summary: get subjects
       description: |
         Get all subjects
+      parameters:
+        - in: query
+          name: name
+          description: get subject by name
+          schema:
+            type: string
+            example: 'Subject Name'
       responses:
         '200':
           description: subjects found
