@@ -34,10 +34,14 @@ const ResourceOverviewTable: React.FC<Props> = ({ resources }: Props) => {
 
   useEffect(() => {
     const getProfile = async () => {
-      const p = String(sessionStorage.getItem("loggedInUser"));
-      if (!p) return;
-      const pObject = await ProfileService.getProfileById(JSON.parse(p).id);
-      if (pObject) setProfile(pObject.profile);
+      try {
+        const p = String(sessionStorage.getItem("loggedInUser"));
+        if (!p) return;
+        const pObject = await ProfileService.getProfileById(JSON.parse(p).id);
+        if (pObject) setProfile(pObject.profile);
+      } catch (error) {
+        console.error(error);
+      }
     };
     getProfile();
     mapImgToResource();
