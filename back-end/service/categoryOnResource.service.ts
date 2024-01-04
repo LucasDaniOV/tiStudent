@@ -1,14 +1,22 @@
-import { CategoryOnResource } from '@prisma/client';
+import { CategoryOnResource } from '../domain/model/categoryOnResource';
 import categoryOnResourceDb from '../domain/data-access/categoryOnResource.db';
 import resourceService from './resource.service';
 import categoryService from './category.service';
+import { CategoryOnResourceInput } from '../types';
 
-const createCategoryOnResource = async (categoryId: number, resourceId: number): Promise<CategoryOnResource> => {
+const createCategoryOnResource = async (
+    categoryOnResourceInput: CategoryOnResourceInput
+): Promise<CategoryOnResource> => {
+    const resourceId: number = parseInt(categoryOnResourceInput.resourceId as string);
+    const categoryId: number = parseInt(categoryOnResourceInput.categoryId as string);
+
     await resourceService.getResourceById(resourceId);
     await categoryService.getCategoryById(categoryId);
+
     if (await categoryOnResourceDb.getCategoryOnResource(categoryId, resourceId)) {
         throw new Error('Category on resource already exists');
     }
+
     const categoryOnResource = await categoryOnResourceDb.createCategoryOnResource(categoryId, resourceId);
     return categoryOnResource;
 };

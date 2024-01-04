@@ -1,6 +1,8 @@
-import { Role } from '../../types';
+import { ProfileLikes, Role } from '../../types';
 import database from '../../util/database';
 import { Profile } from '../model/profile';
+import { ResourceLike } from '../model/resourceLike';
+import { CommentLike } from '../model/commentLike';
 
 const createProfile = async (
     email: string,
@@ -80,9 +82,9 @@ const getProfileByEmail = async (email: string): Promise<Profile> => {
     }
 };
 
-const getProfileLikes = async (id: number): Promise<any> => {
+const getProfileLikes = async (id: number): Promise<ProfileLikes> => {
     try {
-        return await database.profile.findUnique({
+        const res: ProfileLikes = await database.profile.findUnique({
             where: {
                 id,
             },
@@ -93,6 +95,33 @@ const getProfileLikes = async (id: number): Promise<any> => {
                 commentLikes: true,
             },
         });
+
+        let profileLikes: ProfileLikes;
+
+        if (res) {
+            const resourceLikesPrisma = res.resourceLikes;
+            const commentLikesPrisma = res.commentLikes;
+
+            let resourceLikes: ResourceLike[];
+            let commentLikes: CommentLike[];
+
+            if (resourceLikesPrisma) {
+                resourceLikes = resourceLikesPrisma.map((resourceLikePrisma) => ResourceLike.from(resourceLikePrisma));
+            }
+
+            if (commentLikesPrisma) {
+                commentLikes = commentLikesPrisma.map((commentLikePrisma) => CommentLike.from(commentLikePrisma));
+            }
+
+            profileLikes = {
+                id: res.id,
+                username: res.username,
+                resourceLikes,
+                commentLikes,
+            };
+
+            return profileLikes;
+        }
     } catch (error) {
         console.log(error);
         throw new Error('Database error when getting profile likes. See server log for details.');

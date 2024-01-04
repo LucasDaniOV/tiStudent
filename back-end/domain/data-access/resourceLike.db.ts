@@ -1,4 +1,4 @@
-import { ResourceLike } from '@prisma/client';
+import { ResourceLike } from '../model/resourceLike';
 import database from '../../util/database';
 
 const createResourceLike = async (profileId: number, resourceId: number): Promise<ResourceLike> => {
@@ -9,14 +9,17 @@ const createResourceLike = async (profileId: number, resourceId: number): Promis
                 resourceId,
             },
         });
-        return resourceLikePrisma;
+        if (resourceLikePrisma) return ResourceLike.from(resourceLikePrisma);
     } catch (error) {
         console.error(error);
         throw new Error('Database error when creating resource like. See server log for details.');
     }
 };
 
-const getResourceByProfileIdAndResourceId = async (profileId: number, resourceId: number): Promise<ResourceLike> => {
+const getResourceLikeByProfileIdAndResourceId = async (
+    profileId: number,
+    resourceId: number
+): Promise<ResourceLike> => {
     try {
         const resourceLikePrisma = await database.resourceLike.findUnique({
             where: {
@@ -26,7 +29,7 @@ const getResourceByProfileIdAndResourceId = async (profileId: number, resourceId
                 },
             },
         });
-        return resourceLikePrisma;
+        if (resourceLikePrisma) return ResourceLike.from(resourceLikePrisma);
     } catch (error) {
         console.error(error);
         throw new Error('Database error when getting resource like. See server log for details.');
@@ -36,7 +39,9 @@ const getResourceByProfileIdAndResourceId = async (profileId: number, resourceId
 const getResourceLikes = async (): Promise<ResourceLike[]> => {
     try {
         const resourceLikesPrisma = await database.resourceLike.findMany();
-        return resourceLikesPrisma;
+        if (resourceLikesPrisma) {
+            return resourceLikesPrisma.map((resourceLikePrisma) => ResourceLike.from(resourceLikePrisma));
+        }
     } catch (error) {
         console.error(error);
         throw new Error('Database error when getting resource likes. See server log for details.');
@@ -50,7 +55,9 @@ const getResourceLikesByProfileId = async (profileId: number): Promise<ResourceL
                 profileId,
             },
         });
-        return resourceLikesPrisma;
+        if (resourceLikesPrisma) {
+            return resourceLikesPrisma.map((resourceLikePrisma) => ResourceLike.from(resourceLikePrisma));
+        }
     } catch (error) {
         console.error(error);
         throw new Error('Database error when getting resource likes by profileId. See server log for details.');
@@ -64,7 +71,9 @@ const getResourceLikesByResourceId = async (resourceId: number): Promise<Resourc
                 resourceId,
             },
         });
-        return resourceLikesPrisma;
+        if (resourceLikesPrisma) {
+            return resourceLikesPrisma.map((resourceLikePrisma) => ResourceLike.from(resourceLikePrisma));
+        }
     } catch (error) {
         console.error(error);
         throw new Error('Database error when getting resource likes by resourceId. See server log for details.');
@@ -81,7 +90,7 @@ const deleteResourceLike = async (profileId: number, resourceId: number): Promis
                 },
             },
         });
-        return resourceLikePrisma;
+        if (resourceLikePrisma) return ResourceLike.from(resourceLikePrisma);
     } catch (error) {
         console.error(error);
         throw new Error('Database error when deleting resource like. See server log for details.');
@@ -90,7 +99,7 @@ const deleteResourceLike = async (profileId: number, resourceId: number): Promis
 
 export default {
     createResourceLike,
-    getResourceByProfileIdAndResourceId,
+    getResourceLikeByProfileIdAndResourceId,
     getResourceLikes,
     getResourceLikesByProfileId,
     getResourceLikesByResourceId,

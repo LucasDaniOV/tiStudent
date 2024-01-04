@@ -1,3 +1,5 @@
+type Role = 'ADMIN' | 'USER';
+
 type ProfileInput = {
     email?: string;
     username?: string;
@@ -28,7 +30,101 @@ type AuthenticationResponse = {
     role: Role;
 };
 
-type Role = 'ADMIN' | 'USER';
+type CategoryOnResourceInput = {
+    categoryId?: number | string;
+    resourceId?: number | string;
+};
+
+type SubjectOnResourceInput = {
+    subjectId?: number | string;
+    resourceId?: number | string;
+};
+
+type ChildComment = {
+    id: number;
+    createdAt: Date;
+    updatedAt: Date;
+    message: string;
+    profileId: number;
+    resourceId: number;
+    profile: {
+        id: number;
+        username: string;
+    };
+    likes: {
+        createdAt: Date;
+        profileId: number;
+        commentId: number;
+    }[];
+};
+
+type CommentLikeInput = {
+    profileId?: number | string;
+    commentId?: number | string;
+};
+
+type ResourceLikeInput = {
+    profileId?: number | string;
+    resourceId?: number | string;
+};
+
+type ProfileLikes = {
+    id: number;
+    username: string;
+    resourceLikes: {
+        createdAt: Date;
+        profileId: number;
+        resourceId: number;
+    }[];
+    commentLikes: {
+        createdAt: Date;
+        profileId: number;
+        commentId: number;
+    }[];
+};
+
+type ResourceData = {
+    id: number;
+    createdAt: Date;
+    updatedAt: Date;
+    title: string;
+    description: string;
+    filePath: string;
+    thumbNail: string;
+    profileId: number;
+    categories: {
+        category: {
+            id: number;
+            name: string;
+        };
+    }[];
+    subjects: {
+        subject: {
+            id: number;
+            name: string;
+        };
+    }[];
+    comments: {
+        id: number;
+        createdAt: Date;
+        updatedAt: Date;
+        message: string;
+        profile: {
+            id: number;
+            username: string;
+        };
+        likes: {
+            createdAt: Date;
+            profileId: number;
+            commentId: number;
+        }[];
+    }[];
+    likes: {
+        createdAt: Date;
+        profileId: number;
+        resourceId: number;
+    }[];
+};
 
 enum Category {
     Summary = 'Summary',
@@ -148,4 +244,19 @@ enum Subject {
     Cloud_Native_Engineering = 'Cloud Native Engineering',
 }
 
-export { AuthenticationResponse, Category, CommentInput, ProfileInput, ResourceInput, Role, Subject };
+export {
+    AuthenticationResponse,
+    Category,
+    CommentInput,
+    ProfileInput,
+    ResourceInput,
+    Role,
+    Subject,
+    CategoryOnResourceInput,
+    SubjectOnResourceInput,
+    ChildComment,
+    CommentLikeInput,
+    ResourceLikeInput,
+    ProfileLikes,
+    ResourceData,
+};

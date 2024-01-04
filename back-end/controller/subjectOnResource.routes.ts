@@ -6,12 +6,10 @@ const subjectOnResourceRouter = express.Router();
 
 subjectOnResourceRouter.post('/', async (req: Request, res: Response, next: NextFunction) => {
     try {
-        const subjectId: number = parseInt(req.body.subjectId);
-        const resourceId: number = parseInt(req.body.resourceId);
+        const subjectOnResourceInput = req.body;
 
         const subjectOnResource: SubjectOnResource = await subjectOnResourceService.createSubjectOnResource(
-            subjectId,
-            resourceId
+            subjectOnResourceInput
         );
 
         res.status(200).json({ status: 'success', message: 'subject created on resource', subjectOnResource });

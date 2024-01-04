@@ -1,3 +1,4 @@
+import { ChildComment } from '../../types';
 import database from '../../util/database';
 import { Comment } from '../model/comment';
 
@@ -61,9 +62,9 @@ const getCommentsByResourceId = async (resourceId: number): Promise<Comment[]> =
     }
 };
 
-const getChildrenByCommentId = async (commentId: number): Promise<any[]> => {
+const getChildrenByCommentId = async (commentId: number): Promise<ChildComment[]> => {
     try {
-        return await database.comment.findMany({
+        const res: ChildComment[] = await database.comment.findMany({
             where: {
                 parentId: commentId,
             },
@@ -77,7 +78,26 @@ const getChildrenByCommentId = async (commentId: number): Promise<any[]> => {
                 likes: true,
             },
         });
-        // if (commentsPrisma) return commentsPrisma.map((c) => Comment.from(c));
+
+        let childComments: ChildComment[] = [];
+
+        res.forEach((c) => {
+            childComments.push({
+                id: c.id,
+                createdAt: c.createdAt,
+                updatedAt: c.updatedAt,
+                message: c.message,
+                profileId: c.profileId,
+                resourceId: c.resourceId,
+                profile: {
+                    id: c.profile.id,
+                    username: c.profile.username,
+                },
+                likes: c.likes,
+            });
+        });
+
+        return childComments;
     } catch (error) {
         console.error(error);
         throw new Error('Database error when getting child comments by comment id. See server log for details.');

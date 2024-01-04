@@ -1,7 +1,7 @@
 import express, { NextFunction, Request, Response } from 'express';
 import { Profile } from '../domain/model/profile';
 import profileService from '../service/profile.service';
-import { ProfileInput, Role } from '../types';
+import { ProfileInput, ProfileLikes, Role } from '../types';
 
 const profileRouter = express.Router();
 
@@ -33,7 +33,7 @@ profileRouter.get('/:profileId/likes', async (req: Request, res: Response, next:
     try {
         const profileId: number = parseInt(req.params.profileId);
 
-        const profile = await profileService.getProfileLikes(profileId);
+        const profile: ProfileLikes = await profileService.getProfileLikes(profileId);
 
         res.status(200).json({ status: 'success', message: 'likes created by profile', profile });
     } catch (error) {

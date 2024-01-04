@@ -1,6 +1,7 @@
 import express, { NextFunction, Request, Response } from 'express';
 import { Comment } from '../domain/model/comment';
 import commentService from '../service/comment.service';
+import { ChildComment } from '../types';
 
 const commentRouter = express.Router();
 
@@ -53,7 +54,7 @@ commentRouter.get('/:commentId/children', async (req: Request, res: Response, ne
     try {
         const commentId: number = parseInt(req.params.commentId);
 
-        const comments: Comment[] = await commentService.getChildrenByCommentId(commentId);
+        const comments: ChildComment[] = await commentService.getChildrenByCommentId(commentId);
 
         res.status(200).json({ status: 'success', message: 'child comments found', comments });
     } catch (error) {

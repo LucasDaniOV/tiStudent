@@ -1,17 +1,15 @@
 import express, { NextFunction, Request, Response } from 'express';
 import categoryOnResourceService from '../service/categoryOnResource.service';
 import { CategoryOnResource } from '@prisma/client';
+import { CategoryOnResourceInput } from '../types';
 
 const categoryOnResourceRouter = express.Router();
 
 categoryOnResourceRouter.post('/', async (req: Request, res: Response, next: NextFunction) => {
     try {
-        const categoryId: number = parseInt(req.body.categoryId);
-        const resourceId: number = parseInt(req.body.resourceId);
-
+        const categoryOnResourceInput: CategoryOnResourceInput = req.body;
         const categoryOnResource: CategoryOnResource = await categoryOnResourceService.createCategoryOnResource(
-            categoryId,
-            resourceId
+            categoryOnResourceInput
         );
 
         res.status(200).json({ status: 'success', message: 'category created on resource', categoryOnResource });
