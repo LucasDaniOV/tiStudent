@@ -137,7 +137,7 @@ const authenticate = async (email: string, password: string): Promise<Authentica
     if (!isValidPassword) throw new Error('Invalid password');
 
     return {
-        token: generateJwtToken({ email, role: profile.role }),
+        token: generateJwtToken({ email, role: profile.role, id: profile.id }),
         email,
         id: String(profile.id),
         role: profile.role,
