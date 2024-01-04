@@ -10,7 +10,7 @@ export class Profile {
     readonly username: string;
     readonly password: string;
     readonly role: Role;
-    readonly picture: string;
+    readonly picture?: string;
     readonly bio?: string;
 
     constructor(profile: {
@@ -22,7 +22,7 @@ export class Profile {
         username: string;
         password: string;
         role: Role;
-        picture: string;
+        picture?: string;
         bio?: string;
     }) {
         Profile.validate(profile.email, profile.username, profile.password, profile.role, profile.picture, profile.bio);
@@ -68,7 +68,6 @@ export class Profile {
         Profile.validateUsername(username);
         Profile.validatePassword(password);
         Profile.validateRole(role);
-        Profile.validatePicture(picture);
         Profile.validateBio(bio);
     }
 
@@ -96,10 +95,6 @@ export class Profile {
     static validateUsername = (username: string): void => {
         if (!username) throw new Error('Username is required');
         if (username.length > 30) throw new Error('Username cannot be longer than 30 characters');
-    };
-
-    static validatePicture = (picture: string): void => {
-        if (picture == undefined || picture == null || !picture.trim()) throw new Error('Profile picture is required');
     };
 
     static validateBio = (bio: string): void => {
