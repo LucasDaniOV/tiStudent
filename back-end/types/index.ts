@@ -33,6 +33,11 @@ type CategoryOnResourceInput = {
     resourceId?: number | string;
 };
 
+type SubjectOnResourceInput = {
+    subjectId?: number | string;
+    resourceId?: number | string;
+};
+
 type Role = 'ADMIN' | 'USER';
 
 enum Category {
