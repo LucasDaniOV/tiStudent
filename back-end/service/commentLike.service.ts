@@ -8,8 +8,11 @@ const createCommentLike = async (commentLikeInput: CommentLikeInput): Promise<Co
     const profileId = parseInt(commentLikeInput.profileId as string);
     const commentId = parseInt(commentLikeInput.commentId as string);
 
-    if (await getCommentLikeByProfileIdAndCommentId(profileId, commentId)) {
-        throw new Error('profile already liked this comment');
+    await profileService.getProfileById(profileId);
+    await commentService.getCommentById(commentId);
+
+    if (await commentLikeDb.getCommentLikeByProfileIdAndCommentId(profileId, commentId)) {
+        throw new Error(`CommentLike with profileId ${profileId} and commentId ${commentId} already exists`);
     }
 
     return await commentLikeDb.createCommentLike(profileId, commentId);
@@ -18,7 +21,13 @@ const createCommentLike = async (commentLikeInput: CommentLikeInput): Promise<Co
 const getCommentLikeByProfileIdAndCommentId = async (profileId: number, commentId: number): Promise<CommentLike> => {
     await profileService.getProfileById(profileId);
     await commentService.getCommentById(commentId);
-    return await commentLikeDb.getCommentLikeByProfileIdAndCommentId(profileId, commentId);
+
+    const commentLike = await commentLikeDb.getCommentLikeByProfileIdAndCommentId(profileId, commentId);
+    if (!commentLike) {
+        throw new Error(`CommentLike with profileId ${profileId} and commentId ${commentId} does not exist`);
+    }
+
+    return commentLike;
 };
 
 const getCommentLikes = async (): Promise<CommentLike[]> => await commentLikeDb.getCommentLikes();
@@ -34,8 +43,7 @@ const getCommentLikesByCommentId = async (commentId: number): Promise<CommentLik
 };
 
 const deleteCommentLike = async (profileId: number, commentId: number): Promise<CommentLike> => {
-    const commentLike = await getCommentLikeByProfileIdAndCommentId(profileId, commentId);
-    if (!commentLike) throw new Error('comment like does not exist');
+    await getCommentLikeByProfileIdAndCommentId(profileId, commentId);
     return await commentLikeDb.deleteCommentLike(profileId, commentId);
 };
 
