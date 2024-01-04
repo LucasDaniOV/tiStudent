@@ -45,7 +45,7 @@ const ResourceOverviewTable: React.FC<Props> = ({ resources }: Props) => {
     };
     getProfile();
     mapImgToResource();
-  }, []);
+  }, [imageState]);
 
   const deleteResource = async (resource: Resource) => {
     if (
