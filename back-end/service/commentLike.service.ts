@@ -1,19 +1,24 @@
-import { CommentLike } from '@prisma/client';
+import { CommentLike } from '../domain/model/commentLike';
 import profileService from './profile.service';
 import commentService from './comment.service';
 import commentLikeDb from '../domain/data-access/commentLike.db';
+import { CommentLikeInput } from '../types';
 
-const createCommentLike = async (profileId: number, commentId: number): Promise<CommentLike> => {
+const createCommentLike = async (commentLikeInput: CommentLikeInput): Promise<CommentLike> => {
+    const profileId = parseInt(commentLikeInput.profileId as string);
+    const commentId = parseInt(commentLikeInput.commentId as string);
+
     if (await getCommentLikeByProfileIdAndCommentId(profileId, commentId)) {
         throw new Error('profile already liked this comment');
     }
+
     return await commentLikeDb.createCommentLike(profileId, commentId);
 };
 
 const getCommentLikeByProfileIdAndCommentId = async (profileId: number, commentId: number): Promise<CommentLike> => {
     await profileService.getProfileById(profileId);
     await commentService.getCommentById(commentId);
-    return await commentLikeDb.getCommentByProfileIdAndCommentId(profileId, commentId);
+    return await commentLikeDb.getCommentLikeByProfileIdAndCommentId(profileId, commentId);
 };
 
 const getCommentLikes = async (): Promise<CommentLike[]> => await commentLikeDb.getCommentLikes();

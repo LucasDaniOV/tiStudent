@@ -1,15 +1,15 @@
 import { CommentLike } from '@prisma/client';
 import express, { NextFunction, Request, Response } from 'express';
 import commentLikeService from '../service/commentLike.service';
+import { CommentLikeInput } from '../types';
 
 const commentLikeRouter = express.Router();
 
 commentLikeRouter.post('/', async (req: Request, res: Response, next: NextFunction) => {
     try {
-        const profileId: number = parseInt(req.body.profileId);
-        const commentId: number = parseInt(req.body.commentId);
+        const commentLikeInput: CommentLikeInput = req.body;
 
-        const commentLike: CommentLike = await commentLikeService.createCommentLike(profileId, commentId);
+        const commentLike: CommentLike = await commentLikeService.createCommentLike(commentLikeInput);
 
         res.status(200).json({ status: 'success', message: 'comment like created', commentLike });
     } catch (error) {

@@ -1,4 +1,4 @@
-import { CommentLike } from '@prisma/client';
+import { CommentLike } from '../model/commentLike';
 import database from '../../util/database';
 
 const createCommentLike = async (profileId: number, commentId: number): Promise<CommentLike> => {
@@ -9,14 +9,14 @@ const createCommentLike = async (profileId: number, commentId: number): Promise<
                 commentId,
             },
         });
-        return commentLikePrisma;
+        if (commentLikePrisma) return CommentLike.from(commentLikePrisma);
     } catch (error) {
         console.error(error);
         throw new Error('Database error when creating comment like. See server log for details.');
     }
 };
 
-const getCommentByProfileIdAndCommentId = async (profileId: number, commentId: number): Promise<CommentLike> => {
+const getCommentLikeByProfileIdAndCommentId = async (profileId: number, commentId: number): Promise<CommentLike> => {
     try {
         const commentLikePrisma = await database.commentLike.findUnique({
             where: {
@@ -26,7 +26,7 @@ const getCommentByProfileIdAndCommentId = async (profileId: number, commentId: n
                 },
             },
         });
-        return commentLikePrisma;
+        if (commentLikePrisma) return CommentLike.from(commentLikePrisma);
     } catch (error) {
         console.error(error);
         throw new Error('Database error when getting comment like. See server log for details.');
@@ -36,7 +36,9 @@ const getCommentByProfileIdAndCommentId = async (profileId: number, commentId: n
 const getCommentLikes = async (): Promise<CommentLike[]> => {
     try {
         const commentLikesPrisma = await database.commentLike.findMany();
-        return commentLikesPrisma;
+        if (commentLikesPrisma) {
+            return commentLikesPrisma.map((commentLikePrisma) => CommentLike.from(commentLikePrisma));
+        }
     } catch (error) {
         console.error(error);
         throw new Error('Database error when getting comment likes. See server log for details.');
@@ -50,7 +52,9 @@ const getCommentLikesByProfileId = async (profileId: number): Promise<CommentLik
                 profileId,
             },
         });
-        return commentLikesPrisma;
+        if (commentLikesPrisma) {
+            return commentLikesPrisma.map((commentLikePrisma) => CommentLike.from(commentLikePrisma));
+        }
     } catch (error) {
         console.error(error);
         throw new Error('Database error when getting comment likes by profileId. See server log for details.');
@@ -64,7 +68,9 @@ const getCommentLikesByCommentId = async (commentId: number): Promise<CommentLik
                 commentId,
             },
         });
-        return commentLikesPrisma;
+        if (commentLikesPrisma) {
+            return commentLikesPrisma.map((commentLikePrisma) => CommentLike.from(commentLikePrisma));
+        }
     } catch (error) {
         console.error(error);
         throw new Error('Database error when getting comment likes by commentId. See server log for details.');
@@ -81,7 +87,7 @@ const deleteCommentLike = async (profileId: number, commentId: number): Promise<
                 },
             },
         });
-        return commentLikePrisma;
+        if (commentLikePrisma) return CommentLike.from(commentLikePrisma);
     } catch (error) {
         console.error(error);
         throw new Error('Database error when deleting comment like. See server log for details.');
@@ -90,7 +96,7 @@ const deleteCommentLike = async (profileId: number, commentId: number): Promise<
 
 export default {
     createCommentLike,
-    getCommentByProfileIdAndCommentId,
+    getCommentLikeByProfileIdAndCommentId,
     getCommentLikes,
     getCommentLikesByProfileId,
     getCommentLikesByCommentId,
