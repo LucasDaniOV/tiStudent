@@ -24,6 +24,7 @@ const getAllSubjects = async (): Promise<Subject[]> => await subjectDb.getAllSub
 
 const updateSubject = async (id: number, name: string): Promise<Subject> => {
     Subject.validateName(name);
+    await getSubjectById(id);
     if (await subjectDb.getSubjectByName(name)) throw new Error('Subject already exists');
     const subject = await subjectDb.updateSubject(id, name);
     return subject;
