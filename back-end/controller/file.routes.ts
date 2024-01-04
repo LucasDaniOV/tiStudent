@@ -45,7 +45,7 @@ fileRouter.get('/:filename', (req: Request, res: Response, next: NextFunction) =
     const filename = req.params.filename;
     const filePath = path.join(__dirname, '../uploads', filename);
 
-    res.download(filePath, filename, (err) => {
+    res.status(200).download(filePath, filename, (err) => {
         if (err) {
             next(err);
         }
