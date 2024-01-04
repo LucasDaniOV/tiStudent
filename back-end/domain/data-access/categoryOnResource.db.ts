@@ -1,4 +1,4 @@
-import { CategoryOnResource } from '@prisma/client';
+import { CategoryOnResource } from '../model/categoryOnResource';
 import database from '../../util/database';
 
 const createCategoryOnResource = async (categoryId: number, resourceId: number): Promise<CategoryOnResource> => {
@@ -9,7 +9,7 @@ const createCategoryOnResource = async (categoryId: number, resourceId: number):
                 resourceId,
             },
         });
-        return categoryOnResourcePrisma;
+        return CategoryOnResource.from(categoryOnResourcePrisma);
     } catch (error) {
         console.error(error);
         throw new Error('Database error when creating category on resource. See server log for details.');
@@ -19,7 +19,9 @@ const createCategoryOnResource = async (categoryId: number, resourceId: number):
 const getCategoriesOnResources = async (): Promise<CategoryOnResource[]> => {
     try {
         const categoriesOnResourcesPrisma = await database.categoryOnResource.findMany();
-        return categoriesOnResourcesPrisma;
+        return categoriesOnResourcesPrisma.map((categoryOnResourcePrisma) =>
+            CategoryOnResource.from(categoryOnResourcePrisma)
+        );
     } catch (error) {
         console.error(error);
         throw new Error('Database error when getting categories on resources. See server log for details.');
@@ -36,7 +38,7 @@ const getCategoryOnResource = async (categoryId: number, resourceId: number): Pr
                 },
             },
         });
-        return categoryOnResourcePrisma;
+        return CategoryOnResource.from(categoryOnResourcePrisma);
     } catch (error) {
         console.error(error);
         throw new Error('Database error when getting category on resource. See server log for details.');
@@ -50,7 +52,9 @@ const getCategoriesOnResourcesByCategoryId = async (categoryId: number): Promise
                 categoryId,
             },
         });
-        return categoriesOnResourcesPrisma;
+        return categoriesOnResourcesPrisma.map((categoryOnResourcePrisma) =>
+            CategoryOnResource.from(categoryOnResourcePrisma)
+        );
     } catch (error) {
         console.error(error);
         throw new Error(
@@ -66,7 +70,9 @@ const getCategoriesOnResourcesByResourceId = async (resourceId: number): Promise
                 resourceId,
             },
         });
-        return categoriesOnResourcesPrisma;
+        return categoriesOnResourcesPrisma.map((categoryOnResourcePrisma) =>
+            CategoryOnResource.from(categoryOnResourcePrisma)
+        );
     } catch (error) {
         console.error(error);
         throw new Error(
@@ -85,7 +91,7 @@ const deleteCategoryOnResource = async (categoryId: number, resourceId: number):
                 },
             },
         });
-        return categoryOnResourcePrisma;
+        return CategoryOnResource.from(categoryOnResourcePrisma);
     } catch (error) {
         console.error(error);
         throw new Error('Database error when deleting category on resource. See server log for details.');
