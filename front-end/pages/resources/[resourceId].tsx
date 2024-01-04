@@ -211,8 +211,7 @@ const ReadResourceById = () => {
                 <Comments
                   object="resource"
                   commentsProp={resource.comments}
-                  resourceId={resource.id}
-                ></Comments>
+                  resourceId={resource.id} generation={0}                ></Comments>
               )}
             </section>
             <section>
