@@ -35,6 +35,57 @@ test(`given: too long name for category, when: creating a category, then: should
     expect(createCategory).toThrowError('name cannot be longer than 60 characters');
 });
 
+test(`given: not a string for category, when: creating a category, then: should throw an error`, () => {
+    // given
+    const invalidName = 1;
+
+    // when
+    const createCategory = () => new Category({ id, name: invalidName as unknown as string });
+
+    // then
+    expect(createCategory).toThrowError('name must be a string');
+});
+
+test(`given: null for category id, when: creating a category, then: should throw an error`, () => {
+    // given
+    // when
+    const createCategory = () => new Category({ id: null, name });
+
+    // then
+    expect(createCategory).toThrowError('id is required');
+});
+
+test(`given: undefined for category id, when: creating a category, then: should throw an error`, () => {
+    // given
+    // when
+    const createCategory = () => new Category({ id: undefined, name });
+
+    // then
+    expect(createCategory).toThrowError('id is required');
+});
+
+test(`given: not a number for category id, when: creating a category, then: should throw an error`, () => {
+    // given
+    const invalidId = '1';
+
+    // when
+    const createCategory = () => new Category({ id: invalidId as unknown as number, name });
+
+    // then
+    expect(createCategory).toThrowError('id must be a number');
+});
+
+test(`given: negative number for category id, when: creating a category, then: should throw an error`, () => {
+    // given
+    const invalidId = -1;
+
+    // when
+    const createCategory = () => new Category({ id: invalidId, name });
+
+    // then
+    expect(createCategory).toThrowError('id cannot be negative');
+});
+
 test(`given: valid values for category, when: comparing two categories, then: should return true`, () => {
     // given
     const category = new Category({ id, name });
