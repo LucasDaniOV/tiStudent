@@ -87,8 +87,19 @@ const updateRole = async (profile: Profile, role: Role): Promise<Profile> => {
     return await profileDb.updateRole(profile.id, role);
 };
 
-const updateProfile = async (id: number, profileInput: ProfileInput): Promise<Profile> => {
-    const profile = await getProfileById(id);
+const updateProfile = async (
+    inputProfileId: string | number,
+    profileInput: ProfileInput,
+    auth: AuthenticationResponse
+): Promise<Profile> => {
+    const profileId: number = parseInt(inputProfileId as string);
+    const realProfileId: number = parseInt(auth.id as string);
+
+    if (realProfileId !== profileId) {
+        throw new Error('Wtf are you trying to do? No present from santa this year!!!');
+    }
+
+    const profile = await getProfileById(profileId);
     const { bio, email, password, role, username } = profileInput;
 
     if (email) {
@@ -124,8 +135,16 @@ const updateProfile = async (id: number, profileInput: ProfileInput): Promise<Pr
     return result;
 };
 
-const deleteProfile = async (profileId: number): Promise<Profile> => {
+const deleteProfile = async (inputProfileId: string | number, auth: AuthenticationResponse): Promise<Profile> => {
+    const profileId: number = parseInt(inputProfileId as string);
+    const realProfileId: number = parseInt(auth.id as string);
+
+    if (realProfileId !== profileId) {
+        throw new Error('Wtf are you trying to do? No present from santa this year!!!');
+    }
+
     await getProfileById(profileId);
+
     return await profileDb.deleteProfile(profileId);
 };
 
