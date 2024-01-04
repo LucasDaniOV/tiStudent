@@ -31,7 +31,6 @@ const getCategoriesOnResources = async (): Promise<CategoryOnResource[]> => {
 };
 
 const getCategoryOnResource = async (categoryId: number, resourceId: number): Promise<CategoryOnResource> => {
-    console.log(categoryId, resourceId);
     try {
         const categoryOnResourcePrisma = await database.categoryOnResource.findUnique({
             where: {
