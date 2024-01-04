@@ -1,4 +1,4 @@
-import { CategoryOnResource } from '@prisma/client';
+import { CategoryOnResource } from '../domain/model/categoryOnResource';
 import categoryOnResourceDb from '../domain/data-access/categoryOnResource.db';
 import resourceService from './resource.service';
 import categoryService from './category.service';
