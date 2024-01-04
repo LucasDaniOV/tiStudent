@@ -35,8 +35,8 @@ model Resource {
     updatedAt   DateTime             @updatedAt
     title       String
     description String
-    filePath    String
-    thumbNail   String
+    filePath    String               @unique
+    thumbNail   String               @default("default-thumbnail.jpg")
     categories  CategoryOnResource[]
     subjects    SubjectOnResource[]
     profileId   Int

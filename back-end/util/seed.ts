@@ -12,7 +12,6 @@ async function main() {
             username: 'JJ',
             password: await hashPassword('Str0ngPW!!!'),
             role: 'ADMIN',
-            picture: 'default-profilePicture.jpg',
         },
     });
 
@@ -22,7 +21,6 @@ async function main() {
             username: 'ICE money bang bang',
             password: await hashPassword('Str0ngPW!!!2'),
             role: 'USER',
-            picture: 'default-profilePicture.jpg',
         },
     });
 
@@ -33,7 +31,6 @@ async function main() {
             password: await hashPassword('passWord123!$'),
             role: 'USER',
             bio: 'Call me bob the way I make these samenvattingen like damn.',
-            picture: 'default-profilePicture.jpg',
         },
     });
 
@@ -42,8 +39,7 @@ async function main() {
         data: {
             title: 'P1 fundamentals summary',
             description: 'All the important stuff for p1',
-            filePath: 'aple.jpg',
-            thumbNail: 'default-thumbnail1.jpg',
+            filePath: 'p1.pdf',
             profileId: aliceProfile.id,
         },
     });
@@ -52,8 +48,7 @@ async function main() {
         data: {
             title: 'Full-Stack Software Development Cheat Sheet',
             description: 'All the important stuff for FSSD',
-            filePath: 'aple.jpg',
-            thumbNail: 'default-thumbnail1.jpg',
+            filePath: 'fsd.pdf',
             profileId: satoshi.id,
         },
     });
