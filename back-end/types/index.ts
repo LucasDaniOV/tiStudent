@@ -56,6 +56,16 @@ type ChildComment = {
     }[];
 };
 
+type CommentLikeInput = {
+    profileId?: number | string;
+    commentId?: number | string;
+};
+
+type ResourceLikeInput = {
+    profileId?: number | string;
+    resourceId?: number | string;
+};
+
 type Role = 'ADMIN' | 'USER';
 
 enum Category {
@@ -187,4 +197,6 @@ export {
     CategoryOnResourceInput,
     SubjectOnResourceInput,
     ChildComment,
+    CommentLikeInput,
+    ResourceLikeInput,
 };
