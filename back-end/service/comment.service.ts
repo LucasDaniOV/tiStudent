@@ -1,5 +1,6 @@
 import commentDb from '../domain/data-access/comment.db';
 import { Comment } from '../domain/model/comment';
+import { ChildComment } from '../types';
 import profileService from './profile.service';
 import resourceService from './resource.service';
 
@@ -29,7 +30,7 @@ const getCommentsByResourceId = async (resourceId: number): Promise<Comment[]> =
     return await commentDb.getCommentsByResourceId(resourceId);
 };
 
-const getChildrenByCommentId = async (commentId: number): Promise<any[]> => {
+const getChildrenByCommentId = async (commentId: number): Promise<ChildComment[]> => {
     await getCommentById(commentId);
     return await commentDb.getChildrenByCommentId(commentId);
 };

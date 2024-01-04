@@ -38,6 +38,24 @@ type SubjectOnResourceInput = {
     resourceId?: number | string;
 };
 
+type ChildComment = {
+    id: number;
+    createdAt: Date;
+    updatedAt: Date;
+    message: string;
+    profileId: number;
+    resourceId: number;
+    profile: {
+        id: number;
+        username: string;
+    };
+    likes: {
+        createdAt: Date;
+        profileId: number;
+        commentId: number;
+    }[];
+};
+
 type Role = 'ADMIN' | 'USER';
 
 enum Category {
@@ -168,4 +186,5 @@ export {
     Subject,
     CategoryOnResourceInput,
     SubjectOnResourceInput,
+    ChildComment,
 };
