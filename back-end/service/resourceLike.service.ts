@@ -8,20 +8,26 @@ const createResourceLike = async (resourceLikeInput: ResourceLikeInput): Promise
     const profileId = parseInt(resourceLikeInput.profileId as string);
     const resourceId = parseInt(resourceLikeInput.resourceId as string);
 
-    if (await getResourceLikeByProfileIdAndResourceId(profileId, resourceId)) {
-        throw new Error('profile already liked this resource');
+    await profileService.getProfileById(profileId);
+    await resourceService.getResourceById(resourceId);
+
+    if (await resourceLikeDb.getResourceLikeByProfileIdAndResourceId(profileId, resourceId)) {
+        throw new Error(`ResourceLike with profileId ${profileId} and resourceId ${resourceId} already exists`);
     }
 
     return await resourceLikeDb.createResourceLike(profileId, resourceId);
 };
 
-const getResourceLikeByProfileIdAndResourceId = async (
-    profileId: number,
-    resourceId: number
-): Promise<ResourceLike> => {
+const getResourceLikeByProfileIdAndResourceId = async (profileId: number, resourceId: number): Promise<ResourceLike> => {
     await profileService.getProfileById(profileId);
     await resourceService.getResourceById(resourceId);
-    return await resourceLikeDb.getResourceLikeByProfileIdAndResourceId(profileId, resourceId);
+
+    const resourceLike = await resourceLikeDb.getResourceLikeByProfileIdAndResourceId(profileId, resourceId);
+    if (!resourceLike) {
+        throw new Error(`ResourceLike with profileId ${profileId} and resourceId ${resourceId} does not exist`);
+    }
+
+    return resourceLike;
 };
 
 const getResourceLikes = async (): Promise<ResourceLike[]> => await resourceLikeDb.getResourceLikes();
@@ -37,8 +43,7 @@ const getResourceLikesByResourceId = async (resourceId: number): Promise<Resourc
 };
 
 const deleteResourceLike = async (profileId: number, resourceId: number): Promise<ResourceLike> => {
-    const resourceLike = await getResourceLikeByProfileIdAndResourceId(profileId, resourceId);
-    if (!resourceLike) throw new Error('resource like does not exist');
+    await getResourceLikeByProfileIdAndResourceId(profileId, resourceId);
     return await resourceLikeDb.deleteResourceLike(profileId, resourceId);
 };
 
