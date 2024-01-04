@@ -83,6 +83,49 @@ type ProfileLikes = {
     }[];
 };
 
+type ResourceData = {
+    id: number;
+    createdAt: Date;
+    updatedAt: Date;
+    title: string;
+    description: string;
+    filePath: string;
+    thumbNail: string;
+    profileId: number;
+    categories: {
+        category: {
+            id: number;
+            name: string;
+        };
+    }[];
+    subjects: {
+        subject: {
+            id: number;
+            name: string;
+        };
+    }[];
+    comments: {
+        id: number;
+        createdAt: Date;
+        updatedAt: Date;
+        message: string;
+        profile: {
+            id: number;
+            username: string;
+        };
+        likes: {
+            createdAt: Date;
+            profileId: number;
+            commentId: number;
+        }[];
+    }[];
+    likes: {
+        createdAt: Date;
+        profileId: number;
+        resourceId: number;
+    }[];
+};
+
 enum Category {
     Summary = 'Summary',
     CheatSheet = 'Cheat Sheet',
@@ -215,4 +258,5 @@ export {
     CommentLikeInput,
     ResourceLikeInput,
     ProfileLikes,
+    ResourceData,
 };
