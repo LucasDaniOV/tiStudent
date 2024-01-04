@@ -1,4 +1,6 @@
+import Footer from "@/components/Footer";
 import Header from "@/components/Header";
+import Language from "@/components/Language";
 import ProfileService from "@/services/ProfileService";
 import styles from "@/styles/Home.module.css";
 import { useTranslation } from "next-i18next";
@@ -29,8 +31,8 @@ const Home: React.FC = () => {
         <meta name="viewport" content="width=device-with, initial-scale=1" />
         <link rel="icon" href="/favicon.ico" />
       </Head>
+      <Header current="home"></Header>
       <main className="flex flex-col items-center justify-center w-max m-auto">
-        <Header current="home"></Header>
         <Image
           src="/images/logo.png"
           alt="tiStudent Logo"
@@ -47,6 +49,7 @@ const Home: React.FC = () => {
           <p>{t("home.message")}</p>
         </div>
       </main>
+      <Footer />
     </>
   );
 };

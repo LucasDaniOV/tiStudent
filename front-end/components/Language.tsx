@@ -10,8 +10,7 @@ const Language: React.FC = () => {
     router.push({ pathname, query }, asPath, { locale: newLocale });
   };
   return (
-    <div>
-      <label htmlFor="language">Language</label>
+    <div className="flex justify-center">
       <select
         id="language"
         className="m-1 p-1 text-white"
