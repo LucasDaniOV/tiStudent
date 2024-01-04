@@ -1,14 +1,20 @@
-import { SubjectOnResource } from '@prisma/client';
+import { SubjectOnResource } from '../domain/model/subjectOnResource';
 import subjectOnResourceDb from '../domain/data-access/subjectOnResource.db';
 import resourceService from './resource.service';
 import subjectService from './subject.service';
+import { SubjectOnResourceInput } from '../types';
 
-const createSubjectOnResource = async (subjectId: number, resourceId: number): Promise<SubjectOnResource> => {
+const createSubjectOnResource = async (subjectOnResourceInput: SubjectOnResourceInput): Promise<SubjectOnResource> => {
+    const subjectId: number = parseInt(subjectOnResourceInput.subjectId as string);
+    const resourceId: number = parseInt(subjectOnResourceInput.resourceId as string);
+
     await resourceService.getResourceById(resourceId);
     await subjectService.getSubjectById(subjectId);
+
     if (await subjectOnResourceDb.getSubjectOnResource(subjectId, resourceId)) {
         throw new Error('Subject on resource already exists');
     }
+
     const subjectOnResource = await subjectOnResourceDb.createSubjectOnResource(subjectId, resourceId);
     return subjectOnResource;
 };

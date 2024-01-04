@@ -167,4 +167,5 @@ export {
     Role,
     Subject,
     CategoryOnResourceInput,
+    SubjectOnResourceInput,
 };
