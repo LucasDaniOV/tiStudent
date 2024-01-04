@@ -29,8 +29,8 @@ type AuthenticationResponse = {
 };
 
 type CategoryOnResourceInput = {
-    categoryId?: number;
-    resourceId?: number;
+    categoryId?: number | string;
+    resourceId?: number | string;
 };
 
 type Role = 'ADMIN' | 'USER';
