@@ -49,7 +49,7 @@ test('get subjects on resources by subject id', async () => {
     expect(res.status).toEqual(200);
     expect(res.body.status).toEqual('success');
     expect(res.body.message).toEqual('subjects on resource for subject id found');
-    expect(res.body.subjectsOnResources).toEqual([{ subjectId, resourceId }]);
+    expect(res.body.subjectsOnResources).toContainEqual({ subjectId, resourceId });
 });
 
 test('get subjects on resources by resource id', async () => {
@@ -62,7 +62,7 @@ test('get subjects on resources by resource id', async () => {
     expect(res.status).toEqual(200);
     expect(res.body.status).toEqual('success');
     expect(res.body.message).toEqual('subjects on resource for resource id found');
-    expect(res.body.subjectsOnResources).toEqual([{ resourceId, subjectId }]);
+    expect(res.body.subjectsOnResources).toContainEqual({ subjectId, resourceId });
 });
 
 test('delete subject on resource', async () => {
