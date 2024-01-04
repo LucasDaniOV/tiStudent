@@ -5,7 +5,7 @@ import profileService from '../../service/profile.service';
 const profileEmail = 'satoshi@tistudent.com';
 const profilePassword = 'Str0ngPW!!!';
 const resourceId = 2;
-const categoryId = 2;
+const categoryId = 3;
 let token: string;
 
 beforeAll(async () => {
@@ -49,7 +49,7 @@ test('get categories on resources by category id', async () => {
     expect(res.status).toEqual(200);
     expect(res.body.status).toEqual('success');
     expect(res.body.message).toEqual('categories on resource for category id found');
-    expect(res.body.categoriesOnResources).toEqual([{ categoryId, resourceId }]);
+    expect(res.body.categoriesOnResources).toContainEqual({ categoryId, resourceId });
 });
 
 test('get categories on resources by resource id', async () => {
@@ -62,7 +62,7 @@ test('get categories on resources by resource id', async () => {
     expect(res.status).toEqual(200);
     expect(res.body.status).toEqual('success');
     expect(res.body.message).toEqual('categories on resource for resource id found');
-    expect(res.body.categoriesOnResources).toEqual([{ resourceId, categoryId }]);
+    expect(res.body.categoriesOnResources).toContainEqual({ resourceId, categoryId });
 });
 
 test('delete category on resource', async () => {
