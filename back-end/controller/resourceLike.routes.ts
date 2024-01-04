@@ -1,15 +1,15 @@
 import { ResourceLike } from '@prisma/client';
 import express, { NextFunction, Request, Response } from 'express';
 import resourceLikeService from '../service/resourceLike.service';
+import { ResourceLikeInput } from '../types';
 
 const resourceLikeRouter = express.Router();
 
 resourceLikeRouter.post('/', async (req: Request, res: Response, next: NextFunction) => {
     try {
-        const profileId: number = parseInt(req.body.profileId);
-        const resourceId: number = parseInt(req.body.resourceId);
+        const resourceLikeInput: ResourceLikeInput = req.body;
 
-        const resourceLike: ResourceLike = await resourceLikeService.createResourceLike(profileId, resourceId);
+        const resourceLike: ResourceLike = await resourceLikeService.createResourceLike(resourceLikeInput);
 
         res.status(200).json({ status: 'success', message: 'resource like created', resourceLike });
     } catch (error) {
