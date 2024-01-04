@@ -43,7 +43,7 @@ export class Profile {
         password: string;
         role: Role;
         username: string;
-        picture: string;
+        picture?: string;
         bio?: string;
     }): boolean {
         return (
