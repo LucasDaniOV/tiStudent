@@ -24,6 +24,7 @@ const getAllCategories = async (): Promise<Category[]> => await categoryDb.getAl
 
 const updateCategory = async (id: number, name: string): Promise<Category> => {
     Category.validateName(name);
+    await getCategoryById(id);
     if (await categoryDb.getCategoryByName(name)) throw new Error('Category already exists');
     const category = await categoryDb.updateCategory(id, name);
     return category;
