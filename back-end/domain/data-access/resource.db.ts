@@ -1,5 +1,11 @@
+import { ResourceData } from '../../types';
 import database from '../../util/database';
+import { Category } from '../model/category';
+import { CommentLike } from '../model/commentLike';
 import { Resource } from '../model/resource';
+import { ResourceLike } from '../model/resourceLike';
+import { Subject } from '../model/subject';
+import { Comment } from '../model/comment';
 
 const include = {
     categories: {
@@ -67,13 +73,12 @@ const createResource = async (
     }
 };
 
-const getAllResources = async (): Promise<any[]> => {
+const getAllResources = async (): Promise<ResourceData[]> => {
     try {
-        const resourcesPrisma = await database.resource.findMany({
+        const res = await database.resource.findMany({
             include,
         });
-        return resourcesPrisma;
-        // if (resourcesPrisma) return resourcesPrisma.map((r) => Resource.from(r));
+        return res as ResourceData[];
     } catch (error) {
         console.error(error);
         throw new Error('Database error when getting all resources. See server log for details.');
@@ -94,15 +99,15 @@ const getResourcesByProfileId = async (profileId: number): Promise<Resource[]> =
     }
 };
 
-const getResourceById = async (id: number): Promise<any> => {
+const getResourceById = async (id: number): Promise<ResourceData> => {
     try {
-        return await database.resource.findUnique({
+        const res = await database.resource.findUnique({
             where: {
                 id,
             },
             include,
         });
-        // if (resourcePrisma) return Resource.from(resourcePrisma);
+        return res as ResourceData;
     } catch (error) {
         console.error(error);
         throw new Error('Database error when getting resource by id. See server log for details.');

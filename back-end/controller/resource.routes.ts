@@ -1,7 +1,7 @@
 import express, { NextFunction, Request, Response } from 'express';
 import { Resource } from '../domain/model/resource';
 import resourceService from '../service/resource.service';
-import { ResourceInput } from '../types';
+import { ResourceData, ResourceInput } from '../types';
 
 const resourceRouter = express.Router();
 
@@ -21,7 +21,7 @@ resourceRouter.get('/', async (req: Request, res: Response, next: NextFunction) 
     try {
         const profileId: number | undefined = parseInt(req.query.profileId as string);
 
-        let resources: Resource[];
+        let resources: Resource[] | ResourceData[];
 
         if (profileId) {
             resources = await resourceService.getResourcesByProfileId(profileId);
@@ -39,7 +39,7 @@ resourceRouter.get('/:resourceId', async (req: Request, res: Response, next: Nex
     try {
         const resourceId: number = parseInt(req.params.resourceId);
 
-        const resource: Resource = await resourceService.getResourceById(resourceId);
+        const resource: ResourceData = await resourceService.getResourceById(resourceId);
 
         res.status(200).json({ status: 'success', message: 'resource found', resource });
     } catch (error) {

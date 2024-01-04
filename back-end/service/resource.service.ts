@@ -1,6 +1,6 @@
 import resourceDb from '../domain/data-access/resource.db';
 import { Resource } from '../domain/model/resource';
-import { ResourceInput } from '../types';
+import { ResourceData, ResourceInput } from '../types';
 import profileService from './profile.service';
 
 const createResource = async (resourceInput: ResourceInput): Promise<Resource> => {
@@ -10,9 +10,9 @@ const createResource = async (resourceInput: ResourceInput): Promise<Resource> =
     return await resourceDb.createResource(title, description, filePath, thumbNail, profileId);
 };
 
-const getAllResources = async (): Promise<any[]> => await resourceDb.getAllResources();
+const getAllResources = async (): Promise<ResourceData[]> => await resourceDb.getAllResources();
 
-const getResourceById = async (id: number): Promise<any> => {
+const getResourceById = async (id: number): Promise<ResourceData> => {
     const resource = await resourceDb.getResourceById(id);
     if (!resource) throw new Error(`Resource with id ${id} does not exist`);
     return resource;
