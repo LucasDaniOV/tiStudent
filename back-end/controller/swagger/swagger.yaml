@@ -26,6 +26,7 @@ tags:
     - name: comments
     - name: resourcelikes
     - name: commentlikes
+    - name: files
 
 security:
     - BearerAuth: []
