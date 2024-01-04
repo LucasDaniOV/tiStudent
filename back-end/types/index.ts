@@ -1,3 +1,5 @@
+type Role = 'ADMIN' | 'USER';
+
 type ProfileInput = {
     email?: string;
     username?: string;
@@ -66,7 +68,20 @@ type ResourceLikeInput = {
     resourceId?: number | string;
 };
 
-type Role = 'ADMIN' | 'USER';
+type ProfileLikes = {
+    id: number;
+    username: string;
+    resourceLikes: {
+        createdAt: Date;
+        profileId: number;
+        resourceId: number;
+    }[];
+    commentLikes: {
+        createdAt: Date;
+        profileId: number;
+        commentId: number;
+    }[];
+};
 
 enum Category {
     Summary = 'Summary',
@@ -199,4 +214,5 @@ export {
     ChildComment,
     CommentLikeInput,
     ResourceLikeInput,
+    ProfileLikes,
 };

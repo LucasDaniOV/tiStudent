@@ -1,7 +1,7 @@
 import { UnauthorizedError } from 'express-jwt';
 import profileDb from '../domain/data-access/profile.db';
 import { Profile } from '../domain/model/profile';
-import { AuthenticationResponse, ProfileInput, Role } from '../types';
+import { AuthenticationResponse, ProfileInput, ProfileLikes, Role } from '../types';
 import { generateJwtToken } from '../util/jwt';
 import { comparePasswordWithHash, hashPassword } from '../util/password';
 
@@ -45,7 +45,7 @@ const getProfileByUsername = async (username: string): Promise<Profile> => {
     return profile;
 };
 
-const getProfileLikes = async (profileId: number): Promise<any> => {
+const getProfileLikes = async (profileId: number): Promise<ProfileLikes> => {
     await getProfileById(profileId);
     return await profileDb.getProfileLikes(profileId);
 };
