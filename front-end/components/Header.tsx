@@ -1,7 +1,7 @@
-import { useTranslation } from "next-i18next";
 import Link from "next/link";
 import React, { useEffect, useState } from "react";
 import Language from "./Language";
+import { useTranslation } from "next-i18next";
 
 type Props = {
   current: string;
@@ -22,7 +22,6 @@ const Header: React.FC<Props> = ({ current }: Props) => {
     >
       <nav className="flex flex-col">
         <a className="text-white text-opacity-100 text-center underline text-xl">
-          {" "}
           {t("app.title")}
         </a>
         <Link

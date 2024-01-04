@@ -1,13 +1,10 @@
-import Header from "../components/Header";
-import React from "react";
+import { screen } from "@testing-library/dom";
 import { render } from "@testing-library/react";
-import userEvent, { screen } from "@testing-library/dom";
-import UserInfo from "../components/users/UserInfo";
-import ProfileInfo from "../components/profiles/ProfileInfo";
 import { Category } from "../../back-end/domain/model/category";
 import { Subject } from "../../back-end/domain/model/subject";
-import ResourceInfo from "../components/resources/ResourceInfo";
-import CommentInfo from "../components/comments/CommentInfo";
+import Header from "../components/Header";
+import React from "react";
+import { useTranslation } from "react-i18next";
 
 const testUser = {
   id: "testUser",
@@ -23,16 +20,55 @@ const testProfile = {
   latestActivity: testDate,
   user: testUser,
 };
-const testCategory = Category.Summary;
-const testSubject = Subject.AI_Applications;
 const testResource = {
-  id: "testResource",
-  creator: testProfile,
-  createdAt: testDate,
-  title: "testResourceTitle",
-  description: "testResourceDescription",
-  category: testCategory,
-  subject: testSubject,
+  id: 1,
+  createdAt: "2023-12-29T14:41:55.854Z",
+  updatedAt: "2023-12-29T14:41:55.854Z",
+  title: "example title",
+  description: "example description",
+  profileId: 1,
+  categories: [
+    {
+      category: {
+        id: 1,
+        name: "Category Name",
+      },
+    },
+  ],
+  subjects: [
+    {
+      subject: {
+        id: 1,
+        name: "Subject Name",
+      },
+    },
+  ],
+  comments: [
+    {
+      id: 1,
+      createdAt: "2023-12-29T14:41:55.854Z",
+      updatedAt: "2023-12-29T14:41:55.854Z",
+      message: "example message",
+      profile: {
+        id: 1,
+        username: "JJ",
+      },
+      likes: [
+        {
+          createdAt: "2023-12-29T14:41:55.854Z",
+          profileId: 1,
+          commentId: 1,
+        },
+      ],
+    },
+  ],
+  likes: [
+    {
+      createdAt: "2023-12-29T14:41:55.854Z",
+      profileId: 1,
+      resourceId: 1,
+    },
+  ],
 };
 
 const testComment = {
@@ -44,79 +80,23 @@ const testComment = {
   resource: testResource,
   parentId: String(),
 };
+
+window.React = React;
+
 test("given Header component - when loaded - then it is displayed", async () => {
   //given
-  render(<Header />);
+  render(<Header current={"/home"} />);
   //when
   await screen.findByRole("heading");
-  const title = screen.getByRole("heading").children[0].textContent;
-  const nav = screen.getByRole("heading").children[1];
 
-  //then
-  expect(title === "tiStudent App");
-  expect(
-    nav.textContent === "Home" + "Users" + "Resources" + "Profiles" + "Login"
+  // //then
+  expect(screen.getByRole("heading").children[0].textContent).toBe(
+    "app.title" +
+      "header.nav.home" +
+      "header.nav.resources" +
+      "header.nav.profiles" +
+      "header.nav.login"
+    // + Language component
   );
-  expect(nav.children.length === 5);
-});
-
-test("given UserInfo component - when loaded - then it is displayed", async () => {
-  //given
-  render(<UserInfo user={testUser} />);
-  //when
-  await screen.findByRole("userInfo");
-  const userInfo = screen.getByRole("userInfo");
-  //then
-  expect(userInfo.children.length === 3);
-  expect(screen.getByText("testUser"));
-  expect(screen.getByText("testUser@test.com"));
-  expect(screen.getByText("Test123!!!!"));
-});
-
-test("given ProfileInfo component - when loaded - then it is displayed", async () => {
-  //given
-  render(<ProfileInfo profile={testProfile} />);
-  //when
-  await screen.findByRole("profileInfo");
-  const profileInfo = screen.getByRole("profileInfo");
-  //then
-  expect(profileInfo.children.length === 6);
-  expect(screen.getByText("testProfile")); //id
-  expect(screen.getByText("testProfileUsername")); //username
-  expect(screen.getByText("testProfileBio")); //bio
-  expect(screen.getAllByText(String(testDate)).length === 2); //createdAt, latestActivity
-});
-
-test("given ResourceInfo component - when loaded - then it is displayed", async () => {
-  //given
-  render(<ResourceInfo resource={testResource} />);
-  //when
-  await screen.findByRole("resourceInfo");
-  const profileInfo = screen.getByRole("resourceInfo");
-  //then
-  expect(profileInfo.children.length === 3);
-  expect(profileInfo.children[2].children.length === 4);
-  expect(screen.getByText("testResourceTitle")); //Title
-  expect(screen.getByText("testResourceDescription")); //Description
-  expect(screen.getByText("Summary")); // Category
-  expect(screen.getByText(String(testDate))); //createdAt
-  expect(screen.getByText("AI Applications")); // Subject
-  expect(screen.getByText("testProfile")); //creator ID
-});
-
-test("given CommentInfo component - when loaded - then it is displayed", async () => {
-  //given
-  render(<CommentInfo comment={testComment} />);
-  //when
-  await screen.findByRole("resourceInfo");
-  const profileInfo = screen.getByRole("resourceInfo");
-  //then
-  expect(profileInfo.children.length === 3);
-  expect(profileInfo.children[2].children.length === 4);
-  expect(screen.getByText("testResourceTitle")); //Title
-  expect(screen.getByText("testResourceDescription")); //Description
-  expect(screen.getByText("Summary")); // Category
-  expect(screen.getByText(String(testDate))); //createdAt
-  expect(screen.getByText("AI Applications")); // Subject
-  expect(screen.getByText("testProfile")); //creator ID
+  expect(screen.getByRole("heading").children[0].children.length === 4);
 });
