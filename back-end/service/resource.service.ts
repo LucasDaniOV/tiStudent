@@ -5,9 +5,9 @@ import profileService from './profile.service';
 
 const createResource = async (resourceInput: ResourceInput): Promise<Resource> => {
     const { title, description, filePath, thumbNail, profileId } = resourceInput;
-    Resource.validate(title, description);
+    Resource.validate(title, description, profileId);
     await profileService.getProfileById(profileId);
-    return await resourceDb.createResource(title, description, filePath, thumbNail, profileId);
+    return await resourceDb.createResource(title, description, profileId, filePath, thumbNail);
 };
 
 const getAllResources = async (): Promise<ResourceData[]> => await resourceDb.getAllResources();
@@ -25,7 +25,8 @@ const getResourcesByProfileId = async (profileId: number): Promise<Resource[]> =
 
 const updateResource = async (id: number, resourceInput: ResourceInput): Promise<Resource> => {
     const { title, description, filePath, thumbNail } = resourceInput;
-    Resource.validate(title, description);
+    Resource.validateTitle(title);
+    Resource.validateDescription(description);
     await getResourceById(id);
     return await resourceDb.updateResource(id, title, description, filePath, thumbNail);
 };

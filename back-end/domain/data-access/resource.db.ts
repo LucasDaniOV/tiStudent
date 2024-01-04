@@ -52,9 +52,9 @@ const include = {
 const createResource = async (
     title: string,
     description: string,
-    filePath: string,
-    thumbNail: string,
-    profileId: number
+    profileId: number,
+    filePath?: string,
+    thumbNail?: string
 ): Promise<Resource> => {
     try {
         const resourcePrisma = await database.resource.create({

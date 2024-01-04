@@ -6,9 +6,9 @@ export class Resource {
     readonly updatedAt: Date;
     readonly title: string;
     readonly description: string;
-    readonly filePath: string;
-    readonly thumbNail: string;
     readonly profileId: number;
+    readonly filePath: string;
+    readonly thumbNail?: string;
 
     constructor(resource: {
         id: number;
@@ -16,19 +16,19 @@ export class Resource {
         updatedAt: Date;
         title: string;
         description: string;
-        filePath: string;
-        thumbNail: string;
         profileId: number;
+        filePath?: string;
+        thumbNail?: string;
     }) {
-        Resource.validate(resource.title, resource.description);
+        Resource.validate(resource.title, resource.description, resource.profileId);
         this.id = resource.id;
         this.createdAt = resource.createdAt;
         this.updatedAt = resource.updatedAt;
         this.title = resource.title;
         this.description = resource.description;
+        this.profileId = resource.profileId;
         this.filePath = resource.filePath;
         this.thumbNail = resource.thumbNail;
-        this.profileId = resource.profileId;
     }
 
     equals(otherResource: Resource): boolean {
@@ -44,9 +44,10 @@ export class Resource {
         );
     }
 
-    static validate(title: string, description: string): void {
+    static validate(title: string, description: string, profileId: number): void {
         Resource.validateTitle(title);
         Resource.validateDescription(description);
+        Resource.validateProfileId(profileId);
     }
 
     static validateTitle = (title: string) => {
@@ -57,6 +58,11 @@ export class Resource {
     static validateDescription = (description: string) => {
         if (!description) throw new Error('description is required');
         if (description.length > 500) throw new Error('description cannot be longer than 500 characters');
+    };
+
+    static validateProfileId = (profileId: number) => {
+        if (!profileId) throw new Error('profileId is required');
+        if (typeof profileId !== 'number') throw new Error('profileId must be a number');
     };
 
     static from({
