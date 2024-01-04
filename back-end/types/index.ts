@@ -28,6 +28,11 @@ type AuthenticationResponse = {
     role: Role;
 };
 
+type CategoryOnResourceInput = {
+    categoryId?: number;
+    resourceId?: number;
+};
+
 type Role = 'ADMIN' | 'USER';
 
 enum Category {
@@ -148,4 +153,13 @@ enum Subject {
     Cloud_Native_Engineering = 'Cloud Native Engineering',
 }
 
-export { AuthenticationResponse, Category, CommentInput, ProfileInput, ResourceInput, Role, Subject };
+export {
+    AuthenticationResponse,
+    Category,
+    CommentInput,
+    ProfileInput,
+    ResourceInput,
+    Role,
+    Subject,
+    CategoryOnResourceInput,
+};
