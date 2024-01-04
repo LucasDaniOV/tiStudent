@@ -5,14 +5,14 @@ import commentDb from '../../domain/data-access/comment.db';
 import { CommentLike } from '../../domain/model/commentLike';
 import { CommentLikeInput } from '../../types';
 
-const commendId = 1;
+const commentId = 1;
 const profileId = 1;
 const createdAt = new Date();
 
-const commentLike = new CommentLike(commendId, profileId, createdAt);
+const commentLike = new CommentLike(commentId, profileId, createdAt);
 
 const commentLikeInput: CommentLikeInput = {
-    commentId: commendId,
+    commentId: commentId,
     profileId,
 };
 
@@ -45,7 +45,8 @@ describe('create CommentLike', () => {
         // given
         profileDb.getProfileById = mockProfileDbGetProfileById.mockResolvedValue({});
         commentDb.getCommentById = mockCommentDbGetCommentById.mockResolvedValue({});
-        commentLikeDb.getCommentLikeByProfileIdAndCommentId = mockCommentLikeDbGetCommentLikeByProfileIdAndCommentId.mockResolvedValue(undefined);
+        commentLikeDb.getCommentLikeByProfileIdAndCommentId =
+            mockCommentLikeDbGetCommentLikeByProfileIdAndCommentId.mockResolvedValue(undefined);
         commentLikeDb.createCommentLike = mockCommentLikeDbCreateCommentLike.mockResolvedValue(commentLike);
 
         // when
@@ -60,13 +61,16 @@ describe('create CommentLike', () => {
         // given
         profileDb.getProfileById = mockProfileDbGetProfileById.mockResolvedValue({});
         commentDb.getCommentById = mockCommentDbGetCommentById.mockResolvedValue({});
-        commentLikeDb.getCommentLikeByProfileIdAndCommentId = mockCommentLikeDbGetCommentLikeByProfileIdAndCommentId.mockResolvedValue(commentLike);
+        commentLikeDb.getCommentLikeByProfileIdAndCommentId =
+            mockCommentLikeDbGetCommentLikeByProfileIdAndCommentId.mockResolvedValue(commentLike);
 
         // when
         const sut = async () => await commentLikeService.createCommentLike(commentLikeInput);
 
         // then
-        expect(sut).rejects.toThrowError(`CommentLike with profileId ${profileId} and commentId ${commendId} already exists`);
+        expect(sut).rejects.toThrowError(
+            `CommentLike with profileId ${profileId} and commentId ${commentId} already exists`
+        );
     });
 
     test('given: invalid profileId, when: creating CommentLike, then: error is thrown', () => {
@@ -89,7 +93,7 @@ describe('create CommentLike', () => {
         const sut = async () => await commentLikeService.createCommentLike(commentLikeInput);
 
         // then
-        expect(sut).rejects.toThrowError(`no comment with id ${commendId} found`);
+        expect(sut).rejects.toThrowError(`no comment with id ${commentId} found`);
     });
 });
 
@@ -98,10 +102,11 @@ describe('get CommentLike', () => {
         // given
         profileDb.getProfileById = mockProfileDbGetProfileById.mockResolvedValue({});
         commentDb.getCommentById = mockCommentDbGetCommentById.mockResolvedValue({});
-        commentLikeDb.getCommentLikeByProfileIdAndCommentId = mockCommentLikeDbGetCommentLikeByProfileIdAndCommentId.mockResolvedValue(commentLike);
+        commentLikeDb.getCommentLikeByProfileIdAndCommentId =
+            mockCommentLikeDbGetCommentLikeByProfileIdAndCommentId.mockResolvedValue(commentLike);
 
         // when
-        const result = await commentLikeService.getCommentLikeByProfileIdAndCommentId(profileId, commendId);
+        const result = await commentLikeService.getCommentLikeByProfileIdAndCommentId(profileId, commentId);
 
         // then
         expect(mockCommentLikeDbGetCommentLikeByProfileIdAndCommentId).toHaveBeenCalledTimes(1);
@@ -110,15 +115,18 @@ describe('get CommentLike', () => {
 
     test('given: non-existing CommentLike, when: getting CommentLike, then: error is thrown', () => {
         // given
-        commentLikeDb.getCommentLikeByProfileIdAndCommentId = mockCommentLikeDbGetCommentLikeByProfileIdAndCommentId.mockResolvedValue(undefined);
+        commentLikeDb.getCommentLikeByProfileIdAndCommentId =
+            mockCommentLikeDbGetCommentLikeByProfileIdAndCommentId.mockResolvedValue(undefined);
         commentDb.getCommentById = mockCommentDbGetCommentById.mockResolvedValue({});
         profileDb.getProfileById = mockProfileDbGetProfileById.mockResolvedValue({});
 
         // when
-        const sut = async () => await commentLikeService.getCommentLikeByProfileIdAndCommentId(profileId, commendId);
+        const sut = async () => await commentLikeService.getCommentLikeByProfileIdAndCommentId(profileId, commentId);
 
         // then
-        expect(sut).rejects.toThrowError(`CommentLike with profileId ${profileId} and commentId ${commendId} does not exist`);
+        expect(sut).rejects.toThrowError(
+            `CommentLike with profileId ${profileId} and commentId ${commentId} does not exist`
+        );
     });
 
     test('given: invalid profileId, when: getting CommentLike, then: error is thrown', () => {
@@ -126,7 +134,7 @@ describe('get CommentLike', () => {
         profileDb.getProfileById = mockProfileDbGetProfileById.mockResolvedValue(undefined);
 
         // when
-        const sut = async () => await commentLikeService.getCommentLikeByProfileIdAndCommentId(profileId, commendId);
+        const sut = async () => await commentLikeService.getCommentLikeByProfileIdAndCommentId(profileId, commentId);
 
         // then
         expect(sut).rejects.toThrowError(`Profile with id ${profileId} does not exist`);
@@ -138,10 +146,10 @@ describe('get CommentLike', () => {
         commentDb.getCommentById = mockCommentDbGetCommentById.mockResolvedValue(undefined);
 
         // when
-        const sut = async () => await commentLikeService.getCommentLikeByProfileIdAndCommentId(profileId, commendId);
+        const sut = async () => await commentLikeService.getCommentLikeByProfileIdAndCommentId(profileId, commentId);
 
         // then
-        expect(sut).rejects.toThrowError(`no comment with id ${commendId} found`);
+        expect(sut).rejects.toThrowError(`no comment with id ${commentId} found`);
     });
 
     test('given: existing CommentLikes, when: getting CommentLikes, then: existing CommentLikes are returned', async () => {
@@ -159,7 +167,9 @@ describe('get CommentLike', () => {
     test('given: existing CommentLikes, when: getting CommentLikes by profileId, then: existing CommentLikes by profileId are returned', async () => {
         // given
         profileDb.getProfileById = mockProfileDbGetProfileById.mockResolvedValue({});
-        commentLikeDb.getCommentLikesByProfileId = mockCommentLikeDbGetCommentLikesByProfileId.mockResolvedValue([commentLike]);
+        commentLikeDb.getCommentLikesByProfileId = mockCommentLikeDbGetCommentLikesByProfileId.mockResolvedValue([
+            commentLike,
+        ]);
 
         // when
         const result = await commentLikeService.getCommentLikesByProfileId(profileId);
@@ -183,10 +193,12 @@ describe('get CommentLike', () => {
     test('given: existing CommentLikes, when: getting CommentLikes by commentId, then: existing CommentLikes by commentId are returned', async () => {
         // given
         commentDb.getCommentById = mockCommentDbGetCommentById.mockResolvedValue({});
-        commentLikeDb.getCommentLikesByCommentId = mockCommentLikeDbGetCommentLikesByCommentId.mockResolvedValue([commentLike]);
+        commentLikeDb.getCommentLikesByCommentId = mockCommentLikeDbGetCommentLikesByCommentId.mockResolvedValue([
+            commentLike,
+        ]);
 
         // when
-        const result = await commentLikeService.getCommentLikesByCommentId(commendId);
+        const result = await commentLikeService.getCommentLikesByCommentId(commentId);
 
         // then
         expect(mockCommentLikeDbGetCommentLikesByCommentId).toHaveBeenCalledTimes(1);
@@ -198,10 +210,10 @@ describe('get CommentLike', () => {
         commentDb.getCommentById = mockCommentDbGetCommentById.mockResolvedValue(undefined);
 
         // when
-        const sut = async () => await commentLikeService.getCommentLikesByCommentId(commendId);
+        const sut = async () => await commentLikeService.getCommentLikesByCommentId(commentId);
 
         // then
-        expect(sut).rejects.toThrowError(`no comment with id ${commendId} found`);
+        expect(sut).rejects.toThrowError(`no comment with id ${commentId} found`);
     });
 });
 
@@ -210,11 +222,12 @@ describe('delete CommentLike', () => {
         // given
         profileDb.getProfileById = mockProfileDbGetProfileById.mockResolvedValue({});
         commentDb.getCommentById = mockCommentDbGetCommentById.mockResolvedValue({});
-        commentLikeDb.getCommentLikeByProfileIdAndCommentId = mockCommentLikeDbGetCommentLikeByProfileIdAndCommentId.mockResolvedValue(commentLike);
+        commentLikeDb.getCommentLikeByProfileIdAndCommentId =
+            mockCommentLikeDbGetCommentLikeByProfileIdAndCommentId.mockResolvedValue(commentLike);
         commentLikeDb.deleteCommentLike = mockCommentLikeDbDeleteCommentLike.mockResolvedValue(commentLike);
 
         // when
-        const result = await commentLikeService.deleteCommentLike(profileId, commendId);
+        const result = await commentLikeService.deleteCommentLike(profileId, commentId);
 
         // then
         expect(mockCommentLikeDbDeleteCommentLike).toHaveBeenCalledTimes(1);
@@ -225,12 +238,15 @@ describe('delete CommentLike', () => {
         // given
         profileDb.getProfileById = mockProfileDbGetProfileById.mockResolvedValue({});
         commentDb.getCommentById = mockCommentDbGetCommentById.mockResolvedValue({});
-        commentLikeDb.getCommentLikeByProfileIdAndCommentId = mockCommentLikeDbGetCommentLikeByProfileIdAndCommentId.mockResolvedValue(undefined);
+        commentLikeDb.getCommentLikeByProfileIdAndCommentId =
+            mockCommentLikeDbGetCommentLikeByProfileIdAndCommentId.mockResolvedValue(undefined);
 
         // when
-        const sut = async () => await commentLikeService.deleteCommentLike(profileId, commendId);
+        const sut = async () => await commentLikeService.deleteCommentLike(profileId, commentId);
 
         // then
-        expect(sut).rejects.toThrowError(`CommentLike with profileId ${profileId} and commentId ${commendId} does not exist`);
+        expect(sut).rejects.toThrowError(
+            `CommentLike with profileId ${profileId} and commentId ${commentId} does not exist`
+        );
     });
 });
