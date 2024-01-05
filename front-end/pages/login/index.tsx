@@ -14,8 +14,6 @@ const Login: React.FC = () => {
     setUser(sessionStorage.getItem("loggedInUser"));
   }, [user]);
 
-  // let userObject = null;
-  // if (user) userObject = JSON.parse(user);
   return (
     <>
       <Head>

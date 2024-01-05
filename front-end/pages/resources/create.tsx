@@ -1,3 +1,4 @@
+import Footer from "@/components/Footer";
 import Header from "@/components/Header";
 import CreateResourceForm from "@/components/resources/ResourceCreateForm";
 import { useTranslation } from "next-i18next";
@@ -5,20 +6,21 @@ import { serverSideTranslations } from "next-i18next/serverSideTranslations";
 import Head from "next/head";
 import { useRouter } from "next/router";
 import React, { useEffect, useState } from "react";
+import useSWR, { mutate } from "swr";
+import useInterval from "use-interval";
 
 const CreateResource: React.FC = () => {
   const { t } = useTranslation();
-  const [profileId, setProfileId] = useState<string>();
 
-  const setUser = async () => {
-    const user = sessionStorage.getItem("loggedInUser");
-    if (!user) return;
-    setProfileId(JSON.parse(user).id);
+  const getUser = async () => {
+    return sessionStorage.getItem("loggedInUser");
   };
 
-  useEffect(() => {
-    setUser();
-  }, [profileId]);
+  const { data, isLoading, error } = useSWR("user", getUser);
+
+  useInterval(() => {
+    mutate("user", getUser());
+  }, 5000);
 
   return (
     <>
@@ -27,12 +29,10 @@ const CreateResource: React.FC = () => {
       </Head>
       <Header current="resources" />
       <main className="flex flex-row align-middle items-center justify-center">
-        {profileId ? (
-          <CreateResourceForm />
-        ) : (
-          <h2>{t("authorization.error")}</h2>
-        )}
+        {isLoading && <p>{t("loading")}</p>}
+        {data ? <CreateResourceForm /> : <h2>{t("authorization.error")}</h2>}
       </main>
+      <Footer />
     </>
   );
 };

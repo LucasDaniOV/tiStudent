@@ -8,20 +8,22 @@ import { serverSideTranslations } from "next-i18next/serverSideTranslations";
 import Head from "next/head";
 import Image from "next/image";
 import React, { useEffect } from "react";
+import useSWR, { mutate } from "swr";
+import useInterval from "use-interval";
 
 const Home: React.FC = () => {
   const { t } = useTranslation();
-  const [name, setName] = React.useState<string>("");
   const getUser = async () => {
     const user = sessionStorage.getItem("loggedInUser");
     if (user) {
       const profile = await ProfileService.getProfileById(JSON.parse(user).id);
-      setName(profile.profile.username);
+      return profile.profile.username;
     }
   };
-  useEffect(() => {
-    getUser();
-  }, []);
+  const { data, isLoading, error } = useSWR("user", getUser);
+  useInterval(() => {
+    mutate("user", getUser());
+  }, 5000);
 
   return (
     <>
@@ -33,6 +35,11 @@ const Home: React.FC = () => {
       </Head>
       <Header current="home"></Header>
       <main className="flex flex-col items-center justify-center w-max m-auto">
+        <span>
+          <h1 className="text-3xl font-bold">
+            {t("home.welcome")} {data}!
+          </h1>
+        </span>
         <Image
           src="/images/logo.png"
           alt="tiStudent Logo"
@@ -40,11 +47,6 @@ const Home: React.FC = () => {
           height={250}
           style={{ padding: "1rem" }}
         />
-        <span>
-          <h1 className="text-3xl font-bold">
-            {t("home.welcome")} {name}!
-          </h1>
-        </span>
         <div className={styles.description}>
           <p>{t("home.message")}</p>
         </div>
