@@ -1,11 +1,11 @@
 {
   "app.title": "tiStudent App",
   "general.error": "Er is een fout opgetreden. Probeer het later opnieuw.",
-  "authorization.error": "Je bent niet gemachtigd om deze pagina te bekijken. Log eerst in.",
+  "authorization.error": "U bent niet gemachtigd om deze pagina te bekijken. Log eerst in.",
   "loading": "Laden...",
   "delete": "Verwijderen",
-  "back": "Terug",
-  "email.linked": "E-mail is al gekoppeld aan een profiel",
+  "back": "Ga terug",
+  "email.linked": "E-mail al gekoppeld aan een profiel",
   "header": {
     "nav": {
       "home": "Home",
@@ -18,16 +18,16 @@
   },
   "home": {
     "welcome": "Welkom",
-    "message": "tiStudent is een platform waar je academische bronnen kunt delen. Als gebruiker kun je je eigen bronnen uploaden en bronnen van andere mensen leuk vinden en erop reageren. Je kunt je leuk gevonden bronnen bekijken en een overzicht krijgen van alle bronnen die je hebt gedeeld."
+    "message": "tiStudent is een platform waar je academische bronnen kunt delen. Als gebruiker kun je je eigen bronnen uploaden en bronnen van anderen liken en erop reageren. Je kunt je gelikete bronnen bekijken en een overzicht krijgen van alle bronnen die je hebt gedeeld."
   },
   "users": {
     "message": "Gebruikers",
     "info": "Gebruikersinformatie",
-    "about": "Informatie over gebruiker met ID: ",
+    "about": "Informatie over gebruiker met ID:",
     "loading": "Laden...",
     "deleted": {
       "title": "Gebruiker verwijderd",
-      "message": "Gebruiker met ID verwijderd:"
+      "message": "Gebruiker verwijderd met ID:"
     },
     "fields": {
       "id": "ID",
@@ -39,7 +39,7 @@
     "title": "Bronnen",
     "fields": {
       "id": "ID",
-      "user.id": "Gebruikers-ID",
+      "user.id": "Gebruiker ID",
       "created.at": "Aangemaakt op",
       "title": "Titel",
       "description": "Omschrijving",
@@ -48,7 +48,11 @@
       "cheat.sheet": "Spiekbriefje",
       "lecture.notes": "Collegeaantekeningen",
       "subject": "Onderwerp",
-      "profileId": "Profiel-ID"
+      "profileId": "ProfielID",
+      "creator": "Maker",
+      "file": "Bestand",
+      "thumbnail": "Miniatuur",
+      "likes": "Likes"
     },
     "error": {
       "title": "Titel is verplicht",
@@ -59,18 +63,23 @@
       "category.invalid": "Ongeldige categorie",
       "subject": "Onderwerp is verplicht",
       "subject.invalid": "Ongeldig onderwerp",
-      "profileId": "Profiel-ID is verplicht"
+      "profileId": "ProfielID is verplicht",
+      "file": "Bestand is verplicht",
+      "creator": "U bent niet de maker van deze bron."
     },
-    "create": "Bron creëren",
+    "create": "Maak bron aan",
     "info": {
       "title": "Broninformatie",
-      "message": "Voeg een bron toe"
+      "message": "Voeg een bron toe",
+      "link": "Link gekopieerd",
+      "member": "Lid sinds"
     },
+    "confirm": "Weet je zeker dat je de bron met titel wilt verwijderen",
     "delete": "Bron verwijderd met ID ",
     "comment": {
-      "reply": "Antwoorden",
-      "hide": "Verbergen",
-      "show": "Tonen",
+      "reply": "Antwoord",
+      "hide": "Verberg",
+      "show": "Toon",
       "replies": " antwoorden",
       "add": "Voeg een opmerking toe",
       "prompt": "Jouw bericht:",
@@ -85,10 +94,17 @@
         "delete": {
           "title": "Verwijderen",
           "message": "Weet je zeker dat je deze opmerking wilt verwijderen? ",
-          "error": "Jij bent niet de maker van deze opmerking"
+          "error": "U bent niet de maker van deze opmerking"
         },
         "close": "Sluiten"
       }
+    }
+  },
+  "download": {
+    "message": "Bestand downloaden",
+    "error": {
+      "download": "Het downloaden van het bestand is mislukt.",
+      "fetch": "Fout tijdens ophalen:"
     }
   },
   "profiles": {
@@ -99,15 +115,20 @@
       "username": "Gebruikersnaam",
       "bio": "Biografie",
       "created.at": "Aangemaakt op",
+      "role": "Rol",
       "latest.activity": "Laatste activiteit"
     },
-    "info": "Informatie over ",
+    "info": {
+      "message": "Informatie over ",
+      "uploaded": "'s geüploade bronnen",
+      "nothing": "Deze gebruiker heeft nog niets gedeeld"
+    },
     "delete": "Weet je zeker dat je wilt verwijderen"
   },
   "login": {
-    "enter": "Invoeren",
+    "enter": "Inloggen",
     "message": "Inloggen",
-    "github": "Inloggen met GitHub",
+    "github": "Aanmelden met GitHub",
     "profile": {
       "message": "Of maak een nieuw profiel aan",
       "form": {
@@ -124,18 +145,28 @@
           "password": {
             "exists": "Wachtwoord is verplicht",
             "length": "Wachtwoord moet minimaal 8 tekens lang zijn",
-            "number": "Wachtwoord moet minimaal 1 cijfer bevatten",
-            "capital": "Wachtwoord moet minimaal 1 hoofdletter bevatten",
-            "special": "Wachtwoord moet minimaal 1 speciaal teken bevatten (!@#$%^&*()_+-=[]{};':\"|,.<>/?)"
+            "number": "Wachtwoord moet minstens 1 cijfer bevatten",
+            "capital": "Wachtwoord moet minstens 1 hoofdletter bevatten",
+            "special": "Wachtwoord moet minstens 1 speciaal teken bevatten (!@#$%^&*()_+-=[]{};':\"|,.<>/?)"
           }
         }
       }
     },
-    "succes": "Inloggen gelukt! Doorsturen...",
-    "error": "Er is een fout opgetreden. Probeer het later opnieuw."
+    "succes": "Inloggen gelukt! We sturen je naar de hoofdpagina",
+    "error": "Er is een probleem opgetreden. Gelieve later opnieuw te proberen."
   },
   "logout": {
     "message": "Weet je zeker dat je wilt vertrekken?",
     "button": "Ja"
+  },
+  "footer": {
+    "message": "Blijf in contact",
+    "startdate": "Startdatum project",
+    "supported": "Ondersteunde talen",
+    "menu": "Menu"
+  },
+  "leaderboard": {
+    "top": "Topbijdragers",
+    "count": "Aantal"
   }
 }
