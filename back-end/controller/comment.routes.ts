@@ -1,18 +1,19 @@
 import express, { NextFunction, Request, Response } from 'express';
 import { Comment } from '../domain/model/comment';
 import commentService from '../service/comment.service';
-import { ChildComment } from '../types';
+import { AuthenticationResponse, ChildComment } from '../types';
 
 const commentRouter = express.Router();
 
-commentRouter.post('/', async (req: Request, res: Response, next: NextFunction) => {
+commentRouter.post('/', async (req: Request & { auth: AuthenticationResponse }, res: Response, next: NextFunction) => {
     try {
         const resourceId: number = parseInt(req.body.resourceId);
         const profileId: number = parseInt(req.body.profileId);
         const message: string = req.body.message;
         const parentId: number | undefined = parseInt(req.body.parentId);
+        const auth: AuthenticationResponse = req.auth;
 
-        const comment: Comment = await commentService.createComment(resourceId, profileId, message, parentId);
+        const comment: Comment = await commentService.createComment(auth, resourceId, profileId, message, parentId);
 
         res.status(200).json({ status: 'success', message: 'comment created', comment });
     } catch (error) {

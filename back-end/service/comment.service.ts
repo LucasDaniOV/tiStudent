@@ -1,19 +1,32 @@
+import { UnauthorizedError } from 'express-jwt';
 import commentDb from '../domain/data-access/comment.db';
 import { Comment } from '../domain/model/comment';
-import { ChildComment } from '../types';
+import { AuthenticationResponse, ChildComment } from '../types';
 import profileService from './profile.service';
 import resourceService from './resource.service';
 
 const createComment = async (
+    auth: AuthenticationResponse,
     resourceId: number,
     profileId: number,
     message: string,
     parentId?: number
 ): Promise<Comment> => {
+    const realProfileId: number = parseInt(auth.id as string);
+    if (realProfileId !== profileId) {
+        throw new UnauthorizedError('invalid_token', {
+            message:
+                'You are trying to create a comment as another profile!!! This incident will be reported to INTERPOL!',
+        });
+    }
+
     Comment.validateMessage(message);
+    
     await resourceService.getResourceById(resourceId);
     await profileService.getProfileById(profileId);
+    
     if (parentId) await getCommentById(parentId);
+    
     return await commentDb.createComment(resourceId, profileId, message, parentId);
 };
 
