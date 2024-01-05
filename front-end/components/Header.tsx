@@ -1,7 +1,7 @@
+import { useTranslation } from "next-i18next";
 import Link from "next/link";
 import React, { useEffect, useState } from "react";
 import Language from "./Language";
-import { useTranslation } from "next-i18next";
 
 type Props = {
   current: string;
@@ -9,10 +9,13 @@ type Props = {
 
 const Header: React.FC<Props> = ({ current }: Props) => {
   const { t } = useTranslation();
-  const [user, setUser] = useState<string | null>(null);
-  useEffect(() => {
+  const [user, setUser] = useState<string | null>();
+  const getUser = () => {
     setUser(sessionStorage.getItem("loggedInUser"));
-  }, [user]);
+  };
+  useEffect(() => {
+    getUser();
+  }, []);
   const basic =
     "text-white text-opacity-50 no-underline text-center text-xl hover:text-opacity-100";
   return (

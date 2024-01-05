@@ -4,22 +4,25 @@ import React, { useEffect, useState } from "react";
 
 const Footer: React.FC = () => {
   const { t } = useTranslation();
-  const [user, setUser] = useState<string | null>(null);
-  useEffect(() => {
+  const [user, setUser] = useState<string | null>("");
+  const getUser = () => {
     setUser(sessionStorage.getItem("loggedInUser"));
-  }, [user]);
+  };
+  useEffect(() => {
+    getUser();
+  }, []);
   const basic =
     "text-white text-opacity-50 no-underline text-center text-xl hover:text-opacity-100";
   return (
     <footer
       role="heading"
-      className="mt-5 p-4 border-b border-black bg-gradient-to-b from-black to-gray-800 w-screen
+      className="p-4 border-b border-black bg-gradient-to-b from-black to-gray-800 w-screen mb-69
       "
     >
       <div className="grid grid-cols-2">
         <div>
           <h1 className="text-2xl text-gray-400">Keep in touch:</h1>
-          <ul>
+          <ul className="text-gray-200">
             <li>davy.bellens@student.ucll.be</li>
             <li>lucas.oudevrielink@student.ucll.be</li>
           </ul>
@@ -27,11 +30,11 @@ const Footer: React.FC = () => {
         <div className="grid grid-cols-3">
           <div>
             <p className="text-lg text-gray-400">Startdate project</p>
-            <p>20/09/2023</p>
+            <p className="text-gray-200">20/09/2023</p>
           </div>
           <div>
             <p className="text-lg text-gray-400">Supported languages</p>
-            <ul>
+            <ul className="text-gray-200">
               <li>English</li>
               <li>Nederlands</li>
               <li>Español</li>
@@ -40,7 +43,7 @@ const Footer: React.FC = () => {
           </div>
           <div>
             <p className="text-lg text-gray-400">Menu</p>
-            <ul>
+            <ul className="text-gray-200">
               <li>
                 <Link href={"/"}>{t("header.nav.home")}</Link>
               </li>
