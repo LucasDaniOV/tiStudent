@@ -5,14 +5,16 @@ import { useRouter } from "next/router";
 import React, { MouseEvent, useEffect, useState } from "react";
 import { Profile, Resource } from "../../types";
 import Image from "next/image";
+import useSWR, { mutate } from "swr";
+import useInterval from "use-interval";
 
 type Props = {
   resources: any[];
 };
 
 type imageMap = Record<string, string>;
+
 const ResourceOverviewTable: React.FC<Props> = ({ resources }: Props) => {
-  const [profile, setProfile] = useState<Profile>();
   const [imageState, setImageState] = useState<imageMap>({});
   const router = useRouter();
   const { t } = useTranslation();
@@ -32,20 +34,23 @@ const ResourceOverviewTable: React.FC<Props> = ({ resources }: Props) => {
     setImageState(images);
   };
 
-  useEffect(() => {
-    const getProfile = async () => {
-      try {
-        const p = String(sessionStorage.getItem("loggedInUser"));
-        if (!p) return;
-        const pObject = await ProfileService.getProfileById(JSON.parse(p).id);
-        if (pObject) setProfile(pObject.profile);
-      } catch (error) {
-        console.error(error);
-      }
-    };
-    getProfile();
-    mapImgToResource();
-  }, [imageState]);
+  const getProfile = async () => {
+    try {
+      await mapImgToResource();
+      const p = String(sessionStorage.getItem("loggedInUser"));
+      if (!p) return;
+      const pObject = await ProfileService.getProfileById(JSON.parse(p).id);
+      if (pObject) return pObject.profile;
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
+  const { data, isLoading, error } = useSWR("profile", getProfile);
+
+  useInterval(() => {
+    mutate("profile", getProfile());
+  }, 5000);
 
   const deleteResource = async (resource: Resource) => {
     if (
@@ -56,7 +61,6 @@ const ResourceOverviewTable: React.FC<Props> = ({ resources }: Props) => {
       return;
     } else {
       await ResourceService.deleteResourceById(resource.id);
-      router.reload(); // houden? indien niet -> refresh rate verhogen
     }
   };
 
@@ -64,10 +68,10 @@ const ResourceOverviewTable: React.FC<Props> = ({ resources }: Props) => {
     e.stopPropagation();
     e.preventDefault();
 
-    if (profile?.role === "ADMIN") {
+    if (data.role === "ADMIN") {
       deleteResource(resource);
     } else {
-      if (profile?.id === resource.profileId) {
+      if (data.id === resource.profileId) {
         deleteResource(resource);
       } else {
         confirm("You are not the creator of this Resource.");
@@ -108,52 +112,51 @@ const ResourceOverviewTable: React.FC<Props> = ({ resources }: Props) => {
             </tr>
           </thead>
           <tbody>
-            {resources.map((resource, index) => (
-              <tr
-                className="hover:text-white hover:bg-gray-600"
-                key={index}
-                onDoubleClick={() => {
-                  router.push("/resources/delete/" + resource.id);
-                }}
-                onClick={() => {
-                  router.push("/resources/" + resource.id);
-                }}
-              >
-                <td className="border p-4">{resource.id}</td>
-                <td className="border p-4">{resource.profileId}</td>
-                <td>
-                  <span className="flex items-center justify-center">
-                    {imageState && imageState[resource.id] && (
-                      <Image
-                        src={imageState[resource.id]}
-                        alt={"Thumbnail"}
-                        width={100}
-                        height={50}
-                      />
-                    )}
-                  </span>
-                </td>
-                <td className="border p-4">{String(resource.createdAt)}</td>
-                <td className="border p-4">{resource.title}</td>
-                <td className="border p-4">{resource.description}</td>
-                <td className="border p-4">
-                  {resource.categories.map((category: any) => {
-                    return category.category.name;
-                  })}
-                </td>
-                <td className="border p-4">
-                  {resource.subjects.map((subject: any) => {
-                    return subject.subject.name;
-                  })}
-                </td>
-                <td
-                  className="border p-4"
-                  onClick={(e) => checkAuthority(e, resource)}
-                >
-                  {t("delete")}
-                </td>
-              </tr>
-            ))}
+            {resources.map(
+              (resource, index) =>
+                imageState &&
+                imageState[resource.id] && (
+                  <tr
+                    className="hover:text-white hover:bg-gray-600"
+                    key={index}
+                    onClick={() => {
+                      router.push("/resources/" + resource.id);
+                    }}
+                  >
+                    <td className="border p-4">{resource.id}</td>
+                    <td className="border p-4">{resource.profileId}</td>
+                    <td>
+                      <span className="flex items-center justify-center">
+                        <Image
+                          src={imageState[resource.id]}
+                          alt={"Thumbnail"}
+                          width={100}
+                          height={50}
+                        />
+                      </span>
+                    </td>
+                    <td className="border p-4">{String(resource.createdAt)}</td>
+                    <td className="border p-4">{resource.title}</td>
+                    <td className="border p-4">{resource.description}</td>
+                    <td className="border p-4">
+                      {resource.categories.map((category: any) => {
+                        return category.category.name;
+                      })}
+                    </td>
+                    <td className="border p-4">
+                      {resource.subjects.map((subject: any) => {
+                        return subject.subject.name;
+                      })}
+                    </td>
+                    <td
+                      className="border p-4"
+                      onClick={(e) => checkAuthority(e, resource)}
+                    >
+                      {t("delete")}
+                    </td>
+                  </tr>
+                )
+            )}
           </tbody>
         </table>
       )}

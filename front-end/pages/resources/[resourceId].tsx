@@ -20,7 +20,6 @@ import useInterval from "use-interval";
 const ReadResourceById = () => {
   const [creator, setCreator] = useState<Profile>();
   const [image, setImage] = useState<string>("");
-  // const []
   const { t } = useTranslation();
   const [commentMessage, setMessage] = useState<string>("");
   const [shareState, setShare] = useState<boolean>(false);
@@ -120,12 +119,12 @@ const ReadResourceById = () => {
     );
   };
 
-  // useInterval(() => {
-  //   // mutate(["profile", resourceId], getProfile());
-  //   // mutate(["resource", resourceId], getResource());
-  //   // mutate(["subjects", resourceId], getSubjects());
-  //   // mutate(["categories", resourceId], getCategories());
-  // }, 5000);
+  useInterval(() => {
+    mutate(["profile", resourceId], getProfile());
+    mutate(["resource", resourceId], getResource());
+    mutate(["subjects", resourceId], getSubjects());
+    mutate(["categories", resourceId], getCategories());
+  }, 5000);
 
   return (
     <>
