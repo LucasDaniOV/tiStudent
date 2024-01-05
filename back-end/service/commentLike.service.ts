@@ -2,10 +2,22 @@ import { CommentLike } from '../domain/model/commentLike';
 import profileService from './profile.service';
 import commentService from './comment.service';
 import commentLikeDb from '../domain/data-access/commentLike.db';
-import { CommentLikeInput } from '../types';
+import { AuthenticationResponse, CommentLikeInput } from '../types';
+import { UnauthorizedError } from 'express-jwt';
 
-const createCommentLike = async (commentLikeInput: CommentLikeInput): Promise<CommentLike> => {
+const createCommentLike = async (
+    auth: AuthenticationResponse,
+    commentLikeInput: CommentLikeInput
+): Promise<CommentLike> => {
+    const realProfileId: number = parseInt(auth.id as string);
     const profileId = parseInt(commentLikeInput.profileId as string);
+
+    if (realProfileId !== profileId) {
+        throw new UnauthorizedError('invalid_token', {
+            message: 'You cannot create a comment like as another profile!',
+        });
+    }
+
     const commentId = parseInt(commentLikeInput.commentId as string);
 
     await profileService.getProfileById(profileId);
@@ -42,7 +54,19 @@ const getCommentLikesByCommentId = async (commentId: number): Promise<CommentLik
     return await commentLikeDb.getCommentLikesByCommentId(commentId);
 };
 
-const deleteCommentLike = async (profileId: number, commentId: number): Promise<CommentLike> => {
+const deleteCommentLike = async (
+    auth: AuthenticationResponse,
+    profileId: number,
+    commentId: number
+): Promise<CommentLike> => {
+    const realProfileId: number = parseInt(auth.id as string);
+
+    if (realProfileId !== profileId) {
+        throw new UnauthorizedError('invalid_token', {
+            message: 'You cannot delete a comment like as another profile!',
+        });
+    }
+
     await getCommentLikeByProfileIdAndCommentId(profileId, commentId);
     return await commentLikeDb.deleteCommentLike(profileId, commentId);
 };
