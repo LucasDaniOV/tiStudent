@@ -67,8 +67,17 @@ const updateCommentMessage = async (
     return await commentDb.updateCommentMessage(commentId, message);
 };
 
-const deleteComment = async (commentId: number): Promise<Comment> => {
-    await getCommentById(commentId);
+const deleteComment = async (auth: AuthenticationResponse, commentId: number): Promise<Comment> => {
+    const realProfileId: number = parseInt(auth.id as string);
+    const comment: Comment = await getCommentById(commentId);
+
+    if (realProfileId !== comment.profileId) {
+        throw new UnauthorizedError('invalid_token', {
+            message:
+                'You are trying to delete a comment as another profile!!! This incident will be reported to INTERPOL!',
+        });
+    }
+
     return await commentDb.deleteComment(commentId);
 };
 

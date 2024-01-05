@@ -326,7 +326,7 @@ test(`given: valid values, when: deleting comment, then: should delete comment`,
     commentDb.deleteComment = mockCommentDbDeleteComment.mockReturnValue(comment);
 
     // when
-    const result = await commentService.deleteComment(id);
+    const result = await commentService.deleteComment({ id: String(profileId) } as AuthenticationResponse, id);
 
     // then
     expect(result).toBeDefined();
@@ -340,11 +340,28 @@ test(`given: invalid comment id, when: deleting comment, then: should throw an e
 
     // when
     try {
-        await commentService.deleteComment(id);
+        await commentService.deleteComment({ id: String(profileId) } as AuthenticationResponse, id);
     } catch (error) {
         // then
         expect(error).toBeDefined();
         expect(error.message).toBe(`no comment with id ${id} found`);
+        expect(mockCommentDbDeleteComment).not.toHaveBeenCalled();
+    }
+});
+
+test(`given: not the same comment profile id as the one in the auth, when: deleting comment, then: should throw an error`, async () => {
+    // given
+    commentDb.getCommentById = mockCommentDbGetCommentById.mockReturnValue(comment);
+
+    // when
+    try {
+        await commentService.deleteComment({ id: String(profileId + 1) } as AuthenticationResponse, id);
+    } catch (error) {
+        // then
+        expect(error).toBeDefined();
+        expect(error.message).toBe(
+            `You are trying to delete a comment as another profile!!! This incident will be reported to INTERPOL!`
+        );
         expect(mockCommentDbDeleteComment).not.toHaveBeenCalled();
     }
 });
