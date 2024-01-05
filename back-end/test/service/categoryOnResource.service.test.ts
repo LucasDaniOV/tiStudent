@@ -3,9 +3,11 @@ import resourceDb from '../../domain/data-access/resource.db';
 import categoryDb from '../../domain/data-access/category.db';
 import categoryOnResourceService from '../../service/categoryOnResource.service';
 import { CategoryOnResource } from '../../domain/model/categoryOnResource';
+import { AuthenticationResponse } from '../../types';
 
 const categoryId = 1;
 const resourceId = 2;
+const profileId = 1;
 
 const categoryOnResourceInput = { categoryId, resourceId };
 const categoryOnResource = new CategoryOnResource(categoryId, resourceId);
@@ -36,14 +38,17 @@ afterEach(() => {
 
 test(`given: valid values for categoryOnResource, when: creating a categoryOnResource, then: should create a categoryOnResource`, async () => {
     // given
-    resourceDb.getResourceById = mockResourceDbGetResourceById.mockReturnValue({});
+    resourceDb.getResourceById = mockResourceDbGetResourceById.mockReturnValue({ profileId });
     categoryDb.getCategoryById = mockCategoryDbGetCategoryById.mockReturnValue({});
     categoryOnResourceDb.getCategoryOnResource = mockCategoryOnResourceDbGetCategoryOnResource.mockReturnValue(null);
     categoryOnResourceDb.createCategoryOnResource =
         mockCategoryOnResourceDbCreateCategoryOnResource.mockReturnValue(categoryOnResource);
 
     // when
-    const result = await categoryOnResourceService.createCategoryOnResource(categoryOnResourceInput);
+    const result = await categoryOnResourceService.createCategoryOnResource(
+        { id: String(profileId) } as AuthenticationResponse,
+        categoryOnResourceInput
+    );
 
     // then
     expect(result).toBeDefined();
@@ -58,7 +63,11 @@ test(`given: invalid resourceId, when: creating a categoryOnResource, then: shou
     resourceDb.getResourceById = mockResourceDbGetResourceById.mockReturnValue(null);
 
     // when
-    const sut = async () => await categoryOnResourceService.createCategoryOnResource(categoryOnResourceInput);
+    const sut = async () =>
+        await categoryOnResourceService.createCategoryOnResource(
+            { id: String(profileId) } as AuthenticationResponse,
+            categoryOnResourceInput
+        );
 
     // then
     await expect(sut).rejects.toThrowError('Resource with id 2 does not exist');
@@ -67,11 +76,15 @@ test(`given: invalid resourceId, when: creating a categoryOnResource, then: shou
 
 test(`given: invalid categoryId, when: creating a categoryOnResource, then: should throw error`, async () => {
     // given
-    resourceDb.getResourceById = mockResourceDbGetResourceById.mockReturnValue({});
+    resourceDb.getResourceById = mockResourceDbGetResourceById.mockReturnValue({ profileId });
     categoryDb.getCategoryById = mockCategoryDbGetCategoryById.mockReturnValue(null);
 
     // when
-    const sut = async () => await categoryOnResourceService.createCategoryOnResource(categoryOnResourceInput);
+    const sut = async () =>
+        await categoryOnResourceService.createCategoryOnResource(
+            { id: String(profileId) } as AuthenticationResponse,
+            categoryOnResourceInput
+        );
 
     // then
     await expect(sut).rejects.toThrowError('Category not found');
@@ -81,18 +94,38 @@ test(`given: invalid categoryId, when: creating a categoryOnResource, then: shou
 
 test(`given: already existing categoryOnResource, when: creating a categoryOnResource, then: should throw error`, async () => {
     // given
-    resourceDb.getResourceById = mockResourceDbGetResourceById.mockReturnValue({});
+    resourceDb.getResourceById = mockResourceDbGetResourceById.mockReturnValue({ profileId });
     categoryDb.getCategoryById = mockCategoryDbGetCategoryById.mockReturnValue({});
     categoryOnResourceDb.getCategoryOnResource =
         mockCategoryOnResourceDbGetCategoryOnResource.mockReturnValue(categoryOnResource);
 
     // when
-    const sut = async () => await categoryOnResourceService.createCategoryOnResource(categoryOnResourceInput);
+    const sut = async () =>
+        await categoryOnResourceService.createCategoryOnResource(
+            { id: String(profileId) } as AuthenticationResponse,
+            categoryOnResourceInput
+        );
 
     // then
     await expect(sut).rejects.toThrowError('Category on resource already exists');
     expect(mockResourceDbGetResourceById).toHaveBeenCalledWith(resourceId);
     expect(mockCategoryDbGetCategoryById).toHaveBeenCalledWith(categoryId);
+});
+
+test(`given: not owner of resource, when: creating a categoryOnResource, then: should throw error`, async () => {
+    // given
+    resourceDb.getResourceById = mockResourceDbGetResourceById.mockReturnValue({ profileId: 2 });
+
+    // when
+    const sut = async () =>
+        await categoryOnResourceService.createCategoryOnResource(
+            { id: String(profileId) } as AuthenticationResponse,
+            categoryOnResourceInput
+        );
+
+    // then
+    await expect(sut).rejects.toThrowError('Not your resource');
+    expect(mockResourceDbGetResourceById).toHaveBeenCalledWith(resourceId);
 });
 
 test(`given: valid categoryId and resourceId, when: getting a categoryOnResource, then: should return a categoryOnResource`, async () => {
@@ -177,14 +210,18 @@ test(`given: existing categories on resources, when: getting all categories on r
 test(`given: valid categoryId and resourceId, when: deleting a categoryOnResource, then: should delete a categoryOnResource`, async () => {
     // given
     categoryDb.getCategoryById = mockCategoryDbGetCategoryById.mockReturnValue({});
-    resourceDb.getResourceById = mockResourceDbGetResourceById.mockReturnValue({});
+    resourceDb.getResourceById = mockResourceDbGetResourceById.mockReturnValue({ profileId });
     categoryOnResourceDb.getCategoryOnResource =
         mockCategoryOnResourceDbGetCategoryOnResource.mockReturnValue(categoryOnResource);
     categoryOnResourceDb.deleteCategoryOnResource =
         mockCategoryOnResourceDbDeleteCategoryOnResource.mockReturnValue(categoryOnResource);
 
     // when
-    const result = await categoryOnResourceService.deleteCategoryOnResource(categoryId, resourceId);
+    const result = await categoryOnResourceService.deleteCategoryOnResource(
+        { id: String(profileId) } as AuthenticationResponse,
+        categoryId,
+        resourceId
+    );
 
     // then
     expect(result).toBeDefined();
@@ -193,4 +230,20 @@ test(`given: valid categoryId and resourceId, when: deleting a categoryOnResourc
     expect(mockResourceDbGetResourceById).toHaveBeenCalledWith(resourceId);
     expect(mockCategoryOnResourceDbGetCategoryOnResource).toHaveBeenCalledWith(categoryId, resourceId);
     expect(mockCategoryOnResourceDbDeleteCategoryOnResource).toHaveBeenCalledWith(categoryId, resourceId);
+});
+
+test(`given: Not owner of resource, when: deleting a categoryOnResource, then: should throw error`, async () => {
+    // given
+    resourceDb.getResourceById = mockResourceDbGetResourceById.mockReturnValue({ profileId: 2 });
+
+    // when
+    const sut = async () =>
+        await categoryOnResourceService.deleteCategoryOnResource(
+            { id: String(profileId) } as AuthenticationResponse,
+            categoryId,
+            resourceId
+        );
+
+    // then
+    await expect(sut).rejects.toThrowError('Not your resource');
 });
