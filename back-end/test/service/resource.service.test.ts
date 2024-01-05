@@ -3,7 +3,7 @@ import resourceDb from '../../domain/data-access/resource.db';
 import { Profile } from '../../domain/model/profile';
 import { Resource } from '../../domain/model/resource';
 import resourceService from '../../service/resource.service';
-import { ResourceInput } from '../../types';
+import { AuthenticationResponse, ResourceInput } from '../../types';
 
 const id = 1;
 const createdAt = new Date();
@@ -75,7 +75,10 @@ test(`given: valid values for Resource, when: Resource is created, then: Resourc
     resourceDb.createResource = mockResourceDbCreateResource.mockResolvedValue(resource);
 
     // when
-    const sut = await resourceService.createResource(resourceInput);
+    const sut = await resourceService.createResource(
+        { id: String(profileId) } as AuthenticationResponse,
+        resourceInput
+    );
 
     // then
     expect(mockResourceDbCreateResource).toHaveBeenCalledTimes(1);
@@ -89,11 +92,22 @@ test(`given: invalid profile id, when: Resource is created, then: error is throw
     profileDb.getProfileById = mockProfileDbGetProfileById.mockResolvedValue(undefined);
 
     // when
-    const sut = async () => await resourceService.createResource(resourceInput);
+    const sut = async () =>
+        await resourceService.createResource({ id: String(profileId) } as AuthenticationResponse, resourceInput);
 
     // then
     await expect(sut).rejects.toThrowError('Profile with id 1 does not exist');
     expect(mockProfileDbGetProfileById).toHaveBeenCalledTimes(1);
+});
+
+test(`given: not owner of Resource, when: Resource is created, then: error is thrown`, async () => {
+    // given
+    // when
+    const sut = async () =>
+        await resourceService.createResource({ id: String(69420) } as AuthenticationResponse, resourceInput);
+
+    // then
+    await expect(sut).rejects.toThrowError('You cannot create a resource as someone else!');
 });
 
 test(`given: valid id for Resource, when: Resource is requested, then: Resource is returned`, async () => {
@@ -132,4 +146,25 @@ test(`given: available Resources, when: all Resources are requested, then: all R
     // then
     expect(mockResourceDbGetAllResources).toHaveBeenCalledTimes(1);
     expect(returnedResources).toEqual([resource]);
+});
+
+test(`given: not owner of Resource, when: Resource is updated, then: error is thrown`, async () => {
+    // given
+    // when
+    const sut = async () =>
+        await resourceService.updateResource({ id: String(69420) } as AuthenticationResponse, 1, resourceInput);
+
+    // then
+    await expect(sut).rejects.toThrowError("You cannot update someone else's resource!");
+});
+
+test(`given: not owner of Resource, when: Resource is deleted, then: error is thrown`, async () => {
+    // given
+    resourceDb.getResourceById = mockResourceDbGetResourceById.mockResolvedValue(resource);
+
+    // when
+    const sut = async () => await resourceService.deleteResource({ id: String(69420) } as AuthenticationResponse, 1);
+
+    // then
+    await expect(sut).rejects.toThrowError("You cannot delete someone else's resource!");
 });

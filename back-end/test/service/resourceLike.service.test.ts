@@ -3,7 +3,7 @@ import resourceLikeService from '../../service/resourceLike.service';
 import profileDb from '../../domain/data-access/profile.db';
 import resourceDb from '../../domain/data-access/resource.db';
 import { ResourceLike } from '../../domain/model/resourceLike';
-import { ResourceLikeInput } from '../../types';
+import { AuthenticationResponse, ResourceLikeInput } from '../../types';
 
 const resourceId = 1;
 const profileId = 1;
@@ -12,7 +12,7 @@ const createdAt = new Date();
 const resourceLike = new ResourceLike(resourceId, profileId, createdAt);
 
 const resourceLikeInput: ResourceLikeInput = {
-    resourceId,
+    resourceId: resourceId,
     profileId,
 };
 
@@ -50,7 +50,10 @@ describe('create ResourceLike', () => {
         resourceLikeDb.createResourceLike = mockResourceLikeDbCreateResourceLike.mockResolvedValue(resourceLike);
 
         // when
-        const result = await resourceLikeService.createResourceLike(resourceLikeInput);
+        const result = await resourceLikeService.createResourceLike(
+            { id: String(profileId) } as AuthenticationResponse,
+            resourceLikeInput
+        );
 
         // then
         expect(mockResourceLikeDbCreateResourceLike).toHaveBeenCalledTimes(1);
@@ -65,7 +68,11 @@ describe('create ResourceLike', () => {
             mockResourceLikeDbGetResourceLikeByProfileIdAndResourceId.mockResolvedValue(resourceLike);
 
         // when
-        const sut = async () => await resourceLikeService.createResourceLike(resourceLikeInput);
+        const sut = async () =>
+            await resourceLikeService.createResourceLike(
+                { id: String(profileId) } as AuthenticationResponse,
+                resourceLikeInput
+            );
 
         // then
         expect(sut).rejects.toThrowError(
@@ -78,7 +85,11 @@ describe('create ResourceLike', () => {
         profileDb.getProfileById = mockProfileDbGetProfileById.mockResolvedValue(undefined);
 
         // when
-        const sut = async () => await resourceLikeService.createResourceLike(resourceLikeInput);
+        const sut = async () =>
+            await resourceLikeService.createResourceLike(
+                { id: String(profileId) } as AuthenticationResponse,
+                resourceLikeInput
+            );
 
         // then
         expect(sut).rejects.toThrowError(`Profile with id ${profileId} does not exist`);
@@ -90,10 +101,28 @@ describe('create ResourceLike', () => {
         resourceDb.getResourceById = mockResourceDbGetResourceById.mockResolvedValue(undefined);
 
         // when
-        const sut = async () => await resourceLikeService.createResourceLike(resourceLikeInput);
+        const sut = async () =>
+            await resourceLikeService.createResourceLike(
+                { id: String(profileId) } as AuthenticationResponse,
+                resourceLikeInput
+            );
 
         // then
         expect(sut).rejects.toThrowError(`Resource with id ${resourceId} does not exist`);
+    });
+
+    test(`given: not the owner of the ResourceLike, when: creating ResourceLike, then: error is thrown`, () => {
+        // given
+        // when
+        const sut = async () =>
+            await resourceLikeService.createResourceLike(
+                { id: String(profileId + 1) } as AuthenticationResponse,
+                resourceLikeInput
+            );
+
+        // then
+        expect(sut).rejects.toThrowError(`You cannot create a resource like as another profile!`);
+        expect(mockResourceLikeDbCreateResourceLike).toHaveBeenCalledTimes(0);
     });
 });
 
@@ -230,7 +259,11 @@ describe('delete ResourceLike', () => {
         resourceLikeDb.deleteResourceLike = mockResourceLikeDbDeleteResourceLike.mockResolvedValue(resourceLike);
 
         // when
-        const result = await resourceLikeService.deleteResourceLike(profileId, resourceId);
+        const result = await resourceLikeService.deleteResourceLike(
+            { id: String(profileId) } as AuthenticationResponse,
+            profileId,
+            resourceId
+        );
 
         // then
         expect(mockResourceLikeDbDeleteResourceLike).toHaveBeenCalledTimes(1);
@@ -245,11 +278,31 @@ describe('delete ResourceLike', () => {
             mockResourceLikeDbGetResourceLikeByProfileIdAndResourceId.mockResolvedValue(undefined);
 
         // when
-        const sut = async () => await resourceLikeService.deleteResourceLike(profileId, resourceId);
+        const sut = async () =>
+            await resourceLikeService.deleteResourceLike(
+                { id: String(profileId) } as AuthenticationResponse,
+                profileId,
+                resourceId
+            );
 
         // then
         expect(sut).rejects.toThrowError(
             `ResourceLike with profileId ${profileId} and resourceId ${resourceId} does not exist`
         );
+    });
+
+    test(`given: not the owner of the ResourceLike, when: deleting ResourceLike, then: error is thrown`, () => {
+        // given
+        // when
+        const sut = async () =>
+            await resourceLikeService.deleteResourceLike(
+                { id: String(profileId + 1) } as AuthenticationResponse,
+                profileId,
+                resourceId
+            );
+
+        // then
+        expect(sut).rejects.toThrowError(`You cannot delete a resource like as another profile!`);
+        expect(mockResourceLikeDbDeleteResourceLike).toHaveBeenCalledTimes(0);
     });
 });

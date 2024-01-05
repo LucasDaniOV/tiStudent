@@ -1,22 +1,28 @@
 import express, { NextFunction, Request, Response } from 'express';
 import categoryOnResourceService from '../service/categoryOnResource.service';
 import { CategoryOnResource } from '@prisma/client';
-import { CategoryOnResourceInput } from '../types';
+import { AuthenticationResponse, CategoryOnResourceInput } from '../types';
 
 const categoryOnResourceRouter = express.Router();
 
-categoryOnResourceRouter.post('/', async (req: Request, res: Response, next: NextFunction) => {
-    try {
-        const categoryOnResourceInput: CategoryOnResourceInput = req.body;
-        const categoryOnResource: CategoryOnResource = await categoryOnResourceService.createCategoryOnResource(
-            categoryOnResourceInput
-        );
+categoryOnResourceRouter.post(
+    '/',
+    async (req: Request & { auth: AuthenticationResponse }, res: Response, next: NextFunction) => {
+        try {
+            const categoryOnResourceInput: CategoryOnResourceInput = req.body;
+            const auth: AuthenticationResponse = req.auth;
 
-        res.status(200).json({ status: 'success', message: 'category created on resource', categoryOnResource });
-    } catch (error) {
-        next(error);
+            const categoryOnResource: CategoryOnResource = await categoryOnResourceService.createCategoryOnResource(
+                auth,
+                categoryOnResourceInput
+            );
+
+            res.status(200).json({ status: 'success', message: 'category created on resource', categoryOnResource });
+        } catch (error) {
+            next(error);
+        }
     }
-});
+);
 
 categoryOnResourceRouter.get('/', async (req: Request, res: Response, next: NextFunction) => {
     try {
@@ -72,24 +78,29 @@ categoryOnResourceRouter.get('/resource/:resourceId', async (req: Request, res: 
     }
 });
 
-categoryOnResourceRouter.delete('/', async (req: Request, res: Response, next: NextFunction) => {
-    try {
-        const categoryId: number = parseInt(req.query.categoryId as string);
-        const resourceId: number = parseInt(req.query.resourceId as string);
+categoryOnResourceRouter.delete(
+    '/',
+    async (req: Request & { auth: AuthenticationResponse }, res: Response, next: NextFunction) => {
+        try {
+            const categoryId: number = parseInt(req.query.categoryId as string);
+            const resourceId: number = parseInt(req.query.resourceId as string);
+            const auth: AuthenticationResponse = req.auth;
 
-        const deletedCategoryOnResource = await categoryOnResourceService.deleteCategoryOnResource(
-            categoryId,
-            resourceId
-        );
+            const deletedCategoryOnResource = await categoryOnResourceService.deleteCategoryOnResource(
+                auth,
+                categoryId,
+                resourceId
+            );
 
-        res.status(200).json({
-            status: 'success',
-            message: 'category on resource deleted',
-            deletedCategoryOnResource,
-        });
-    } catch (error) {
-        next(error);
+            res.status(200).json({
+                status: 'success',
+                message: 'category on resource deleted',
+                deletedCategoryOnResource,
+            });
+        } catch (error) {
+            next(error);
+        }
     }
-});
+);
 
 export { categoryOnResourceRouter };

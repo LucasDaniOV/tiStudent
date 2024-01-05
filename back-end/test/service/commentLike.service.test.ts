@@ -3,7 +3,7 @@ import commentLikeService from '../../service/commentLike.service';
 import profileDb from '../../domain/data-access/profile.db';
 import commentDb from '../../domain/data-access/comment.db';
 import { CommentLike } from '../../domain/model/commentLike';
-import { CommentLikeInput } from '../../types';
+import { AuthenticationResponse, CommentLikeInput } from '../../types';
 
 const commentId = 1;
 const profileId = 1;
@@ -50,7 +50,10 @@ describe('create CommentLike', () => {
         commentLikeDb.createCommentLike = mockCommentLikeDbCreateCommentLike.mockResolvedValue(commentLike);
 
         // when
-        const result = await commentLikeService.createCommentLike(commentLikeInput);
+        const result = await commentLikeService.createCommentLike(
+            { id: String(profileId) } as AuthenticationResponse,
+            commentLikeInput
+        );
 
         // then
         expect(mockCommentLikeDbCreateCommentLike).toHaveBeenCalledTimes(1);
@@ -65,7 +68,11 @@ describe('create CommentLike', () => {
             mockCommentLikeDbGetCommentLikeByProfileIdAndCommentId.mockResolvedValue(commentLike);
 
         // when
-        const sut = async () => await commentLikeService.createCommentLike(commentLikeInput);
+        const sut = async () =>
+            await commentLikeService.createCommentLike(
+                { id: String(profileId) } as AuthenticationResponse,
+                commentLikeInput
+            );
 
         // then
         expect(sut).rejects.toThrowError(
@@ -78,7 +85,11 @@ describe('create CommentLike', () => {
         profileDb.getProfileById = mockProfileDbGetProfileById.mockResolvedValue(undefined);
 
         // when
-        const sut = async () => await commentLikeService.createCommentLike(commentLikeInput);
+        const sut = async () =>
+            await commentLikeService.createCommentLike(
+                { id: String(profileId) } as AuthenticationResponse,
+                commentLikeInput
+            );
 
         // then
         expect(sut).rejects.toThrowError(`Profile with id ${profileId} does not exist`);
@@ -90,10 +101,28 @@ describe('create CommentLike', () => {
         commentDb.getCommentById = mockCommentDbGetCommentById.mockResolvedValue(undefined);
 
         // when
-        const sut = async () => await commentLikeService.createCommentLike(commentLikeInput);
+        const sut = async () =>
+            await commentLikeService.createCommentLike(
+                { id: String(profileId) } as AuthenticationResponse,
+                commentLikeInput
+            );
 
         // then
         expect(sut).rejects.toThrowError(`no comment with id ${commentId} found`);
+    });
+
+    test(`given: not the owner of the CommentLike, when: creating CommentLike, then: error is thrown`, () => {
+        // given
+        // when
+        const sut = async () =>
+            await commentLikeService.createCommentLike(
+                { id: String(profileId + 1) } as AuthenticationResponse,
+                commentLikeInput
+            );
+
+        // then
+        expect(sut).rejects.toThrowError(`You cannot create a comment like as another profile!`);
+        expect(mockCommentLikeDbCreateCommentLike).toHaveBeenCalledTimes(0);
     });
 });
 
@@ -227,7 +256,11 @@ describe('delete CommentLike', () => {
         commentLikeDb.deleteCommentLike = mockCommentLikeDbDeleteCommentLike.mockResolvedValue(commentLike);
 
         // when
-        const result = await commentLikeService.deleteCommentLike(profileId, commentId);
+        const result = await commentLikeService.deleteCommentLike(
+            { id: String(profileId) } as AuthenticationResponse,
+            profileId,
+            commentId
+        );
 
         // then
         expect(mockCommentLikeDbDeleteCommentLike).toHaveBeenCalledTimes(1);
@@ -242,11 +275,31 @@ describe('delete CommentLike', () => {
             mockCommentLikeDbGetCommentLikeByProfileIdAndCommentId.mockResolvedValue(undefined);
 
         // when
-        const sut = async () => await commentLikeService.deleteCommentLike(profileId, commentId);
+        const sut = async () =>
+            await commentLikeService.deleteCommentLike(
+                { id: String(profileId) } as AuthenticationResponse,
+                profileId,
+                commentId
+            );
 
         // then
         expect(sut).rejects.toThrowError(
             `CommentLike with profileId ${profileId} and commentId ${commentId} does not exist`
         );
+    });
+
+    test(`given: not the owner of the CommentLike, when: deleting CommentLike, then: error is thrown`, () => {
+        // given
+        // when
+        const sut = async () =>
+            await commentLikeService.deleteCommentLike(
+                { id: String(profileId + 1) } as AuthenticationResponse,
+                profileId,
+                commentId
+            );
+
+        // then
+        expect(sut).rejects.toThrowError(`You cannot delete a comment like as another profile!`);
+        expect(mockCommentLikeDbDeleteCommentLike).toHaveBeenCalledTimes(0);
     });
 });

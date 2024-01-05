@@ -1,22 +1,28 @@
 import express, { NextFunction, Request, Response } from 'express';
 import subjectOnResourceService from '../service/subjectOnResource.service';
 import { SubjectOnResource } from '@prisma/client';
+import { AuthenticationResponse, SubjectOnResourceInput } from '../types';
 
 const subjectOnResourceRouter = express.Router();
 
-subjectOnResourceRouter.post('/', async (req: Request, res: Response, next: NextFunction) => {
-    try {
-        const subjectOnResourceInput = req.body;
+subjectOnResourceRouter.post(
+    '/',
+    async (req: Request & { auth: AuthenticationResponse }, res: Response, next: NextFunction) => {
+        try {
+            const subjectOnResourceInput: SubjectOnResourceInput = req.body;
+            const auth: AuthenticationResponse = req.auth;
 
-        const subjectOnResource: SubjectOnResource = await subjectOnResourceService.createSubjectOnResource(
-            subjectOnResourceInput
-        );
+            const subjectOnResource: SubjectOnResource = await subjectOnResourceService.createSubjectOnResource(
+                auth,
+                subjectOnResourceInput
+            );
 
-        res.status(200).json({ status: 'success', message: 'subject created on resource', subjectOnResource });
-    } catch (error) {
-        next(error);
+            res.status(200).json({ status: 'success', message: 'subject created on resource', subjectOnResource });
+        } catch (error) {
+            next(error);
+        }
     }
-});
+);
 
 subjectOnResourceRouter.get('/', async (req: Request, res: Response, next: NextFunction) => {
     try {
@@ -72,21 +78,29 @@ subjectOnResourceRouter.get('/resource/:resourceId', async (req: Request, res: R
     }
 });
 
-subjectOnResourceRouter.delete('/', async (req: Request, res: Response, next: NextFunction) => {
-    try {
-        const subjectId: number = parseInt(req.query.subjectId as string);
-        const resourceId: number = parseInt(req.query.resourceId as string);
+subjectOnResourceRouter.delete(
+    '/',
+    async (req: Request & { auth: AuthenticationResponse }, res: Response, next: NextFunction) => {
+        try {
+            const subjectId: number = parseInt(req.query.subjectId as string);
+            const resourceId: number = parseInt(req.query.resourceId as string);
+            const auth: AuthenticationResponse = req.auth;
 
-        const deletedSubjectOnResource = await subjectOnResourceService.deleteSubjectOnResource(subjectId, resourceId);
+            const deletedSubjectOnResource = await subjectOnResourceService.deleteSubjectOnResource(
+                auth,
+                subjectId,
+                resourceId
+            );
 
-        res.status(200).json({
-            status: 'success',
-            message: 'subject on resource deleted',
-            deletedSubjectOnResource,
-        });
-    } catch (error) {
-        next(error);
+            res.status(200).json({
+                status: 'success',
+                message: 'subject on resource deleted',
+                deletedSubjectOnResource,
+            });
+        } catch (error) {
+            next(error);
+        }
     }
-});
+);
 
 export { subjectOnResourceRouter };
