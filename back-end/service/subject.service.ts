@@ -30,16 +30,27 @@ const getSubjectById = async (id: number): Promise<Subject> => {
 
 const getAllSubjects = async (): Promise<Subject[]> => await subjectDb.getAllSubjects();
 
-const updateSubject = async (id: number, name: string): Promise<Subject> => {
+const updateSubject = async (id: number, name: string, auth: AuthenticationResponse): Promise<Subject> => {
+    if (auth.role !== 'ADMIN') {
+        throw new UnauthorizedError('invalid_token', { message: 'Only admins can update subjects' });
+    }
+
     Subject.validateName(name);
+
     await getSubjectById(id);
+
     if (await subjectDb.getSubjectByName(name)) throw new Error('Subject already exists');
+
     const subject = await subjectDb.updateSubject(id, name);
     return subject;
 };
 
-const deleteSubject = async (id: number): Promise<Subject> => {
+const deleteSubject = async (id: number, auth: AuthenticationResponse): Promise<Subject> => {
+    if (auth.role !== 'ADMIN') {
+        throw new UnauthorizedError('invalid_token', { message: 'Only admins can delete subjects' });
+    }
     await getSubjectById(id);
+
     return subjectDb.deleteSubject(id);
 };
 

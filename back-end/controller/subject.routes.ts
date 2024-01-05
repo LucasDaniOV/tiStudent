@@ -46,29 +46,37 @@ subjectRouter.get('/:subjectId', async (req: Request, res: Response, next: NextF
     }
 });
 
-subjectRouter.put('/:subjectId', async (req: Request, res: Response, next: NextFunction) => {
-    try {
-        const subjectId: number = parseInt(req.params.subjectId);
-        const name: string = req.body.name;
+subjectRouter.put(
+    '/:subjectId',
+    async (req: Request & { auth: AuthenticationResponse }, res: Response, next: NextFunction) => {
+        try {
+            const subjectId: number = parseInt(req.params.subjectId);
+            const name: string = req.body.name;
+            const auth: AuthenticationResponse = req.auth;
 
-        const updatedSubject: Subject = await subjectService.updateSubject(subjectId, name);
+            const updatedSubject: Subject = await subjectService.updateSubject(subjectId, name, auth);
 
-        res.status(200).json({ status: 'success', message: 'subject updated', updatedSubject });
-    } catch (error) {
-        next(error);
+            res.status(200).json({ status: 'success', message: 'subject updated', updatedSubject });
+        } catch (error) {
+            next(error);
+        }
     }
-});
+);
 
-subjectRouter.delete('/:subjectId', async (req: Request, res: Response, next: NextFunction) => {
-    try {
-        const subjectId: number = parseInt(req.params.subjectId);
+subjectRouter.delete(
+    '/:subjectId',
+    async (req: Request & { auth: AuthenticationResponse }, res: Response, next: NextFunction) => {
+        try {
+            const subjectId: number = parseInt(req.params.subjectId);
+            const auth: AuthenticationResponse = req.auth;
 
-        const deletedSubject: Subject = await subjectService.deleteSubject(subjectId);
+            const deletedSubject: Subject = await subjectService.deleteSubject(subjectId, auth);
 
-        res.status(200).json({ status: 'success', message: 'subject deleted', deletedSubject });
-    } catch (error) {
-        next(error);
+            res.status(200).json({ status: 'success', message: 'subject deleted', deletedSubject });
+        } catch (error) {
+            next(error);
+        }
     }
-});
+);
 
 export default subjectRouter;
