@@ -2,13 +2,23 @@ import { SubjectOnResource } from '../domain/model/subjectOnResource';
 import subjectOnResourceDb from '../domain/data-access/subjectOnResource.db';
 import resourceService from './resource.service';
 import subjectService from './subject.service';
-import { SubjectOnResourceInput } from '../types';
+import { AuthenticationResponse, SubjectOnResourceInput, ResourceData } from '../types';
+import { UnauthorizedError } from 'express-jwt';
 
-const createSubjectOnResource = async (subjectOnResourceInput: SubjectOnResourceInput): Promise<SubjectOnResource> => {
-    const subjectId: number = parseInt(subjectOnResourceInput.subjectId as string);
+const createSubjectOnResource = async (
+    auth: AuthenticationResponse,
+    subjectOnResourceInput: SubjectOnResourceInput
+): Promise<SubjectOnResource> => {
     const resourceId: number = parseInt(subjectOnResourceInput.resourceId as string);
+    const subjectId: number = parseInt(subjectOnResourceInput.subjectId as string);
 
-    await resourceService.getResourceById(resourceId);
+    const resource: ResourceData = await resourceService.getResourceById(resourceId);
+    const realProfileId: number = parseInt(auth.id as string);
+
+    if (resource.profileId !== realProfileId) {
+        throw new UnauthorizedError('invalid_token', { message: 'Not your resource' });
+    }
+
     await subjectService.getSubjectById(subjectId);
 
     if (await subjectOnResourceDb.getSubjectOnResource(subjectId, resourceId)) {
@@ -43,7 +53,18 @@ const getSubjectsOnResourcesByResourceId = async (resourceId: number): Promise<S
     return subjectsOnResources;
 };
 
-const deleteSubjectOnResource = async (subjectId: number, resourceId: number): Promise<SubjectOnResource> => {
+const deleteSubjectOnResource = async (
+    auth: AuthenticationResponse,
+    subjectId: number,
+    resourceId: number
+): Promise<SubjectOnResource> => {
+    const resource: ResourceData = await resourceService.getResourceById(resourceId);
+    const realProfileId: number = parseInt(auth.id as string);
+
+    if (resource.profileId !== realProfileId) {
+        throw new UnauthorizedError('invalid_token', { message: 'Not your resource' });
+    }
+
     await getSubjectOnResource(subjectId, resourceId);
     return await subjectOnResourceDb.deleteSubjectOnResource(subjectId, resourceId);
 };
