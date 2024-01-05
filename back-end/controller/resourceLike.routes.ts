@@ -1,21 +1,25 @@
 import { ResourceLike } from '@prisma/client';
 import express, { NextFunction, Request, Response } from 'express';
 import resourceLikeService from '../service/resourceLike.service';
-import { ResourceLikeInput } from '../types';
+import { AuthenticationResponse, ResourceLikeInput } from '../types';
 
 const resourceLikeRouter = express.Router();
 
-resourceLikeRouter.post('/', async (req: Request, res: Response, next: NextFunction) => {
-    try {
-        const resourceLikeInput: ResourceLikeInput = req.body;
+resourceLikeRouter.post(
+    '/',
+    async (req: Request & { auth: AuthenticationResponse }, res: Response, next: NextFunction) => {
+        try {
+            const resourceLikeInput: ResourceLikeInput = req.body;
+            const auth: AuthenticationResponse = req.auth;
 
-        const resourceLike: ResourceLike = await resourceLikeService.createResourceLike(resourceLikeInput);
+            const resourceLike: ResourceLike = await resourceLikeService.createResourceLike(auth, resourceLikeInput);
 
-        res.status(200).json({ status: 'success', message: 'resource like created', resourceLike });
-    } catch (error) {
-        next(error);
+            res.status(200).json({ status: 'success', message: 'resource like created', resourceLike });
+        } catch (error) {
+            next(error);
+        }
     }
-});
+);
 
 resourceLikeRouter.get('/', async (req: Request, res: Response, next: NextFunction) => {
     try {
@@ -40,17 +44,25 @@ resourceLikeRouter.get('/', async (req: Request, res: Response, next: NextFuncti
     }
 });
 
-resourceLikeRouter.delete('/', async (req: Request, res: Response, next: NextFunction) => {
-    try {
-        const profileId: number = parseInt(req.query.profileId as string);
-        const resourceId: number = parseInt(req.query.resourceId as string);
+resourceLikeRouter.delete(
+    '/',
+    async (req: Request & { auth: AuthenticationResponse }, res: Response, next: NextFunction) => {
+        try {
+            const profileId: number = parseInt(req.query.profileId as string);
+            const resourceId: number = parseInt(req.query.resourceId as string);
+            const auth: AuthenticationResponse = req.auth;
 
-        const deletedResourceLike: ResourceLike = await resourceLikeService.deleteResourceLike(profileId, resourceId);
+            const deletedResourceLike: ResourceLike = await resourceLikeService.deleteResourceLike(
+                auth,
+                profileId,
+                resourceId
+            );
 
-        res.status(200).json({ status: 'success', message: 'resource like deleted', deletedResourceLike });
-    } catch (error) {
-        next(error);
+            res.status(200).json({ status: 'success', message: 'resource like deleted', deletedResourceLike });
+        } catch (error) {
+            next(error);
+        }
     }
-});
+);
 
 export { resourceLikeRouter };

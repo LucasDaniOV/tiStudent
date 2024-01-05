@@ -2,10 +2,22 @@ import { ResourceLike } from '../domain/model/resourceLike';
 import profileService from './profile.service';
 import resourceService from './resource.service';
 import resourceLikeDb from '../domain/data-access/resourceLike.db';
-import { ResourceLikeInput } from '../types';
+import { AuthenticationResponse, ResourceLikeInput } from '../types';
+import { UnauthorizedError } from 'express-jwt';
 
-const createResourceLike = async (resourceLikeInput: ResourceLikeInput): Promise<ResourceLike> => {
+const createResourceLike = async (
+    auth: AuthenticationResponse,
+    resourceLikeInput: ResourceLikeInput
+): Promise<ResourceLike> => {
+    const realProfileId: number = parseInt(auth.id as string);
     const profileId = parseInt(resourceLikeInput.profileId as string);
+
+    if (realProfileId !== profileId) {
+        throw new UnauthorizedError('invalid_token', {
+            message: 'You cannot create a resource like as another profile!',
+        });
+    }
+
     const resourceId = parseInt(resourceLikeInput.resourceId as string);
 
     await profileService.getProfileById(profileId);
@@ -42,7 +54,19 @@ const getResourceLikesByResourceId = async (resourceId: number): Promise<Resourc
     return await resourceLikeDb.getResourceLikesByResourceId(resourceId);
 };
 
-const deleteResourceLike = async (profileId: number, resourceId: number): Promise<ResourceLike> => {
+const deleteResourceLike = async (
+    auth: AuthenticationResponse,
+    profileId: number,
+    resourceId: number
+): Promise<ResourceLike> => {
+    const realProfileId: number = parseInt(auth.id as string);
+
+    if (realProfileId !== profileId) {
+        throw new UnauthorizedError('invalid_token', {
+            message: 'You cannot delete a resource like as another profile!',
+        });
+    }
+
     await getResourceLikeByProfileIdAndResourceId(profileId, resourceId);
     return await resourceLikeDb.deleteResourceLike(profileId, resourceId);
 };
