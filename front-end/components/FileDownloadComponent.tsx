@@ -47,11 +47,11 @@ const FileDownloadComponent: React.FC<Props> = ({ fileName }: Props) => {
           URL.revokeObjectURL(blobUrl);
         } else {
           // Handle download failure
-          console.error("Failed to download file.");
+          console.error(t("download.error.download"));
         }
       } catch (error) {
         // Handle fetch error
-        console.error("Error during fetch:", error);
+        console.error(t("download.error.fetch"), error);
       }
     }
   };
@@ -65,7 +65,7 @@ const FileDownloadComponent: React.FC<Props> = ({ fileName }: Props) => {
             onClick={handleDownload}
           >
             <span className="text-3xl align-middle">&#10515;</span>
-            {t("download")}
+            {t("download.message")}
           </button>
         </div>
       )}

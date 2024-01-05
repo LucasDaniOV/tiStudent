@@ -7,6 +7,7 @@ import { Profile, Resource } from "../../types";
 import Image from "next/image";
 import useSWR, { mutate } from "swr";
 import useInterval from "use-interval";
+import { profile } from "console";
 
 type Props = {
   resources: any[];
@@ -53,11 +54,7 @@ const ResourceOverviewTable: React.FC<Props> = ({ resources }: Props) => {
   }, 5000);
 
   const deleteResource = async (resource: Resource) => {
-    if (
-      !confirm(
-        `Are you sure you want to delete resource with title: ${resource.title}?`
-      )
-    ) {
+    if (!confirm(`${t("resources.confirm")}: ${resource.title}?`)) {
       return;
     } else {
       await ResourceService.deleteResourceById(resource.id);
@@ -74,92 +71,103 @@ const ResourceOverviewTable: React.FC<Props> = ({ resources }: Props) => {
       if (data.id === resource.profileId) {
         deleteResource(resource);
       } else {
-        confirm("You are not the creator of this Resource.");
+        confirm(t("resources.error.creator"));
       }
     }
   };
 
   return (
     <>
-      {resources && (
-        <table className="border-collapse w-full">
-          <thead>
-            <tr>
-              <th scope="col" className="border p-4 text-left">
-                {t("resources.fields.id")}
-              </th>
-              <th scope="col" className="border p-4 text-left">
-                {t("resources.fields.user.id")}
-              </th>
-              <th scope="col" className="border p-4">
-                Thumbnail
-              </th>
-              <th scope="col" className="border p-4 text-left">
-                {t("resources.fields.created.at")}
-              </th>
-              <th scope="col" className="border p-4 text-left">
-                {t("resources.fields.title")}
-              </th>
-              <th scope="col" className="border p-4 text-left">
-                {t("resources.fields.description")}
-              </th>
-              <th scope="col" className="border p-4 text-left">
-                {t("resources.fields.category")}
-              </th>
-              <th scope="col" className="border p-4 text-left">
-                {t("resources.fields.subject")}
-              </th>
-            </tr>
-          </thead>
-          <tbody>
-            {resources.map(
-              (resource, index) =>
-                imageState &&
-                imageState[resource.id] && (
-                  <tr
-                    className="hover:text-white hover:bg-gray-600"
-                    key={index}
-                    onClick={() => {
-                      router.push("/resources/" + resource.id);
-                    }}
-                  >
-                    <td className="border p-4">{resource.id}</td>
-                    <td className="border p-4">{resource.profileId}</td>
-                    <td>
-                      <span className="flex items-center justify-center">
-                        <Image
-                          src={imageState[resource.id]}
-                          alt={"Thumbnail"}
-                          width={100}
-                          height={50}
-                        />
-                      </span>
-                    </td>
-                    <td className="border p-4">{String(resource.createdAt)}</td>
-                    <td className="border p-4">{resource.title}</td>
-                    <td className="border p-4">{resource.description}</td>
-                    <td className="border p-4">
-                      {resource.categories.map((category: any) => {
-                        return category.category.name;
-                      })}
-                    </td>
-                    <td className="border p-4">
-                      {resource.subjects.map((subject: any) => {
-                        return subject.subject.name;
-                      })}
-                    </td>
-                    <td
-                      className="border p-4"
-                      onClick={(e) => checkAuthority(e, resource)}
+      {resources &&
+        data &&
+        (isLoading ? (
+          <p>{t("loading")}</p>
+        ) : (
+          <table className="border-collapse w-full">
+            <thead>
+              <tr>
+                <th scope="col" className="border p-4 text-left">
+                  {t("resources.fields.id")}
+                </th>
+                <th scope="col" className="border p-4 text-left">
+                  {t("resources.fields.user.id")}
+                </th>
+                <th scope="col" className="border p-4">
+                  {t("resources.fields.thumbnail")}
+                </th>
+                <th scope="col" className="border p-4 text-left">
+                  {t("resources.fields.created.at")}
+                </th>
+                <th scope="col" className="border p-4 text-left">
+                  {t("resources.fields.title")}
+                </th>
+                <th scope="col" className="border p-4 text-left">
+                  {t("resources.fields.description")}
+                </th>
+                <th scope="col" className="border p-4 text-left">
+                  {t("resources.fields.category")}
+                </th>
+                <th scope="col" className="border p-4 text-left">
+                  {t("resources.fields.subject")}
+                </th>
+              </tr>
+            </thead>
+            <tbody>
+              {resources.map(
+                (resource, index) =>
+                  imageState &&
+                  imageState[resource.id] && (
+                    <tr
+                      className="hover:text-white hover:bg-gray-600"
+                      key={index}
+                      onClick={() => {
+                        router.push("/resources/" + resource.id);
+                      }}
                     >
-                      {t("delete")}
-                    </td>
-                  </tr>
-                )
-            )}
-          </tbody>
-        </table>
-      )}
+                      <td className="border p-4">{resource.id}</td>
+                      <td className="border p-4">{resource.profileId}</td>
+                      <td>
+                        <span className="flex items-center justify-center">
+                          <Image
+                            src={imageState[resource.id]}
+                            alt={"Thumbnail"}
+                            width={100}
+                            height={50}
+                          />
+                        </span>
+                      </td>
+                      <td className="border p-4">
+                        {String(resource.createdAt)}
+                      </td>
+                      <td className="border p-4">{resource.title}</td>
+                      <td className="border p-4">{resource.description}</td>
+                      <td className="border p-4">
+                        {resource.categories.map((category: any) => {
+                          return t(
+                            "resources.fields." +
+                              String(category.category.name)
+                                .toLowerCase()
+                                .replace(" ", ".")
+                          );
+                        })}
+                      </td>
+                      <td className="border p-4">
+                        {resource.subjects.map((subject: any) => {
+                          return subject.subject.name;
+                        })}
+                      </td>
+                      <td
+                        className="border p-4"
+                        onClick={(e) => checkAuthority(e, resource)}
+                      >
+                        {t("delete")}
+                      </td>
+                    </tr>
+                  )
+              )}
+            </tbody>
+          </table>
+        ))}
     </>
   );
 };

@@ -5,6 +5,8 @@ import { useTranslation } from "next-i18next";
 import Image from "next/image";
 import React, { useEffect, useState } from "react";
 import SharedResources from "./SharedResource";
+import useSWR, { mutate } from "swr";
+import useInterval from "use-interval";
 
 type Props = {
   profile: Profile;
@@ -12,7 +14,6 @@ type Props = {
 
 const AccountInfo: React.FC<Props> = ({ profile }: Props) => {
   const { t } = useTranslation();
-  const [resources, setResources] = useState<Resource[]>();
   const [likes, setLikes] = useState<{ [key: string]: number }>({});
   const [profilePicture, setProfilePicture] = useState<string>("");
 
@@ -39,13 +40,15 @@ const AccountInfo: React.FC<Props> = ({ profile }: Props) => {
       });
 
       setLikes(updatedLikes);
-      setResources(response.resources);
+      return response.resources;
     }
   };
 
-  useEffect(() => {
-    if (profile) getResources();
-  }, [profile]);
+  const { data, isLoading, error } = useSWR("resources", getResources);
+  useInterval(() => {
+    mutate("resources", getResources());
+  }, 5000);
+
   return (
     <>
       {profile && (
@@ -79,7 +82,7 @@ const AccountInfo: React.FC<Props> = ({ profile }: Props) => {
               </span>
             </div>
           </div>
-          {resources && resources.length > 0 ? (
+          {data && data.length > 0 ? (
             <div className="flex flex-col justify-center">
               <strong className="flex justify-center m-5">
                 {profile.username}
@@ -95,7 +98,7 @@ const AccountInfo: React.FC<Props> = ({ profile }: Props) => {
                   </tr>
                 </thead>
                 <tbody>
-                  {resources.map((resource: Resource) => {
+                  {data.map((resource: Resource) => {
                     return (
                       <SharedResources
                         key={"sharedResources"}

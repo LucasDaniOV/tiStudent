@@ -12,7 +12,6 @@ import { useRouter } from "next/router";
 
 const Resources: React.FC = () => {
   const [authorized, setAuthorized] = useState<boolean>(true);
-  const [errorVisible, setErrorVisible] = useState<boolean>(false);
   const { t } = useTranslation();
   const router = useRouter();
   const getResources = async () => {
@@ -20,18 +19,9 @@ const Resources: React.FC = () => {
     if (response.status === "unauthorized" || response.status === "error") {
       setAuthorized(false);
       sessionStorage.removeItem("loggedInUser");
-      if (!errorVisible) {
-        setErrorVisible(true);
-        if (confirm("You have to be logged in to view any resources.")) {
-          router.push("/login");
-        } else {
-          setAuthorized(false);
-        }
-      }
       return;
     }
     setAuthorized(true);
-    setErrorVisible(false);
     return response.resources;
   };
 

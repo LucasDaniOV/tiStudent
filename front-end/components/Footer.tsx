@@ -21,7 +21,7 @@ const Footer: React.FC = () => {
     >
       <div className="grid grid-cols-2">
         <div>
-          <h1 className="text-2xl text-gray-400">Keep in touch:</h1>
+          <h1 className="text-2xl text-gray-400">{t("footer.message")}:</h1>
           <ul className="text-gray-200">
             <li>davy.bellens@student.ucll.be</li>
             <li>lucas.oudevrielink@student.ucll.be</li>
@@ -29,11 +29,11 @@ const Footer: React.FC = () => {
         </div>
         <div className="grid grid-cols-3">
           <div>
-            <p className="text-lg text-gray-400">Startdate project</p>
+            <p className="text-lg text-gray-400">{t("footer.startdate")}</p>
             <p className="text-gray-200">20/09/2023</p>
           </div>
           <div>
-            <p className="text-lg text-gray-400">Supported languages</p>
+            <p className="text-lg text-gray-400">{t("footer.supported")}</p>
             <ul className="text-gray-200">
               <li>English</li>
               <li>Nederlands</li>
@@ -42,7 +42,7 @@ const Footer: React.FC = () => {
             </ul>
           </div>
           <div>
-            <p className="text-lg text-gray-400">Menu</p>
+            <p className="text-lg text-gray-400">{t("footer.menu")}</p>
             <ul className="text-gray-200">
               <li>
                 <Link href={"/"}>{t("header.nav.home")}</Link>

@@ -91,26 +91,26 @@ const CreateResourceForm: React.FC = () => {
     clearErrors();
 
     if (!category) {
-      setCategoryError("Category is required");
+      setCategoryError(t("resources.error.category"));
       return;
     }
 
     if (!subject) {
-      setSubjectError("Subject is required");
+      setSubjectError(t("resources.error.subject"));
       return;
     }
     if (!title) {
-      setTitleError("Title is required");
+      setTitleError(t("resources.error.title"));
       return;
     }
 
     if (!description) {
-      setDescriptionError("Description is required");
+      setDescriptionError(t("resources.error.description"));
       return;
     }
 
     if (!filePath) {
-      setFilePathError("File is required");
+      setFilePathError(t("resources.error.file"));
       return;
     }
 

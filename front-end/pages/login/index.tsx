@@ -1,3 +1,4 @@
+import Footer from "@/components/Footer";
 import Header from "@/components/Header";
 import PredefinedUsersTable from "@/components/PredefinedUsersTable";
 import ProfileCreateForm from "@/components/profiles/ProfileCreateForm";
@@ -54,6 +55,7 @@ const Login: React.FC = () => {
           </>
         )}
       </main>
+      <Footer />
     </>
   );
 };
