@@ -1,4 +1,4 @@
-import Header from "@/components/Header";
+import Header from "@/components/header/Header";
 import PredefinedUsersTable from "@/components/PredefinedUsersTable";
 import ProfileCreateForm from "@/components/profiles/ProfileCreateForm";
 import ProfileLoginForm from "@/components/profiles/ProfileLoginForm";

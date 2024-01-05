@@ -3,6 +3,7 @@ import { StatusMessage } from "@/types";
 import { useTranslation } from "next-i18next";
 import { useRouter } from "next/router";
 import { FormEvent, useState } from "react";
+import PredefinedUsersTable from "../PredefinedUsersTable";
 
 const ProfileLoginForm: React.FC = () => {
   const [email, setEmail] = useState("");
@@ -58,7 +59,15 @@ const ProfileLoginForm: React.FC = () => {
     }
 
     const user = await res.json();
-    sessionStorage.setItem("loggedInUser", JSON.stringify(user));
+    sessionStorage.setItem(
+      "loggedInUser",
+      JSON.stringify({
+        token: user.token,
+        id: user.id,
+        email: user.email,
+        role: user.role,
+      })
+    );
     setStatusMessages([{ message: t("login.succes"), type: "success" }]);
     setTimeout(() => {
       router.push("/");
@@ -81,30 +90,16 @@ const ProfileLoginForm: React.FC = () => {
         <label htmlFor="emailInput" className="mb-1">
           {t("login.profile.form.email")}
         </label>
-        <input
-          id="emailInput"
-          type="email"
-          value={email}
-          className="mb-1"
-          onChange={(e) => setEmail(e.target.value)}
-        />
+        <input id="emailInput" type="email" value={email} className="mb-1" onChange={(e) => setEmail(e.target.value)} />
         {emailError && <div>{emailError}</div>}
 
         <label htmlFor="passwordInput" className="mb-1">
           {t("login.profile.form.password")}
         </label>
-        <input
-          id="passwordInput"
-          type="password"
-          className="mb-1"
-          onChange={(e) => setPassword(e.target.value)}
-        />
+        <input id="passwordInput" type="password" className="mb-1" onChange={(e) => setPassword(e.target.value)} />
         {passwordError && <div>{passwordError}</div>}
 
-        <button
-          type="submit"
-          className="bg-gray-500 m-5 hover:bg-gray-300 hover:text-black"
-        >
+        <button type="submit" className="bg-gray-500 m-5 hover:bg-gray-300 hover:text-black">
           {t("login.enter")}
         </button>
       </form>

@@ -1,5 +1,5 @@
 import { serverSideTranslations } from "next-i18next/serverSideTranslations";
-import Header from "@/components/Header";
+import Header from "@/components/header/Header";
 import ProfilesOverviewTable from "@/components/profiles/ProfilesOverviewTable";
 import { Profile } from "@/types";
 import Head from "next/head";
@@ -14,11 +14,11 @@ import { useRouter } from "next/router";
 const Profiles: React.FC = () => {
   const [profiles, setProfiles] = useState<Array<Profile>>();
   const [errorVisible, setErrorVisible] = useState<boolean>(false);
-  const [topTen, setTopTen] =
-    useState<Array<{ profile: Profile; resourceCount: number }>>();
+  const [topTen, setTopTen] = useState<Array<{ profile: Profile; resourceCount: number }>>();
   const [authorized, setAuthorized] = useState<boolean>(false);
   const { t } = useTranslation();
   const router = useRouter();
+  
   const getProfiles = async () => {
     const response = await ProfileService.getAllProfiles();
     if (response.status === "unauthorized" || response.status === "error") {
@@ -61,15 +61,13 @@ const Profiles: React.FC = () => {
       <Head>
         <title>{t("profiles.index.title")}</title>
       </Head>
-      <Header current="profiles" />
+      <Header current="profiles" isLoggedIn={authorized} />
       <main>
         <h1 className="text-3xl">{t("profiles.index.title")}</h1>
         <section>
           {authorized ? (
             <>
-              <div className="m-12">
-                {topTen && <LeaderBoard profiles={topTen} />}
-              </div>
+              <div className="m-12">{topTen && <LeaderBoard profiles={topTen} />}</div>
               {profiles && <ProfilesOverviewTable profiles={profiles} />}
             </>
           ) : (

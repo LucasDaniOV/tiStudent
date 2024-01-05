@@ -12,66 +12,43 @@ type Props = {
 
 type imageMap = Record<string, string>;
 const ResourceOverviewTable: React.FC<Props> = ({ resources }: Props) => {
-  const [profile, setProfile] = useState<Profile>();
+  const [profileId, setProfileId] = useState<number>();
   const [imageState, setImageState] = useState<imageMap>({});
   const router = useRouter();
   const { t } = useTranslation();
   const images: imageMap = {};
 
-  const mapImgToResource = async () => {
-    await Promise.all(
-      resources.map(async (r: Resource) => {
-        try {
-          const img = await import("../../../back-end/uploads/" + r.thumbNail);
-          images[r.id] = img;
-        } catch (error) {
-          console.error(error);
-        }
-      })
-    );
-    setImageState(images);
-  };
+  // const mapImgToResource = async () => {
+  //   await Promise.all(
+  //     resources.map(async (r: Resource) => {
+  //       try {
+  //         const img = await import("../../../back-end/uploads/" + r.thumbNail);
+  //         images[r.id] = img;
+  //       } catch (error) {
+  //         console.error(error);
+  //       }
+  //     })
+  //   );
+  //   setImageState(images);
+  // };
 
   useEffect(() => {
-    const getProfile = async () => {
-      try {
-        const p = String(sessionStorage.getItem("loggedInUser"));
-        if (!p) return;
-        const pObject = await ProfileService.getProfileById(JSON.parse(p).id);
-        if (pObject) setProfile(pObject.profile);
-      } catch (error) {
-        console.error(error);
-      }
-    };
-    getProfile();
-    mapImgToResource();
+    const loggedInUser = sessionStorage.getItem("loggedInUser");
+    if (loggedInUser) {
+      setProfileId(JSON.parse(loggedInUser).id);
+    }
+    // mapImgToResource();
   }, [imageState]);
 
-  const deleteResource = async (resource: Resource) => {
+  const deleteResource = async (e: any, resource: Resource) => {
+    e.stopPropagation();
+    e.preventDefault();
     if (
-      !confirm(
+      confirm(
         `Are you sure you want to delete resource with title: ${resource.title}?`
       )
     ) {
-      return;
-    } else {
       await ResourceService.deleteResourceById(resource.id);
-      router.reload(); // houden? indien niet -> refresh rate verhogen
-    }
-  };
-
-  const checkAuthority = async (e: MouseEvent, resource: Resource) => {
-    e.stopPropagation();
-    e.preventDefault();
-
-    if (profile?.role === "ADMIN") {
-      deleteResource(resource);
-    } else {
-      if (profile?.id === resource.profileId) {
-        deleteResource(resource);
-      } else {
-        confirm("You are not the creator of this Resource.");
-      }
     }
   };
 
@@ -112,9 +89,6 @@ const ResourceOverviewTable: React.FC<Props> = ({ resources }: Props) => {
               <tr
                 className="hover:text-white hover:bg-gray-600"
                 key={index}
-                onDoubleClick={() => {
-                  router.push("/resources/delete/" + resource.id);
-                }}
                 onClick={() => {
                   router.push("/resources/" + resource.id);
                 }}
@@ -123,14 +97,14 @@ const ResourceOverviewTable: React.FC<Props> = ({ resources }: Props) => {
                 <td className="border p-4">{resource.profileId}</td>
                 <td>
                   <span className="flex items-center justify-center">
-                    {imageState && imageState[resource.id] && (
+                    {/* {imageState && imageState[resource.id] && (
                       <Image
                         src={imageState[resource.id]}
                         alt={"Thumbnail"}
                         width={100}
                         height={50}
                       />
-                    )}
+                    )} */}
                   </span>
                 </td>
                 <td className="border p-4">{String(resource.createdAt)}</td>
@@ -146,12 +120,14 @@ const ResourceOverviewTable: React.FC<Props> = ({ resources }: Props) => {
                     return subject.subject.name;
                   })}
                 </td>
-                <td
-                  className="border p-4"
-                  onClick={(e) => checkAuthority(e, resource)}
-                >
-                  {t("delete")}
-                </td>
+                {profileId == resource.profileId && (
+                  <td
+                    className="border p-4"
+                    onClick={(e) => deleteResource(e, resource)}
+                  >
+                    {t("delete")}
+                  </td>
+                )}
               </tr>
             ))}
           </tbody>

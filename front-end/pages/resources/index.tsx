@@ -1,4 +1,4 @@
-import Header from "@/components/Header";
+import Header from "@/components/header/Header";
 import { serverSideTranslations } from "next-i18next/serverSideTranslations";
 import Head from "next/head";
 import Link from "next/link";
@@ -14,7 +14,6 @@ const Resources: React.FC = () => {
   const [authorized, setAuthorized] = useState<boolean>(true);
   const [errorVisible, setErrorVisible] = useState<boolean>(false);
   const { t } = useTranslation();
-  const router = useRouter();
   const getResources = async () => {
     const response = await ResourceService.getAllResources();
     if (response.status === "unauthorized" || response.status === "error") {
@@ -22,11 +21,7 @@ const Resources: React.FC = () => {
       sessionStorage.removeItem("loggedInUser");
       if (!errorVisible) {
         setErrorVisible(true);
-        if (confirm("You have to be logged in to view any resources.")) {
-          router.push("/login");
-        } else {
-          setAuthorized(false);
-        }
+        setAuthorized(false);
       }
       return;
     }
@@ -52,18 +47,11 @@ const Resources: React.FC = () => {
           <h1 className="m-auto text-3xl">{t("resources.title")}</h1>
           {error && <div>{error}</div>}
           {isLoading && <div>{t("loading")}</div>}
-          {authorized ? (
-            data && <ResourcesOverviewTable resources={data} />
-          ) : (
-            <p>{t("authorization.error")}</p>
-          )}
+          {authorized ? data && <ResourcesOverviewTable resources={data} /> : <p>{t("authorization.error")}</p>}
         </section>
         {authorized && (
           <section id="addResource" className="col-span-1 m-auto">
-            <Link
-              href="/resources/create"
-              className=" bg-gray-400 p-8 hover:bg-gray-200 hover:text-black text-xl"
-            >
+            <Link href="/resources/create" className=" bg-gray-400 p-8 hover:bg-gray-200 hover:text-black text-xl">
               {t("resources.info.message")}
             </Link>
           </section>
