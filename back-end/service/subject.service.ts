@@ -1,9 +1,17 @@
+import { UnauthorizedError } from 'express-jwt';
 import subjectDb from '../domain/data-access/subject.db';
 import { Subject } from '../domain/model/subject';
+import { AuthenticationResponse } from '../types';
 
-const createSubject = async (name: string): Promise<Subject> => {
+const createSubject = async (name: string, auth: AuthenticationResponse): Promise<Subject> => {
+    if (auth.role !== 'ADMIN') {
+        throw new UnauthorizedError('invalid_token', { message: 'Only admins can create subjects' });
+    }
+
     Subject.validateName(name);
+
     if (await subjectDb.getSubjectByName(name)) throw new Error('Subject already exists');
+
     const subject = await subjectDb.createSubject(name);
     return subject;
 };

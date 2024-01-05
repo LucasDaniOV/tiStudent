@@ -1,6 +1,7 @@
 import subjectDb from '../../domain/data-access/subject.db';
 import { Subject } from '../../domain/model/subject';
 import subjectService from '../../service/subject.service';
+import { AuthenticationResponse } from '../../types';
 
 const name = 'name';
 const id = 1;
@@ -37,12 +38,22 @@ test(`given: valid values for subject, when: creating a subject, then: should cr
     subjectDb.createSubject = mockSubjectDbCreateSubject;
 
     // when
-    const result = await subjectService.createSubject(name);
+    const result = await subjectService.createSubject(name, { role: 'ADMIN' } as AuthenticationResponse);
 
     // then
     expect(result).toBeDefined();
     expect(result).toBe(subject);
     expect(mockSubjectDbCreateSubject).toHaveBeenCalledWith(name);
+});
+
+test(`given: invalid role, when: creating a subject, then: error is thrown`, async () => {
+    // given
+    // when
+    const sut = async () => await subjectService.createSubject(name, { role: 'USER' } as AuthenticationResponse);
+
+    // then
+    await expect(sut).rejects.toThrowError('Only admins can create subjects');
+    expect(mockSubjectDbCreateSubject).not.toHaveBeenCalled();
 });
 
 test(`given: valid id for subject, when: subject is requested, then: subject is returned`, async () => {
