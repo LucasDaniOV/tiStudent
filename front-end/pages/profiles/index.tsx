@@ -48,7 +48,7 @@ const Profiles: React.FC = () => {
       <Head>
         <title>{t("profiles.index.title")}</title>
       </Head>
-      <Header current="profiles" />
+      {authorized ? <Header current="profiles" isLoggedIn /> : <Header current="profiles" />}
       <main>
         <h1 className="text-3xl">{t("profiles.index.title")}</h1>
         <section>

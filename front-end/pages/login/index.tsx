@@ -20,7 +20,7 @@ const Login: React.FC = () => {
       <Head>
         <title>{user ? t("header.nav.logout") : t("header.nav.login")}</title>
       </Head>
-      <Header current="login" />{" "}
+      {user ? <Header current="login" isLoggedIn /> : <Header current="login" />}
       <main className="flex flex-row align-middle items-center justify-center">
         {user ? (
           <section className="m-10 mt-0 text-center">
