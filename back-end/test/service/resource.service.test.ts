@@ -150,6 +150,8 @@ test(`given: available Resources, when: all Resources are requested, then: all R
 
 test(`given: not owner of Resource, when: Resource is updated, then: error is thrown`, async () => {
     // given
+    resourceDb.getResourceById = mockResourceDbGetResourceById.mockResolvedValue(resource);
+
     // when
     const sut = async () =>
         await resourceService.updateResource({ id: String(69420) } as AuthenticationResponse, 1, resourceInput);
