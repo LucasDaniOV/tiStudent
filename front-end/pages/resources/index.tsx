@@ -1,40 +1,57 @@
+import Footer from "@/components/Footer";
 import Header from "@/components/header/Header";
+import { useTranslation } from "next-i18next";
 import { serverSideTranslations } from "next-i18next/serverSideTranslations";
 import Head from "next/head";
 import Link from "next/link";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import useSWR, { mutate } from "swr";
 import useInterval from "use-interval";
 import ResourcesOverviewTable from "../../components/resources/ResourcesOverviewTable";
 import ResourceService from "../../services/ResourceService";
-import { useTranslation } from "next-i18next";
-import { useRouter } from "next/router";
-import Footer from "@/components/Footer";
+import { Profile, Resource } from "@/types";
+import ProfileService from "@/services/ProfileService";
 
 const Resources: React.FC = () => {
-  const [authorized, setAuthorized] = useState<boolean>(true);
-  const [errorVisible, setErrorVisible] = useState<boolean>(false);
+  const [profile, setProfile] = useState<Profile | null>(null);
   const { t } = useTranslation();
-  const getResources = async () => {
-    const response = await ResourceService.getAllResources();
-    if (response.status === "unauthorized" || response.status === "error") {
-      setAuthorized(false);
-      sessionStorage.removeItem("loggedInUser");
-      if (!errorVisible) {
-        setErrorVisible(true);
-        setAuthorized(false);
-      }
-      return;
+
+  const getProfile = async () => {
+    const loggedInUser = sessionStorage.getItem("loggedInUser");
+    if (!loggedInUser) return;
+
+    const profileResponse = await ProfileService.getProfileById(JSON.parse(loggedInUser).id);
+
+    if (profileResponse.profile) {
+      setProfile(profileResponse.profile);
     }
-    setAuthorized(true);
-    setErrorVisible(false);
-    return response.resources;
   };
 
-  const { data, isLoading, error } = useSWR("resources", getResources);
+  const fetchResources = async () => {
+    if (!profile) return;
+    const resourcesResponse = await ResourceService.getAllResources();
+    return resourcesResponse.resources;
+  };
+
+  const { data: resources, error } = useSWR(profile ? "resources" : null, fetchResources);
+
+  if (error) {
+    console.error("Failed to fetch resources:", error);
+    return <div>Error loading resources.</div>;
+  }
+
+  useEffect(() => {
+    getProfile();
+  }, []);
+
+  useEffect(() => {
+    if (profile) {
+      mutate("resources", fetchResources());
+    }
+  }, [profile]);
 
   useInterval(() => {
-    mutate("resources", getResources());
+    mutate("resources", fetchResources());
   }, 5000);
 
   return (
@@ -43,21 +60,19 @@ const Resources: React.FC = () => {
         <title>{t("resources.title")}</title>
       </Head>
 
-      <Header current="resources" isLoggedIn={authorized} />
+      <Header current="resources" isLoggedIn={!!profile} />
 
-      <main className="grid grid-cols-4">
-        <section className="col-span-3 items-center">
-          <h1 className="m-auto text-3xl">{t("resources.title")}</h1>
-          {error && <div>{error}</div>}
-          {isLoading && <div>{t("loading")}</div>}
-          {authorized ? data && <ResourcesOverviewTable resources={data} /> : <p>{t("authorization.error")}</p>}
-        </section>
-        {authorized && (
-          <section id="addResource" className="col-span-1 m-auto">
-            <Link href="/resources/create" className=" bg-gray-400 p-8 hover:bg-gray-200 hover:text-black text-xl">
-              {t("resources.info.message")}
-            </Link>
-          </section>
+      <main className="pl-20 pr-20">
+        <h1 className="text-3xl">{t("resources.title")}</h1>
+        {profile ? (
+          resources && (
+            <>
+              <Link href="/resources/create">{t("resources.create")}</Link>
+              <ResourcesOverviewTable resources={resources as Resource[]} />
+            </>
+          )
+        ) : (
+          <div className="text-red-600">{t("authorization.error")}</div>
         )}
       </main>
 
@@ -65,6 +80,7 @@ const Resources: React.FC = () => {
     </>
   );
 };
+
 export const getServerSideProps = async (context: any) => {
   const { locale } = context;
   return {
