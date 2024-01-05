@@ -1,10 +1,17 @@
+import { UnauthorizedError } from 'express-jwt';
 import resourceDb from '../domain/data-access/resource.db';
 import { Resource } from '../domain/model/resource';
-import { ResourceData, ResourceInput } from '../types';
+import { AuthenticationResponse, ResourceData, ResourceInput } from '../types';
 import profileService from './profile.service';
 
-const createResource = async (resourceInput: ResourceInput): Promise<Resource> => {
+const createResource = async (auth: AuthenticationResponse, resourceInput: ResourceInput): Promise<Resource> => {
     const { title, description, filePath, thumbNail, profileId } = resourceInput;
+    const realProfileId = parseInt(auth.id as string);
+
+    if (realProfileId !== profileId) {
+        throw new UnauthorizedError('invalid_token', { message: 'You cannot create a resource as someone else!' });
+    }
+
     Resource.validate(title, description, profileId);
     await profileService.getProfileById(profileId);
     return await resourceDb.createResource(title, description, profileId, filePath, thumbNail);
@@ -23,16 +30,32 @@ const getResourcesByProfileId = async (profileId: number): Promise<Resource[]> =
     return await resourceDb.getResourcesByProfileId(profileId);
 };
 
-const updateResource = async (id: number, resourceInput: ResourceInput): Promise<Resource> => {
-    const { title, description, filePath, thumbNail } = resourceInput;
+const updateResource = async (
+    auth: AuthenticationResponse,
+    id: number,
+    resourceInput: ResourceInput
+): Promise<Resource> => {
+    const { title, description, filePath, thumbNail, profileId } = resourceInput;
+    const realProfileId = parseInt(auth.id as string);
+
+    if (realProfileId !== profileId) {
+        throw new UnauthorizedError('invalid_token', { message: "You cannot update someone else's resource!" });
+    }
+
     Resource.validateTitle(title);
     Resource.validateDescription(description);
     await getResourceById(id);
     return await resourceDb.updateResource(id, title, description, filePath, thumbNail);
 };
 
-const deleteResource = async (id: number): Promise<Resource> => {
-    await getResourceById(id);
+const deleteResource = async (auth: AuthenticationResponse, id: number): Promise<Resource> => {
+    const resource: ResourceData = await getResourceById(id);
+    const realProfileId = parseInt(auth.id as string);
+
+    if (realProfileId !== resource.profileId) {
+        throw new UnauthorizedError('invalid_token', { message: "You cannot delete someone else's resource!" });
+    }
+
     return await resourceDb.deleteResource(id);
 };
 
