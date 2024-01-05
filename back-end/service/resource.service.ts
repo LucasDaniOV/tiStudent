@@ -35,16 +35,17 @@ const updateResource = async (
     id: number,
     resourceInput: ResourceInput
 ): Promise<Resource> => {
-    const { title, description, filePath, thumbNail, profileId } = resourceInput;
+    const resource: ResourceData = await getResourceById(id);
     const realProfileId = parseInt(auth.id as string);
 
-    if (realProfileId !== profileId) {
+    if (realProfileId !== resource.profileId) {
         throw new UnauthorizedError('invalid_token', { message: "You cannot update someone else's resource!" });
     }
 
+    const { title, description, filePath, thumbNail } = resourceInput;
     Resource.validateTitle(title);
     Resource.validateDescription(description);
-    await getResourceById(id);
+
     return await resourceDb.updateResource(id, title, description, filePath, thumbNail);
 };
 
