@@ -53,7 +53,9 @@ const ResourceOverviewTable: React.FC<Props> = ({ resources }: Props) => {
     mutate("profile", getProfile());
   }, 5000);
 
-  const deleteResource = async (resource: Resource) => {
+  const deleteResource = async (e: MouseEvent, resource: Resource) => {
+    e.stopPropagation();
+    e.preventDefault();
     if (!confirm(`${t("resources.confirm")}: ${resource.title}?`)) {
       return;
     } else {
@@ -66,10 +68,10 @@ const ResourceOverviewTable: React.FC<Props> = ({ resources }: Props) => {
     e.preventDefault();
 
     if (data.role === "ADMIN") {
-      deleteResource(resource);
+      deleteResource(e, resource);
     } else {
       if (data.id === resource.profileId) {
-        deleteResource(resource);
+        deleteResource(e, resource);
       } else {
         confirm(t("resources.error.creator"));
       }
@@ -128,26 +130,16 @@ const ResourceOverviewTable: React.FC<Props> = ({ resources }: Props) => {
                       <td className="border p-4">{resource.profileId}</td>
                       <td>
                         <span className="flex items-center justify-center">
-                          <Image
-                            src={imageState[resource.id]}
-                            alt={"Thumbnail"}
-                            width={100}
-                            height={50}
-                          />
+                          <Image src={imageState[resource.id]} alt={"Thumbnail"} width={100} height={50} />
                         </span>
                       </td>
-                      <td className="border p-4">
-                        {String(resource.createdAt)}
-                      </td>
+                      <td className="border p-4">{String(resource.createdAt)}</td>
                       <td className="border p-4">{resource.title}</td>
                       <td className="border p-4">{resource.description}</td>
                       <td className="border p-4">
                         {resource.categories.map((category: any) => {
                           return t(
-                            "resources.fields." +
-                              String(category.category.name)
-                                .toLowerCase()
-                                .replace(" ", ".")
+                            "resources.fields." + String(category.category.name).toLowerCase().replace(" ", ".")
                           );
                         })}
                       </td>
@@ -156,10 +148,7 @@ const ResourceOverviewTable: React.FC<Props> = ({ resources }: Props) => {
                           return subject.subject.name;
                         })}
                       </td>
-                      <td
-                        className="border p-4"
-                        onClick={(e) => checkAuthority(e, resource)}
-                      >
+                      <td className="border p-4" onClick={(e) => checkAuthority(e, resource)}>
                         {t("delete")}
                       </td>
                     </tr>

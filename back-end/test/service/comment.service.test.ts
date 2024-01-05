@@ -3,6 +3,7 @@ import resourceDb from '../../domain/data-access/resource.db';
 import profileDb from '../../domain/data-access/profile.db';
 import { Comment } from '../../domain/model/comment';
 import commentService from '../../service/comment.service';
+import { AuthenticationResponse } from '../../types';
 
 const id = 1;
 const createdAt = new Date();
@@ -48,7 +49,13 @@ test(`given: valid values for comment, when: creating a comment, then: should cr
     commentDb.createComment = mockCommentDbCreateComment.mockReturnValue(comment);
 
     // when
-    const result = await commentService.createComment(resourceId, profileId, message);
+    const result = await commentService.createComment(
+        { id: String(profileId) } as AuthenticationResponse,
+        resourceId,
+        profileId,
+        message,
+        undefined
+    );
 
     // then
     expect(result).toBeDefined();
@@ -63,7 +70,13 @@ test(`given: valid values for sub-comment, when: creating a sub-comment, then: s
     commentDb.createComment = mockCommentDbCreateComment.mockReturnValue(subComment);
 
     // when
-    const result = await commentService.createComment(resourceId, profileId, message, parentId);
+    const result = await commentService.createComment(
+        { id: String(profileId) } as AuthenticationResponse,
+        resourceId,
+        profileId,
+        message,
+        parentId
+    );
 
     // then
     expect(result).toBeDefined();
@@ -78,7 +91,12 @@ describe(`bad cases for creating comment`, () => {
 
         // when
         try {
-            await commentService.createComment(resourceId, profileId, message);
+            await commentService.createComment(
+                { id: String(profileId) } as AuthenticationResponse,
+                resourceId,
+                profileId,
+                message
+            );
         } catch (error) {
             // then
             expect(error).toBeDefined();
@@ -94,7 +112,12 @@ describe(`bad cases for creating comment`, () => {
 
         // when
         try {
-            await commentService.createComment(resourceId, profileId, message);
+            await commentService.createComment(
+                { id: String(profileId) } as AuthenticationResponse,
+                resourceId,
+                profileId,
+                message
+            );
         } catch (error) {
             // then
             expect(error).toBeDefined();
@@ -111,11 +134,38 @@ describe(`bad cases for creating comment`, () => {
 
         // when
         try {
-            await commentService.createComment(resourceId, profileId, message, parentId);
+            await commentService.createComment(
+                { id: String(profileId) } as AuthenticationResponse,
+                resourceId,
+                profileId,
+                message,
+                parentId
+            );
         } catch (error) {
             // then
             expect(error).toBeDefined();
             expect(error.message).toBe(`no comment with id ${parentId} found`);
+            expect(mockCommentDbCreateComment).not.toHaveBeenCalled();
+        }
+    });
+
+    test(`given: not the same profile id as the one in the auth, when: creating a comment, then: should throw an error`, async () => {
+        // given
+        // when
+        try {
+            await commentService.createComment(
+                { id: String(profileId + 1) } as AuthenticationResponse,
+                resourceId,
+                profileId,
+                message,
+                parentId
+            );
+        } catch (error) {
+            // then
+            expect(error).toBeDefined();
+            expect(error.message).toBe(
+                `You are trying to create a comment as another profile!!! This incident will be reported to INTERPOL!`
+            );
             expect(mockCommentDbCreateComment).not.toHaveBeenCalled();
         }
     });
@@ -226,7 +276,11 @@ test(`given: valid values, when: updating comment message, then: should update c
     commentDb.updateCommentMessage = mockCommentDbUpdateCommentMessage.mockReturnValue(comment);
 
     // when
-    const result = await commentService.updateCommentMessage(id, message);
+    const result = await commentService.updateCommentMessage(
+        { id: String(profileId) } as AuthenticationResponse,
+        id,
+        message
+    );
 
     // then
     expect(result).toBeDefined();
@@ -240,11 +294,28 @@ test(`given: invalid comment id, when: updating comment message, then: should th
 
     // when
     try {
-        await commentService.updateCommentMessage(id, message);
+        await commentService.updateCommentMessage({ id: String(profileId) } as AuthenticationResponse, id, message);
     } catch (error) {
         // then
         expect(error).toBeDefined();
         expect(error.message).toBe(`no comment with id ${id} found`);
+        expect(mockCommentDbUpdateCommentMessage).not.toHaveBeenCalled();
+    }
+});
+
+test(`given: not the same comment profile id as the one in the auth, when: updating comment message, then: should throw an error`, async () => {
+    // given
+    commentDb.getCommentById = mockCommentDbGetCommentById.mockReturnValue(comment);
+
+    // when
+    try {
+        await commentService.updateCommentMessage({ id: String(profileId + 1) } as AuthenticationResponse, id, message);
+    } catch (error) {
+        // then
+        expect(error).toBeDefined();
+        expect(error.message).toBe(
+            `You are trying to update a comment as another profile!!! This incident will be reported to INTERPOL!`
+        );
         expect(mockCommentDbUpdateCommentMessage).not.toHaveBeenCalled();
     }
 });
@@ -255,7 +326,7 @@ test(`given: valid values, when: deleting comment, then: should delete comment`,
     commentDb.deleteComment = mockCommentDbDeleteComment.mockReturnValue(comment);
 
     // when
-    const result = await commentService.deleteComment(id);
+    const result = await commentService.deleteComment({ id: String(profileId) } as AuthenticationResponse, id);
 
     // then
     expect(result).toBeDefined();
@@ -269,11 +340,28 @@ test(`given: invalid comment id, when: deleting comment, then: should throw an e
 
     // when
     try {
-        await commentService.deleteComment(id);
+        await commentService.deleteComment({ id: String(profileId) } as AuthenticationResponse, id);
     } catch (error) {
         // then
         expect(error).toBeDefined();
         expect(error.message).toBe(`no comment with id ${id} found`);
+        expect(mockCommentDbDeleteComment).not.toHaveBeenCalled();
+    }
+});
+
+test(`given: not the same comment profile id as the one in the auth, when: deleting comment, then: should throw an error`, async () => {
+    // given
+    commentDb.getCommentById = mockCommentDbGetCommentById.mockReturnValue(comment);
+
+    // when
+    try {
+        await commentService.deleteComment({ id: String(profileId + 1) } as AuthenticationResponse, id);
+    } catch (error) {
+        // then
+        expect(error).toBeDefined();
+        expect(error.message).toBe(
+            `You are trying to delete a comment as another profile!!! This incident will be reported to INTERPOL!`
+        );
         expect(mockCommentDbDeleteComment).not.toHaveBeenCalled();
     }
 });

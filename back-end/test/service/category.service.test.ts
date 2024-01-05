@@ -1,6 +1,7 @@
 import categoryDb from '../../domain/data-access/category.db';
 import { Category } from '../../domain/model/category';
 import categoryService from '../../service/category.service';
+import { AuthenticationResponse } from '../../types';
 
 const name = 'name';
 const id = 1;
@@ -37,12 +38,22 @@ test(`given: valid values for category, when: creating a category, then: should 
     categoryDb.createCategory = mockCategoryDbCreateCategory;
 
     // when
-    const result = await categoryService.createCategory(name);
+    const result = await categoryService.createCategory(name, { role: 'ADMIN' } as AuthenticationResponse);
 
     // then
     expect(result).toBeDefined();
     expect(result).toBe(category);
     expect(mockCategoryDbCreateCategory).toHaveBeenCalledWith(name);
+});
+
+test(`given: invalid role, when: creating a category, then: error is thrown`, async () => {
+    // given
+    // when
+    const sut = async () => await categoryService.createCategory(name, { role: 'USER' } as AuthenticationResponse);
+
+    // then
+    await expect(sut).rejects.toThrowError('Only admins can create categories');
+    expect(mockCategoryDbCreateCategory).not.toHaveBeenCalled();
 });
 
 test(`given: valid id for category, when: category is requested, then: category is returned`, async () => {
@@ -137,7 +148,7 @@ test(`given: valid values for category, when: category is updated, then: categor
     categoryDb.getCategoryById = mockCategoryDbGetCategoryById;
 
     // when
-    const result = await categoryService.updateCategory(id, newName);
+    const result = await categoryService.updateCategory(id, newName, { role: 'ADMIN' } as AuthenticationResponse);
 
     // then
     expect(result).toBeDefined();
@@ -152,7 +163,8 @@ test(`given: invalid id for category, when: category is updated, then: error is 
     categoryDb.getCategoryById = mockCategoryDbGetCategoryById;
 
     // when
-    const sut = async () => await categoryService.updateCategory(id, newName);
+    const sut = async () =>
+        await categoryService.updateCategory(id, newName, { role: 'ADMIN' } as AuthenticationResponse);
 
     // then
     await expect(sut).rejects.toThrowError('Category not found');
@@ -167,11 +179,22 @@ test(`given: existing category with new name, when: category is updated, then: e
     categoryDb.getCategoryById = mockCategoryDbGetCategoryById;
 
     // when
-    const sut = async () => await categoryService.updateCategory(id, newName);
+    const sut = async () =>
+        await categoryService.updateCategory(id, newName, { role: 'ADMIN' } as AuthenticationResponse);
 
     // then
     await expect(sut).rejects.toThrowError('Category already exists');
     expect(mockCategoryDbGetCategoryByName).toHaveBeenCalledWith(newName);
+});
+
+test(`given: invalid role, when: category is updated, then: error is thrown`, async () => {
+    // given
+    // when
+    const sut = async () => await categoryService.updateCategory(id, newName, { role: 'USER' } as AuthenticationResponse);
+
+    // then
+    await expect(sut).rejects.toThrowError('Only admins can update categories');
+    expect(mockCategoryDbUpdateCategory).not.toHaveBeenCalled();
 });
 
 test(`given: valid id for category, when: category is deleted, then: category is deleted`, async () => {
@@ -182,7 +205,7 @@ test(`given: valid id for category, when: category is deleted, then: category is
     categoryDb.deleteCategory = mockCategoryDbDeleteCategory;
 
     // when
-    const result = await categoryService.deleteCategory(id);
+    const result = await categoryService.deleteCategory(id, { role: 'ADMIN' } as AuthenticationResponse);
 
     // then
     expect(result).toBeDefined();
@@ -197,9 +220,19 @@ test(`given: invalid id for category, when: category is deleted, then: error is 
     categoryDb.getCategoryById = mockCategoryDbGetCategoryById;
 
     // when
-    const sut = async () => await categoryService.deleteCategory(id);
+    const sut = async () => await categoryService.deleteCategory(id, { role: 'ADMIN' } as AuthenticationResponse);
 
     // then
     await expect(sut).rejects.toThrowError('Category not found');
     expect(mockCategoryDbGetCategoryById).toHaveBeenCalledWith(id);
+});
+
+test(`given: invalid role, when: category is deleted, then: error is thrown`, async () => {
+    // given
+    // when
+    const sut = async () => await categoryService.deleteCategory(id, { role: 'USER' } as AuthenticationResponse);
+
+    // then
+    await expect(sut).rejects.toThrowError('Only admins can delete categories');
+    expect(mockCategoryDbDeleteCategory).not.toHaveBeenCalled();
 });

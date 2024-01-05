@@ -15,9 +15,7 @@ const ReadProfileById = () => {
   const router = useRouter();
   const { profileId } = router.query;
   const getProfileById = async () => {
-    const fetchedProfile = await ProfileService.getProfileById(
-      profileId as string
-    );
+    const fetchedProfile = await ProfileService.getProfileById(profileId as string);
 
     return fetchedProfile.profile;
   };

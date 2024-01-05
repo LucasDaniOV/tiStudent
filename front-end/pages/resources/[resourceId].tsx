@@ -1,6 +1,6 @@
 import FileDownloadComponent from "@/components/FileDownloadComponent";
 import Footer from "@/components/Footer";
-import Header from "@/components/Header";
+import Header from "@/components/header/Header";
 import Comments from "@/components/comments/Comments";
 import Likes from "@/components/likes/likes";
 import ResourceInfo from "@/components/resources/ResourceInfo";
@@ -29,9 +29,7 @@ const ReadResourceById = () => {
   const getProfile = async () => {
     const loggedInUser = sessionStorage.getItem("loggedInUser");
     if (!loggedInUser) return;
-    const profileResponse = await ProfileService.getProfileById(
-      JSON.parse(loggedInUser).id
-    );
+    const profileResponse = await ProfileService.getProfileById(JSON.parse(loggedInUser).id);
     return profileResponse.profile;
   };
 
@@ -45,9 +43,7 @@ const ReadResourceById = () => {
   };
 
   const getResource = async () => {
-    const resource = await ResourceService.getResourceById(
-      resourceId as string
-    );
+    const resource = await ResourceService.getResourceById(resourceId as string);
     if (resource) {
       getImage(resource.thumbNail);
       if (profile)
@@ -67,16 +63,12 @@ const ReadResourceById = () => {
   };
 
   const getSubjects = async () => {
-    const response = await ResourceService.getSubjectsByResourceId(
-      resourceId as string
-    );
+    const response = await ResourceService.getSubjectsByResourceId(resourceId as string);
     return response;
   };
 
   const getCategories = async () => {
-    const response = await ResourceService.getCategoriesByResourceId(
-      resourceId as string
-    );
+    const response = await ResourceService.getCategoriesByResourceId(resourceId as string);
     return response;
   };
 
@@ -85,11 +77,7 @@ const ReadResourceById = () => {
     setCreator(response.profile);
   };
 
-  const {
-    data: profile,
-    isLoading: profileLoading,
-    error: profileError,
-  } = useSWR("profile", getProfile);
+  const { data: profile, isLoading: profileLoading, error: profileError } = useSWR("profile", getProfile);
 
   const {
     data: resource,
@@ -112,11 +100,7 @@ const ReadResourceById = () => {
     if (!profile) return;
     if (!resource) return;
     if (!commentMessage) return;
-    await CommentService.writeCommentOnResource(
-      profile.id,
-      resource.id,
-      commentMessage
-    );
+    await CommentService.writeCommentOnResource(profile.id, resource.id, commentMessage);
   };
 
   useInterval(() => {
@@ -133,10 +117,7 @@ const ReadResourceById = () => {
       </Head>
       <Header current="resources" />
       <main>
-        {resourceLoading ||
-        subjectsLoading ||
-        categoriesLoading ||
-        profileLoading ? (
+        {resourceLoading || subjectsLoading || categoriesLoading || profileLoading ? (
           <p>{t("loading")}</p>
         ) : resource && profile ? (
           <>
@@ -144,22 +125,11 @@ const ReadResourceById = () => {
               <section className="grid grid-cols-3 w-screen m-auto">
                 <>
                   <div className="col-span-1 flex justify-center">
-                    {image && (
-                      <Image
-                        src={image}
-                        width={150}
-                        height={100}
-                        alt="Thumbnail"
-                      />
-                    )}
+                    {image && <Image src={image} width={150} height={100} alt="Thumbnail" />}
                   </div>
                   <div className="col-span-2">
                     {subjects && categories && (
-                      <ResourceInfo
-                        resource={resource as Resource}
-                        subjects={subjects}
-                        categories={categories}
-                      />
+                      <ResourceInfo resource={resource as Resource} subjects={subjects} categories={categories} />
                     )}
                   </div>
                   <div className="col-start-2 ml-5">
@@ -167,14 +137,10 @@ const ReadResourceById = () => {
                   </div>
                   <div
                     className="flex justify-center"
-                    onClick={() =>
-                      router.push("../../profiles/" + resource.profileId)
-                    }
+                    onClick={() => router.push("../../profiles/" + resource.profileId)}
                   >
                     {t("resources.fields.creator")}:
-                    <span className="hover:cursor-pointer hover:text-red-600 ml-1">
-                      {creator?.username}
-                    </span>
+                    <span className="hover:cursor-pointer hover:text-red-600 ml-1">{creator?.username}</span>
                   </div>
                 </>
                 <div className="col-start-2 col-span-2 grid grid-cols-2">
@@ -190,23 +156,13 @@ const ReadResourceById = () => {
                         <span className="text-6xl ">&#9993;</span>
                       </a>
                       <span
-                        className={
-                          shareState
-                            ? "text-xl m-auto"
-                            : "text-6xl pl-2 cursor-pointer m-auto"
-                        }
+                        className={shareState ? "text-xl m-auto" : "text-6xl pl-2 cursor-pointer m-auto"}
                         onClick={() => {
                           setShare(true);
-                          navigator.clipboard.writeText(
-                            location.origin + router.asPath
-                          );
+                          navigator.clipboard.writeText(location.origin + router.asPath);
                         }}
                       >
-                        {shareState ? (
-                          <span>{t("resources.info.link")}</span>
-                        ) : (
-                          <span>&#8683;</span>
-                        )}
+                        {shareState ? <span>{t("resources.info.link")}</span> : <span>&#8683;</span>}
                       </span>
                     </div>
                   </div>
@@ -228,22 +184,10 @@ const ReadResourceById = () => {
             <section>
               <section className="w-1/4 m-auto flex " id="addAComment">
                 <h3 className="mt-10 mr-10">{t("resources.comment.add")}</h3>
-                <form
-                  onSubmit={(e) => handleSubmit(e)}
-                  className="flex flex-col mt-10"
-                >
-                  <label htmlFor="message">
-                    {t("resources.comment.message")}
-                  </label>
-                  <input
-                    type="text"
-                    id="message"
-                    onChange={(e) => setMessage(e.target.value)}
-                  />
-                  <button
-                    type="submit"
-                    className="m-10 bg-gray-700 hover:bg-gray-400"
-                  >
+                <form onSubmit={(e) => handleSubmit(e)} className="flex flex-col mt-10">
+                  <label htmlFor="message">{t("resources.comment.message")}</label>
+                  <input type="text" id="message" onChange={(e) => setMessage(e.target.value)} />
+                  <button type="submit" className="m-10 bg-gray-700 hover:bg-gray-400">
                     {t("resources.comment.submit")}
                   </button>
                 </form>

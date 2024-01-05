@@ -11,8 +11,7 @@ const Footer: React.FC = () => {
   useEffect(() => {
     getUser();
   }, []);
-  const basic =
-    "text-white text-opacity-50 no-underline text-center text-xl hover:text-opacity-100";
+  const basic = "text-white text-opacity-50 no-underline text-center text-xl hover:text-opacity-100";
   return (
     <footer
       role="heading"
@@ -54,16 +53,12 @@ const Footer: React.FC = () => {
                 <Link href={"/profiles"}>{t("header.nav.profiles")}</Link>
               </li>
               <li>
-                <Link href={"/login"}>
-                  {user ? t("header.nav.logout") : t("header.nav.login")}
-                </Link>
+                <Link href={"/login"}>{user ? t("header.nav.logout") : t("header.nav.login")}</Link>
               </li>
             </ul>
           </div>
         </div>
-        <p className="col-span-2 flex justify-center">
-          Copyright &copy; 2024 - Full Stack Software Development
-        </p>
+        <p className="col-span-2 flex justify-center">Copyright &copy; 2024 - Full Stack Software Development</p>
       </div>
     </footer>
   );

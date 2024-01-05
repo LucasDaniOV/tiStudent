@@ -67,7 +67,7 @@ describe('resource CRUD', () => {
         const res = await request(app)
             .put(`/resources/${resourceId}`)
             .set('Authorization', `Bearer ${token}`)
-            .send({ title: newTitle, description: newDescription });
+            .send({ title: newTitle, description: newDescription, profileId });
 
         // then
         expect(res.status).toEqual(200);

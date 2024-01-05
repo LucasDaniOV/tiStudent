@@ -2,7 +2,7 @@ import { screen } from "@testing-library/dom";
 import { render } from "@testing-library/react";
 import { Category } from "../../back-end/domain/model/category";
 import { Subject } from "../../back-end/domain/model/subject";
-import Header from "../components/Header";
+import Header from "../components/header/Header";
 import React from "react";
 import { useTranslation } from "react-i18next";
 
@@ -91,11 +91,7 @@ test("given Header component - when loaded - then it is displayed", async () => 
 
   // //then
   expect(screen.getByRole("heading").children[0].textContent).toBe(
-    "app.title" +
-      "header.nav.home" +
-      "header.nav.resources" +
-      "header.nav.profiles" +
-      "header.nav.login"
+    "app.title" + "header.nav.home" + "header.nav.resources" + "header.nav.profiles" + "header.nav.login"
     // + Language component
   );
   expect(screen.getByRole("heading").children[0].children.length === 4);

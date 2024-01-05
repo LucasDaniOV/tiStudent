@@ -52,13 +52,13 @@ const getProfileLikes = async (profileId: number): Promise<ProfileLikes> => {
 
 const updateBio = async (profile: Profile, bio: string): Promise<Profile> => {
     Profile.validateBio(bio);
-    if (profile.bio === bio) throw new Error(`New bio must be different from old bio`);
+    // if (profile.bio === bio) throw new Error(`New bio must be different from old bio`);
     return await profileDb.updateBio(profile.id, bio);
 };
 
 const updateEmail = async (profile: Profile, email: string): Promise<Profile> => {
     Profile.validateEmail(email);
-    if (profile.email === email) throw new Error(`New email must be different from old email`);
+    // if (profile.email === email) throw new Error(`New email must be different from old email`);
     if (await profileDb.getProfileByEmail(email)) throw new Error(`Email already exists`);
     return await profileDb.updateEmail(profile.id, email);
 };
@@ -66,9 +66,9 @@ const updateEmail = async (profile: Profile, email: string): Promise<Profile> =>
 const updatePassword = async (profile: Profile, password: string): Promise<Profile> => {
     Profile.validatePassword(password);
 
-    if (await comparePasswordWithHash(password, profile.password)) {
-        throw new Error(`New password must be different from old password`);
-    }
+    // if (await comparePasswordWithHash(password, profile.password)) {
+    //     throw new Error(`New password must be different from old password`);
+    // }
 
     const hashedPassword = await hashPassword(password);
     return await profileDb.updatePassword(profile.id, hashedPassword);
@@ -76,20 +76,40 @@ const updatePassword = async (profile: Profile, password: string): Promise<Profi
 
 const updateUsername = async (profile: Profile, username: string): Promise<Profile> => {
     Profile.validateUsername(username);
-    if (profile.username === username) throw new Error(`New username must be different from old username`);
+    // if (profile.username === username) throw new Error(`New username must be different from old username`);
     if (await profileDb.getProfileByUsername(username)) throw new Error(`Username already exists`);
     return await profileDb.updateUsername(profile.id, username);
 };
 
 const updateRole = async (profile: Profile, role: Role): Promise<Profile> => {
     Profile.validateRole(role);
-    if (profile.role === role) throw new Error(`New role must be different from old role`);
+    // if (profile.role === role) throw new Error(`New role must be different from old role`);
     return await profileDb.updateRole(profile.id, role);
 };
 
-const updateProfile = async (id: number, profileInput: ProfileInput): Promise<Profile> => {
-    const profile = await getProfileById(id);
+const updateProfile = async (
+    inputProfileId: string | number,
+    profileInput: ProfileInput,
+    auth: AuthenticationResponse
+): Promise<Profile> => {
+    const profileId: number = parseInt(inputProfileId as string);
+    const realProfileId: number = parseInt(auth.id as string);
+
+    if (realProfileId !== profileId) {
+        throw new Error('Wtf are you trying to do? No present from santa this year!!!');
+    }
+
+    const profile = await getProfileById(profileId);
     const { bio, email, password, role, username } = profileInput;
+
+    if (email) {
+        if (await profileDb.getProfileByEmail(email)) throw new Error(`Email already exists`);
+    }
+
+    if (username) {
+        if (await profileDb.getProfileByUsername(username)) throw new Error(`Username already exists`);
+    }
+
     let result: Profile;
 
     if (bio) {
@@ -115,8 +135,16 @@ const updateProfile = async (id: number, profileInput: ProfileInput): Promise<Pr
     return result;
 };
 
-const deleteProfile = async (profileId: number): Promise<Profile> => {
+const deleteProfile = async (inputProfileId: string | number, auth: AuthenticationResponse): Promise<Profile> => {
+    const profileId: number = parseInt(inputProfileId as string);
+    const realProfileId: number = parseInt(auth.id as string);
+
+    if (realProfileId !== profileId) {
+        throw new Error('Wtf are you trying to do? No present from santa this year!!!');
+    }
+
     await getProfileById(profileId);
+
     return await profileDb.deleteProfile(profileId);
 };
 
@@ -128,7 +156,7 @@ const authenticate = async (email: string, password: string): Promise<Authentica
     if (!isValidPassword) throw new Error('Invalid password');
 
     return {
-        token: generateJwtToken({ email, role: profile.role }),
+        token: generateJwtToken({ email, role: profile.role, id: profile.id }),
         email,
         id: String(profile.id),
         role: profile.role,

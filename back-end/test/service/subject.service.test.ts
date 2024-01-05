@@ -1,6 +1,7 @@
 import subjectDb from '../../domain/data-access/subject.db';
 import { Subject } from '../../domain/model/subject';
 import subjectService from '../../service/subject.service';
+import { AuthenticationResponse } from '../../types';
 
 const name = 'name';
 const id = 1;
@@ -37,12 +38,22 @@ test(`given: valid values for subject, when: creating a subject, then: should cr
     subjectDb.createSubject = mockSubjectDbCreateSubject;
 
     // when
-    const result = await subjectService.createSubject(name);
+    const result = await subjectService.createSubject(name, { role: 'ADMIN' } as AuthenticationResponse);
 
     // then
     expect(result).toBeDefined();
     expect(result).toBe(subject);
     expect(mockSubjectDbCreateSubject).toHaveBeenCalledWith(name);
+});
+
+test(`given: invalid role, when: creating a subject, then: error is thrown`, async () => {
+    // given
+    // when
+    const sut = async () => await subjectService.createSubject(name, { role: 'USER' } as AuthenticationResponse);
+
+    // then
+    await expect(sut).rejects.toThrowError('Only admins can create subjects');
+    expect(mockSubjectDbCreateSubject).not.toHaveBeenCalled();
 });
 
 test(`given: valid id for subject, when: subject is requested, then: subject is returned`, async () => {
@@ -137,7 +148,7 @@ test(`given: valid values for subject, when: subject is updated, then: subject i
     subjectDb.getSubjectById = mockSubjectDbGetSubjectById;
 
     // when
-    const result = await subjectService.updateSubject(id, newName);
+    const result = await subjectService.updateSubject(id, newName, { role: 'ADMIN' } as AuthenticationResponse);
 
     // then
     expect(result).toBeDefined();
@@ -152,7 +163,8 @@ test(`given: invalid id for subject, when: subject is updated, then: error is th
     subjectDb.getSubjectById = mockSubjectDbGetSubjectById;
 
     // when
-    const sut = async () => await subjectService.updateSubject(id, newName);
+    const sut = async () =>
+        await subjectService.updateSubject(id, newName, { role: 'ADMIN' } as AuthenticationResponse);
 
     // then
     await expect(sut).rejects.toThrowError('Subject not found');
@@ -167,11 +179,22 @@ test(`given: existing subject with new name, when: subject is updated, then: err
     subjectDb.getSubjectById = mockSubjectDbGetSubjectById;
 
     // when
-    const sut = async () => await subjectService.updateSubject(id, newName);
+    const sut = async () =>
+        await subjectService.updateSubject(id, newName, { role: 'ADMIN' } as AuthenticationResponse);
 
     // then
     await expect(sut).rejects.toThrowError('Subject already exists');
     expect(mockSubjectDbGetSubjectByName).toHaveBeenCalledWith(newName);
+});
+
+test(`given: invalid role, when: subject is updated, then: error is thrown`, async () => {
+    // given
+    // when
+    const sut = async () => await subjectService.updateSubject(id, newName, { role: 'USER' } as AuthenticationResponse);
+
+    // then
+    await expect(sut).rejects.toThrowError('Only admins can update subjects');
+    expect(mockSubjectDbUpdateSubject).not.toHaveBeenCalled();
 });
 
 test(`given: valid id for subject, when: subject is deleted, then: subject is deleted`, async () => {
@@ -182,7 +205,7 @@ test(`given: valid id for subject, when: subject is deleted, then: subject is de
     subjectDb.deleteSubject = mockSubjectDbDeleteSubject;
 
     // when
-    const result = await subjectService.deleteSubject(id);
+    const result = await subjectService.deleteSubject(id, { role: 'ADMIN' } as AuthenticationResponse);
 
     // then
     expect(result).toBeDefined();
@@ -197,9 +220,19 @@ test(`given: invalid id for subject, when: subject is deleted, then: error is th
     subjectDb.getSubjectById = mockSubjectDbGetSubjectById;
 
     // when
-    const sut = async () => await subjectService.deleteSubject(id);
+    const sut = async () => await subjectService.deleteSubject(id, { role: 'ADMIN' } as AuthenticationResponse);
 
     // then
     await expect(sut).rejects.toThrowError('Subject not found');
     expect(mockSubjectDbGetSubjectById).toHaveBeenCalledWith(id);
+});
+
+test(`given: invalid role, when: subject is deleted, then: error is thrown`, async () => {
+    // given
+    // when
+    const sut = async () => await subjectService.deleteSubject(id, { role: 'USER' } as AuthenticationResponse);
+
+    // then
+    await expect(sut).rejects.toThrowError('Only admins can delete subjects');
+    expect(mockSubjectDbDeleteSubject).not.toHaveBeenCalled();
 });

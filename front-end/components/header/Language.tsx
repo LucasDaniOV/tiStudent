@@ -9,14 +9,10 @@ const Language: React.FC = () => {
     const { pathname, asPath, query } = router;
     router.push({ pathname, query }, asPath, { locale: newLocale });
   };
+
   return (
-    <div className="flex justify-center">
-      <select
-        id="language"
-        className="m-1 p-1 text-white"
-        value={locale}
-        onChange={handleLanguageChange}
-      >
+    <div className="flex">
+      <select id="language" className="m-1 p-1 text-white" value={locale} onChange={handleLanguageChange}>
         <option value="en" className="text-white">
           English
         </option>

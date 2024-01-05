@@ -2,15 +2,23 @@ import { CategoryOnResource } from '../domain/model/categoryOnResource';
 import categoryOnResourceDb from '../domain/data-access/categoryOnResource.db';
 import resourceService from './resource.service';
 import categoryService from './category.service';
-import { CategoryOnResourceInput } from '../types';
+import { AuthenticationResponse, CategoryOnResourceInput, ResourceData } from '../types';
+import { UnauthorizedError } from 'express-jwt';
 
 const createCategoryOnResource = async (
+    auth: AuthenticationResponse,
     categoryOnResourceInput: CategoryOnResourceInput
 ): Promise<CategoryOnResource> => {
     const resourceId: number = parseInt(categoryOnResourceInput.resourceId as string);
     const categoryId: number = parseInt(categoryOnResourceInput.categoryId as string);
 
-    await resourceService.getResourceById(resourceId);
+    const resource: ResourceData = await resourceService.getResourceById(resourceId);
+    const realProfileId: number = parseInt(auth.id as string);
+
+    if (resource.profileId !== realProfileId) {
+        throw new UnauthorizedError('invalid_token', { message: 'Not your resource' });
+    }
+
     await categoryService.getCategoryById(categoryId);
 
     if (await categoryOnResourceDb.getCategoryOnResource(categoryId, resourceId)) {
@@ -45,7 +53,18 @@ const getCategoriesOnResourcesByResourceId = async (resourceId: number): Promise
     return categoriesOnResources;
 };
 
-const deleteCategoryOnResource = async (categoryId: number, resourceId: number): Promise<CategoryOnResource> => {
+const deleteCategoryOnResource = async (
+    auth: AuthenticationResponse,
+    categoryId: number,
+    resourceId: number
+): Promise<CategoryOnResource> => {
+    const resource: ResourceData = await resourceService.getResourceById(resourceId);
+    const realProfileId: number = parseInt(auth.id as string);
+
+    if (resource.profileId !== realProfileId) {
+        throw new UnauthorizedError('invalid_token', { message: 'Not your resource' });
+    }
+
     await getCategoryOnResource(categoryId, resourceId);
     return await categoryOnResourceDb.deleteCategoryOnResource(categoryId, resourceId);
 };

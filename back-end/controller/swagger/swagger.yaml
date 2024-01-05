@@ -26,6 +26,7 @@ tags:
     - name: comments
     - name: resourcelikes
     - name: commentlikes
+    - name: files
 
 security:
     - BearerAuth: []
@@ -314,7 +315,6 @@ paths:
                   description: get resources by profileId
                   schema:
                       type: integer
-                      example: 1
             responses:
                 '200':
                     description: resources found
@@ -683,7 +683,6 @@ paths:
                   description: get subject by name
                   schema:
                       type: string
-                      example: 'Subject Name'
             responses:
                 '200':
                     description: subjects found
@@ -867,13 +866,11 @@ paths:
                   description: get categories on resources by resourceId
                   schema:
                       type: integer
-                      example: 1
                 - in: query
                   name: categoryId
                   description: get categories on resources by categoryId
                   schema:
                       type: integer
-                      example: 1
             responses:
                 '200':
                     description: categories on resources found
@@ -897,7 +894,6 @@ paths:
                 '401':
                     $ref: '#/components/responses/Unauthorized'
 
-    /categories-on-resources/{id}:
         delete:
             tags:
                 - categories-on-resources
@@ -905,9 +901,16 @@ paths:
             description: |
                 Delete category on resource by id
             parameters:
-                - name: id
-                  in: path
-                  description: category on resource id
+                - name: resourceId
+                  in: query
+                  description: resourceId of the category on resource
+                  required: true
+                  schema:
+                      type: integer
+                      example: 1
+                - name: categoryId
+                  in: query
+                  description: categoryId of the category on resource
                   required: true
                   schema:
                       type: integer
@@ -978,13 +981,11 @@ paths:
                   description: get subjects on resources by resourceId
                   schema:
                       type: integer
-                      example: 1
                 - in: query
                   name: subjectId
                   description: get subjects on resources by subjectId
                   schema:
                       type: integer
-                      example: 1
             responses:
                 '200':
                     description: subjects on resources found
@@ -1008,7 +1009,6 @@ paths:
                 '401':
                     $ref: '#/components/responses/Unauthorized'
 
-    /subjects-on-resources/{id}:
         delete:
             tags:
                 - subjects-on-resources
@@ -1016,9 +1016,16 @@ paths:
             description: |
                 Delete subject on resource by id
             parameters:
-                - name: id
-                  in: path
-                  description: subject on resource id
+                - name: resourceId
+                  in: query
+                  description: resourceId of the subject on resource
+                  required: true
+                  schema:
+                      type: integer
+                      example: 1
+                - name: subjectId
+                  in: query
+                  description: subjectId of the category on resource
                   required: true
                   schema:
                       type: integer
@@ -1088,7 +1095,6 @@ paths:
                   description: get comments by resourceId
                   schema:
                       type: integer
-                      example: 1
             responses:
                 '200':
                     description: comments found
@@ -1345,13 +1351,11 @@ paths:
                   description: get resource likes by profileId
                   schema:
                       type: integer
-                      example: 1
                 - in: query
                   name: resourceId
                   description: get resource likes by resourceId
                   schema:
                       type: integer
-                      example: 1
             responses:
                 '200':
                     description: resource likes found
@@ -1462,13 +1466,11 @@ paths:
                   description: get comment likes by profileId
                   schema:
                       type: integer
-                      example: 1
                 - in: query
                   name: commentId
                   description: get comment likes by commentId
                   schema:
                       type: integer
-                      example: 1
             responses:
                 '200':
                     description: comment likes found
@@ -1499,7 +1501,7 @@ paths:
             description: |
                 Delete comment like by id
             parameters:
-                - name: commendId
+                - name: commentId
                   in: query
                   description: comment id
                   required: true

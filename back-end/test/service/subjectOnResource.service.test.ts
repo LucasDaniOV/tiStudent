@@ -3,9 +3,11 @@ import resourceDb from '../../domain/data-access/resource.db';
 import subjectDb from '../../domain/data-access/subject.db';
 import subjectOnResourceService from '../../service/subjectOnResource.service';
 import { SubjectOnResource } from '../../domain/model/subjectOnResource';
+import { AuthenticationResponse } from '../../types';
 
 const subjectId = 1;
 const resourceId = 2;
+const profileId = 1;
 
 const subjectOnResourceInput = { subjectId, resourceId };
 const subjectOnResource = new SubjectOnResource(subjectId, resourceId);
@@ -36,14 +38,17 @@ afterEach(() => {
 
 test(`given: valid values for subjectOnResource, when: creating a subjectOnResource, then: should create a subjectOnResource`, async () => {
     // given
-    resourceDb.getResourceById = mockResourceDbGetResourceById.mockReturnValue({});
+    resourceDb.getResourceById = mockResourceDbGetResourceById.mockReturnValue({ profileId });
     subjectDb.getSubjectById = mockSubjectDbGetSubjectById.mockReturnValue({});
     subjectOnResourceDb.getSubjectOnResource = mockSubjectOnResourceDbGetSubjectOnResource.mockReturnValue(null);
     subjectOnResourceDb.createSubjectOnResource =
         mockSubjectOnResourceDbCreateSubjectOnResource.mockReturnValue(subjectOnResource);
 
     // when
-    const result = await subjectOnResourceService.createSubjectOnResource(subjectOnResourceInput);
+    const result = await subjectOnResourceService.createSubjectOnResource(
+        { id: String(profileId) } as AuthenticationResponse,
+        subjectOnResourceInput
+    );
 
     // then
     expect(result).toBeDefined();
@@ -58,7 +63,11 @@ test(`given: invalid resourceId, when: creating a subjectOnResource, then: shoul
     resourceDb.getResourceById = mockResourceDbGetResourceById.mockReturnValue(null);
 
     // when
-    const sut = async () => await subjectOnResourceService.createSubjectOnResource(subjectOnResourceInput);
+    const sut = async () =>
+        await subjectOnResourceService.createSubjectOnResource(
+            { id: String(profileId) } as AuthenticationResponse,
+            subjectOnResourceInput
+        );
 
     // then
     await expect(sut).rejects.toThrowError('Resource with id 2 does not exist');
@@ -67,11 +76,15 @@ test(`given: invalid resourceId, when: creating a subjectOnResource, then: shoul
 
 test(`given: invalid subjectId, when: creating a subjectOnResource, then: should throw error`, async () => {
     // given
-    resourceDb.getResourceById = mockResourceDbGetResourceById.mockReturnValue({});
+    resourceDb.getResourceById = mockResourceDbGetResourceById.mockReturnValue({ profileId });
     subjectDb.getSubjectById = mockSubjectDbGetSubjectById.mockReturnValue(null);
 
     // when
-    const sut = async () => await subjectOnResourceService.createSubjectOnResource(subjectOnResourceInput);
+    const sut = async () =>
+        await subjectOnResourceService.createSubjectOnResource(
+            { id: String(profileId) } as AuthenticationResponse,
+            subjectOnResourceInput
+        );
 
     // then
     await expect(sut).rejects.toThrowError('Subject not found');
@@ -81,18 +94,38 @@ test(`given: invalid subjectId, when: creating a subjectOnResource, then: should
 
 test(`given: already existing subjectOnResource, when: creating a subjectOnResource, then: should throw error`, async () => {
     // given
-    resourceDb.getResourceById = mockResourceDbGetResourceById.mockReturnValue({});
+    resourceDb.getResourceById = mockResourceDbGetResourceById.mockReturnValue({ profileId });
     subjectDb.getSubjectById = mockSubjectDbGetSubjectById.mockReturnValue({});
     subjectOnResourceDb.getSubjectOnResource =
         mockSubjectOnResourceDbGetSubjectOnResource.mockReturnValue(subjectOnResource);
 
     // when
-    const sut = async () => await subjectOnResourceService.createSubjectOnResource(subjectOnResourceInput);
+    const sut = async () =>
+        await subjectOnResourceService.createSubjectOnResource(
+            { id: String(profileId) } as AuthenticationResponse,
+            subjectOnResourceInput
+        );
 
     // then
     await expect(sut).rejects.toThrowError('Subject on resource already exists');
     expect(mockResourceDbGetResourceById).toHaveBeenCalledWith(resourceId);
     expect(mockSubjectDbGetSubjectById).toHaveBeenCalledWith(subjectId);
+});
+
+test(`given: not owner of resource, when: creating a subjectOnResource, then: should throw error`, async () => {
+    // given
+    resourceDb.getResourceById = mockResourceDbGetResourceById.mockReturnValue({ profileId: 2 });
+
+    // when
+    const sut = async () =>
+        await subjectOnResourceService.createSubjectOnResource(
+            { id: String(profileId) } as AuthenticationResponse,
+            subjectOnResourceInput
+        );
+
+    // then
+    await expect(sut).rejects.toThrowError('Not your resource');
+    expect(mockResourceDbGetResourceById).toHaveBeenCalledWith(resourceId);
 });
 
 test(`given: valid subjectId and resourceId, when: getting a subjectOnResource, then: should return a subjectOnResource`, async () => {
@@ -177,14 +210,18 @@ test(`given: existing subjects on resources, when: getting all subjects on resou
 test(`given: valid subjectId and resourceId, when: deleting a subjectOnResource, then: should delete a subjectOnResource`, async () => {
     // given
     subjectDb.getSubjectById = mockSubjectDbGetSubjectById.mockReturnValue({});
-    resourceDb.getResourceById = mockResourceDbGetResourceById.mockReturnValue({});
+    resourceDb.getResourceById = mockResourceDbGetResourceById.mockReturnValue({ profileId });
     subjectOnResourceDb.getSubjectOnResource =
         mockSubjectOnResourceDbGetSubjectOnResource.mockReturnValue(subjectOnResource);
     subjectOnResourceDb.deleteSubjectOnResource =
         mockSubjectOnResourceDbDeleteSubjectOnResource.mockReturnValue(subjectOnResource);
 
     // when
-    const result = await subjectOnResourceService.deleteSubjectOnResource(subjectId, resourceId);
+    const result = await subjectOnResourceService.deleteSubjectOnResource(
+        { id: String(profileId) } as AuthenticationResponse,
+        subjectId,
+        resourceId
+    );
 
     // then
     expect(result).toBeDefined();
@@ -193,4 +230,20 @@ test(`given: valid subjectId and resourceId, when: deleting a subjectOnResource,
     expect(mockResourceDbGetResourceById).toHaveBeenCalledWith(resourceId);
     expect(mockSubjectOnResourceDbGetSubjectOnResource).toHaveBeenCalledWith(subjectId, resourceId);
     expect(mockSubjectOnResourceDbDeleteSubjectOnResource).toHaveBeenCalledWith(subjectId, resourceId);
+});
+
+test(`given: Not owner of resource, when: deleting a subjectOnResource, then: should throw error`, async () => {
+    // given
+    resourceDb.getResourceById = mockResourceDbGetResourceById.mockReturnValue({ profileId: 2 });
+
+    // when
+    const sut = async () =>
+        await subjectOnResourceService.deleteSubjectOnResource(
+            { id: String(profileId) } as AuthenticationResponse,
+            subjectId,
+            resourceId
+        );
+
+    // then
+    await expect(sut).rejects.toThrowError('Not your resource');
 });

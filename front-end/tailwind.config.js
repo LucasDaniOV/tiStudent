@@ -6,7 +6,11 @@ module.exports = {
     "./components/**/*.{js,ts,jsx,tsx,mdx}",
   ],
   theme: {
-    extend: {},
+    extend: {
+      colors: {
+        "tistudent-blue": "#0b2d59",
+      },
+    },
   },
   plugins: [],
 };

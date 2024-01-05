@@ -16,7 +16,7 @@ import { resourceRouter } from './controller/resource.routes';
 import { resourceLikeRouter } from './controller/resourceLike.routes';
 import subjectRouter from './controller/subject.routes';
 import { subjectOnResourceRouter } from './controller/subjectOnResource.routes';
-import fileRouter from './controller/files.routes';
+import fileRouter from './controller/file.routes';
 
 const app = express();
 

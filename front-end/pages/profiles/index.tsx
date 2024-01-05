@@ -1,4 +1,4 @@
-import Header from "@/components/Header";
+import Header from "@/components/header/Header";
 import LeaderBoard from "@/components/profiles/LeaderBoard";
 import ProfilesOverviewTable from "@/components/profiles/ProfilesOverviewTable";
 import { useTranslation } from "next-i18next";
@@ -34,17 +34,9 @@ const Profiles: React.FC = () => {
     return response.profiles;
   };
 
-  const {
-    data: profilesData,
-    isLoading: profilesLoading,
-    error: profilesError,
-  } = useSWR("profiles", getProfiles);
+  const { data: profilesData, isLoading: profilesLoading, error: profilesError } = useSWR("profiles", getProfiles);
 
-  const {
-    data: topTenData,
-    isLoading: topTenLoading,
-    error: topTenError,
-  } = useSWR("topTen", getTopTen);
+  const { data: topTenData, isLoading: topTenLoading, error: topTenError } = useSWR("topTen", getTopTen);
 
   useInterval(() => {
     mutate("profiles", getProfiles());
@@ -66,12 +58,8 @@ const Profiles: React.FC = () => {
               {topTenError && <div>{topTenError}</div>}
               {topTenLoading && <div>{t("loading")}</div>}
               {profilesLoading && <div>{t("loading")}</div>}
-              <div className="m-12">
-                {topTenData && <LeaderBoard profiles={topTenData} />}
-              </div>
-              {profilesData && (
-                <ProfilesOverviewTable profiles={profilesData} />
-              )}
+              <div className="m-12">{topTenData && <LeaderBoard profiles={topTenData} />}</div>
+              {profilesData && <ProfilesOverviewTable profiles={profilesData} />}
             </>
           ) : (
             <p>{t("authorization.error")}</p>
