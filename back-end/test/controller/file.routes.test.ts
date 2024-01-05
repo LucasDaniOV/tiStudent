@@ -7,9 +7,10 @@ const profileEmail = 'satoshi@tistudent.com';
 const profilePassword = 'Str0ngPW!!!';
 
 const testFilePath = __dirname + '/USED-FOR-TESTING.pdf';
-const uploadedTestFilePath = __dirname + '/../../uploads/USED-FOR-TESTING.pdf';
+const uploadedTestFileDir = __dirname + '/../../uploads/';
 
 let token: string;
+let uploadedTestFileName: string;
 
 beforeAll(async () => {
     const auth = await profileService.authenticate(profileEmail, profilePassword);
@@ -26,19 +27,23 @@ describe('test file endpoints', () => {
         expect(res.status).toEqual(200);
         expect(res.body.status).toEqual('success');
         expect(res.body.message).toEqual('File uploaded successfully');
-        expect(fs.existsSync(uploadedTestFilePath)).toEqual(true);
+
+        uploadedTestFileName = res.body.file.filename;
+
+        expect(fs.existsSync(uploadedTestFileDir + uploadedTestFileName)).toEqual(true);
     });
 
     it('should download a file', async () => {
-        const res = await request(app).get('/files/USED-FOR-TESTING.pdf').set('Authorization', `Bearer ${token}`);
+        const res = await request(app).get(`/files/${uploadedTestFileName}`).set('Authorization', `Bearer ${token}`);
         expect(res.status).toEqual(200);
     });
 
     it('should delete a file', async () => {
-        const res = await request(app).delete('/files/USED-FOR-TESTING.pdf').set('Authorization', `Bearer ${token}`);
+        const res = await request(app).delete(`/files/${uploadedTestFileName}`).set('Authorization', `Bearer ${token}`);
         expect(res.status).toEqual(200);
         expect(res.body.status).toEqual('success');
         expect(res.body.message).toEqual('File deleted successfully');
-        expect(fs.existsSync(uploadedTestFilePath)).toEqual(false);
+
+        expect(fs.existsSync(uploadedTestFileDir + uploadedTestFileName)).toEqual(false);
     });
 });
