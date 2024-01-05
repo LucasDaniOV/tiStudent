@@ -1,4 +1,5 @@
 import Header from "@/components/header/Header";
+import Footer from "@/components/Footer";
 import PredefinedUsersTable from "@/components/PredefinedUsersTable";
 import ProfileCreateForm from "@/components/profiles/ProfileCreateForm";
 import ProfileLoginForm from "@/components/profiles/ProfileLoginForm";
@@ -14,8 +15,6 @@ const Login: React.FC = () => {
     setUser(sessionStorage.getItem("loggedInUser"));
   }, [user]);
 
-  // let userObject = null;
-  // if (user) userObject = JSON.parse(user);
   return (
     <>
       <Head>
@@ -33,10 +32,7 @@ const Login: React.FC = () => {
                 setUser(null);
               }}
             >
-              <button
-                type="submit"
-                className="text-center hover:bg-gray-500 p-1 text-xl"
-              >
+              <button type="submit" className="text-center hover:bg-gray-500 p-1 text-xl">
                 {t("logout.button")}
               </button>
             </form>
@@ -56,6 +52,7 @@ const Login: React.FC = () => {
           </>
         )}
       </main>
+      <Footer />
     </>
   );
 };

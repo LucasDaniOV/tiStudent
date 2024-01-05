@@ -54,3 +54,4 @@ export const getServerSideProps = async (context: any) => {
 };
 
 export default DeleteResourceById;
+

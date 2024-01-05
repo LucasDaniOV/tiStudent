@@ -6,10 +6,11 @@ import { serverSideTranslations } from "next-i18next/serverSideTranslations";
 import Head from "next/head";
 import Image from "next/image";
 import React, { useEffect } from "react";
+import useSWR, { mutate } from "swr";
+import useInterval from "use-interval";
 
 const Home: React.FC = () => {
   const [isLoggedIn, setIsLoggedIn] = React.useState<boolean>(false);
-  const [name, setName] = React.useState<string>("");
 
   const { t } = useTranslation();
 
@@ -19,13 +20,13 @@ const Home: React.FC = () => {
     if (user) {
       const profile = await ProfileService.getProfileById(JSON.parse(user).id);
       setIsLoggedIn(true);
-      setName(profile.profile.username);
+      return profile.profile.username;
     }
   };
-
-  useEffect(() => {
-    getUser();
-  }, []);
+  const { data, isLoading, error } = useSWR("user", getUser);
+  useInterval(() => {
+    mutate("user", getUser());
+  }, 5000);
 
   return (
     <>
@@ -47,7 +48,7 @@ const Home: React.FC = () => {
 
         <div className="p-20">
           <h1 className="text-3xl font-bold">
-            {t("home.welcome")} {name}!
+            {t("home.welcome")} {data}!
           </h1>
           <Image
             src="/images/einstein.jpg"

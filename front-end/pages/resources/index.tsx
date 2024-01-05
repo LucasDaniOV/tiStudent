@@ -5,29 +5,23 @@ import Link from "next/link";
 import React, { useState } from "react";
 import useSWR, { mutate } from "swr";
 import useInterval from "use-interval";
-import ResourcesOverviewTable from "../../components/resources/ResourcesOverviewTable";
 import ResourceService from "../../services/ResourceService";
 import { useTranslation } from "next-i18next";
 import { useRouter } from "next/router";
 import Footer from "@/components/Footer";
+import ResourcesOverviewTable from "@/components/resources/ResourcesOverviewTable";
 
 const Resources: React.FC = () => {
   const [authorized, setAuthorized] = useState<boolean>(true);
-  const [errorVisible, setErrorVisible] = useState<boolean>(false);
   const { t } = useTranslation();
   const getResources = async () => {
     const response = await ResourceService.getAllResources();
     if (response.status === "unauthorized" || response.status === "error") {
       setAuthorized(false);
       sessionStorage.removeItem("loggedInUser");
-      if (!errorVisible) {
-        setErrorVisible(true);
-        setAuthorized(false);
-      }
       return;
     }
     setAuthorized(true);
-    setErrorVisible(false);
     return response.resources;
   };
 
@@ -48,7 +42,6 @@ const Resources: React.FC = () => {
       <main className="grid grid-cols-4">
         <section className="col-span-3 items-center">
           <h1 className="m-auto text-3xl">{t("resources.title")}</h1>
-          {error && <div>{error}</div>}
           {isLoading && <div>{t("loading")}</div>}
           {authorized ? data && <ResourcesOverviewTable resources={data} /> : <p>{t("authorization.error")}</p>}
         </section>

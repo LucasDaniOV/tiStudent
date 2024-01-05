@@ -1,5 +1,6 @@
 import { getToken } from "@/util/token";
 import React, { useEffect, useState } from "react";
+import { useTranslation } from "react-i18next";
 
 type Props = {
   fileName: any;
@@ -7,6 +8,7 @@ type Props = {
 
 const FileDownloadComponent: React.FC<Props> = ({ fileName }: Props) => {
   const [uploadedFile, setUploadedFile] = useState<any>();
+  const { t } = useTranslation();
   useEffect(() => {
     setUploadedFile(fileName);
   }, [uploadedFile]);
@@ -45,11 +47,11 @@ const FileDownloadComponent: React.FC<Props> = ({ fileName }: Props) => {
           URL.revokeObjectURL(blobUrl);
         } else {
           // Handle download failure
-          console.error("Failed to download file.");
+          console.error(t("download.error.download"));
         }
       } catch (error) {
         // Handle fetch error
-        console.error("Error during fetch:", error);
+        console.error(t("download.error.fetch"), error);
       }
     }
   };
@@ -62,8 +64,8 @@ const FileDownloadComponent: React.FC<Props> = ({ fileName }: Props) => {
             className="text-2xl align-middle hover:bg-gray-500 border p-1 rounded-lg "
             onClick={handleDownload}
           >
-            <span className="text-3xl align-middle">&#10515;</span> Download
-            File
+            <span className="text-3xl align-middle">&#10515;</span>
+            {t("download.message")}
           </button>
         </div>
       )}

@@ -23,14 +23,14 @@ const LeaderBoard: React.FC<Props> = ({ profiles }: Props) => {
     <>
       {profiles && (
         <>
-          <h1 className="text-2xl">Top Contributors:</h1>
+          <h1 className="text-2xl">{t("leaderboard.top")}:</h1>
           <table className="border-collapse w-full">
             <thead>
               <tr>
                 <th scope="col" className="border p-4 text-left">
                   {t("profiles.fields.username")}
                 </th>
-                <th>Count</th>
+                <th>{t("leaderboard.count")}</th>
               </tr>
             </thead>
             <tbody>

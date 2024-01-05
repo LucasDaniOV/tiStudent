@@ -1,6 +1,6 @@
 {
   "app.title": "Aplicación tiStudent",
-  "general.error": "Se ha producido un error. Inténtalo de nuevo más tarde.",
+  "general.error": "Se ha producido un error. Por favor, inténtalo de nuevo más tarde.",
   "authorization.error": "No estás autorizado para ver esta página. Por favor, inicia sesión primero.",
   "loading": "Cargando...",
   "delete": "Eliminar",
@@ -18,11 +18,11 @@
   },
   "home": {
     "welcome": "Bienvenido",
-    "message": "tiStudent es una plataforma donde puedes compartir recursos académicos. Como usuario, puedes cargar tus propios recursos, dar like y comentar en los recursos de otras personas. Puedes ver tus recursos favoritos y obtener una visión general de todos los recursos que has compartido."
+    "message": "tiStudent es una plataforma donde puedes compartir recursos académicos. Como usuario, puedes subir tus propios recursos, dar like y comentar en los recursos de otras personas. Puedes ver tus recursos marcados como favoritos y obtener una visión general de todos los recursos que has compartido."
   },
   "users": {
     "message": "Usuarios",
-    "info": "Información del usuario",
+    "info": "Información del Usuario",
     "about": "Información sobre el usuario con ID:",
     "loading": "Cargando...",
     "deleted": {
@@ -39,16 +39,20 @@
     "title": "Recursos",
     "fields": {
       "id": "ID",
-      "user.id": "ID de usuario",
+      "user.id": "ID de Usuario",
       "created.at": "Creado en",
       "title": "Título",
       "description": "Descripción",
       "category": "Categoría",
       "summary": "Resumen",
-      "cheat.sheet": "Hoja de trucos",
-      "lecture.notes": "Notas de conferencia",
-      "subject": "Asunto",
-      "profileId": "ID de perfil"
+      "cheat.sheet": "Hoja de Trucos",
+      "lecture.notes": "Notas de Clase",
+      "subject": "Asignatura",
+      "profileId": "ID de Perfil",
+      "creator": "Creador",
+      "file": "Archivo",
+      "thumbnail": "Miniatura",
+      "likes": "Likes"
     },
     "error": {
       "title": "Se requiere un título",
@@ -57,15 +61,20 @@
       "description.length": "La descripción no puede tener más de 500 caracteres",
       "category": "Se requiere una categoría",
       "category.invalid": "Categoría no válida",
-      "subject": "Se requiere un asunto",
-      "subject.invalid": "Asunto no válido",
-      "profileId": "Se requiere ID de perfil"
+      "subject": "Se requiere una asignatura",
+      "subject.invalid": "Asignatura no válida",
+      "profileId": "Se requiere un ID de perfil",
+      "file": "Se requiere un archivo",
+      "creator": "No eres el creador de este Recurso."
     },
     "create": "Crear Recurso",
     "info": {
-      "title": "Información del recurso",
-      "message": "Agregar un recurso"
+      "title": "Información del Recurso",
+      "message": "Agregar un Recurso",
+      "link": "Enlace copiado",
+      "member": "Miembro desde"
     },
+    "confirm": "¿Estás seguro de que quieres eliminar el recurso con título",
     "delete": "Recurso eliminado con ID ",
     "comment": {
       "reply": "Responder",
@@ -80,7 +89,7 @@
       "options": {
         "edit": {
           "title": "Editar",
-          "message": "Todavía no implementado"
+          "message": "Aún no implementado"
         },
         "delete": {
           "title": "Eliminar",
@@ -91,21 +100,33 @@
       }
     }
   },
+  "download": {
+    "message": "Descargar Archivo",
+    "error": {
+      "download": "Error al descargar el archivo.",
+      "fetch": "Error durante la obtención:"
+    }
+  },
   "profiles": {
     "index.title": "Perfiles",
-    "title": "Información del perfil",
+    "title": "Información del Perfil",
     "fields": {
       "id": "ID",
       "username": "Nombre de usuario",
       "bio": "Biografía",
       "created.at": "Creado en",
-      "latest.activity": "Última actividad"
+      "role": "Rol",
+      "latest.activity": "Última Actividad"
     },
-    "info": "Información sobre",
+    "info": {
+      "message": "Información sobre ",
+      "uploaded": " recursos subidos",
+      "nothing": "Este usuario aún no ha compartido nada"
+    },
     "delete": "¿Estás seguro de que quieres eliminar"
   },
   "login": {
-    "enter": "Ingresar",
+    "enter": "Entrar",
     "message": "Iniciar sesión",
     "github": "Iniciar sesión con GitHub",
     "profile": {
@@ -131,11 +152,21 @@
         }
       }
     },
-    "succes": "¡Inicio de sesión exitoso! Redireccionando...",
-    "error": "Se ha producido un error. Inténtalo de nuevo más tarde."
+    "succes": "¡Inicio de sesión exitoso! Redirigiendo...",
+    "error": "Se ha producido un error. Por favor, inténtalo de nuevo más tarde."
   },
   "logout": {
     "message": "¿Estás seguro de que quieres salir?",
     "button": "Sí"
+  },
+  "footer": {
+    "message": "Mantente en contacto",
+    "startdate": "Fecha de inicio del proyecto",
+    "supported": "Idiomas admitidos",
+    "menu": "Menú"
+  },
+  "leaderboard": {
+    "top": "Principales Contribuyentes",
+    "count": "Conteo"
   }
 }
