@@ -1,5 +1,5 @@
 import FileDownloadComponent from "@/components/FileDownloadComponent";
-import Header from "@/components/Header";
+import Header from "@/components/header/Header";
 import Comments from "@/components/comments/Comments";
 import Likes from "@/components/likes/likes";
 import ResourceInfo from "@/components/resources/ResourceInfo";

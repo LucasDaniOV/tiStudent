@@ -1,4 +1,4 @@
-import Header from "@/components/Header";
+import Header from "@/components/header/Header";
 import ResourceService from "@/services/ResourceService";
 import { Resource } from "@/types/index";
 import { useTranslation } from "next-i18next";

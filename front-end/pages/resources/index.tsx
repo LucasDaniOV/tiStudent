@@ -9,6 +9,7 @@ import ResourcesOverviewTable from "../../components/resources/ResourcesOverview
 import ResourceService from "../../services/ResourceService";
 import { useTranslation } from "next-i18next";
 import { useRouter } from "next/router";
+import Footer from "@/components/Footer";
 
 const Resources: React.FC = () => {
   const [authorized, setAuthorized] = useState<boolean>(true);
@@ -41,7 +42,9 @@ const Resources: React.FC = () => {
       <Head>
         <title>{t("resources.title")}</title>
       </Head>
-      <Header current="resources" />
+
+      <Header current="resources" isLoggedIn={authorized} />
+
       <main className="grid grid-cols-4">
         <section className="col-span-3 items-center">
           <h1 className="m-auto text-3xl">{t("resources.title")}</h1>
@@ -57,6 +60,8 @@ const Resources: React.FC = () => {
           </section>
         )}
       </main>
+
+      <Footer />
     </>
   );
 };
