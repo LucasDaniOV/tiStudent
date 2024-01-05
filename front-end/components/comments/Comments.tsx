@@ -77,7 +77,7 @@ const Comments: React.FC<Props> = ({
       };
       getComments();
     }
-  }, [comments, commentId]);
+  }, [commentId]);
 
   const handleDelete = async (
     e: React.MouseEvent<HTMLAnchorElement, MouseEvent>,
@@ -120,7 +120,6 @@ const Comments: React.FC<Props> = ({
     );
     router.reload(); // current solution to render newly created comment
   };
-  console.log(generation);
 
   return (
     <>

@@ -15,8 +15,6 @@ const ResourceInfo: React.FC<Props> = ({
   subjects,
 }: Props) => {
   const { t } = useTranslation();
-  const router = useRouter();
-  console.log(resource.filePath);
   return (
     <>
       {resource && (
@@ -46,7 +44,7 @@ const ResourceInfo: React.FC<Props> = ({
                 </span>
               </span>
               <span className="flex justify-center">
-                <strong>{t("resources.fields.created.at")}:</strong>
+                <strong>{t("resources.info.member")}:</strong>
                 <span className="ml-1">
                   {
                     String(resource.createdAt).split(

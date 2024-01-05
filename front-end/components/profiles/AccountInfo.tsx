@@ -1,10 +1,9 @@
+import LikeService from "@/services/LikeService";
 import ResourceService from "@/services/ResourceService";
 import { Profile, Resource } from "@/types";
 import { useTranslation } from "next-i18next";
-import React, { useEffect, useState } from "react";
-import LikeService from "@/services/LikeService";
-import { useRouter } from "next/router";
 import Image from "next/image";
+import React, { useEffect, useState } from "react";
 import SharedResources from "./SharedResource";
 
 type Props = {
@@ -64,7 +63,7 @@ const AccountInfo: React.FC<Props> = ({ profile }: Props) => {
             </div>
             <div className="flex justify-center m-1 items-center">
               <span>
-                <strong>{t("profiles.fields.username")}: </strong>{" "}
+                <strong>{t("profiles.fields.username")}: </strong>
                 {profile.username}
               </span>
             </div>
@@ -75,7 +74,7 @@ const AccountInfo: React.FC<Props> = ({ profile }: Props) => {
             </div>
             <div className="flex justify-center m-1 items-center">
               <span>
-                <strong>{t("profiles.fields.created.at")}:</strong>{" "}
+                <strong>{t("profiles.fields.created.at")}: </strong>
                 {String(profile.createdAt).split("T")[0]}
               </span>
             </div>
@@ -83,21 +82,23 @@ const AccountInfo: React.FC<Props> = ({ profile }: Props) => {
           {resources && resources.length > 0 ? (
             <div className="flex flex-col justify-center">
               <strong className="flex justify-center m-5">
-                {profile.username}'s uploaded resources:
+                {profile.username}
+                {t("profiles.info.uploaded")}:
               </strong>
               <table>
                 <thead>
                   <tr className="grid grid-cols-4">
-                    <th className="m-1">Thumbnail</th>
-                    <th className="m-1">Title</th>
-                    <th className="m-1">Description</th>
-                    <th className="m-1">Likes</th>
+                    <th className="m-1">{t("resources.fields.thumbnail")}</th>
+                    <th className="m-1">{t("resources.fields.title")}</th>
+                    <th className="m-1">{t("resources.fields.description")}</th>
+                    <th className="m-1">{t("resources.fields.likes")}</th>
                   </tr>
                 </thead>
                 <tbody>
-                  {resources.map((resource) => {
+                  {resources.map((resource: Resource) => {
                     return (
                       <SharedResources
+                        key={"sharedResources"}
                         resource={resource}
                         likes={likes[resource.id]}
                       />
@@ -108,7 +109,7 @@ const AccountInfo: React.FC<Props> = ({ profile }: Props) => {
             </div>
           ) : (
             <p className="flex justify-center m-5 text-gray-400">
-              This user hasn't shared anything yet
+              {t("profiles.info.nothing")}
             </p>
           )}
         </article>
