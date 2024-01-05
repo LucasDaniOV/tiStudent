@@ -37,7 +37,7 @@ const Resources: React.FC = () => {
 
   if (error) {
     console.error("Failed to fetch resources:", error);
-    return <div>Error loading resources.</div>;
+    return <div>{t("login.error")}</div>;
   }
 
   useEffect(() => {

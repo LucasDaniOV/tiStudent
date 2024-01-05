@@ -18,9 +18,7 @@ const AccountInfo: React.FC<Props> = ({ profile }: Props) => {
   const [profilePicture, setProfilePicture] = useState<string>("");
 
   const getResources = async () => {
-    const response = await ResourceService.getResourcesByProfile(
-      parseInt(profile.id)
-    );
+    const response = await ResourceService.getResourcesByProfile(parseInt(profile.id));
     try {
       const img = await import("../../../back-end/uploads/" + profile.picture);
       setProfilePicture(img);
@@ -55,14 +53,7 @@ const AccountInfo: React.FC<Props> = ({ profile }: Props) => {
         <article className="mb-5">
           <div className="grid grid-cols-4 bg-gray-500">
             <div className="flex justify-center m-0 items-center">
-              {profilePicture && (
-                <Image
-                  src={profilePicture}
-                  alt={"Profile picture"}
-                  width={150}
-                  height={150}
-                />
-              )}
+              {profilePicture && <Image src={profilePicture} alt={"Profile picture"} width={150} height={150} />}
             </div>
             <div className="flex justify-center m-1 items-center">
               <span>
@@ -77,7 +68,7 @@ const AccountInfo: React.FC<Props> = ({ profile }: Props) => {
             </div>
             <div className="flex justify-center m-1 items-center">
               <span>
-                <strong>{t("profiles.fields.created.at")}: </strong>
+                <strong>{t("resources.info.member")}: </strong>
                 {String(profile.createdAt).split("T")[0]}
               </span>
             </div>
@@ -99,21 +90,13 @@ const AccountInfo: React.FC<Props> = ({ profile }: Props) => {
                 </thead>
                 <tbody>
                   {data.map((resource: Resource) => {
-                    return (
-                      <SharedResources
-                        key={"sharedResources"}
-                        resource={resource}
-                        likes={likes[resource.id]}
-                      />
-                    );
+                    return <SharedResources key={"sharedResources"} resource={resource} likes={likes[resource.id]} />;
                   })}
                 </tbody>
               </table>
             </div>
           ) : (
-            <p className="flex justify-center m-5 text-gray-400">
-              {t("profiles.info.nothing")}
-            </p>
+            <p className="flex justify-center m-5 text-gray-400">{t("profiles.info.nothing")}</p>
           )}
         </article>
       )}

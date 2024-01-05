@@ -9,11 +9,7 @@ type Props = {
   subjects: Subject[];
 };
 
-const ResourceInfo: React.FC<Props> = ({
-  resource,
-  categories,
-  subjects,
-}: Props) => {
+const ResourceInfo: React.FC<Props> = ({ resource, categories, subjects }: Props) => {
   const { t } = useTranslation();
   return (
     <>
@@ -44,14 +40,8 @@ const ResourceInfo: React.FC<Props> = ({
                 </span>
               </span>
               <span className="flex justify-center">
-                <strong>{t("resources.info.member")}:</strong>
-                <span className="ml-1">
-                  {
-                    String(resource.createdAt).split(
-                      "T"
-                    )[0] /* DISPLAY ONLY DATE */
-                  }
-                </span>
+                <strong>{t("resources.fields.created.at")}:</strong>
+                <span className="ml-1">{String(resource.createdAt).split("T")[0] /* DISPLAY ONLY DATE */}</span>
               </span>
             </div>
           </div>
