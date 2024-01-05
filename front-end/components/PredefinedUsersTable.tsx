@@ -1,12 +1,15 @@
+import { useTranslation } from "next-i18next";
+
 const PredefinedUsersTable: React.FC = () => {
+  const { t } = useTranslation();
   return (
     <>
       <table>
         <thead>
           <tr>
-            <th>Email</th>
-            <th>Password</th>
-            <th>Role</th>
+            <th>{t("login.profile.form.email")}</th>
+            <th>{t("login.profile.form.password")}</th>
+            <th>{t("profiles.fields.role")}</th>
           </tr>
         </thead>
         <tbody>

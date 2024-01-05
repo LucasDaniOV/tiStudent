@@ -5,11 +5,9 @@ import { AuthenticationResponse, ProfileInput, ProfileLikes, Role } from '../typ
 
 const profileRouter = express.Router();
 
-profileRouter.get('/', async (req: Request & { auth: AuthenticationResponse }, res: Response, next: NextFunction) => {
+profileRouter.get('/', async (req: Request, res: Response, next: NextFunction) => {
     try {
-        const role: Role = req.auth.role;
-
-        const profiles: Profile[] = await profileService.getAllProfiles(role);
+        const profiles: Profile[] = await profileService.getAllProfiles('ADMIN');
 
         res.status(200).json({ status: 'success', message: 'profiles found', profiles });
     } catch (error) {

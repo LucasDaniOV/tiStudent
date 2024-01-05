@@ -1,11 +1,11 @@
 {
   "app.title": "Aplicația tiStudent",
-  "general.error": "A intervenit o eroare. Vă rugăm să încercați din nou mai târziu.",
-  "authorization.error": "Nu aveți permisiunea de a vizualiza această pagină. Vă rugăm să vă autentificați mai întâi.",
-  "loading": "Încărcare...",
+  "general.error": "A apărut o eroare. Vă rugăm să încercați din nou mai târziu.",
+  "authorization.error": "Nu aveți autorizația de a vizualiza această pagină. Vă rugăm să vă autentificați mai întâi.",
+  "loading": "Se încarcă...",
   "delete": "Șterge",
   "back": "Înapoi",
-  "email.linked": "E-mail deja asociat unui profil",
+  "email.linked": "Email deja asociat unui profil",
   "header": {
     "nav": {
       "home": "Acasă",
@@ -13,20 +13,20 @@
       "resources": "Resurse",
       "profiles": "Profile",
       "login": "Autentificare",
-      "logout": "Deconectare"
+      "logout": "Dezautentificare"
     }
   },
   "home": {
     "welcome": "Bun venit",
-    "message": "tiStudent este o platformă unde poți partaja resurse academice. Ca utilizator, poți încărca propriile resurse, aprecia și comenta resursele altor persoane. Poți vizualiza resursele apreciate și obține o prezentare generală a tuturor resurselor pe care le-ai partajat."
+    "message": "tiStudent este o platformă unde poți partaja resurse academice. Ca utilizator, poți încărca resurse proprii, și puteți aprecia și comenta resursele altor persoane. Puteți vizualiza resursele apreciate și obține o privire de ansamblu asupra tuturor resurselor pe care le-ați partajat."
   },
   "users": {
     "message": "Utilizatori",
-    "info": "Informații despre utilizator",
-    "about": "Informații despre utilizatorul cu ID-ul: ",
-    "loading": "Încărcare...",
+    "info": "Informații Utilizator",
+    "about": "Informații despre utilizatorul cu ID-ul:",
+    "loading": "Se încarcă...",
     "deleted": {
-      "title": "Utilizator șters",
+      "title": "Utilizator Șters",
       "message": "Utilizator șters cu ID-ul:"
     },
     "fields": {
@@ -39,16 +39,20 @@
     "title": "Resurse",
     "fields": {
       "id": "ID",
-      "user.id": "ID utilizator",
+      "user.id": "ID Utilizator",
       "created.at": "Creat la",
       "title": "Titlu",
       "description": "Descriere",
       "category": "Categorie",
       "summary": "Sumar",
-      "cheat.sheet": "Fișă de ajutor",
+      "cheat.sheet": "Cheat Sheet",
       "lecture.notes": "Note de curs",
       "subject": "Subiect",
-      "profileId": "ID profil"
+      "profileId": "ID Profil",
+      "creator": "Creator",
+      "file": "Fișier",
+      "thumbnail": "Miniatură",
+      "likes": "Aprecieri"
     },
     "error": {
       "title": "Titlul este obligatoriu",
@@ -59,14 +63,19 @@
       "category.invalid": "Categorie invalidă",
       "subject": "Subiectul este obligatoriu",
       "subject.invalid": "Subiect invalid",
-      "profileId": "ID profil obligatoriu"
+      "profileId": "ID Profil este obligatoriu",
+      "file": "Fișierul este obligatoriu",
+      "creator": "Nu sunteți creatorul acestei Resurse."
     },
-    "create": "Creează resursă",
+    "create": "Creează Resursă",
     "info": {
-      "title": "Informații despre resursă",
-      "message": "Adaugă o resursă"
+      "title": "Informații Resursă",
+      "message": "Adaugă o Resursă",
+      "link": "Link copiat",
+      "member": "Membru din"
     },
-    "delete": "Resursa cu ID-ul ",
+    "confirm": "Sunteți sigur că doriți să ștergeți resursa cu titlul",
+    "delete": "Resursa cu ID-ul a fost eliminată ",
     "comment": {
       "reply": "Răspunde",
       "hide": "Ascunde",
@@ -80,7 +89,7 @@
       "options": {
         "edit": {
           "title": "Editează",
-          "message": "Nu a fost încă implementat"
+          "message": "Nu a fost implementat încă"
         },
         "delete": {
           "title": "Șterge",
@@ -91,18 +100,30 @@
       }
     }
   },
+  "download": {
+    "message": "Descarcă Fișierul",
+    "error": {
+      "download": "Descărcarea fișierului a eșuat.",
+      "fetch": "Eroare în timpul preluării:"
+    }
+  },
   "profiles": {
     "index.title": "Profile",
-    "title": "Informații despre profil",
+    "title": "Informații Profil",
     "fields": {
       "id": "ID",
       "username": "Nume de utilizator",
-      "bio": "Biografie",
+      "bio": "Bio",
       "created.at": "Creat la",
-      "latest.activity": "Ultima activitate"
+      "role": "Rol",
+      "latest.activity": "Ultima Activitate"
     },
-    "info": "Informații despre ",
-    "delete": "Sigur doriți să ștergeți"
+    "info": {
+      "message": "Informații despre ",
+      "uploaded": " resursele încărcate",
+      "nothing": "Acest utilizator nu a partajat încă nimic"
+    },
+    "delete": "Sunteți sigur că doriți să ștergeți"
   },
   "login": {
     "enter": "Intră",
@@ -112,7 +133,7 @@
       "message": "Sau creează un profil nou",
       "form": {
         "username": "Nume de utilizator",
-        "bio": "Biografie",
+        "bio": "Bio",
         "email": "Email",
         "password": "Parolă",
         "create.profile": "Creează profil",
@@ -120,7 +141,7 @@
           "email": "Emailul este obligatoriu",
           "username": "Numele de utilizator este obligatoriu",
           "username.length": "Numele de utilizator nu poate avea mai mult de 30 de caractere",
-          "bio": "Biografia nu poate avea mai mult de 200 de caractere",
+          "bio": "Bio nu poate avea mai mult de 200 de caractere",
           "password": {
             "exists": "Parola este obligatorie",
             "length": "Parola trebuie să aibă cel puțin 8 caractere",
@@ -131,11 +152,21 @@
         }
       }
     },
-    "succes": "Autentificare reușită! Redirecționare...",
-    "error": "A intervenit o eroare. Vă rugăm să încercați din nou mai târziu."
+    "succes": "Autentificare reușită! Se redirectionează...",
+    "error": "A apărut o eroare. Vă rugăm să încercați din nou mai târziu."
   },
   "logout": {
     "message": "Sunteți sigur că doriți să părăsiți?",
     "button": "Da"
+  },
+  "footer": {
+    "message": "Păstrați legătura",
+    "startdate": "Data de început a proiectului",
+    "supported": "Limbi acceptate",
+    "menu": "Meniu"
+  },
+  "leaderboard": {
+    "top": "Top Contribuitori",
+    "count": "Număr"
   }
 }

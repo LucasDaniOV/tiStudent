@@ -7,10 +7,10 @@ import Link from "next/link";
 import React, { useEffect, useState } from "react";
 import useSWR, { mutate } from "swr";
 import useInterval from "use-interval";
-import ResourcesOverviewTable from "../../components/resources/ResourcesOverviewTable";
 import ResourceService from "../../services/ResourceService";
 import { Profile, Resource } from "@/types";
 import ProfileService from "@/services/ProfileService";
+import ResourcesOverviewTable from "@/components/resources/ResourcesOverviewTable";
 
 const Resources: React.FC = () => {
   const [profile, setProfile] = useState<Profile | null>(null);

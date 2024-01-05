@@ -48,7 +48,11 @@
       "cheat.sheet": "Cheat Sheet",
       "lecture.notes": "Lecture Notes",
       "subject": "Subject",
-      "profileId": "ProfileID"
+      "profileId": "ProfileID",
+      "creator": "Creator",
+      "file": "File",
+      "thumbnail": "Thumbnail",
+      "likes": "Likes"
     },
     "error": {
       "title": "Title is required",
@@ -59,13 +63,18 @@
       "category.invalid": "Invalid category",
       "subject": "Subject is required",
       "subject.invalid": "Invalid subject",
-      "profileId": "ProfileID is required"
+      "profileId": "ProfileID is required",
+      "file": "File is required",
+      "creator": "You are not the creator of this Resource."
     },
     "create": "Create Resource",
     "info": {
       "title": "Resource Info",
-      "message": "Add a Resource"
+      "message": "Add a Resource",
+      "link": "Link copied",
+      "member": "Member since"
     },
+    "confirm": "Are you sure you want to delete resource with title",
     "delete": "Removed resource with id ",
     "comment": {
       "reply": "Reply",
@@ -91,6 +100,13 @@
       }
     }
   },
+  "download": {
+    "message": "Download File",
+    "error": {
+      "download": "Failed to download file.",
+      "fetch": "Error during fetch:"
+    }
+  },
   "profiles": {
     "index.title": "Profiles",
     "title": "Profile Info",
@@ -99,9 +115,14 @@
       "username": "Username",
       "bio": "Bio",
       "created.at": "Created At",
+      "role": "Role",
       "latest.activity": "Latest Activity"
     },
-    "info": "Info about ",
+    "info": {
+      "message": "Info about ",
+      "uploaded": "'s uploaded resources",
+      "nothing": "This user hasn't shared anything yet"
+    },
     "delete": "Are you sure you want to delete"
   },
   "login": {
@@ -137,5 +158,15 @@
   "logout": {
     "message": "Are you sure you want to leave?",
     "button": "Yes"
+  },
+  "footer": {
+    "message": "Keep in touch",
+    "startdate": "Startdate project",
+    "supported": "Supported languages",
+    "menu": "Menu"
+  },
+  "leaderboard": {
+    "top": "Top Contributors",
+    "count": "Count"
   }
 }

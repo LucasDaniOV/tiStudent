@@ -91,26 +91,26 @@ const CreateResourceForm: React.FC = () => {
     clearErrors();
 
     if (!category) {
-      setCategoryError("Category is required");
+      setCategoryError(t("resources.error.category"));
       return;
     }
 
     if (!subject) {
-      setSubjectError("Subject is required");
+      setSubjectError(t("resources.error.subject"));
       return;
     }
     if (!title) {
-      setTitleError("Title is required");
+      setTitleError(t("resources.error.title"));
       return;
     }
 
     if (!description) {
-      setDescriptionError("Description is required");
+      setDescriptionError(t("resources.error.description"));
       return;
     }
 
     if (!filePath) {
-      setFilePathError("File is required");
+      setFilePathError(t("resources.error.file"));
       return;
     }
 
@@ -147,13 +147,13 @@ const CreateResourceForm: React.FC = () => {
     () => {
       document.removeEventListener("click", handleOutsideClicks);
     };
-  }, [, categories, subjects]);
+  }, [categories, subjects]);
   return (
     <>
       <section>
         <form className="flex flex-col" onSubmit={(e) => handleSubmit(e)}>
           <label className="mt-2 mb-2" htmlFor="title">
-            {t("resources.fields.title")}:{" "}
+            {t("resources.fields.title")}:
           </label>
           <input
             type="text"
@@ -163,7 +163,7 @@ const CreateResourceForm: React.FC = () => {
             }}
           />
           <label className="mt-2 mb-2" htmlFor="description">
-            {t("resources.fields.description")}:{" "}
+            {t("resources.fields.description")}:
           </label>
           <textarea
             id="description"
@@ -174,14 +174,14 @@ const CreateResourceForm: React.FC = () => {
             }}
           ></textarea>
           <div>
-            <p className="mt-2 mb-2">File: </p>
+            <p className="mt-2 mb-2">{t("resources.fields.file")}: </p>
             <FileUploadComponent
               callback={setFilePath}
               allowedExtensions={[".jpg", ".jpeg", ".png", ".zip", ".pdf"]}
             />
           </div>
           <div>
-            <p className="mt-2 mb-2">Thumbnail: </p>
+            <p className="mt-2 mb-2">{t("resources.fields.thumbnail")}: </p>
             <FileUploadComponent
               callback={setThumbNail}
               allowedExtensions={[".jpg", ".jpeg", ".png"]}
@@ -203,7 +203,10 @@ const CreateResourceForm: React.FC = () => {
                     onChange={(e) => setCategory(category)}
                   />
                   <label className="mt-2 mb-2" htmlFor={category.name}>
-                    {category.name}
+                    {t(
+                      "resources.fields." +
+                        category.name.toLowerCase().replace(" ", ".")
+                    )}
                   </label>
                 </div>
               );

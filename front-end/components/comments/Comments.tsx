@@ -11,6 +11,7 @@ type Props = {
   resourceId: string;
   object: "resource" | "comment";
   commentsProp: Comment[];
+  generation: number;
   commentId?: string;
 };
 
@@ -18,6 +19,7 @@ const Comments: React.FC<Props> = ({
   object,
   commentsProp,
   resourceId,
+  generation,
   commentId,
 }: Props) => {
   const { t } = useTranslation();
@@ -68,13 +70,14 @@ const Comments: React.FC<Props> = ({
     if (comments.length === 0 && commentId) {
       const getComments = async () => {
         const response = await CommentService.getChildrenByCommentId(commentId);
+        console.log(response.comments);
         setComments(response.comments);
         const parent = await CommentService.getCommentById(commentId);
         setParentComment(parent.comment);
       };
       getComments();
     }
-  }, [comments, commentId]);
+  }, [commentId]);
 
   const handleDelete = async (
     e: React.MouseEvent<HTMLAnchorElement, MouseEvent>,
@@ -103,6 +106,7 @@ const Comments: React.FC<Props> = ({
   ) => {
     e.stopPropagation();
     e.preventDefault();
+    console.log(parentComment);
     const message = prompt(t("resources.comment.prompt"));
     if (!message) return;
     const token = getToken();
@@ -114,17 +118,19 @@ const Comments: React.FC<Props> = ({
       message,
       token
     );
-    router.reload(); // current solution to render newly created comment
+    router.reload();
   };
 
   return (
     <>
-      {comments.length > 0 && profile ? (
+      {generation < 3 && comments.length > 0 && profile ? (
         <ul
           className={
-            object == "comment"
+            generation === 0
+              ? "bg-gray-400 pb-10 pt-10"
+              : generation === 1
               ? "bg-gray-500 pb-10 pt-10"
-              : "bg-gray-400 pb-10 pt-10"
+              : "bg-gray-600 pb-10 pt-10"
           }
         >
           {comments.map((com, index) => {
@@ -162,7 +168,7 @@ const Comments: React.FC<Props> = ({
                   >
                     - {com.profile?.username}
                   </span>
-                  {!com.parentId && (
+                  {generation < 2 && !com.parentId && (
                     <a
                       className="flex items-center justify-center hover:bg-gray-600"
                       onClick={(e) => {
@@ -210,7 +216,7 @@ const Comments: React.FC<Props> = ({
                         </a>
                       </div>
                     ))}
-                  {!com.parentId && (
+                  {generation < 2 && !com.parentId && (
                     <button
                       onClick={() => {
                         toggleVisibility(com.id);
@@ -234,6 +240,7 @@ const Comments: React.FC<Props> = ({
                     object="comment"
                     commentsProp={[]}
                     resourceId={resourceId}
+                    generation={generation + 1}
                   />
                 )}
               </li>

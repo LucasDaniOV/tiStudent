@@ -1,3 +1,4 @@
+import Footer from "@/components/Footer";
 import Header from "@/components/header/Header";
 import AccountInfo from "@/components/profiles/AccountInfo";
 import ProfileService from "@/services/ProfileService";
@@ -6,22 +7,28 @@ import { useTranslation } from "next-i18next";
 import { serverSideTranslations } from "next-i18next/serverSideTranslations";
 import Head from "next/head";
 import { useRouter } from "next/router";
-import { useEffect, useState } from "react";
+import useSWR, { mutate } from "swr";
+import useInterval from "use-interval";
 
 const ReadProfileById = () => {
-  const [profile, setProfile] = useState<Profile>();
   const { t } = useTranslation();
   const router = useRouter();
   const { profileId } = router.query;
   const getProfileById = async () => {
-    const fetchedProfile = await ProfileService.getProfileById(
-      profileId as string
-    );
-    return setProfile(fetchedProfile.profile);
+    const fetchedProfile = await ProfileService.getProfileById(profileId as string);
+
+    return fetchedProfile.profile;
   };
-  useEffect(() => {
-    if (profileId && !profile) getProfileById();
-  }, [profile, profileId]);
+
+  const {
+    data: profile,
+    isLoading: profileIsLoading,
+    error: profileError,
+  } = useSWR(["profile", profileId], getProfileById);
+
+  useInterval(() => {
+    mutate(["profile", profileId], getProfileById());
+  }, 5000);
 
   return (
     <>
@@ -30,10 +37,12 @@ const ReadProfileById = () => {
       </Head>
       <Header current="profiles" />
       <main className="mx-auto" style={{ width: "80%" }}>
+        {profileError && <div>{profileError}</div>}
+        {profileIsLoading && <div>{t("loading")}</div>}
         <h1 className="flex justify-center mb-5">
           {profile && (
             <>
-              {t("profiles.info")} {profile.username}
+              {t("profiles.info.message")} {profile.username}
             </>
           )}
         </h1>
@@ -42,6 +51,7 @@ const ReadProfileById = () => {
           <AccountInfo profile={profile as Profile} />
         </section>
       </main>
+      <Footer />
     </>
   );
 };

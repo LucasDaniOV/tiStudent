@@ -1,39 +1,27 @@
-import { serverSideTranslations } from "next-i18next/serverSideTranslations";
 import Header from "@/components/header/Header";
+import LeaderBoard from "@/components/profiles/LeaderBoard";
 import ProfilesOverviewTable from "@/components/profiles/ProfilesOverviewTable";
-import { Profile } from "@/types";
+import { useTranslation } from "next-i18next";
+import { serverSideTranslations } from "next-i18next/serverSideTranslations";
 import Head from "next/head";
-import { useEffect, useState } from "react";
-import { mutate } from "swr";
+import { useState } from "react";
+import useSWR, { mutate } from "swr";
 import useInterval from "use-interval";
 import ProfileService from "../../services/ProfileService";
-import { useTranslation } from "next-i18next";
-import LeaderBoard from "@/components/profiles/LeaderBoard";
-import { useRouter } from "next/router";
+import Footer from "@/components/Footer";
 
 const Profiles: React.FC = () => {
-  const [profiles, setProfiles] = useState<Array<Profile>>();
-  const [errorVisible, setErrorVisible] = useState<boolean>(false);
-  const [topTen, setTopTen] = useState<Array<{ profile: Profile; resourceCount: number }>>();
   const [authorized, setAuthorized] = useState<boolean>(false);
   const { t } = useTranslation();
-  const router = useRouter();
-  
   const getProfiles = async () => {
     const response = await ProfileService.getAllProfiles();
     if (response.status === "unauthorized" || response.status === "error") {
       setAuthorized(false);
       sessionStorage.removeItem("loggedInUser");
-      if (!errorVisible) {
-        confirm("You have to be logged in to view any profiles.");
-        setErrorVisible(true);
-      }
-      router.push("/login");
       return;
     }
     setAuthorized(true);
-    setErrorVisible(false);
-    return setProfiles(response.profiles);
+    return response.profiles;
   };
 
   const getTopTen = async () => {
@@ -43,38 +31,42 @@ const Profiles: React.FC = () => {
       return;
     }
     setAuthorized(true);
-    return setTopTen(response.profiles);
+    return response.profiles;
   };
+
+  const { data: profilesData, isLoading: profilesLoading, error: profilesError } = useSWR("profiles", getProfiles);
+
+  const { data: topTenData, isLoading: topTenLoading, error: topTenError } = useSWR("topTen", getTopTen);
 
   useInterval(() => {
     mutate("profiles", getProfiles());
     mutate("topTen", getTopTen());
   }, 5000);
 
-  useEffect(() => {
-    getProfiles();
-    getTopTen();
-  }, []);
-
   return (
     <>
       <Head>
         <title>{t("profiles.index.title")}</title>
       </Head>
-      <Header current="profiles" isLoggedIn={authorized} />
+      <Header current="profiles" />
       <main>
         <h1 className="text-3xl">{t("profiles.index.title")}</h1>
         <section>
           {authorized ? (
             <>
-              <div className="m-12">{topTen && <LeaderBoard profiles={topTen} />}</div>
-              {profiles && <ProfilesOverviewTable profiles={profiles} />}
+              {profilesError && <div>{profilesError}</div>}
+              {topTenError && <div>{topTenError}</div>}
+              {topTenLoading && <div>{t("loading")}</div>}
+              {profilesLoading && <div>{t("loading")}</div>}
+              <div className="m-12">{topTenData && <LeaderBoard profiles={topTenData} />}</div>
+              {profilesData && <ProfilesOverviewTable profiles={profilesData} />}
             </>
           ) : (
             <p>{t("authorization.error")}</p>
           )}
         </section>
       </main>
+      <Footer />
     </>
   );
 };
