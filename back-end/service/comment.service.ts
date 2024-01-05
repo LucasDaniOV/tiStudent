@@ -21,12 +21,12 @@ const createComment = async (
     }
 
     Comment.validateMessage(message);
-    
+
     await resourceService.getResourceById(resourceId);
     await profileService.getProfileById(profileId);
-    
+
     if (parentId) await getCommentById(parentId);
-    
+
     return await commentDb.createComment(resourceId, profileId, message, parentId);
 };
 
@@ -48,9 +48,22 @@ const getChildrenByCommentId = async (commentId: number): Promise<ChildComment[]
     return await commentDb.getChildrenByCommentId(commentId);
 };
 
-const updateCommentMessage = async (commentId: number, message: string): Promise<Comment> => {
+const updateCommentMessage = async (
+    auth: AuthenticationResponse,
+    commentId: number,
+    message: string
+): Promise<Comment> => {
+    const realProfileId: number = parseInt(auth.id as string);
+    const comment: Comment = await getCommentById(commentId);
+
+    if (realProfileId !== comment.profileId) {
+        throw new UnauthorizedError('invalid_token', {
+            message:
+                'You are trying to update a comment as another profile!!! This incident will be reported to INTERPOL!',
+        });
+    }
+
     Comment.validateMessage(message);
-    await getCommentById(commentId);
     return await commentDb.updateCommentMessage(commentId, message);
 };
 

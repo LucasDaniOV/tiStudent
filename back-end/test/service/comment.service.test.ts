@@ -276,7 +276,11 @@ test(`given: valid values, when: updating comment message, then: should update c
     commentDb.updateCommentMessage = mockCommentDbUpdateCommentMessage.mockReturnValue(comment);
 
     // when
-    const result = await commentService.updateCommentMessage(id, message);
+    const result = await commentService.updateCommentMessage(
+        { id: String(profileId) } as AuthenticationResponse,
+        id,
+        message
+    );
 
     // then
     expect(result).toBeDefined();
@@ -290,11 +294,28 @@ test(`given: invalid comment id, when: updating comment message, then: should th
 
     // when
     try {
-        await commentService.updateCommentMessage(id, message);
+        await commentService.updateCommentMessage({ id: String(profileId) } as AuthenticationResponse, id, message);
     } catch (error) {
         // then
         expect(error).toBeDefined();
         expect(error.message).toBe(`no comment with id ${id} found`);
+        expect(mockCommentDbUpdateCommentMessage).not.toHaveBeenCalled();
+    }
+});
+
+test(`given: not the same comment profile id as the one in the auth, when: updating comment message, then: should throw an error`, async () => {
+    // given
+    commentDb.getCommentById = mockCommentDbGetCommentById.mockReturnValue(comment);
+
+    // when
+    try {
+        await commentService.updateCommentMessage({ id: String(profileId + 1) } as AuthenticationResponse, id, message);
+    } catch (error) {
+        // then
+        expect(error).toBeDefined();
+        expect(error.message).toBe(
+            `You are trying to update a comment as another profile!!! This incident will be reported to INTERPOL!`
+        );
         expect(mockCommentDbUpdateCommentMessage).not.toHaveBeenCalled();
     }
 });

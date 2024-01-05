@@ -63,18 +63,22 @@ commentRouter.get('/:commentId/children', async (req: Request, res: Response, ne
     }
 });
 
-commentRouter.put('/:commentId', async (req: Request, res: Response, next: NextFunction) => {
-    try {
-        const commentId: number = parseInt(req.params.commentId);
-        const message: string = req.body.message;
+commentRouter.put(
+    '/:commentId',
+    async (req: Request & { auth: AuthenticationResponse }, res: Response, next: NextFunction) => {
+        try {
+            const commentId: number = parseInt(req.params.commentId);
+            const message: string = req.body.message;
+            const auth: AuthenticationResponse = req.auth;
 
-        const updatedComment: Comment = await commentService.updateCommentMessage(commentId, message);
+            const updatedComment: Comment = await commentService.updateCommentMessage(auth, commentId, message);
 
-        res.status(200).json({ status: 'success', message: 'comment updated', updatedComment });
-    } catch (error) {
-        next(error);
+            res.status(200).json({ status: 'success', message: 'comment updated', updatedComment });
+        } catch (error) {
+            next(error);
+        }
     }
-});
+);
 
 commentRouter.delete('/:commentId', async (req: Request, res: Response, next: NextFunction) => {
     try {
