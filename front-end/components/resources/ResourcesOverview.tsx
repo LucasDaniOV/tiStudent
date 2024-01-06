@@ -3,6 +3,7 @@ import { useTranslation } from "next-i18next";
 import React from "react";
 import Thumbnail from "./Thumbnail";
 import router from "next/router";
+import Image from "next/image";
 
 type Props = {
   resources: Resource[];
@@ -38,7 +39,22 @@ const ResourcesOverview: React.FC<Props> = ({ resources, profile }: Props) => {
                 return subject.subject.name;
               })}
             </div>
-            <div className="text-sm mt-5">{`${resource.updatedAt}`.split("T", 1)}</div>
+            <div className="mt-5 flex items-center justify-between">
+              <div className="text-sm">{`${resource.updatedAt}`.split("T", 1)}</div>
+              <div>
+                <div className="flex items-center gap-1">
+                  <Image
+                    className="w-8 h-8"
+                    src="/images/like_icon.svg"
+                    alt="edit icon"
+                    width={0}
+                    height={0}
+                    sizes="100vw"
+                  />
+                  <span>x {resource.likes.length}</span>
+                </div>
+              </div>
+            </div>
           </div>
         </div>
       ))}
