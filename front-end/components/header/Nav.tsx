@@ -9,8 +9,8 @@ type Props = {
 const Nav: React.FC<Props> = ({ current, isLoggedIn }: Props) => {
   const { t } = useTranslation();
 
-  const currentStyle = "text-xl text-sky-500";
-  const basic = "text-xl text-white hover:text-sky-500";
+  const currentStyle = "text-xl text-blue-500";
+  const basic = "text-xl text-white hover:text-blue-500";
 
   return (
     <nav className="flex gap-5">
