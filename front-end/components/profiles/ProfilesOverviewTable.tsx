@@ -44,7 +44,7 @@ const ProfilesOverviewTable: React.FC<Props> = ({ profiles }: Props) => {
                 {t("profiles.fields.bio")}
               </th>
               <th scope="col" className="border p-4 text-left">
-                {t("profiles.fields.created.at")}
+                {t("resources.info.member")}
               </th>
               <th scope="col" className="border p-4 text-left">
                 {t("profiles.fields.latest.activity")}
@@ -61,16 +61,10 @@ const ProfilesOverviewTable: React.FC<Props> = ({ profiles }: Props) => {
                 <td className="border p-4 text-left">{profile.id}</td>
                 <td className="border p-4 text-left">{profile.username}</td>
                 <td className="border p-4 text-left">{profile.bio}</td>
-                <td className="border p-4 text-left">
-                  {String(profile.createdAt)}
-                </td>
-                <td className="border p-4 text-left">
-                  {String(profile.latestActivity)}
-                </td>
-                <td
-                  className="border p-4 text-left"
-                  onClick={(e) => deleteProfile(e, profile)}
-                >
+                <td className="border p-4 text-left">{String(profile.createdAt).split("T")[0]}</td>{" "}
+                {/** More understandable */}
+                <td className="border p-4 text-left">{String(profile.latestActivity).split("T")[0]}</td>
+                <td className="border p-4 text-left" onClick={(e) => deleteProfile(e, profile)}>
                   {t("delete")}
                 </td>
               </tr>
