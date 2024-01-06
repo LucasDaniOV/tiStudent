@@ -85,7 +85,7 @@ window.React = React;
 
 test("given Header component - when loaded - then it is displayed", async () => {
   //given
-  render(<Header current={"/home"} />);
+  render(<Header current="home" />);
   //when
   await screen.findByRole("heading");
 
