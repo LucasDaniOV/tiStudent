@@ -1,19 +1,43 @@
+import ResourceService from "@/services/ResourceService";
 import { Category, Profile, Resource, Subject } from "@/types";
 import { useTranslation } from "next-i18next";
 import { useRouter } from "next/router";
 import React from "react";
+import useSWR, { mutate } from "swr";
+import useInterval from "use-interval";
 
 type Props = {
   resource: Resource;
-  categories: Category[];
-  subjects: Subject[];
 };
 
-const ResourceInfo: React.FC<Props> = ({ resource, categories, subjects }: Props) => {
+const ResourceInfo: React.FC<Props> = ({ resource }: Props) => {
   const { t } = useTranslation();
+
+  const getSubjects = async () => {
+    const response = await ResourceService.getSubjectsByResourceId(resource.id);
+    return response;
+  };
+
+  const getCategories = async () => {
+    const response = await ResourceService.getCategoriesByResourceId(resource.id);
+    return response;
+  };
+
+  const {
+    data: categories,
+    isLoading: categoriesLoading,
+    error: categoriesError,
+  } = useSWR("categories", getCategories);
+
+  const { data: subjects, isLoading: subjectsLoading, error: subjectsError } = useSWR("subjects", getSubjects);
+
+  useInterval(() => {
+    mutate("subjects", getSubjects());
+    mutate("categories", getCategories());
+  }, 5000);
   return (
     <>
-      {resource && (
+      {resource && subjects && categories && (
         <>
           <div className="grid grid-cols-2" role="resourceInfo">
             <div className="grid grid-cols-2 col-span-2">
