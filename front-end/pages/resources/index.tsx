@@ -62,15 +62,15 @@ const Resources: React.FC = () => {
 
       <Header current="resources" isLoggedIn={!!profile} />
 
-      <main className="pl-20 pr-20">
+      <main className="pl-20 pr-20 flex flex-col gap-5">
         <h1 className="text-3xl">{t("resources.title")}</h1>
         {profile ? (
-          resources && (
-            <>
+          <div>
+            <button className="p-5 rounded-xl mb-5 bg-tistudent-blue hover:bg-blue-500 text-xl">
               <Link href="/resources/create">{t("resources.create")}</Link>
-              <ResourcesOverviewTable resources={resources as Resource[]} />
-            </>
-          )
+            </button>
+            {resources && <ResourcesOverviewTable resources={resources as Resource[]} />}
+          </div>
         ) : (
           <div className="text-red-600">{t("authorization.error")}</div>
         )}
