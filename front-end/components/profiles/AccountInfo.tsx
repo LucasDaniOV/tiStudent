@@ -90,7 +90,7 @@ const AccountInfo: React.FC<Props> = ({ profile }: Props) => {
                 </thead>
                 <tbody>
                   {data.map((resource: Resource) => {
-                    return <SharedResources key={"sharedResources"} resource={resource} likes={likes[resource.id]} />;
+                    return <SharedResources key={resource.id} resource={resource} likes={likes[resource.id]} />;
                   })}
                 </tbody>
               </table>
