@@ -5,7 +5,7 @@ import { Profile } from "@/types/index";
 import { useTranslation } from "next-i18next";
 import Image from "next/image";
 import { useRouter } from "next/router";
-import { FormEvent, useState } from "react";
+import { FormEvent, useEffect, useState } from "react";
 import useSWR, { mutate } from "swr";
 import useInterval from "use-interval";
 import FileDownloadComponent from "../FileDownloadComponent";
@@ -15,13 +15,14 @@ import ResourceInfo from "./ResourceInfo";
 
 type Props = {
   resource: Resource;
-  creator: Profile;
+  creator: Profile | undefined;
   image: string;
 };
 
 const ResourceID: React.FC<Props> = ({ resource, creator, image }: Props) => {
   const { t } = useTranslation();
   const [commentMessage, setMessage] = useState<string>("");
+  const [messageError, setMessageError] = useState<string>("");
   const [shareState, setShare] = useState<boolean>(false);
   const router = useRouter();
 
@@ -34,12 +35,27 @@ const ResourceID: React.FC<Props> = ({ resource, creator, image }: Props) => {
 
   const { data: profile, isLoading: profileLoading, error: profileError } = useSWR("profile", getProfile);
 
+  const validate = () => {
+    let isValid = true;
+    if (!profile) {
+      isValid = false;
+    }
+    if (!resource) {
+      isValid = false;
+    }
+    if (!commentMessage) {
+      isValid = false;
+      setMessageError(t("resources.comment.empty"));
+    }
+    return isValid;
+  };
+
   const handleSubmit = async (e: FormEvent): Promise<void> => {
     e.preventDefault();
-    if (!profile) return;
-    if (!resource) return;
-    if (!commentMessage) return;
+    if (!validate()) return;
+    setMessageError("");
     await CommentService.writeCommentOnResource(profile.id, resource.id, commentMessage);
+    router.reload();
   };
 
   useInterval(() => {
@@ -48,7 +64,7 @@ const ResourceID: React.FC<Props> = ({ resource, creator, image }: Props) => {
 
   return profileLoading ? (
     <p>{t("loading")}</p>
-  ) : resource && profile ? (
+  ) : resource ? (
     <>
       <div className="flex flex-row">
         <section className="grid grid-cols-3 w-screen m-auto">
@@ -64,7 +80,9 @@ const ResourceID: React.FC<Props> = ({ resource, creator, image }: Props) => {
             </div>
             <div className="flex justify-center" onClick={() => router.push("../../profiles/" + resource.profileId)}>
               {t("resources.fields.creator")}:
-              <span className="hover:cursor-pointer hover:text-red-600 ml-1">{creator?.username}</span>
+              <span className="hover:cursor-pointer hover:text-red-600 ml-1">
+                {creator ? creator.username : t("loading")}
+              </span>
             </div>
           </>
           <div className="col-start-2 col-span-2 grid grid-cols-2">
@@ -101,6 +119,7 @@ const ResourceID: React.FC<Props> = ({ resource, creator, image }: Props) => {
         <Comments object="resource" commentsProp={resource.comments} resourceId={resource.id} generation={0}></Comments>
       </section>
       <section>
+        {messageError && <div className="flex justify-center text-red-700 mt-10 ">{messageError}</div>}
         <section className="w-1/4 m-auto flex " id="addAComment">
           <h3 className="mt-10 mr-10">{t("resources.comment.add")}</h3>
           <form onSubmit={(e) => handleSubmit(e)} className="flex flex-col mt-10">

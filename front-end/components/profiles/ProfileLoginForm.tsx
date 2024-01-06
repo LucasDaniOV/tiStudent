@@ -35,43 +35,54 @@ const ProfileLoginForm: React.FC = () => {
     return isValid;
   };
 
+  const loginUser = async () => {
+    try {
+      const res = await ProfileService.loginUser(email, password);
+
+      if (res.status === 401) {
+        const { errorMessage } = await res.json();
+        setStatusMessages([{ message: errorMessage, type: "error" }]);
+        return;
+      }
+
+      if (res.status !== 200) {
+        setStatusMessages([
+          {
+            message: t("login.error"),
+            type: "error",
+          },
+        ]);
+        return;
+      }
+
+      const user = await res.json();
+      sessionStorage.setItem(
+        "loggedInUser",
+        JSON.stringify({
+          token: user.token,
+          id: user.id,
+          email: user.email,
+          role: user.role,
+        })
+      );
+      setStatusMessages([{ message: t("login.succes"), type: "success" }]);
+      setTimeout(() => {
+        router.push("/");
+      }, 2000);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
   const handleSubmit = async (e: FormEvent) => {
-    e.preventDefault();
-    clearErrors();
-    if (!validate()) return;
-
-    const res = await ProfileService.loginUser(email, password);
-
-    if (res.status === 401) {
-      const { errorMessage } = await res.json();
-      setStatusMessages([{ message: errorMessage, type: "error" }]);
-      return;
+    try {
+      e.preventDefault();
+      clearErrors();
+      if (!validate()) return;
+      await loginUser();
+    } catch (error) {
+      console.log(error);
     }
-
-    if (res.status !== 200) {
-      setStatusMessages([
-        {
-          message: t("login.error"),
-          type: "error",
-        },
-      ]);
-      return;
-    }
-
-    const user = await res.json();
-    sessionStorage.setItem(
-      "loggedInUser",
-      JSON.stringify({
-        token: user.token,
-        id: user.id,
-        email: user.email,
-        role: user.role,
-      })
-    );
-    setStatusMessages([{ message: t("login.succes"), type: "success" }]);
-    setTimeout(() => {
-      router.push("/");
-    }, 2000);
   };
 
   return (

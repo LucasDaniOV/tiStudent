@@ -63,20 +63,18 @@ const ProfileCreateForm: React.FC = () => {
   };
 
   const createProfile = async () => {
-    const res = await ProfileService.createProfile(
-      email,
-      password,
-      "USER",
-      username,
-      bio
-    );
-    const profileObject = await ProfileService.loginUser(email, password);
-    const profile = await profileObject.json();
-    sessionStorage.setItem("loggedInUser", JSON.stringify(profile));
-    const message = res.message;
-    const type = res.status;
-    setStatusMessages([{ message, type }]);
-    router.push("/");
+    try {
+      const res = await ProfileService.createProfile(email, password, "USER", username, bio);
+      const profileObject = await ProfileService.loginUser(email, password);
+      const profile = await profileObject.json();
+      sessionStorage.setItem("loggedInUser", JSON.stringify(profile));
+      const message = res.message;
+      const type = res.status;
+      setStatusMessages([{ message, type }]);
+      router.push("/");
+    } catch (error) {
+      console.log(error);
+    }
   };
 
   const handleSubmit = async (e: FormEvent) => {
@@ -100,12 +98,7 @@ const ProfileCreateForm: React.FC = () => {
           {t("login.profile.form.username")}:
         </label>
         <br />
-        <input
-          id="usernameInput"
-          type="text"
-          value={username}
-          onChange={(e) => setUsername(e.target.value)}
-        />
+        <input id="usernameInput" type="text" value={username} onChange={(e) => setUsername(e.target.value)} />
         {usernameError && <div>{usernameError}</div>}
         <br />
 
@@ -113,12 +106,7 @@ const ProfileCreateForm: React.FC = () => {
           {t("login.profile.form.bio")}:
         </label>
         <br />
-        <input
-          id="bioInput"
-          type="text"
-          value={bio}
-          onChange={(e) => setBio(e.target.value)}
-        />
+        <input id="bioInput" type="text" value={bio} onChange={(e) => setBio(e.target.value)} />
         {bioError && <div>{bioError}</div>}
         <br />
 
@@ -126,12 +114,7 @@ const ProfileCreateForm: React.FC = () => {
           {t("login.profile.form.email")}:
         </label>
         <br />
-        <input
-          id="emailInput"
-          type="email"
-          value={email}
-          onChange={(e) => setEmail(e.target.value)}
-        />
+        <input id="emailInput" type="email" value={email} onChange={(e) => setEmail(e.target.value)} />
         <br />
         {emailError && <div>{emailError}</div>}
 
@@ -139,18 +122,10 @@ const ProfileCreateForm: React.FC = () => {
           {t("login.profile.form.password")}:
         </label>
         <br />
-        <input
-          id="passwordInput"
-          type="password"
-          value={password}
-          onChange={(e) => setPassword(e.target.value)}
-        />
+        <input id="passwordInput" type="password" value={password} onChange={(e) => setPassword(e.target.value)} />
         <br />
         {passwordError && <div>{passwordError}</div>}
-        <button
-          type="submit"
-          className="bg-gray-500 hover:bg-gray-300 hover:text-black m-10"
-        >
+        <button type="submit" className="bg-gray-500 hover:bg-gray-300 hover:text-black m-10">
           {t("login.enter")}
         </button>
       </form>

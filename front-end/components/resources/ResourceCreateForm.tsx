@@ -59,71 +59,61 @@ const CreateResourceForm: React.FC = () => {
       result.resource.id,
       category!.id as unknown as string
     );
-    setStatusMessages([
-      ...statusMessages,
-      { message: categoryOnResource.message, type: categoryOnResource.status },
-    ]);
+    setStatusMessages([...statusMessages, { message: categoryOnResource.message, type: categoryOnResource.status }]);
 
     if (!categoryOnResource) return;
 
     const subjectYo = await SubjectService.getSubjectIdByName(subject);
-    setStatusMessages([
-      ...statusMessages,
-      { message: subjectYo.message, type: subjectYo.status },
-    ]);
+    setStatusMessages([...statusMessages, { message: subjectYo.message, type: subjectYo.status }]);
 
     if (!subjectYo) return;
 
     const subjectId = subjectYo.subject.id;
 
-    const subjectOnResource = await SubjectService.addSubjectToResource(
-      result.resource.id,
-      subjectId
-    );
-    setStatusMessages([
-      ...statusMessages,
-      { message: subjectOnResource.message, type: subjectOnResource.status },
-    ]);
+    const subjectOnResource = await SubjectService.addSubjectToResource(result.resource.id, subjectId);
+    setStatusMessages([...statusMessages, { message: subjectOnResource.message, type: subjectOnResource.status }]);
+  };
+
+  const validate = () => {
+    let isValid = true;
+
+    if (!category) {
+      setCategoryError(t("resources.error.category"));
+      isValid = false;
+    }
+
+    if (!subject) {
+      setSubjectError(t("resources.error.subject"));
+      isValid = false;
+    }
+    if (!title) {
+      setTitleError(t("resources.error.title"));
+      isValid = false;
+    }
+
+    if (!description) {
+      setDescriptionError(t("resources.error.description"));
+      isValid = false;
+    }
+
+    if (!filePath) {
+      setFilePathError(t("resources.error.file"));
+      isValid = false;
+    }
+    return isValid;
   };
 
   const handleSubmit = (e: FormEvent) => {
     e.preventDefault();
     clearErrors();
-
-    if (!category) {
-      setCategoryError(t("resources.error.category"));
-      return;
-    }
-
-    if (!subject) {
-      setSubjectError(t("resources.error.subject"));
-      return;
-    }
-    if (!title) {
-      setTitleError(t("resources.error.title"));
-      return;
-    }
-
-    if (!description) {
-      setDescriptionError(t("resources.error.description"));
-      return;
-    }
-
-    if (!filePath) {
-      setFilePathError(t("resources.error.file"));
-      return;
-    }
-
+    if (!validate()) return;
     createResource();
     router.push("/resources");
   };
 
   const handleOutsideClicks = (event: MouseEvent) => {
     if (subjectsInputRef) {
-      if (
-        subjectsInputRef.current &&
-        !subjectsInputRef.current.contains(event.target as Node)
-      ) {
+      if (subjectsInputRef.current && !subjectsInputRef.current.contains(event.target as Node)) {
         setSubjectVisible(false);
       }
     }
@@ -175,22 +165,14 @@ const CreateResourceForm: React.FC = () => {
           ></textarea>
           <div>
             <p className="mt-2 mb-2">{t("resources.fields.file")}: </p>
-            <FileUploadComponent
-              callback={setFilePath}
-              allowedExtensions={[".jpg", ".jpeg", ".png", ".zip", ".pdf"]}
-            />
+            <FileUploadComponent callback={setFilePath} allowedExtensions={[".jpg", ".jpeg", ".png", ".zip", ".pdf"]} />
           </div>
           <div>
             <p className="mt-2 mb-2">{t("resources.fields.thumbnail")}: </p>
-            <FileUploadComponent
-              callback={setThumbNail}
-              allowedExtensions={[".jpg", ".jpeg", ".png"]}
-            />
+            <FileUploadComponent callback={setThumbNail} allowedExtensions={[".jpg", ".jpeg", ".png"]} />
           </div>
           <div>
-            <label className="mt-2 mb-2">
-              {t("resources.fields.category")}:
-            </label>
+            <label className="mt-2 mb-2">{t("resources.fields.category")}:</label>
             {categories.map((category: Category) => {
               return (
                 <div key={category.id}>
@@ -203,10 +185,7 @@ const CreateResourceForm: React.FC = () => {
                     onChange={(e) => setCategory(category)}
                   />
                   <label className="mt-2 mb-2" htmlFor={category.name}>
-                    {t(
-                      "resources.fields." +
-                        category.name.toLowerCase().replace(" ", ".")
-                    )}
+                    {t("resources.fields." + category.name.toLowerCase().replace(" ", "."))}
                   </label>
                 </div>
               );
@@ -226,12 +205,7 @@ const CreateResourceForm: React.FC = () => {
             onChange={(e) => setSubject(e.target.value)}
           />
           {subjectsIsVisible && (
-            <Subjects
-              visible={subjectsIsVisible}
-              func={setSubject}
-              filter={subject}
-              subjects={subjects}
-            />
+            <Subjects visible={subjectsIsVisible} func={setSubject} filter={subject} subjects={subjects} />
           )}
           {titleError && <div>{titleError}</div>}
           {descriptionError && <div>{descriptionError}</div>}
@@ -239,10 +213,7 @@ const CreateResourceForm: React.FC = () => {
           {thumbNailError && <div>{thumbNailError}</div>}
           {categoryError && <div>{categoryError}</div>}
           {subjectError && <div>{subjectError}</div>}
-          <button
-            className="mt-10 mb-10 p-10 bg-gray-700 hover:bg-gray-500"
-            type="submit"
-          >
+          <button className="mt-10 mb-10 p-10 bg-gray-700 hover:bg-gray-500" type="submit">
             {t("resources.comment.submit")}
           </button>
         </form>

@@ -78,6 +78,7 @@
     "delete": "Removed resource with id ",
     "comment": {
       "reply": "Reply",
+      "empty": "Comment can't be empty",
       "hide": "Hide",
       "show": "Show",
       "replies": " replies",

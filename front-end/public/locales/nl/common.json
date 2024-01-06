@@ -78,6 +78,7 @@
     "delete": "Bron verwijderd met ID ",
     "comment": {
       "reply": "Antwoord",
+      "empty": "Antwoord mag niet leeg zijn",
       "hide": "Verberg",
       "show": "Toon",
       "replies": " antwoorden",

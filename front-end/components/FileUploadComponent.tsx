@@ -6,14 +6,9 @@ type Props = {
   allowedExtensions: Array<string>;
 };
 
-const FileUploadComponent: React.FC<Props> = ({
-  callback,
-  allowedExtensions,
-}: Props) => {
+const FileUploadComponent: React.FC<Props> = ({ callback, allowedExtensions }: Props) => {
   const [state, setState] = useState<"pressed" | "unpressed">("unpressed");
-  const [uploaded, setUploaded] = useState<
-    "Upload" | "File succesfully uploaded"
-  >("Upload");
+  const [uploaded, setUploaded] = useState<"Upload" | "File succesfully uploaded">("Upload");
   const [error, setError] = useState<string>("");
   const [filename, setFilename] = useState<string>();
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
@@ -29,9 +24,7 @@ const FileUploadComponent: React.FC<Props> = ({
     }
   };
 
-  const handleUpload = async (
-    e: React.MouseEvent<HTMLButtonElement, MouseEvent>
-  ) => {
+  const handleUpload = async (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
     e.preventDefault();
     e.stopPropagation();
     if (selectedFile) {
@@ -58,16 +51,13 @@ const FileUploadComponent: React.FC<Props> = ({
         formData.append("file", selectedFile);
         const token = getToken();
         // Send the file to the server
-        const response = await fetch(
-          process.env.NEXT_PUBLIC_API_URL + "/files",
-          {
-            method: "POST",
-            body: formData,
-            headers: {
-              Authorization: `Bearer ${token}`,
-            },
-          }
-        );
+        const response = await fetch(process.env.NEXT_PUBLIC_API_URL + "/files", {
+          method: "POST",
+          body: formData,
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        });
         if (response.ok) {
           const result = await response.json();
           callback(result.file.filename);
@@ -89,23 +79,18 @@ const FileUploadComponent: React.FC<Props> = ({
     }
   };
 
-  const cancelUpload = async (
-    e: React.MouseEvent<HTMLButtonElement, MouseEvent>
-  ) => {
+  const cancelUpload = async (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
     e.preventDefault();
     e.stopPropagation();
     if (selectedFile) {
       try {
         const token = getToken();
-        const response = await fetch(
-          process.env.NEXT_PUBLIC_API_URL + "/files/" + filename,
-          {
-            method: "DELETE",
-            headers: {
-              Authorization: `Bearer ${token}`,
-            },
-          }
-        );
+        const response = await fetch(process.env.NEXT_PUBLIC_API_URL + "/files/" + filename, {
+          method: "DELETE",
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        });
         if (response.ok) {
           callback("");
           setUploaded("Upload");

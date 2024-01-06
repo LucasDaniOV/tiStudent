@@ -76,12 +76,12 @@ const ReadResourceById = () => {
       <Head>
         <title>{t("resources.info.title")}</title>
       </Head>
-      <Header current="resources" />
+      <Header current="resources" isLoggedIn={!!profile} />
       <main>
         {resourceLoading ? (
           <p>{t("loading")}</p>
         ) : (
-          resource && creator && <ResourceID resource={resource} creator={creator} image={image} />
+          resource && <ResourceID resource={resource} creator={creator} image={image} />
         )}
       </main>
       <Footer />

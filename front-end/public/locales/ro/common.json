@@ -78,6 +78,7 @@
     "delete": "Resursa cu ID-ul a fost eliminată ",
     "comment": {
       "reply": "Răspunde",
+      "empty": "Comentariul nu poate fi gol",
       "hide": "Ascunde",
       "show": "Afișează",
       "replies": " răspunsuri",

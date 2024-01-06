@@ -78,6 +78,7 @@
     "delete": "Recurso eliminado con ID ",
     "comment": {
       "reply": "Responder",
+      "empty": "El comentario no puede estar vacío",
       "hide": "Ocultar",
       "show": "Mostrar",
       "replies": " respuestas",

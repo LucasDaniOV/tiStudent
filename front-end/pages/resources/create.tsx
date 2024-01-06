@@ -27,7 +27,7 @@ const CreateResource: React.FC = () => {
       <Head>
         <title>{t("resources.create")}</title>
       </Head>
-      <Header current="resources" />
+      <Header current="resources" isLoggedIn={!!data} />
       <main className="flex flex-row align-middle items-center justify-center">
         {isLoading && <p>{t("loading")}</p>}
         {data ? <CreateResourceForm /> : <h2>{t("authorization.error")}</h2>}
