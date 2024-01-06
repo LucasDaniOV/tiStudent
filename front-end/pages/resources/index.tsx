@@ -68,9 +68,13 @@ const Resources: React.FC = () => {
             <h1 className="text-3xl">{t("resources.title")}</h1>
             {profile ? (
               <div>
-                <button className="p-5 rounded-xl mb-5 bg-tistudent-blue hover:bg-blue-500 text-xl">
-                  <Link href="/resources/create">{t("resources.create")}</Link>
-                </button>
+                <Link
+                  className="inline-block p-5 rounded-xl mb-5 bg-tistudent-blue hover:bg-blue-500 text-xl"
+                  href="/resources/create"
+                >
+                  {t("resources.create")}
+                </Link>
+
                 {resources && <ResourcesOverview resources={resources} profile={profile} />}
               </div>
             ) : (
