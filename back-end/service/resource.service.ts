@@ -51,9 +51,9 @@ const updateResource = async (
 
 const deleteResource = async (auth: AuthenticationResponse, id: number): Promise<Resource> => {
     const resource: ResourceData = await getResourceById(id);
-    const realProfileId = parseInt(auth.id as string);
+    const realProfile = await profileService.getProfileById(parseInt(auth.id as string));
 
-    if (realProfileId !== resource.profileId) {
+    if (realProfile.id !== resource.profileId && realProfile.role !== 'ADMIN') {
         throw new UnauthorizedError('invalid_token', { message: "You cannot delete someone else's resource!" });
     }
 
