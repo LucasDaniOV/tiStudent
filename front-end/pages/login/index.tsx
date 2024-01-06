@@ -7,8 +7,10 @@ import { useTranslation } from "next-i18next";
 import { serverSideTranslations } from "next-i18next/serverSideTranslations";
 import Head from "next/head";
 import { useEffect, useState } from "react";
+import Logout from "@/components/Logout";
+import Login from "@/components/Login";
 
-const Login: React.FC = () => {
+const LoginPage: React.FC = () => {
   const [user, setUser] = useState<string | null>(null);
   const { t } = useTranslation();
   useEffect(() => {
@@ -22,35 +24,7 @@ const Login: React.FC = () => {
       </Head>
       {user ? <Header current="login" isLoggedIn /> : <Header current="login" />}
       <main className="flex flex-row align-middle items-center justify-center">
-        {user ? (
-          <section className="m-10 mt-0 text-center">
-            <h1 className="text-center text-xl">{t("logout.message")}</h1>
-            <form
-              onSubmit={(e) => {
-                e.preventDefault();
-                sessionStorage.removeItem("loggedInUser");
-                setUser(null);
-              }}
-            >
-              <button type="submit" className="text-center hover:bg-gray-500 p-1 text-xl">
-                {t("logout.button")}
-              </button>
-            </form>
-          </section>
-        ) : (
-          <>
-            <section className="m-10 mt-0">
-              <h1 className="text-center text-xl">{t("login.message")}</h1>
-              <ProfileLoginForm />
-              <PredefinedUsersTable />
-            </section>
-
-            <section className="m-10 mt-0">
-              <h1>{t("login.profile.message")}</h1>
-              <ProfileCreateForm />
-            </section>
-          </>
-        )}
+        {user ? <Logout callBack={setUser} /> : <Login />}
       </main>
       <Footer />
     </>
@@ -66,4 +40,4 @@ export const getServerSideProps = async (context: any) => {
   };
 };
 
-export default Login;
+export default LoginPage;

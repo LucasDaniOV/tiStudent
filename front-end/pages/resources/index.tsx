@@ -1,58 +1,36 @@
 import Footer from "@/components/Footer";
 import Header from "@/components/header/Header";
+import ResourcesOverviewTable from "@/components/resources/ResourcesOverviewTable";
+import ProfileService from "@/services/ProfileService";
 import { useTranslation } from "next-i18next";
 import { serverSideTranslations } from "next-i18next/serverSideTranslations";
 import Head from "next/head";
 import Link from "next/link";
-import React, { useEffect, useState } from "react";
+import React from "react";
 import useSWR, { mutate } from "swr";
 import useInterval from "use-interval";
-import ResourceService from "../../services/ResourceService";
-import { Profile, Resource } from "@/types";
-import ProfileService from "@/services/ProfileService";
-import ResourcesOverviewTable from "@/components/resources/ResourcesOverviewTable";
 
 const Resources: React.FC = () => {
-  const [profile, setProfile] = useState<Profile | null>(null);
   const { t } = useTranslation();
 
   const getProfile = async () => {
     const loggedInUser = sessionStorage.getItem("loggedInUser");
     if (!loggedInUser) return;
-
     const profileResponse = await ProfileService.getProfileById(JSON.parse(loggedInUser).id);
-
     if (profileResponse.profile) {
-      setProfile(profileResponse.profile);
+      return profileResponse.profile;
     }
   };
 
-  const fetchResources = async () => {
-    if (!profile) return;
-    const resourcesResponse = await ResourceService.getAllResources();
-    return resourcesResponse.resources;
-  };
-
-  const { data: resources, error } = useSWR(profile ? "resources" : null, fetchResources);
+  const { data, isLoading, error } = useSWR("profile", getProfile);
 
   if (error) {
     console.error("Failed to fetch resources:", error);
     return <div>{t("login.error")}</div>;
   }
-
-  useEffect(() => {
-    getProfile();
-  }, []);
-
-  useEffect(() => {
-    if (profile) {
-      mutate("resources", fetchResources());
-    }
-  }, [profile]);
-
   useInterval(() => {
-    mutate("resources", fetchResources());
-  }, 5000);
+    mutate("profile", getProfile());
+  }, 2500);
 
   return (
     <>
@@ -60,17 +38,17 @@ const Resources: React.FC = () => {
         <title>{t("resources.title")}</title>
       </Head>
 
-      <Header current="resources" isLoggedIn={!!profile} />
+      <Header current="resources" isLoggedIn={!!data} />
 
       <main className="pl-20 pr-20">
         <h1 className="text-3xl">{t("resources.title")}</h1>
-        {profile ? (
-          resources && (
-            <>
-              <Link href="/resources/create">{t("resources.create")}</Link>
-              <ResourcesOverviewTable resources={resources as Resource[]} />
-            </>
-          )
+        {isLoading ? (
+          <p>{t("loading")}</p>
+        ) : data ? (
+          <>
+            <Link href="/resources/create">{t("resources.create")}</Link>
+            <ResourcesOverviewTable profile={data} />
+          </>
         ) : (
           <div className="text-red-600">{t("authorization.error")}</div>
         )}
