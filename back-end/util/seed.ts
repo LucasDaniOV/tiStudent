@@ -41,6 +41,7 @@ async function main() {
             description: 'All the important stuff for p1',
             filePath: 'p1.pdf',
             profileId: aliceProfile.id,
+            thumbNail: 'default-thumbnail1.jpg',
         },
     });
 
@@ -50,6 +51,7 @@ async function main() {
             description: 'All the important stuff for FSSD',
             filePath: 'fsd.pdf',
             profileId: satoshi.id,
+            thumbNail: 'default-thumbnail1.jpg',
         },
     });
 
