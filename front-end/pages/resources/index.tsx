@@ -11,6 +11,7 @@ import React, { useEffect, useState } from "react";
 import useSWR, { mutate } from "swr";
 import useInterval from "use-interval";
 import ResourceService from "../../services/ResourceService";
+import ResourcesOverview from "@/components/resources/ResourcesOverview";
 
 const Resources: React.FC = () => {
   const [profile, setProfile] = useState<Profile | null>(null);
@@ -69,7 +70,7 @@ const Resources: React.FC = () => {
             <button className="p-5 rounded-xl mb-5 bg-tistudent-blue hover:bg-blue-500 text-xl">
               <Link href="/resources/create">{t("resources.create")}</Link>
             </button>
-            {resources && <ResourcesOverviewTable resources={resources as Resource[]} />}
+            {resources && <ResourcesOverview resources={resources} profile={profile} />}
           </div>
         ) : (
           <div className="text-red-600">{t("authorization.error")}</div>
