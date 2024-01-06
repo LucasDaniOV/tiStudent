@@ -35,7 +35,7 @@ const ReadProfileById = () => {
       <Head>
         <title>{t("profiles.title")}</title>
       </Head>
-      <Header current="profiles" />
+      <Header current="profiles" isLoggedIn={!!profile} />
       <main className="mx-auto" style={{ width: "80%" }}>
         {profileError && <div>{profileError}</div>}
         {profileIsLoading && <div>{t("loading")}</div>}
