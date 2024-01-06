@@ -12,7 +12,7 @@ import React, { useEffect } from "react";
 const Home: React.FC = () => {
   const [isLoggedIn, setIsLoggedIn] = React.useState<boolean>(false);
   const [name, setName] = React.useState<string>("");
-
+  const [isLoading, setIsLoading] = React.useState<Boolean>(true);
   const { t } = useTranslation();
 
   const getUser = async () => {
@@ -23,6 +23,8 @@ const Home: React.FC = () => {
       setIsLoggedIn(true);
       setName(profile.profile.username);
     }
+
+    setIsLoading(false);
   };
 
   useEffect(() => {
@@ -38,14 +40,18 @@ const Home: React.FC = () => {
         <link rel="icon" href="/favicon.ico" />
       </Head>
 
-      <Header current="home" isLoggedIn={isLoggedIn} />
+      {!isLoading && (
+        <>
+          <Header current="home" isLoggedIn={isLoggedIn} />
 
-      <div className="pl-20 pr-20 grid grid-cols-2">
-        <Message />
-        <Welcome name={name} />
-      </div>
+          <div className="pl-20 pr-20 grid grid-cols-2">
+            <Message />
+            <Welcome name={name} />
+          </div>
 
-      <Footer />
+          <Footer />
+        </>
+      )}
     </>
   );
 };
