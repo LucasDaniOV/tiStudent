@@ -216,7 +216,10 @@ const CreateResourceForm: React.FC = () => {
           {thumbNailError && <div className={errorClass}>{thumbNailError}</div>}
           {categoryError && <div className={errorClass}>{categoryError}</div>}
           {subjectError && <div className={errorClass}>{subjectError}</div>}
-          <button className="mt-5 mb-10 p-10 bg-gray-300 text-gray-900 hover:bg-gray-400" type="submit">
+          <button
+            className="mt-5 mb-10 p-10 bg-tistudent-blue rounded-lg text-gray-200 hover:bg-blue-500"
+            type="submit"
+          >
             {t("resources.comment.submit")}
           </button>
         </form>

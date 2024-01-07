@@ -12,7 +12,7 @@ const FileUploadComponent: React.FC<Props> = ({ callback, allowedExtensions }: P
   const [error, setError] = useState<string>("");
   const [filename, setFilename] = useState<string>();
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
-  const basic = "border p-1 rounded-lg h-max ";
+  const basic = "p-1 rounded-lg h-max ";
   const handleFileChange = (event: ChangeEvent<HTMLInputElement>) => {
     setState("unpressed");
     const files = event.target.files;
@@ -113,7 +113,7 @@ const FileUploadComponent: React.FC<Props> = ({ callback, allowedExtensions }: P
         <input type="file" onChange={handleFileChange} accept={String(allowedExtensions)} />
         <button
           className={
-            basic + (state === "pressed" ? " bg-green-500 text-green-950" : " hover:bg-green-400 hover:text-green-950")
+            basic + (state === "pressed" ? " bg-green-500 text-green-950" : "bg-tistudent-blue hover:bg-blue-500")
           }
           onClick={(e) => {
             if (state === "unpressed") {
@@ -126,7 +126,7 @@ const FileUploadComponent: React.FC<Props> = ({ callback, allowedExtensions }: P
         </button>
         {state === "pressed" && (
           <button
-            className={basic + " hover:bg-red-700 hover:text-white p-1 ml-1"}
+            className={basic + " bg-red-700 p-1 ml-1 hover:bg-red-600"}
             onClick={(e) => {
               cancelUpload(e);
             }}
