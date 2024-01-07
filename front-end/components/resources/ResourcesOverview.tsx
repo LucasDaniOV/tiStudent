@@ -33,19 +33,34 @@ const ResourcesOverview: React.FC<Props> = ({ resources, profile }: Props) => {
           <div className="relative">
             <div className="absolute top-0 right-0">
               {profile && (resource.profileId === profile.id || profile.role === "ADMIN") && (
-                <Image
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    e.preventDefault();
-                    deleteResource(resource);
-                  }}
-                  className="w-8 h-8 hover:bg-red-500"
-                  src="/images/delete_icon.svg"
-                  alt="delete icon"
-                  width={0}
-                  height={0}
-                  sizes="100vw"
-                />
+                <div className="flex gap-2">
+                  <Image
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      e.preventDefault();
+                      router.push("/resources/edit/" + resource.id);
+                    }}
+                    className="w-8 h-8 hover:bg-red-500"
+                    src="/images/edit_icon.svg"
+                    alt="edit icon"
+                    width={0}
+                    height={0}
+                    sizes="100vw"
+                  />
+                  <Image
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      e.preventDefault();
+                      deleteResource(resource);
+                    }}
+                    className="w-8 h-8 hover:bg-red-500"
+                    src="/images/delete_icon.svg"
+                    alt="delete icon"
+                    width={0}
+                    height={0}
+                    sizes="100vw"
+                  />
+                </div>
               )}
             </div>
             <div className="h-40 flex items-center justify-center">
