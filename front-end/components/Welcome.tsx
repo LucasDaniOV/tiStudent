@@ -8,7 +8,7 @@ type Props = {
 const Welcome: React.FC<Props> = ({ name }: Props) => {
   const { t } = useTranslation();
   return (
-    <div className="p-20">
+    <div className="p-20" role="welcome">
       <h1 className="text-3xl font-bold">
         {t("home.welcome")} {name}!
       </h1>
