@@ -1,5 +1,5 @@
-import LikeService from "@/services/LikeService";
-import { Like } from "@/types";
+import LikeService from "../../services/LikeService";
+import { Like } from "../../types";
 import { useEffect, useState } from "react";
 
 type Props = {
@@ -48,8 +48,9 @@ const Likes: React.FC<Props> = ({ profileId, object, likesObjects, commentId, re
   };
 
   return (
-    <div>
+    <div role="likes">
       <a
+        role="likeButton"
         className={`cursor-pointer text-3xl p-2 text-white flex w-max rounded-xl ${
           clicked === "up" ? "bg-blue-500" : "hover:bg-blue-500 bg-tistudent-blue"
         }`}

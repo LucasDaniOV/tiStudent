@@ -32,6 +32,7 @@ export type Like = {
   createdAt: Date;
   profileId: string;
   resourceId: string;
+  commentId?: string;
 };
 
 export type Comment = {
