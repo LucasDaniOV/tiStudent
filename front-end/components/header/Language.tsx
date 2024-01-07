@@ -12,7 +12,13 @@ const Language: React.FC = () => {
 
   return (
     <div className="flex">
-      <select id="language" className="m-1 p-1 text-white" value={locale} onChange={handleLanguageChange}>
+      <select
+        role="language"
+        id="language"
+        className="m-1 p-1 text-white"
+        value={locale}
+        onChange={handleLanguageChange}
+      >
         <option value="en" className="text-white">
           English
         </option>
