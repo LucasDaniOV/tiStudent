@@ -1,5 +1,5 @@
-import ProfileService from "@/services/ProfileService";
-import { Profile } from "@/types";
+import ProfileService from "../../services/ProfileService";
+import { Profile } from "../../types";
 import { useTranslation } from "next-i18next";
 import { useRouter } from "next/router";
 import { MouseEvent } from "react";
@@ -31,7 +31,7 @@ const ProfilesOverviewTable: React.FC<Props> = ({ profiles }: Props) => {
   return (
     <>
       {profiles && (
-        <table className="border-collapse w-full">
+        <table className="border-collapse w-full" role="profiles">
           <thead>
             <tr>
               <th scope="col" className="border p-4 text-left">
