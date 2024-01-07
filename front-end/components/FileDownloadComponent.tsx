@@ -1,6 +1,6 @@
 import FileService from "@/services/FileService";
 import React from "react";
-import { useTranslation } from "react-i18next";
+import { useTranslation } from "next-i18next";
 
 type Props = {
   fileName: any;

@@ -4,7 +4,7 @@ import SubjectService from "@/services/SubjectService";
 import { Profile, StatusMessage } from "@/types";
 import { useRouter } from "next/router";
 import { FormEvent, useEffect, useRef, useState } from "react";
-import { useTranslation } from "react-i18next";
+import { useTranslation } from "next-i18next";
 import { Category } from "../../../back-end/domain/model/category";
 import FileUploadComponent from "../FileUploadComponent";
 import Subjects from "../Subjects";
