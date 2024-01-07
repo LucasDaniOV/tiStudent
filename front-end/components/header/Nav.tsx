@@ -13,7 +13,7 @@ const Nav: React.FC<Props> = ({ current, isLoggedIn }: Props) => {
   const basic = "text-xl text-white hover:text-blue-500";
 
   return (
-    <nav className="flex gap-5">
+    <nav className="flex gap-5" role="navigation">
       <Link href="/" className={current == "home" ? currentStyle : basic}>
         {t("header.nav.home")}
       </Link>
