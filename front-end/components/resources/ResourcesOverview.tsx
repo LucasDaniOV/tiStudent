@@ -4,6 +4,7 @@ import React from "react";
 import Thumbnail from "./Thumbnail";
 import router from "next/router";
 import Image from "next/image";
+import ResourceService from "@/services/ResourceService";
 
 type Props = {
   resources: Resource[];
@@ -12,6 +13,12 @@ type Props = {
 
 const ResourcesOverview: React.FC<Props> = ({ resources, profile }: Props) => {
   const { t } = useTranslation();
+
+  const deleteResource = async (resource: Resource) => {
+    if (confirm(`${t("resources.confirm")}: ${resource.title}?`)) {
+      return await ResourceService.deleteResourceById(resource.id);
+    }
+  };
 
   return (
     <div className="flex flex-wrap gap-5">
@@ -23,21 +30,42 @@ const ResourcesOverview: React.FC<Props> = ({ resources, profile }: Props) => {
             router.push("/resources/" + resource.id);
           }}
         >
-          <div className="h-40 flex items-center justify-center">
-            <Thumbnail filePath={resource.thumbNail} />
+          <div className="relative">
+            <div className="absolute top-0 right-0">
+              {profile && (resource.profileId === profile.id || profile.role === "ADMIN") && (
+                <Image
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    e.preventDefault();
+                    deleteResource(resource);
+                  }}
+                  className="w-8 h-8 hover:bg-red-500"
+                  src="/images/delete_icon.svg"
+                  alt="delete icon"
+                  width={0}
+                  height={0}
+                  sizes="100vw"
+                />
+              )}
+            </div>
+            <div className="h-40 flex items-center justify-center">
+              <Thumbnail filePath={resource.thumbNail} />
+            </div>
           </div>
 
           <div className="mt-5">
             <h3 className="text-lg bold overflow-hidden overflow-ellipsis whitespace-nowrap">{resource.title}</h3>
             <div className="text-md overflow-hidden overflow-ellipsis whitespace-nowrap">
-              {resource.categories && resource.categories.map((category: any) => {
-                return t("resources.fields." + String(category.category.name).toLowerCase().replace(" ", "."));
-              })}
+              {resource.categories &&
+                resource.categories.map((category: any) => {
+                  return t("resources.fields." + String(category.category.name).toLowerCase().replace(" ", "."));
+                })}
             </div>
             <div className="text-md overflow-hidden overflow-ellipsis whitespace-nowrap">
-              {resource.subjects && resource.subjects.map((subject: any) => {
-                return subject.subject.name;
-              })}
+              {resource.subjects &&
+                resource.subjects.map((subject: any) => {
+                  return subject.subject.name;
+                })}
             </div>
             <div className="mt-5 flex items-center justify-between">
               <div className="text-sm">{`${resource.updatedAt}`.split("T", 1)}</div>

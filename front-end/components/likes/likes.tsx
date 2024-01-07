@@ -50,8 +50,8 @@ const Likes: React.FC<Props> = ({ profileId, object, likesObjects, commentId, re
   return (
     <div>
       <a
-        className={`cursor-pointer text-3xl p-2 text-white bg-tistudent-blue flex w-max rounded-xl ${
-          clicked === "up" ? "bg-blue-500" : "hover:bg-blue-500"
+        className={`cursor-pointer text-3xl p-2 text-white flex w-max rounded-xl ${
+          clicked === "up" ? "bg-blue-500" : "hover:bg-blue-500 bg-tistudent-blue"
         }`}
         onClick={updateLikes}
       >
