@@ -23,7 +23,6 @@ const ResourceEditForm: React.FC<Props> = ({ resourceId }) => {
   };
 
   useEffect(() => {
-    console.log(fetchedResource);
     if (fetchedResource) {
       setTitle(fetchedResource.title);
       setDescription(fetchedResource.description);
@@ -68,8 +67,6 @@ const ResourceEditForm: React.FC<Props> = ({ resourceId }) => {
       updateResource();
     }
   };
-
-  console.log(title);
 
   return (
     <>
