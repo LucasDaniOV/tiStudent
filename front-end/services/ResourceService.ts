@@ -64,6 +64,23 @@ const createResource = async (title: string, description: string, filePath: stri
   return await res.json();
 };
 
+const updateResource = async (id: string, title: string, description: string) => {
+  const token = getToken();
+  const res = await fetch(baseUrl + `/${id}`, {
+    method: "PUT",
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${token}`,
+    },
+    body: JSON.stringify({
+      title,
+      description,
+    }),
+  });
+
+  return await res.json();
+};
+
 const getCommentsOnResource = async (id: string): Promise<Comment[]> => {
   const token = getToken();
   const comments = await fetch(process.env.NEXT_PUBLIC_API_URL + "/comments?resourceId=" + id, {
@@ -140,6 +157,7 @@ const ResourceService = {
   getResourceById,
   deleteResourceById,
   createResource,
+  updateResource,
   getCommentsOnResource,
   getResourcesByProfile,
   getCategoriesByResourceId,

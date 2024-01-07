@@ -38,26 +38,26 @@ const updateResource = async (
     const resource: ResourceData = await getResourceById(id);
     const realProfileId = parseInt(auth.id as string);
 
-    if (realProfileId !== resource.profileId) {
-        throw new UnauthorizedError('invalid_token', { message: "You cannot update someone else's resource!" });
+    if (realProfileId === resource.profileId || auth.role === 'ADMIN') {
+        const { title, description, filePath, thumbNail } = resourceInput;
+        Resource.validateTitle(title);
+        Resource.validateDescription(description);
+
+        return await resourceDb.updateResource(id, title, description, filePath, thumbNail);
     }
 
-    const { title, description, filePath, thumbNail } = resourceInput;
-    Resource.validateTitle(title);
-    Resource.validateDescription(description);
-
-    return await resourceDb.updateResource(id, title, description, filePath, thumbNail);
+    throw new UnauthorizedError('invalid_token', { message: "You cannot update someone else's resource!" });
 };
 
 const deleteResource = async (auth: AuthenticationResponse, id: number): Promise<Resource> => {
     const resource: ResourceData = await getResourceById(id);
     const realProfile = await profileService.getProfileById(parseInt(auth.id as string));
 
-    if (realProfile.id !== resource.profileId && realProfile.role !== 'ADMIN') {
-        throw new UnauthorizedError('invalid_token', { message: "You cannot delete someone else's resource!" });
+    if (realProfile.id === resource.profileId || realProfile.role === 'ADMIN') {
+        return await resourceDb.deleteResource(id);
     }
 
-    return await resourceDb.deleteResource(id);
+    throw new UnauthorizedError('invalid_token', { message: "You cannot delete someone else's resource!" });
 };
 
 export default {
