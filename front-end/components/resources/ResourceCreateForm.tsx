@@ -89,11 +89,21 @@ const CreateResourceForm: React.FC = () => {
     if (!title) {
       setTitleError(t("resources.error.title"));
       isValid = false;
+    } else {
+      if (title.length > 60) {
+        setTitleError(t("resources.error.titleLength"));
+        isValid = false;
+      }
     }
 
     if (!description) {
       setDescriptionError(t("resources.error.description"));
       isValid = false;
+    } else {
+      if (description.length > 500) {
+        setDescriptionError(t("resources.error.descriptionLength"));
+        isValid = false;
+      }
     }
 
     if (!filePath) {

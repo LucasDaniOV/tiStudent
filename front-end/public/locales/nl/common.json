@@ -56,9 +56,9 @@
     },
     "error": {
       "title": "Titel is verplicht",
-      "title.length": "Titel mag niet langer zijn dan 60 tekens",
+      "titleLength": "Titel mag niet langer zijn dan 60 tekens",
       "description": "Omschrijving is verplicht",
-      "description.length": "Omschrijving mag niet langer zijn dan 500 tekens",
+      "descriptionLength": "Omschrijving mag niet langer zijn dan 500 tekens",
       "category": "Categorie is verplicht",
       "category.invalid": "Ongeldige categorie",
       "subject": "Onderwerp is verplicht",

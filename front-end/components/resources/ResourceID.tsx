@@ -35,7 +35,9 @@ const ResourceID: React.FC<Props> = ({ resource, profile, creator }: Props) => {
             <Link className="text-2xl w-max text-blue-500 hover:text-blue-300" href={`/profiles/${creator.id}`}>
               {creator.username}
             </Link>
-            <span>Joined: {`${creator.createdAt}`.split("T", 1)}</span>
+            <span>
+              {t("resources.info.member")}: {`${creator.createdAt}`.split("T", 1)}
+            </span>
           </div>
         </div>
 

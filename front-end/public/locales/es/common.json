@@ -56,9 +56,9 @@
     },
     "error": {
       "title": "Se requiere un título",
-      "title.length": "El título no puede tener más de 60 caracteres",
+      "titleLength": "El título no puede tener más de 60 caracteres",
       "description": "Se requiere una descripción",
-      "description.length": "La descripción no puede tener más de 500 caracteres",
+      "descriptionLength": "La descripción no puede tener más de 500 caracteres",
       "category": "Se requiere una categoría",
       "category.invalid": "Categoría no válida",
       "subject": "Se requiere una asignatura",

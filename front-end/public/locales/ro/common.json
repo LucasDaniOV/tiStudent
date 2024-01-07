@@ -56,9 +56,9 @@
     },
     "error": {
       "title": "Titlul este obligatoriu",
-      "title.length": "Titlul nu poate avea mai mult de 60 de caractere",
+      "titleLength": "Titlul nu poate avea mai mult de 60 de caractere",
       "description": "Descrierea este obligatorie",
-      "description.length": "Descrierea nu poate avea mai mult de 500 de caractere",
+      "descriptionLength": "Descrierea nu poate avea mai mult de 500 de caractere",
       "category": "Categoria este obligatorie",
       "category.invalid": "Categorie invalidă",
       "subject": "Subiectul este obligatoriu",
