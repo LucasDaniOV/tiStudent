@@ -1,6 +1,5 @@
-// Language.test.tsx
-import { fireEvent, render, screen } from "@testing-library/react";
-import React, { Children } from "react";
+import { render, screen } from "@testing-library/react";
+import React from "react";
 import Header from "../components/header/Header";
 
 window.React = React;
