@@ -67,6 +67,7 @@ test(`given: valid values for sub-comment, when: creating a sub-comment, then: s
     // given
     resourceDb.getResourceById = mockResourceDbGetResourceById.mockReturnValue({});
     profileDb.getProfileById = mockProfileDbGetProfileById.mockReturnValue({});
+    commentDb.getCommentById = mockCommentDbGetCommentById.mockReturnValue(comment);
     commentDb.createComment = mockCommentDbCreateComment.mockReturnValue(subComment);
 
     // when

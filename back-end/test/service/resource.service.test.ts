@@ -163,6 +163,7 @@ test(`given: not owner of Resource, when: Resource is updated, then: error is th
 test(`given: not owner of Resource, when: Resource is deleted, then: error is thrown`, async () => {
     // given
     resourceDb.getResourceById = mockResourceDbGetResourceById.mockResolvedValue(resource);
+    profileDb.getProfileById = mockProfileDbGetProfileById.mockResolvedValue(profile);
 
     // when
     const sut = async () => await resourceService.deleteResource({ id: String(69420) } as AuthenticationResponse, 1);
