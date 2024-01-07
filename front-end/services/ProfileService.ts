@@ -1,5 +1,5 @@
-import { getAll } from "@/util/get";
-import { getToken } from "@/util/token";
+import { getAll } from "../util/get";
+import { getToken } from "../util/token";
 
 const baseUrl = process.env.NEXT_PUBLIC_API_URL + "/profiles";
 const type = "profiles";
@@ -32,13 +32,7 @@ const deleteProfileById = async (profileId: number): Promise<Boolean> => {
   return await res.json();
 };
 
-const createProfile = async (
-  email: string,
-  password: string,
-  role: string,
-  username: string,
-  bio?: string
-) => {
+const createProfile = async (email: string, password: string, role: string, username: string, bio?: string) => {
   const res = await fetch(process.env.NEXT_PUBLIC_API_URL + "/signup", {
     method: "POST",
     headers: {

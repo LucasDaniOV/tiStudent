@@ -1,6 +1,6 @@
-import { Category, Comment, Resource, Subject } from "@/types";
-import { getById } from "@/util/get";
-import { getToken } from "@/util/token";
+import { Category, Comment, Resource, Subject } from "../types";
+import { getById } from "../util/get";
+import { getToken } from "../util/token";
 
 const baseUrl = process.env.NEXT_PUBLIC_API_URL + "/resources";
 const type = "resources";
@@ -43,12 +43,7 @@ const deleteResourceById = async (resourceId: string) => {
   });
 };
 
-const createResource = async (
-  title: string,
-  description: string,
-  filePath: string,
-  thumbNail: string
-) => {
+const createResource = async (title: string, description: string, filePath: string, thumbNail: string) => {
   const token = getToken();
 
   const res = await fetch(baseUrl, {
@@ -62,9 +57,7 @@ const createResource = async (
       description,
       filePath,
       thumbNail,
-      profileId: parseInt(
-        JSON.parse(sessionStorage.getItem("loggedInUser")!).id || ""
-      ),
+      profileId: parseInt(JSON.parse(sessionStorage.getItem("loggedInUser")!).id || ""),
     }),
   });
 
@@ -73,16 +66,13 @@ const createResource = async (
 
 const getCommentsOnResource = async (id: string): Promise<Comment[]> => {
   const token = getToken();
-  const comments = await fetch(
-    process.env.NEXT_PUBLIC_API_URL + "/comments?resourceId=" + id,
-    {
-      method: "GET",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${token}`,
-      },
-    }
-  );
+  const comments = await fetch(process.env.NEXT_PUBLIC_API_URL + "/comments?resourceId=" + id, {
+    method: "GET",
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${token}`,
+    },
+  });
   return await comments.json();
 };
 
@@ -101,9 +91,7 @@ const getResourcesByProfile = async (profileId: number) => {
 const getCategoriesByResourceId = async (resourceId: string) => {
   const token = getToken();
   const categoriesOnResource = await fetch(
-    process.env.NEXT_PUBLIC_API_URL +
-      "/categories-on-resources?resourceId=" +
-      resourceId,
+    process.env.NEXT_PUBLIC_API_URL + "/categories-on-resources?resourceId=" + resourceId,
     {
       method: "GET",
       headers: {
@@ -126,18 +114,13 @@ const getCategoriesByResourceId = async (resourceId: string) => {
 
 const getSubjectsByResourceId = async (resourceId: string) => {
   const token = getToken();
-  const subjects = await fetch(
-    process.env.NEXT_PUBLIC_API_URL +
-      "/subjects-on-resources?resourceId=" +
-      resourceId,
-    {
-      method: "GET",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${token}`,
-      },
-    }
-  );
+  const subjects = await fetch(process.env.NEXT_PUBLIC_API_URL + "/subjects-on-resources?resourceId=" + resourceId, {
+    method: "GET",
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${token}`,
+    },
+  });
 
   const jsonSubjects = await subjects.json();
 

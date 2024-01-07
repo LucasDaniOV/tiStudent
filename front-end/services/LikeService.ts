@@ -1,4 +1,4 @@
-import { getToken } from "@/util/token";
+import { getToken } from "../util/token";
 
 const baseUrl = process.env.NEXT_PUBLIC_API_URL + "/like";
 
