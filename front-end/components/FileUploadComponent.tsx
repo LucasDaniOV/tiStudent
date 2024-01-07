@@ -12,7 +12,7 @@ const FileUploadComponent: React.FC<Props> = ({ callback, allowedExtensions }: P
   const [error, setError] = useState<string>("");
   const [filename, setFilename] = useState<string>();
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
-  const basic = "border p-1 rounded-lg ";
+  const basic = "border p-1 rounded-lg h-max ";
   const handleFileChange = (event: ChangeEvent<HTMLInputElement>) => {
     setState("unpressed");
     const files = event.target.files;
@@ -38,7 +38,7 @@ const FileUploadComponent: React.FC<Props> = ({ callback, allowedExtensions }: P
           }
         });
         if (!valid) {
-          setError("Unsupported file format");
+          setError(`Unsupported file format`);
           setUploaded("Upload");
           setState("unpressed");
           return;
@@ -109,13 +109,11 @@ const FileUploadComponent: React.FC<Props> = ({ callback, allowedExtensions }: P
 
   return (
     <>
-      <div className="m-2 p-1">
-        <input type="file" onChange={handleFileChange} />
+      <div className="m-2 p-1 flex items-center align-middle">
+        <input type="file" onChange={handleFileChange} accept={String(allowedExtensions)} />
         <button
           className={
-            state === "pressed"
-              ? basic + "bg-green-500 text-green-950"
-              : basic + "hover:bg-green-300 hover:text-green-950"
+            basic + (state === "pressed" ? " bg-green-500 text-green-950" : " hover:bg-green-400 hover:text-green-950")
           }
           onClick={(e) => {
             if (state === "unpressed") {
@@ -128,16 +126,16 @@ const FileUploadComponent: React.FC<Props> = ({ callback, allowedExtensions }: P
         </button>
         {state === "pressed" && (
           <button
-            className={basic + "text-2xl hover:bg-red-700 hover:text-white "}
+            className={basic + " hover:bg-red-700 hover:text-white p-1 ml-1"}
             onClick={(e) => {
               cancelUpload(e);
             }}
           >
-            &times;
+            X
           </button>
         )}
       </div>
-      <div className="text-red-800">{error && error}</div>
+      <div className={`bg-red-600 w-fit rounded-lg ${error && "p-1"}`}>{error && error}</div>
     </>
   );
 };

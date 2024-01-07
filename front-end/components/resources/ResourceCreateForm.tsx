@@ -138,9 +138,10 @@ const CreateResourceForm: React.FC = () => {
       document.removeEventListener("click", handleOutsideClicks);
     };
   }, [categories, subjects]);
+  const errorClass = "text-red-600 mt-1";
   return (
     <>
-      <section>
+      <section className="border border-gray-500 p-5 rounded-xl">
         <form className="flex flex-col" onSubmit={(e) => handleSubmit(e)}>
           <label className="mt-2 mb-2" htmlFor="title">
             {t("resources.fields.title")}:
@@ -148,6 +149,7 @@ const CreateResourceForm: React.FC = () => {
           <input
             type="text"
             id="title"
+            className="border border-gray-400 bg-black p-1"
             onChange={(e) => {
               setTitle(e.target.value);
             }}
@@ -156,6 +158,7 @@ const CreateResourceForm: React.FC = () => {
             {t("resources.fields.description")}:
           </label>
           <textarea
+            className="border border-gray-400 bg-black p-1"
             id="description"
             cols={30}
             rows={5}
@@ -200,20 +203,20 @@ const CreateResourceForm: React.FC = () => {
             onFocus={() => setSubjectVisible(true)}
             ref={subjectsInputRef}
             value={subject}
-            className="pl-2"
+            className="pl-2 placeholder:text-gray-500 border border-gray-400 bg-black p-1"
             placeholder="Subject..."
             onChange={(e) => setSubject(e.target.value)}
           />
           {subjectsIsVisible && (
             <Subjects visible={subjectsIsVisible} func={setSubject} filter={subject} subjects={subjects} />
           )}
-          {titleError && <div>{titleError}</div>}
-          {descriptionError && <div>{descriptionError}</div>}
-          {filePathError && <div>{filePathError}</div>}
-          {thumbNailError && <div>{thumbNailError}</div>}
-          {categoryError && <div>{categoryError}</div>}
-          {subjectError && <div>{subjectError}</div>}
-          <button className="mt-10 mb-10 p-10 bg-gray-700 hover:bg-gray-500" type="submit">
+          {titleError && <div className={errorClass}>{titleError}</div>}
+          {descriptionError && <div className={errorClass}>{descriptionError}</div>}
+          {filePathError && <div className={errorClass}>{filePathError}</div>}
+          {thumbNailError && <div className={errorClass}>{thumbNailError}</div>}
+          {categoryError && <div className={errorClass}>{categoryError}</div>}
+          {subjectError && <div className={errorClass}>{subjectError}</div>}
+          <button className="mt-5 mb-10 p-10 bg-gray-300 text-gray-900 hover:bg-gray-400" type="submit">
             {t("resources.comment.submit")}
           </button>
         </form>
