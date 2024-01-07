@@ -40,7 +40,7 @@ const ResourcesOverview: React.FC<Props> = ({ resources, profile }: Props) => {
                       e.preventDefault();
                       router.push("/resources/edit/" + resource.id);
                     }}
-                    className="w-8 h-8 hover:bg-red-500"
+                    className="w-8 h-8 hover:bg-red-500 bg-white"
                     src="/images/edit_icon.svg"
                     alt="edit icon"
                     width={0}
@@ -53,7 +53,7 @@ const ResourcesOverview: React.FC<Props> = ({ resources, profile }: Props) => {
                       e.preventDefault();
                       deleteResource(resource);
                     }}
-                    className="w-8 h-8 hover:bg-red-500"
+                    className="w-8 h-8 hover:bg-red-500 bg-white"
                     src="/images/delete_icon.svg"
                     alt="delete icon"
                     width={0}
