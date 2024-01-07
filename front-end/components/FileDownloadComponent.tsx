@@ -32,7 +32,15 @@ const FileDownloadComponent: React.FC<Props> = ({ fileName }: Props) => {
     }
   };
 
-  return <div className="text-3xl bg-tistudent-blue w-max p-2 rounded-xl hover:cursor-pointer hover:bg-blue-500" onClick={handleDownload}>{t("download.message")}&#10515;</div>;
+  return (
+    <div
+      className="flex text-3xl bg-tistudent-blue w-max p-2 rounded-xl hover:cursor-pointer hover:bg-blue-500"
+      onClick={handleDownload}
+    >
+      <strong className="text-3xl mr-1">&#10515;</strong>
+      <span className="flex align-middle">{t("download.message")}</span>
+    </div>
+  );
 };
 
 export default FileDownloadComponent;
