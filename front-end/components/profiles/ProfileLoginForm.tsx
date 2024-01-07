@@ -65,6 +65,12 @@ const ProfileLoginForm: React.FC = () => {
           role: user.role,
         })
       );
+      sessionStorage.setItem(
+        "SecretFootageArea51",
+        JSON.stringify({
+          link: "https://www.youtube.com/watch?v=dQw4w9WgXcQ",
+        })
+      );
       setStatusMessages([{ message: t("login.succes"), type: "success" }]);
       setTimeout(() => {
         router.push("/");
