@@ -52,13 +52,13 @@ const AccountInfo: React.FC<Props> = ({ profile }: Props) => {
                 <Image src={defaultPicture} alt={"Profile picture"} width={150} height={150} />
               </div>
               <div className="flex justify-center m-1 items-center">
-                <span>
+                <span className={profile.username.replace(" ", "").length > 15 ? " break-all" : ""}>
                   <strong>{t("profiles.fields.username")}: </strong>
                   {profile.username}
                 </span>
               </div>
               <div className="flex justify-center m-1 items-center">
-                <span>
+                <span className={profile.bio && profile.bio.replace(" ", "").length > 60 ? " break-all" : ""}>
                   <strong>{t("profiles.fields.bio")}:</strong> {profile.bio}
                 </span>
               </div>

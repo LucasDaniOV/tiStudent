@@ -32,7 +32,7 @@ const ProfileCreateForm: React.FC = () => {
       isValid = false;
     }
     if (!username.trim()) {
-      setUsernameError(t("login.profile.form.error.username"));
+      setUsernameError(t("login.profile.form.error.username.exist"));
       isValid = false;
     }
     if (username.length > 30) {
