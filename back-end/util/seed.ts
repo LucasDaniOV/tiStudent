@@ -37,21 +37,23 @@ async function main() {
     // Resource
     const resource = await prisma.resource.create({
         data: {
-            title: 'P1 fundamentals summary',
-            description: 'All the important stuff for p1',
+            title: 'P1 Fundamentals',
+            description:
+                'All the important stuff for p1. Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.',
             filePath: 'p1.pdf',
             profileId: aliceProfile.id,
-            thumbNail: 'default-thumbnail1.jpg',
+            thumbNail: 'enumerate.png',
         },
     });
 
     const resource2 = await prisma.resource.create({
         data: {
-            title: 'Full-Stack Software Development Cheat Sheet',
-            description: 'All the important stuff for FSSD',
-            filePath: 'fsd.pdf',
+            title: 'FSD ERD',
+            description:
+                'FSD ERD. Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.',
+            filePath: 'erd.pdf',
             profileId: satoshi.id,
-            thumbNail: 'default-thumbnail1.jpg',
+            thumbNail: 'erd.png',
         },
     });
 
@@ -155,6 +157,39 @@ async function main() {
             commentId: bobComment.id,
         },
     });
+
+    for (let i = 1; i <= 20; i++) {
+        const r = await prisma.resource.create({
+            data: {
+                title: `Resource ${i}`,
+                description: `Description ${i}`,
+                filePath: `${i}-p1.pdf`,
+                profileId: satoshi.id,
+                thumbNail: 'shrek.jpeg',
+            },
+        });
+
+        await prisma.categoryOnResource.create({
+            data: {
+                resourceId: r.id,
+                categoryId: 1,
+            },
+        });
+
+        await prisma.subjectOnResource.create({
+            data: {
+                resourceId: r.id,
+                subjectId: 1,
+            },
+        });
+
+        await prisma.resourceLike.create({
+            data: {
+                profileId: aliceProfile.id,
+                resourceId: r.id,
+            },
+        });
+    }
 }
 
 main()
