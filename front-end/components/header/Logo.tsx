@@ -2,7 +2,7 @@ import Image from "next/image";
 
 const Logo: React.FC = () => {
   return (
-    <div className="flex items-center gap-5">
+    <div role="logo" className="flex items-center gap-5">
       <h1 className="text-4xl">tiStudent</h1>
       <Image
         src="/images/logo.png"
