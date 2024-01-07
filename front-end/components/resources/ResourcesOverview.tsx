@@ -30,12 +30,12 @@ const ResourcesOverview: React.FC<Props> = ({ resources, profile }: Props) => {
           <div className="mt-5">
             <h3 className="text-lg bold overflow-hidden overflow-ellipsis whitespace-nowrap">{resource.title}</h3>
             <div className="text-md overflow-hidden overflow-ellipsis whitespace-nowrap">
-              {resource.categories.map((category: any) => {
+              {resource.categories && resource.categories.map((category: any) => {
                 return t("resources.fields." + String(category.category.name).toLowerCase().replace(" ", "."));
               })}
             </div>
             <div className="text-md overflow-hidden overflow-ellipsis whitespace-nowrap">
-              {resource.subjects.map((subject: any) => {
+              {resource.subjects && resource.subjects.map((subject: any) => {
                 return subject.subject.name;
               })}
             </div>
@@ -51,7 +51,7 @@ const ResourcesOverview: React.FC<Props> = ({ resources, profile }: Props) => {
                     height={0}
                     sizes="100vw"
                   />
-                  <span>x {resource.likes.length}</span>
+                  <span>x {resource.likes && resource.likes.length}</span>
                 </div>
               </div>
             </div>

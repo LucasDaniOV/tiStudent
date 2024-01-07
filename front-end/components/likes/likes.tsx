@@ -10,68 +10,50 @@ type Props = {
   resourceId: string;
 };
 
-const Likes: React.FC<Props> = ({
-  profileId,
-  object,
-  likesObjects,
-  commentId,
-  resourceId,
-}: Props) => {
+const Likes: React.FC<Props> = ({ profileId, object, likesObjects, commentId, resourceId }) => {
   const [clicked, setClicked] = useState<"up" | undefined>(undefined);
   const [likes, setLikes] = useState<number>(0);
-  const getLikes = async () => {
-    if (object == "resource") {
-      setLikes(likesObjects.length);
-      const likers = likesObjects.map((l: Like) => l.profileId);
-      if (likers.includes(profileId)) {
-        setClicked("up");
-      }
-    } else {
-      setLikes(likesObjects.length);
-      const likers = likesObjects.map((l: Like) => l.profileId);
-      if (likers.includes(profileId)) {
-        setClicked("up");
-      }
-    }
+
+  const updateLikeStatus = () => {
+    const likers = likesObjects.map((l: Like) => l.profileId);
+    const isLiked = likers.includes(profileId);
+    setLikes(likesObjects.length);
+    setClicked(isLiked ? "up" : undefined);
   };
 
   useEffect(() => {
-    getLikes();
-  }, [profileId]);
+    updateLikeStatus();
+  }, [profileId, likesObjects]);
 
-  const updateLikes = async (
-    e: React.MouseEvent<HTMLAnchorElement, MouseEvent>
-  ) => {
-    e.stopPropagation();
-    e.preventDefault();
-    if (clicked == "up") {
-      setLikes(likes - 1);
-      if (object == "resource") {
-        await LikeService.unLike("resource", resourceId, profileId);
-      } else {
-        await LikeService.unLike("comment", commentId!, profileId);
-      }
-      setClicked(undefined);
-      //remove like
+  const handleLikeAction = async (like: boolean) => {
+    if (object === "resource") {
+      like
+        ? await LikeService.likeResource(profileId, resourceId)
+        : await LikeService.unLike("resource", resourceId, profileId);
     } else {
-      setLikes(likes + 1);
-      setClicked("up");
-      if (object == "resource") {
-        await LikeService.likeResource(profileId, resourceId);
-      } else {
-        await LikeService.likeComment(profileId, commentId!);
-      }
+      like
+        ? await LikeService.likeComment(profileId, commentId!)
+        : await LikeService.unLike("comment", commentId!, profileId);
     }
   };
+
+  const updateLikes = async (e: React.MouseEvent<HTMLAnchorElement, MouseEvent>) => {
+    e.stopPropagation();
+    e.preventDefault();
+
+    const like = clicked !== "up";
+    setLikes(like ? likes + 1 : likes - 1);
+    setClicked(like ? "up" : undefined);
+    await handleLikeAction(like);
+  };
+
   return (
-    <div className="w-1/4 flex justify-center">
+    <div>
       <a
-        className={
-          clicked == "up"
-            ? "cursor-pointer text-4xl m-2 p-2 text-green-500 bg-gray-900 flex w-max"
-            : "cursor-pointer text-4xl m-2 p-2 hover:text-green-500 hover:bg-gray-900 flex w-max"
-        }
-        onClick={(e) => updateLikes(e)}
+        className={`cursor-pointer text-3xl p-2 text-white bg-tistudent-blue flex w-max rounded-xl ${
+          clicked === "up" ? "bg-blue-500" : "hover:bg-blue-500"
+        }`}
+        onClick={updateLikes}
       >
         &#x1F44D;<span>{likes}</span>
       </a>

@@ -65,18 +65,20 @@ const Resources: React.FC = () => {
           <Header current="resources" isLoggedIn={!!profile} />
 
           <main className="pl-20 pr-20 flex flex-col gap-5">
-            <h1 className="text-3xl">{t("resources.title")}</h1>
             {profile ? (
-              <div>
-                <Link
-                  className="inline-block p-5 rounded-xl mb-5 bg-tistudent-blue hover:bg-blue-500 text-xl"
-                  href="/resources/create"
-                >
-                  {t("resources.create")}
-                </Link>
+              <>
+                <h1 className="text-3xl">{t("resources.title")}</h1>
+                <div>
+                  <Link
+                    className="inline-block p-5 rounded-xl mb-5 bg-tistudent-blue hover:bg-blue-500 text-xl"
+                    href="/resources/create"
+                  >
+                    {t("resources.create")}
+                  </Link>
 
-                {resources && <ResourcesOverview resources={resources} profile={profile} />}
-              </div>
+                  {resources && <ResourcesOverview resources={resources} profile={profile} />}
+                </div>
+              </>
             ) : (
               <div className="text-red-600">{t("authorization.error")}</div>
             )}

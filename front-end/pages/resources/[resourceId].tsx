@@ -8,67 +8,78 @@ import { useTranslation } from "next-i18next";
 import { serverSideTranslations } from "next-i18next/serverSideTranslations";
 import Head from "next/head";
 import { useRouter } from "next/router";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import useSWR, { mutate } from "swr";
 import useInterval from "use-interval";
 
 const ReadResourceById = () => {
-  const [creator, setCreator] = useState<Profile>();
-  const [image, setImage] = useState<string>("");
+  const [profile, setProfile] = useState<Profile | null>(null);
+  const [isLoading, setIsLoading] = useState<Boolean>(true);
   const { t } = useTranslation();
   const router = useRouter();
   const { resourceId } = router.query;
 
   const getProfile = async () => {
-    const loggedInUser = sessionStorage.getItem("loggedInUser");
-    if (!loggedInUser) return;
-    const profileResponse = await ProfileService.getProfileById(JSON.parse(loggedInUser).id);
-    return profileResponse.profile;
-  };
-
-  const getImage = async (thumbNail: string) => {
     try {
-      const img = await import("../../../back-end/uploads/" + thumbNail);
-      setImage(img);
+      const loggedInUser = sessionStorage.getItem("loggedInUser");
+      if (!loggedInUser) {
+        setIsLoading(false);
+        return;
+      }
+      const profileResponse = await ProfileService.getProfileById(JSON.parse(loggedInUser).id);
+      if (profileResponse.profile) {
+        setProfile(profileResponse.profile);
+        setIsLoading(false);
+      }
     } catch (error) {
       console.error(error);
     }
   };
 
-  const getResource = async () => {
-    const resource = await ResourceService.getResourceById(resourceId as string);
-    if (resource) {
-      getImage(resource.thumbNail);
-      if (profile)
-        try {
-          if (resource?.profileId === profile.id) {
-            setCreator(profile);
-          } else {
-            getCreator(resource.profileId);
-          }
-        } catch (error) {
-          console.log(error);
-        }
-      return resource;
+  const fetchResource = async () => {
+    try {
+      if (!profile) return;
+      return await ResourceService.getResourceById(resourceId as string);
+    } catch (error) {
+      console.error(error);
     }
   };
 
-  const getCreator = async (profileId: string) => {
-    const response = await ProfileService.getProfileById(profileId);
-    setCreator(response.profile);
+  const fetchResourceProfile = async () => {
+    try {
+      if (!resource || !profile) return;
+      if (resource.profileId == profile.id) {
+        return profile;
+      }
+      const profileResponse = await ProfileService.getProfileById(resource.profileId);
+      return profileResponse.profile;
+    } catch (error) {
+      console.error(error);
+    }
   };
 
-  const { data: profile, isLoading: profileLoading, error: profileError } = useSWR("profile", getProfile);
+  const { data: resource } = useSWR(profile ? "resource" : null, fetchResource);
+  const { data: resourceProfile } = useSWR(resource ? "resourceProfile" : null, fetchResourceProfile);
 
-  const {
-    data: resource,
-    isLoading: resourceLoading,
-    error: resourceError,
-  } = useSWR(["resource", resourceId], getResource);
+  useEffect(() => {
+    getProfile();
+  }, []);
+
+  useEffect(() => {
+    if (profile) {
+      mutate("resource", fetchResource());
+    }
+  }, [profile]);
+
+  useEffect(() => {
+    if (resource) {
+      mutate("resourceProfile", fetchResourceProfile());
+    }
+  }, [resource]);
 
   useInterval(() => {
-    mutate(["profile", resourceId], getProfile());
-    mutate(["resource", resourceId], getResource());
+    mutate("resource", fetchResource());
+    mutate("resourceProfile", fetchResourceProfile());
   }, 5000);
 
   return (
@@ -76,15 +87,26 @@ const ReadResourceById = () => {
       <Head>
         <title>{t("resources.info.title")}</title>
       </Head>
-      <Header current="resources" isLoggedIn={!!profile} />
-      <main>
-        {resourceLoading ? (
-          <p>{t("loading")}</p>
-        ) : (
-          resource && <ResourceID resource={resource} creator={creator} image={image} />
-        )}
-      </main>
-      <Footer />
+
+      {!isLoading && (
+        <>
+          <Header current="resources" isLoggedIn={!!profile} />
+
+          <main className="px-20">
+            {profile ? (
+              <>
+                {resource && resourceProfile && (
+                  <ResourceID resource={resource} profile={profile} creator={resourceProfile} />
+                )}
+              </>
+            ) : (
+              <div className="text-red-600">{t("authorization.error")}</div>
+            )}
+          </main>
+
+          <Footer />
+        </>
+      )}
     </>
   );
 };

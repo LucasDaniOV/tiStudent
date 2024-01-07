@@ -41,12 +41,12 @@ export type Comment = {
   message: string;
   profileId: string;
   resourceId: string;
-  profile?: {
+  profile: {
     id: string;
     username: string;
   };
   likes: Like[];
-  parentId?: string;
+  parentId: string;
 };
 
 export type Category = {
@@ -64,11 +64,4 @@ export type StatusMessage = {
   type: "error" | "success";
 };
 
-export type Type =
-  | "users"
-  | "resources"
-  | "profiles"
-  | "likes"
-  | "categories"
-  | "subjects"
-  | "comments";
+export type Type = "users" | "resources" | "profiles" | "likes" | "categories" | "subjects" | "comments";
