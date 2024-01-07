@@ -1,6 +1,7 @@
 import CommentService from "@/services/CommentService";
 import { Profile, Resource } from "@/types";
 import { useTranslation } from "next-i18next";
+import { useRouter } from "next/router";
 import { FormEvent, useState } from "react";
 
 type Props = {
@@ -12,7 +13,7 @@ const CommentCreateForm: React.FC<Props> = ({ resource, profile }: Props) => {
   const [message, setMessage] = useState<string>("");
   const [messageError, setMessageError] = useState<string>("");
   const { t } = useTranslation();
-
+  const router = useRouter();
   const validate = (): Boolean => {
     let isValid = true;
 
@@ -28,8 +29,8 @@ const CommentCreateForm: React.FC<Props> = ({ resource, profile }: Props) => {
     event.preventDefault();
     if (!validate()) return;
     setMessageError("");
-
     await CommentService.writeCommentOnResource(profile.id, resource.id, message);
+    router.reload();
   }
 
   return (
@@ -43,7 +44,9 @@ const CommentCreateForm: React.FC<Props> = ({ resource, profile }: Props) => {
           required
           onChange={(e) => setMessage(e.target.value)}
         />
-        <button className="bg-tistudent-blue p-2 rounded-xl mt-2 hover:bg-blue-500 text-lg" type="submit">{t("resources.comment.submit")}</button>
+        <button className="bg-tistudent-blue p-2 rounded-xl mt-2 hover:bg-blue-500 text-lg" type="submit">
+          {t("resources.comment.submit")}
+        </button>
       </form>
     </>
   );
