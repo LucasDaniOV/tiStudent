@@ -1,4 +1,7 @@
 https://github.com/LucasDaniOV/tiStudent/assets/94640850/c4a59b32-d006-4291-829d-bb9b4a3f63eb
+
+https://github.com/LucasDaniOV/tiStudent/assets/94640850/af7ec5f6-d4d1-4716-8b6d-d11e652e465b
+
 # tiStudent
 A platform where students can share academic resources and like or comment on them.  
 Created by [Davy Bellens](https://github.com/DavyBellens) and [Lucas Daniel Oude Vrielink](https://github.com/LucasDaniOV) for a school project.
