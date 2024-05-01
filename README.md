@@ -1,7 +1,6 @@
-[![Review Assignment Due Date](https://classroom.github.com/assets/deadline-readme-button-24ddc0f5d75046c5622901739e7c5dd533143b0c8e959d652212380cedb1ea36.svg)](https://classroom.github.com/a/pdQz8rYq)
+https://github.com/LucasDaniOV/tiStudent/assets/94640850/c4a59b32-d006-4291-829d-bb9b4a3f63eb
 # tiStudent
 
-A platform where students can share, like, comment and publish academic
-resources.
+A platform where students can share academic resources and like or comment on them
 
 ### Davy Bellens & Lucas Oude Vrielink
