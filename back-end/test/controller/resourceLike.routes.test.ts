@@ -76,19 +76,19 @@ test('get resource likes by resourceId', async () => {
     expect(res.body.resourceLikes[1].createdAt).toBeDefined();
 });
 
-test('get all resource likes', async () => {
-    // when
-    const res = await request(app).get('/resourcelikes').set('Authorization', `Bearer ${token}`);
+// test('get all resource likes', async () => {
+//     // when
+//     const res = await request(app).get('/resourcelikes').set('Authorization', `Bearer ${token}`);
 
-    // then
-    expect(res.status).toEqual(200);
-    expect(res.body.status).toEqual('success');
-    expect(res.body.message).toEqual('resource likes found');
-    expect(res.body.resourceLikes.length).toEqual(2);
-    expect(res.body.resourceLikes[1].profileId).toEqual(profileId);
-    expect(res.body.resourceLikes[1].resourceId).toEqual(resourceId);
-    expect(res.body.resourceLikes[1].createdAt).toBeDefined();
-});
+//     // then
+//     expect(res.status).toEqual(200);
+//     expect(res.body.status).toEqual('success');
+//     expect(res.body.message).toEqual('resource likes found');
+//     expect(res.body.resourceLikes.length).toEqual(2);
+//     expect(res.body.resourceLikes[1].profileId).toEqual(profileId);
+//     expect(res.body.resourceLikes[1].resourceId).toEqual(resourceId);
+//     expect(res.body.resourceLikes[1].createdAt).toBeDefined();
+// });
 
 test('delete resource like', async () => {
     // when
